@@ -8,7 +8,8 @@ namespace Kartverket.Geonorge.Download.Models
 {
     public class DownloadContext: DbContext
     {
-        public DbSet<CapabilitiesModel> Capabilities { get; set; } 
+        public DbSet<Dataset> Capabilities { get; set; }
+        public DbSet<filliste> FileList { get; set; } 
 
         public DownloadContext()
             : base("DefaultConnection")
@@ -19,11 +20,16 @@ namespace Kartverket.Geonorge.Download.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CapabilitiesModel>().ToTable("Dataset");
-            modelBuilder.Entity<CapabilitiesModel>().Property(t => t.Capabilities.supportsAreaSelection).HasColumnName("supportsAreaSelection");
-            modelBuilder.Entity<CapabilitiesModel>().Property(t => t.Capabilities.supportsFormatSelection).HasColumnName("supportsFormatSelection");
-            modelBuilder.Entity<CapabilitiesModel>().Property(t => t.Capabilities.supportsPolygonSelection).HasColumnName("supportsPolygonSelection");
-            modelBuilder.Entity<CapabilitiesModel>().Property(t => t.Capabilities.supportsProjectionSelection).HasColumnName("supportsProjectionSelection");
+            //modelBuilder.Entity<CapabilitiesType>().ToTable("Dataset");
+
+            //modelBuilder.Entity<CapabilitiesType>().Property(t => t.supportsAreaSelection).HasColumnName("supportsAreaSelection");
+            //modelBuilder.Entity<CapabilitiesType>().Property(t => t.supportsFormatSelection).HasColumnName("supportsFormatSelection");
+            //modelBuilder.Entity<CapabilitiesType>().Property(t => t.supportsPolygonSelection).HasColumnName("supportsPolygonSelection");
+            //modelBuilder.Entity<CapabilitiesType>().Property(t => t.supportsProjectionSelection).HasColumnName("supportsProjectionSelection");
+
+            modelBuilder.Entity<ProjectionType>().HasKey(p => p.code);
+            modelBuilder.Entity<AreaType>().HasKey(a => a.name);
+
         }
     }
 }

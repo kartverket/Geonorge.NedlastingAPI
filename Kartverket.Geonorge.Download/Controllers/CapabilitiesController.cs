@@ -16,7 +16,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/capabilities/{metadataUuid}")]
-        public CapabilitiesModel GetCapabilities(string metadataUuid)
+        public CapabilitiesType GetCapabilities(string metadataUuid)
         {
             return new CapabilitiesService().GetCapabilities(metadataUuid);
         }
@@ -26,7 +26,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/projection/{metadataUuid}")]
-        public ProjectionsModel GetProjections(string metadataUuid)
+        public List<ProjectionType> GetProjections(string metadataUuid)
         {
             return new CapabilitiesService().GetProjections(metadataUuid);
         }
@@ -36,7 +36,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/area/{metadataUuid}")]
-        public AreasModel GetAreas(string metadataUuid)
+        public List<AreaType> GetAreas(string metadataUuid)
         {
             return new CapabilitiesService().GetAreas(metadataUuid);
         }
@@ -46,7 +46,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/format/{metadataUuid}")]
-        public FormatModel GetFormats(string metadataUuid)
+        public List<FormatType> GetFormats(string metadataUuid)
         {
             return new CapabilitiesService().GetFormats(metadataUuid);
         }
