@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -229,6 +230,7 @@
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AreasModel.cs" />
+    <Compile Include="Models\DownloadContext.cs" />
     <Compile Include="Models\download_rest.cs" />
     <Compile Include="Models\FormatModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />

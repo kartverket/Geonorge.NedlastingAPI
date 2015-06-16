@@ -15,7 +15,12 @@ namespace Kartverket.Geonorge.Download.Services
 
         public CapabilitiesModel GetCapabilities(string metadataUuid) 
         {
-            CapabilitiesModel capabilities = GetSampleCapabilities(metadataUuid);
+            DownloadContext db = new DownloadContext();
+            //CapabilitiesModel capabilities = GetSampleCapabilities(metadataUuid);
+            var capabilitiesQuery = from c in db.Capabilities
+                                             where c.metadataUUid == metadataUuid
+                                             select c;
+            CapabilitiesModel capabilities = capabilitiesQuery.First();
 
             return capabilities;
         }
