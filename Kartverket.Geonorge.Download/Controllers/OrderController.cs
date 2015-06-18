@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kartverket.Geonorge.Download.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,8 +15,9 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// Post order
         /// </summary>
         [Route("api/order")]
-        public void Post([FromBody]string value)
+        public OrderReceiptType Post([FromBody]OrderType order)
         {
+            return new OrderService().Order(order);
         }
 
     }

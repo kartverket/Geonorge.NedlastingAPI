@@ -330,7 +330,7 @@ public partial class OrderType {
     
     private string emailField;
     
-    private OrderLineType orderLinesField;
+    private OrderLineType[] orderLinesField;
     
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
@@ -345,7 +345,7 @@ public partial class OrderType {
     
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-    public OrderLineType orderLines {
+    public OrderLineType[] orderLines {
         get {
             return this.orderLinesField;
         }
