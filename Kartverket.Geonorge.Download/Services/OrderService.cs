@@ -1,4 +1,5 @@
 ﻿using Kartverket.Geonorge.Download.Models;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,17 +32,44 @@ namespace Kartverket.Geonorge.Download.Services
 
             foreach (var orderLine in o.orderLines)
             {
-                var filesQuery = from f in db.FileList
-                             where f.Dataset1.metadataUuid == orderLine.metadataUuid                            
-                             select new {url = f.url, name = f.filnavn};
 
-            var files = filesQuery.ToList();
+                IQueryable<filliste> query = db.FileList.AsExpandable();
+                query = query.Where(f => f.Dataset1.metadataUuid.Contains(orderLine.metadataUuid));
+
+                if (orderLine.projections != null) 
+                { 
+                    var projections = orderLine.projections.Select(p => p.code).ToList();             
+                    query = query.Where(p => projections.Contains(p.projeksjon));
+                }
+
+                if (orderLine.formats != null) 
+                { 
+                    var formats = orderLine.formats.Select(p => p.name).ToList();
+                    query = query.Where(f => formats.Contains(f.format));
+                }
+
+                if (orderLine.areas != null) { 
+                    var areas = orderLine.areas.Select(a => new { name = a.name, type = a.type });
+                    
+                    var predicate = PredicateBuilder.False<filliste>();
+                    areas = areas.ToList();
+
+                    foreach (var area in areas)
+                    {
+                        predicate = predicate.Or(a => a.inndeling.Contains(area.type) && a.inndelingsverdi.Contains(area.name));
+                    }
+
+                    query = query.Where(predicate);
+
+                }
+
+                var files = query.ToList();
             
                 foreach(var file in files)
                 {
                     FileType ft = new FileType();
                     ft.downloadUrl = file.url;
-                    ft.name = file.name;
+                    ft.name = file.filnavn;
                     fileList.Add(ft);
                 }
             }
