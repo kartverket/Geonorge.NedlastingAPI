@@ -2,6 +2,7 @@
 using LinqKit;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -19,7 +20,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             OrderReceiptType orderReceipt = new OrderReceiptType();
             orderReceipt.files = GetFiles(order);
-            orderReceipt.referenceNumber = SaveOrder(orderReceipt);
+            orderReceipt.referenceNumber = SaveOrder(orderReceipt, order.email);
             SendEmailReceipt(orderReceipt, order.email);
 
             return orderReceipt;
@@ -77,14 +78,26 @@ namespace Kartverket.Geonorge.Download.Services
             return fileList.ToArray();
         }
 
-        private string SaveOrder(OrderReceiptType receipt)
+        private string SaveOrder(OrderReceiptType receipt, string email)
         {
-            //TODO save to db
+            orderDownload o = new orderDownload();
+            o.email = email;
+            o.orderDate = DateTime.Now;
+            db.OrderDownloads.Add(o);
+            db.SaveChanges();
 
-            //Fake reference number
-            Random rnd = new Random(); string referenceNumber = rnd.Next(1000).ToString();
+            foreach (var oItem in receipt.files) 
+            {
+                orderItem downloadedItem = new orderItem();
+                downloadedItem.downloadUrl = oItem.downloadUrl;
+                downloadedItem.fileName = oItem.name;
+                downloadedItem.referenceNumber = o.referenceNumber;
+                o.orderItem.Add(downloadedItem);
+            }
+            db.Entry(o).State = EntityState.Modified;
+            db.SaveChanges();
 
-            return referenceNumber;
+            return o.referenceNumber.ToString();
         }
 
         private void SendEmailReceipt(OrderReceiptType orderReceipt, string email)
