@@ -21,7 +21,6 @@ namespace Kartverket.Geonorge.Download.Services
             OrderReceiptType orderReceipt = new OrderReceiptType();
             orderReceipt.files = GetFiles(order);
             orderReceipt.referenceNumber = SaveOrder(orderReceipt, order.email);
-            SendEmailReceipt(orderReceipt, order.email);
 
             return orderReceipt;
         }
@@ -100,9 +99,5 @@ namespace Kartverket.Geonorge.Download.Services
             return o.referenceNumber.ToString();
         }
 
-        private void SendEmailReceipt(OrderReceiptType orderReceipt, string email)
-        {
-            //TODO send orderReceipt email 
-        }
     }
 }
