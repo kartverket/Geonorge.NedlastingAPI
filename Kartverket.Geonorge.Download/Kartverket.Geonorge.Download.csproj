@@ -245,6 +245,7 @@
     <Compile Include="Models\DownloadContext.cs" />
     <Compile Include="Models\download_rest.cs" />
     <Compile Include="Models\Filliste.cs" />
+    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\OrderDownload.cs" />
     <Compile Include="Models\orderItem.cs" />
