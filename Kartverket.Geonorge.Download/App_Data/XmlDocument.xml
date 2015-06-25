@@ -505,7 +505,7 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.OrderController.Post(OrderType)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.OrderController.Post(System.Object)">
             <summary>
             Post order
             </summary>

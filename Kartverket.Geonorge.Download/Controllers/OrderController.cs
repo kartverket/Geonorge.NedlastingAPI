@@ -1,4 +1,5 @@
 ﻿using Kartverket.Geonorge.Download.Services;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,16 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// Post order
         /// </summary>
         [Route("api/order")]
-        public OrderReceiptType Post([FromBody]OrderType order)
+        public OrderReceiptType Post(object order)
         {
-            return new OrderService().Order(order);
+            OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
+
+            return new OrderService().Order(o);
         }
+        //public OrderReceiptType Post(OrderType order)
+        //{
+        //    return new OrderService().Order(order);
+        //}
 
     }
 }
