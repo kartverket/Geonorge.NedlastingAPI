@@ -34,7 +34,7 @@ namespace Kartverket.Geonorge.Download.Services
             {
 
                 IQueryable<filliste> query = db.FileList.AsExpandable();
-                query = query.Where(f => f.Dataset1.metadataUuid.Contains(orderLine.metadataUuid));
+                query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
 
                 if (orderLine.projections != null) 
                 { 
@@ -56,7 +56,7 @@ namespace Kartverket.Geonorge.Download.Services
 
                     foreach (var area in areas)
                     {
-                        predicate = predicate.Or(a => a.inndeling.Contains(area.type) && a.inndelingsverdi.Contains(area.name));
+                        predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.name);
                     }
 
                     query = query.Where(predicate);
