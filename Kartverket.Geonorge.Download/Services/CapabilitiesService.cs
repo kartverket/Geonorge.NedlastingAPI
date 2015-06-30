@@ -33,19 +33,19 @@ namespace Kartverket.Geonorge.Download.Services
 
             LinkType l1 = new LinkType();
             l1.rel = "http://rel.geonorge.no/download/projection";
-            l1.href = "http://localhost:61236/api/codelists/projection/" + metadataUuid;
+            l1.href = "http://download.dev.geonorge.no/api/codelists/projection/" + metadataUuid;
 
             LinkType l2 = new LinkType();
             l2.rel = "http://rel.geonorge.no/download/format";
-            l2.href = "http://localhost:61236/api/codelists/format/" + metadataUuid;
+            l2.href = "http://download.dev.geonorge.no/api/codelists/format/" + metadataUuid;
 
             LinkType l3 = new LinkType();
             l3.rel = "http://rel.geonorge.no/download/area";
-            l3.href = "http://localhost:61236/api/codelists/area/" + metadataUuid;
+            l3.href = "http://download.dev.geonorge.no/api/codelists/area/" + metadataUuid;
 
             LinkType l4 = new LinkType();
             l4.rel = "http://rel.geonorge.no/download/order";
-            l4.href = "http://localhost:61236/api/order";
+            l4.href = "http://download.dev.geonorge.no/api/order";
 
             links.Add(l1); links.Add(l2); links.Add(l3); links.Add(l4);
 
