@@ -261,8 +261,27 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\common.css" />
+    <Content Include="Content\custom.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\statusicon.svg" />
+    <Content Include="Content\geonorge-default.css" />
+    <Content Include="Content\img\chosen-sprite.png" />
+    <Content Include="Content\img\favicon.ico" />
+    <Content Include="Content\img\kvlogo_col.png" />
+    <Content Include="Content\img\loader.gif" />
+    <Content Include="Content\img\logo-graphic-512.png" />
+    <Content Include="Content\img\rss.png" />
+    <Content Include="Content\kartverket_logo.png" />
+    <Content Include="Content\logo_kartverket_norgedigitalt.png" />
+    <Content Include="Content\navbar.css" />
+    <Content Include="Content\searchbar.css" />
+    <Content Include="Content\statusIcons.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -293,6 +312,19 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="ApplicationInsights.config" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\MetaComp-Book.ttf" />
+    <Content Include="Content\fonts\MetaWeb-Book.eot" />
+    <Content Include="Content\fonts\MetaWeb-Book.woff" />
+    <Content Include="Content\fonts\statusicon.eot" />
+    <Content Include="Content\fonts\statusicon.ttf" />
+    <Content Include="Content\fonts\statusicon.woff" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -326,6 +358,7 @@
     <Content Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
+    <Content Include="Views\Shared\_NavbarPartial.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

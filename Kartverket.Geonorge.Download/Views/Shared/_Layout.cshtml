@@ -1,53 +1,103 @@
-﻿﻿@using Kartverket.Geonorge.Download.Helpers
+﻿@using Kartverket.Geonorge.Download.Helpers﻿
 <!DOCTYPE html>
-<html>
+<html class=" js flexbox no-flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg no-smil svgclippaths">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    <script type="text/javascript">
-        var appInsights=window.appInsights||function(config){
-            function s(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},r=document,f=window,e="script",o=r.createElement(e),i,u;for(o.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",r.getElementsByTagName(e)[0].parentNode.appendChild(o),t.cookie=r.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)s("track"+i.pop());return config.disableExceptionTracking||(i="onerror",s("_"+i),u=f[i],f[i]=function(config,r,f,e,o){var s=u&&u(config,r,f,e,o);return s!==!0&&t["_"+i](config,r,f,e,o),s}),t
-        }({
-            instrumentationKey:"8d74ec57-15d1-4ae4-98d5-2061cd402349"
-        });
-        
-        window.appInsights=appInsights;
-        appInsights.trackPageView();
-    </script>
-</head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Kartverket.Geonorge.Download", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Kartverket</p>
-            <p>Versjon @Html.ApplicationVersionNumber()</p>
-        </footer>
-    </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="geonorge-version" content="@Html.ApplicationVersionNumber()" />
+    @if (ViewBag.MetaDescription != null)
+    {
+        <meta name="description" content="@ViewBag.MetaDescription" />
+    }
+    <link rel="shortcut icon" type="image/x-icon" href="/Content/img/favicon.ico" />
+    <link rel="apple-touch-icon-precomposed" href="/Content/img/logo-graphic-512.png" />
 
+    <title>
+        @ViewBag.Title
+        @if (ViewBag.Title != null)
+        {
+            <text> - </text>
+        }
+        Download
+    </title>
+    @RenderSection("head", false)
+    @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/js")
+    @RenderSection("scripts", false)
+
+</head>
+
+<body class="geonorge-container prototype  geonorge">
+
+    <div id="logo-on-sm">
+        <img src="/Content/img/kvlogo_col.png" alt="Kartverkets logo" />
+    </div>
+
+    @Html.Partial("_NavbarPartial")
+
+    <div class="body-content">
+
+        <div class="container">
+
+            @if (TempData["success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["success"]
+                </div>
+            }
+            @if (TempData["failure"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["failure"]
+                </div>
+            }
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <!--<div id="loading">
+                    <img id="loading-image" src="/Content/img/loader.gif" alt="Laster..." />
+                </div>-->
+                @RenderBody()
+            </div>
+        </div>
+
+
+    </div>
+    <footer class="page-footer" role="contentinfo">
+        <div class="top-shadow">&nbsp;</div>
+
+        <div class="container padding-bottom">
+            <div class="row">
+
+                <div class="col-sm-3 col-xs-12">
+                    <div>
+                        <h1 class="heading">Kontakt oss</h1>
+                        <p>Tlf. 08700</p>
+                        <p>post@norgedigitalt.no</p>
+                    </div>
+                </div>
+                <div class="col-xs-12 visible-xs">&nbsp;</div>
+                <div class="col-sm-2 col-sm-offset-7 col-xs-12">
+                    <div class="">
+                        <p>© 2014 - Kartverket</p>
+                        <p>Versjon @Html.ApplicationVersionNumber()</p>
+                        <!--<p><a href="/Om-Kartverket/Personvern-og-cookies/"> Personvern og cookies </a></p>-->
+                        <!--
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            foreach (var c in System.Security.Claims.ClaimsPrincipal.Current.Claims)
+                            {
+                                <p>@c.Type = @c.Value</p>
+                            }
+                        }
+                        -->
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
