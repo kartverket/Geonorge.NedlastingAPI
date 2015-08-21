@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Formatting;
@@ -12,6 +13,8 @@ namespace Kartverket.Geonorge.Download
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(WebApiApplication));
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -20,6 +23,15 @@ namespace Kartverket.Geonorge.Download
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("json", "true", "application/json"));
+            log4net.Config.XmlConfigurator.Configure();
+            System.Web.Optimization.PreApplicationStartCode.Start();
+        }
+
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError().GetBaseException();
+
+            log.Error("App_Error", ex);
         }
     }
 }

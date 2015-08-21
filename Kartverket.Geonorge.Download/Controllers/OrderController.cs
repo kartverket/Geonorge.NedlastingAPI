@@ -11,21 +11,25 @@ namespace Kartverket.Geonorge.Download.Controllers
 {
     public class OrderController : ApiController
     {
-
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Post order
         /// </summary>
         [Route("api/order")]
         public OrderReceiptType Post(object order)
         {
-            OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
-
-            return new OrderService().Order(o);
+            try
+            { 
+                OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
+                return new OrderService().Order(o);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error API", ex);
+                return null;
+            }
         }
-        //public OrderReceiptType Post(OrderType order)
-        //{
-        //    return new OrderService().Order(order);
-        //}
+       
 
     }
 }
