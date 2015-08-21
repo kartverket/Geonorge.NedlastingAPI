@@ -16,5 +16,10 @@ namespace Kartverket.Geonorge.Download.Helpers
             string versionNumber = WebConfigurationManager.AppSettings["BuildVersionNumber"];
             return versionNumber;
         }
+
+        public static string GeonorgeUrl(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["GeonorgeUrl"];
+        }
     }
 }
