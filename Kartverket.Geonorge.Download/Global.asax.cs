@@ -24,7 +24,6 @@ namespace Kartverket.Geonorge.Download
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("json", "true", "application/json"));
             log4net.Config.XmlConfigurator.Configure();
-            System.Web.Optimization.PreApplicationStartCode.Start();
         }
 
         protected void Application_Error(Object sender, EventArgs e)
