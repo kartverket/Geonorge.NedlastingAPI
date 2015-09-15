@@ -293,6 +293,7 @@
     <Content Include="lib\LinqKit.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="robots.txt" />
     <Content Include="Scripts\ai.0.15.0-build12287.js" />
     <Content Include="Scripts\ai.0.15.0-build12287.min.js" />
     <Content Include="Scripts\bootstrap.js" />
