@@ -16,12 +16,13 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// Post order
         /// </summary>
         [Route("api/order")]
-        public OrderReceiptType Post(object order)
+        [HttpPost]
+        public OrderReceiptType Post(OrderType order)
         {
             try
             { 
-                OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
-                return new OrderService().Order(o);
+                //OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
+                return new OrderService().Order(order);
             }
             catch (Exception ex)
             {
