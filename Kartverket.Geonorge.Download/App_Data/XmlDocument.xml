@@ -505,10 +505,14 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.OrderController.Post(System.Object)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.OrderController.PostOrder(OrderType)">
             <summary>
-            Post order
+            Creates new order for data to download
             </summary>
+            <param name="order">OrderType model</param>
+            <returns>Orderreference or list of files to download</returns>
+            <response code="400">Bad request</response>
+            <response code="500">Internal Server Error</response>
         </member>
         <member name="T:AreaType">
             <remarks/>

@@ -6,27 +6,39 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
     public class OrderController : ApiController
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+      
         /// <summary>
-        /// Post order
+        /// Creates new order for data to download
         /// </summary>
+        /// <param name="order">OrderType model</param>
+        /// <returns>Orderreference or list of files to download</returns>
+        /// <response code="400">Bad request</response>
+        /// <response code="500">Internal Server Error</response>
         [Route("api/order")]
-        public OrderReceiptType Post(object order)
+        [HttpPost]
+        [ResponseType(typeof(OrderReceiptType))]
+        public IHttpActionResult PostOrder(OrderType order)
         {
             try
-            { 
-                OrderType o = Newtonsoft.Json.JsonConvert.DeserializeObject<OrderType>(order.ToString());
-                return new OrderService().Order(o);
+            {
+                OrderReceiptType orderrec = new OrderService().Order(order);
+                if (orderrec == null)
+                {
+                    return NotFound();
+                }
+                return Ok(orderrec);
             }
             catch (Exception ex)
             {
                 Log.Error("Error API", ex);
-                return null;
+                return InternalServerError(ex);  
             }
         }
        
