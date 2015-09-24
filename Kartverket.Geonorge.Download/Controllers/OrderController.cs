@@ -27,7 +27,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         public IHttpActionResult PostOrder(OrderType order)
         {
             try
-            {
+            { 
                 OrderReceiptType orderrec = new OrderService().Order(order);
                 if (orderrec == null)
                 {
