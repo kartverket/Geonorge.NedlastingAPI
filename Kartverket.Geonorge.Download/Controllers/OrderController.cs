@@ -18,7 +18,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// Creates new order for data to download
         /// </summary>
         /// <param name="order">OrderType model</param>
-        /// <returns>Orderreference or list of files to download</returns>
+        /// <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
         [Route("api/order")]
