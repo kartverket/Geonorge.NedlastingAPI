@@ -23,11 +23,27 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/download/0.5")]
 [System.Xml.Serialization.XmlRootAttribute("Area", Namespace="http://skjema.geonorge.no/SOSI/download/0.5", IsNullable=false)]
 public partial class AreaType {
-    
+
+    private string codeField;
+
     private string typeField;
     
     private string nameField;
-    
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+    public string code
+    {
+        get
+        {
+            return this.codeField;
+        }
+        set
+        {
+            this.codeField = value;
+        }
+    }
+
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string type {
@@ -369,7 +385,9 @@ public partial class OrderLineType {
     private FormatType[] formatsField;
     
     private string metadataUuidField;
-    
+
+    private string coordinatesField;
+
     private ProjectionType[] projectionsField;
     
     /// <remarks/>
@@ -406,7 +424,21 @@ public partial class OrderLineType {
             this.metadataUuidField = value;
         }
     }
-    
+
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+    public string coordinates
+    {
+        get
+        {
+            return this.coordinatesField;
+        }
+        set
+        {
+            this.coordinatesField = value;
+        }
+    }
+
     /// <remarks/>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("projection", IsNullable=false)]
