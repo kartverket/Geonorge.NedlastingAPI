@@ -11,6 +11,8 @@ namespace Kartverket.Geonorge.Download.Services
         List<AreaType> Areas = new List<AreaType>();
         List<ProjectionType> Projections = new List<ProjectionType>();
 
+        MemoryCacher memCacher = new MemoryCacher();
+
         public RegisterFetcher()
         {
             Areas = GetAreas();
@@ -19,42 +21,53 @@ namespace Kartverket.Geonorge.Download.Services
 
         public List<AreaType> GetAreas()
         {
+            var cache = memCacher.GetValue("areas");
+
             List<AreaType> areas = new List<AreaType>();
 
-            //fylke
-            string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer";
-            System.Net.WebClient c = new System.Net.WebClient();
-            c.Encoding = System.Text.Encoding.UTF8;
-            var data = c.DownloadString(url);
-            var response = Newtonsoft.Json.Linq.JObject.Parse(data);
-
-            var codeList = response["containeditems"];
-
-            foreach (var code in codeList)
+            if (cache != null)
             {
-                var codevalue = code["codevalue"].ToString();
-                var label = code["label"].ToString();
-
-                AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
-
-                areas.Add(fylke);
+                areas = cache as List<AreaType>;
             }
+            else { 
+                
+                //fylke
+                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer";
+                System.Net.WebClient c = new System.Net.WebClient();
+                c.Encoding = System.Text.Encoding.UTF8;
+                var data = c.DownloadString(url);
+                var response = Newtonsoft.Json.Linq.JObject.Parse(data);
 
-            //kommune
-            url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer";
-            data = c.DownloadString(url);
-            response = Newtonsoft.Json.Linq.JObject.Parse(data);
+                var codeList = response["containeditems"];
 
-            codeList = response["containeditems"];
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
 
-            foreach (var code in codeList)
-            {
-                var codevalue = code["codevalue"].ToString();
-                var label = code["label"].ToString();
+                    AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
 
-                AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
+                    areas.Add(fylke);
+                }
 
-                areas.Add(kommune);
+                //kommune
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer";
+                data = c.DownloadString(url);
+                response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
+
+                    AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
+
+                    areas.Add(kommune);
+                }
+
+                memCacher.Add("areas", areas, new DateTimeOffset(DateTime.Now.AddHours(1)));
             }
 
             return areas;
@@ -71,27 +84,38 @@ namespace Kartverket.Geonorge.Download.Services
 
         public List<ProjectionType> GetProjections()
         {
+            var cache = memCacher.GetValue("projections");
+
             List<ProjectionType> projections = new List<ProjectionType>();
 
-
-            string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/register/epsg-koder";
-            System.Net.WebClient c = new System.Net.WebClient();
-            c.Encoding = System.Text.Encoding.UTF8;
-            var data = c.DownloadString(url);
-            var response = Newtonsoft.Json.Linq.JObject.Parse(data);
-
-            var codeList = response["containeditems"];
-
-            foreach (var code in codeList)
+            if (cache != null)
             {
-                var codevalue = code["documentreference"].ToString();
-                string[] details = codevalue.Split('/');
-                string epsgcode = details[details.Length - 1];
-                var label = code["label"].ToString();
+                projections = cache as List<ProjectionType>;
+            }
+            else
+            {
 
-                ProjectionType projection = new ProjectionType { code = epsgcode, name = label, codespace = codevalue };
+                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/register/epsg-koder";
+                System.Net.WebClient c = new System.Net.WebClient();
+                c.Encoding = System.Text.Encoding.UTF8;
+                var data = c.DownloadString(url);
+                var response = Newtonsoft.Json.Linq.JObject.Parse(data);
 
-                projections.Add(projection);
+                var codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["documentreference"].ToString();
+                    string[] details = codevalue.Split('/');
+                    string epsgcode = details[details.Length - 1];
+                    var label = code["label"].ToString();
+
+                    ProjectionType projection = new ProjectionType { code = epsgcode, name = label, codespace = codevalue };
+
+                    projections.Add(projection);
+                }
+
+                memCacher.Add("projections", projections, new DateTimeOffset(DateTime.Now.AddHours(1)));
             }
 
             return projections;
