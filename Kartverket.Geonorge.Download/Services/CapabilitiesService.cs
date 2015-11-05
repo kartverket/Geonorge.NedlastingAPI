@@ -99,6 +99,7 @@ namespace Kartverket.Geonorge.Download.Services
             areas.Add(a1);
             }
 
+            areas = areas.OrderBy(o => o.type).ThenBy(n => n.name).ToList();
 
             return areas;
         }
