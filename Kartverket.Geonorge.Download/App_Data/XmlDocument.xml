@@ -517,6 +517,9 @@
         <member name="T:AreaType">
             <remarks/>
         </member>
+        <member name="P:AreaType.code">
+            <remarks/>
+        </member>
         <member name="P:AreaType.type">
             <remarks/>
         </member>
@@ -608,6 +611,9 @@
             <remarks/>
         </member>
         <member name="P:OrderLineType.metadataUuid">
+            <remarks/>
+        </member>
+        <member name="P:OrderLineType.coordinates">
             <remarks/>
         </member>
         <member name="P:OrderLineType.projections">

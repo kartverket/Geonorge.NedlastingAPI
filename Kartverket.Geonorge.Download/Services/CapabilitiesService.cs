@@ -11,6 +11,7 @@ namespace Kartverket.Geonorge.Download.Services
     public class CapabilitiesService
     {
         DownloadContext db = new DownloadContext();
+        RegisterFetcher register = new RegisterFetcher();
 
         public CapabilitiesService() 
         {
@@ -71,8 +72,8 @@ namespace Kartverket.Geonorge.Download.Services
 
                 ProjectionType p1 = new ProjectionType();
                 p1.code = projection.ToString();
-                p1.codespace = projection.ToString();
-                p1.name = projection.ToString();
+                p1.codespace = register.GetProjection(projection.ToString()).codespace;
+                p1.name = register.GetProjection(projection.ToString()).name;
 
                 projections.Add(p1);
             }
@@ -93,8 +94,8 @@ namespace Kartverket.Geonorge.Download.Services
             { 
             AreaType a1 = new AreaType();
             a1.type = area.inndeling;
-            a1.name = area.inndelingsverdi;
-
+            a1.code = area.inndelingsverdi;
+            a1.name = register.GetArea(a1.type, a1.code).name;
             areas.Add(a1);
             }
 

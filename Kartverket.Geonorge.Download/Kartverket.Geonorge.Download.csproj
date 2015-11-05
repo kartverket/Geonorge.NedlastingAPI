@@ -22,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <NuGetPackageImportStamp>8bad7edd</NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/b08e763f-d77e-48ab-b59c-1077af779a5c/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/Kartverket.Geonorge.Download</ApplicationInsightsResourceId>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,6 +78,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Cors">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
@@ -258,7 +260,9 @@
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
+    <Compile Include="Services\MemoryCacher.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\RegisterFetcher.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
