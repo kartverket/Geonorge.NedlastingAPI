@@ -49,14 +49,14 @@ namespace Kartverket.Geonorge.Download.Services
                 }
 
                 if (orderLine.areas != null) { 
-                    var areas = orderLine.areas.Select(a => new { name = a.name, type = a.type });
+                    var areas = orderLine.areas.Select(a => new { code = a.code, type = a.type });
                     
                     var predicate = PredicateBuilder.False<filliste>();
                     areas = areas.ToList();
 
                     foreach (var area in areas)
                     {
-                        predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.name);
+                        predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.code);
                     }
 
                     query = query.Where(predicate);
