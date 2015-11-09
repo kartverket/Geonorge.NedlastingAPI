@@ -14,7 +14,6 @@ namespace Kartverket.Geonorge.Download.Models
 
         public int referenceNumber { get; set; }
 
-        [Required]
         public string downloadUrl { get; set; }
 
         public string fileName { get; set; }

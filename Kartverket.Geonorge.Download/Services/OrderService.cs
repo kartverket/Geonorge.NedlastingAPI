@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 
 namespace Kartverket.Geonorge.Download.Services
@@ -72,9 +73,46 @@ namespace Kartverket.Geonorge.Download.Services
                     ft.name = file.filnavn;
                     fileList.Add(ft);
                 }
+
+                if (orderLine.coordinates != null && o.email != null && orderLine.projections != null)
+                {
+                    foreach (var projection in orderLine.projections)
+                    {
+                        GetTransformation(orderLine.metadataUuid, o.email, orderLine.coordinates, projection.code);
+
+                        FileType ft = new FileType();
+                        ft.downloadUrl = "";
+                        ft.name = "Resultatet fra valg i kartet sendes som egen epost.";
+                        fileList.Add(ft);
+                    }
+                }
+
             }
 
             return fileList.ToArray();
+        }
+
+        private async void GetTransformation(string metadataUuid, string email, string clippercoords, string output_epsg_code, string clipper_epsg_code = "32633")
+        {
+            string fmeklippeUrl = GetTransformationURL(metadataUuid);
+            if(fmeklippeUrl != null)
+            {
+                fmeklippeUrl = fmeklippeUrl + "CLIPPERCOORDS=" + clippercoords;
+                fmeklippeUrl = fmeklippeUrl + "&CLIPPER_EPSG_CODE=" + clipper_epsg_code;
+                fmeklippeUrl = fmeklippeUrl + "&OUTPUT_EPSG_CODE=" + output_epsg_code;
+                fmeklippeUrl = fmeklippeUrl + "&opt_servicemode=async";
+                fmeklippeUrl = fmeklippeUrl + "&opt_requesteremail=" + email;
+
+                var client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync(fmeklippeUrl);
+
+            }
+        }
+
+        private string GetTransformationURL(string metadataUuid)
+        {
+            var url = db.FileList.Where(ds => ds.Dataset1.metadataUuid == metadataUuid).Select(kl => kl.Dataset1.fmeklippeUrl).FirstOrDefault();
+            return url;
         }
 
         private string SaveOrder(OrderReceiptType receipt, string email)
