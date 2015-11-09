@@ -17,7 +17,6 @@ namespace Kartverket.Geonorge.Download.Models
         [Key]
         public int referenceNumber { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string email { get; set; }
 
