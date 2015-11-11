@@ -390,7 +390,9 @@ public partial class OrderLineType {
 
     private ProjectionType[] projectionsField;
     
-    /// <remarks/>
+    /// <summary>
+    /// Set selected areas for download
+    /// </summary>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("area", IsNullable=false)]
     public AreaType[] areas {
@@ -402,7 +404,9 @@ public partial class OrderLineType {
         }
     }
     
-    /// <remarks/>
+    /// <summary>
+    /// Set selected formats to download
+    /// </summary>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("format", IsNullable=false)]
     public FormatType[] formats {
@@ -414,7 +418,9 @@ public partial class OrderLineType {
         }
     }
     
-    /// <remarks/>
+    /// <summary>
+    /// A uniqe reference to datasett from kartkatalog.geonorge.no
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string metadataUuid {
         get {
@@ -425,7 +431,9 @@ public partial class OrderLineType {
         }
     }
 
-    /// <remarks/>
+    /// <summary>
+    /// If polygon is selected this includes coordinates
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string coordinates
     {
@@ -439,7 +447,9 @@ public partial class OrderLineType {
         }
     }
 
-    /// <remarks/>
+    /// <summary>
+    /// Selected projections to download
+    /// </summary>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("projection", IsNullable=false)]
     public ProjectionType[] projections {

@@ -605,19 +605,29 @@
             <remarks/>
         </member>
         <member name="P:OrderLineType.areas">
-            <remarks/>
+            <summary>
+            Set selected areas for download
+            </summary>
         </member>
         <member name="P:OrderLineType.formats">
-            <remarks/>
+            <summary>
+            Set selected formats to download
+            </summary>
         </member>
         <member name="P:OrderLineType.metadataUuid">
-            <remarks/>
+            <summary>
+            A uniqe reference to datasett from kartkatalog.geonorge.no
+            </summary>
         </member>
         <member name="P:OrderLineType.coordinates">
-            <remarks/>
+            <summary>
+            If polygon is selected this includes coordinates
+            </summary>
         </member>
         <member name="P:OrderLineType.projections">
-            <remarks/>
+            <summary>
+            Selected projections to download
+            </summary>
         </member>
         <member name="T:ProjectionType">
             <remarks/>

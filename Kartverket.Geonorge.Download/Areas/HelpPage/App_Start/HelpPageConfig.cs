@@ -36,6 +36,91 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             //// Uncomment the following to use the documentation from XML documentation file.
             config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
 
+            CapabilitiesType c = new CapabilitiesType();
+            c.supportsAreaSelection = true;
+            c.supportsFormatSelection = true;
+            c.supportsProjectionSelection = true;
+            c.supportsPolygonSelection = false;
+
+            LinkType l1 = new LinkType() { href = "http://download.dev.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/projection" };
+            LinkType l2 = new LinkType() { href = "http://download.dev.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/format" };
+            LinkType l3 = new LinkType() { href = "http://download.dev.geonorge.no/api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/area" };
+            LinkType l4 = new LinkType() { href = "http://download.dev.geonorge.no/api/order", rel = "http://rel.geonorge.no/download/order" };
+            List<LinkType> l = new List<LinkType>();
+            l.Add(l1);
+            l.Add(l2);
+            l.Add(l3);
+            l.Add(l4);
+            c._links = l.ToArray();
+
+            ProjectionType p1 = new ProjectionType() { code = "25832", name = "EUREF89 UTM sone 32, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25832" };
+            ProjectionType p2 = new ProjectionType() { code = "25833", name = "EUREF89 UTM sone 33, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25833" };
+            ProjectionType p3 = new ProjectionType() { code = "25835", name = "EUREF89 UTM sone 35, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25835" };
+            List<ProjectionType> p = new List<ProjectionType>();
+            p.Add(p1);
+            p.Add(p2);
+            p.Add(p3);
+
+            FormatType f1 = new FormatType() { version="4.5", name = "SOSI 4.5" };
+            FormatType f2 = new FormatType() { version = "3.2.1", name = "GML 3.2.1" };
+
+            List<FormatType> f = new List<FormatType>();
+            f.Add(f1);
+            f.Add(f2);
+
+            AreaType a1 = new AreaType() { name = "Akershus", code= "02", type= "fylke" };
+            AreaType a2 = new AreaType() { name = "Agdenes", code = "1622", type = "kommune" };
+            AreaType a3 = new AreaType() { name = "Landsdekkende", code = "0000", type = "landsdekkende" };
+
+            List<AreaType> a = new List<AreaType>();
+            a.Add(a1);
+            a.Add(a2);
+            a.Add(a3);
+
+            List<AreaType> at = new List<AreaType>();
+            at.Add(a1);
+
+            OrderType o = new OrderType();
+            o.email = "bruker@epost.no";
+            List<OrderLineType> ol = new List<OrderLineType>();
+            OrderLineType ol1 = new OrderLineType();
+            ol1.metadataUuid = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b";
+            ol1.projections = p.ToArray();
+            ol1.formats = f.ToArray();
+            ol1.areas = at.ToArray();
+            ol.Add(ol1);
+            o.orderLines = ol.ToArray();
+
+            OrderReceiptType or = new OrderReceiptType();
+            or.referenceNumber = "O-123456789";
+            FileType file = new FileType() { name = "AdministrativeEnheter_02_32.gml", downloadUrl="nedlastbarURI", fileSize = "12345" };
+            FileType file2 = new FileType() { name = "AdministrativeEnheter_02_32.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            FileType file3 = new FileType() { name = "AdministrativeEnheter_02_33.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            FileType file4 = new FileType() { name = "AdministrativeEnheter_02_33.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            FileType file5 = new FileType() { name = "AdministrativeEnheter_02_35.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            FileType file6 = new FileType() { name = "AdministrativeEnheter_02_35.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            List<FileType> ftl = new List<FileType>();
+            ftl.Add(file);
+            ftl.Add(file2);
+            ftl.Add(file3);
+            ftl.Add(file4);
+            ftl.Add(file5);
+            ftl.Add(file6);
+            or.files = ftl.ToArray();
+
+
+            config.SetSampleObjects(new Dictionary<Type, object>
+            {
+                {typeof(string), "sample string"},
+                {typeof(CapabilitiesType), c},
+                {typeof(List<AreaType>),a },
+                {typeof(OrderType),o },
+                {typeof(OrderReceiptType),or },
+                {typeof(List<ProjectionType>),p },
+                {typeof(List<FormatType>),f }
+            });
+
+
             //// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
             //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 
             //// formats by the available formatters.
@@ -66,7 +151,12 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             //// Uncomment the following to use "1234" directly as the request sample for media type "text/plain" on the controller named "Values"
             //// and action named "Put".
             //config.SetSampleRequest("1234", new MediaTypeHeaderValue("text/plain"), "Values", "Put");
+            config.SetSampleRequest("api/order", new MediaTypeHeaderValue("application/x-www-form-urlencoded"), "Order", "PostOrder");
 
+            config.SetSampleRequest("api/capabilities/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", new MediaTypeHeaderValue("application/json"), "Capabilities", "GetCapabilities");
+            config.SetSampleRequest("api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", new MediaTypeHeaderValue("application/json"), "Capabilities", "GetProjections");
+            config.SetSampleRequest("api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", new MediaTypeHeaderValue("application/json"), "Capabilities", "GetFormats");
+            config.SetSampleRequest("api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", new MediaTypeHeaderValue("application/json"), "Capabilities", "GetAreas");
             //// Uncomment the following to use the image on "../images/aspNetHome.png" directly as the response sample for media type "image/png"
             //// on the controller named "Values" and action named "Get" with parameter "id".
             //config.SetSampleResponse(new ImageSample("../images/aspNetHome.png"), new MediaTypeHeaderValue("image/png"), "Values", "Get", "id");

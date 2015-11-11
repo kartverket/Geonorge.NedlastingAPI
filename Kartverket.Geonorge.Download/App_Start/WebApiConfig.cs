@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using System.Web.Http.Cors;
 
 namespace Kartverket.Geonorge.Download
 {
@@ -12,7 +14,8 @@ namespace Kartverket.Geonorge.Download
     {
         public static void Register(HttpConfiguration config)
         {
-            config.EnableCors();
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
 
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
@@ -30,6 +33,7 @@ namespace Kartverket.Geonorge.Download
 
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new DefaultContractResolver();
             config.Formatters.XmlFormatter.UseXmlSerializer = true;
+            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         }
     }
