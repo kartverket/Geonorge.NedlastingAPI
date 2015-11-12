@@ -46,7 +46,7 @@ namespace Kartverket.Geonorge.Download.Services
 
                         FileType ft = new FileType();
                         ft.downloadUrl = "";
-                        ft.name = "Resultatet fra valg i kartet sendes som egen epost.";
+                        ft.name = "Resultatet fra valg i kartet for " + GetMetadataTitle(orderLine.metadataUuid) + " sendes som egen epost.";
                         fileList.Add(ft);
                     }
                 }
@@ -128,6 +128,12 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var url = db.FileList.Where(ds => ds.Dataset1.metadataUuid == metadataUuid).Select(kl => kl.Dataset1.fmeklippeUrl).ToList();
             return url.FirstOrDefault().ToString();
+        }
+
+        private string GetMetadataTitle(string metadataUuid)
+        {
+            var title = db.FileList.Where(ds => ds.Dataset1.metadataUuid == metadataUuid).Select(kl => kl.Dataset1.Tittel).ToList();
+            return title.FirstOrDefault().ToString();
         }
 
         private string SaveOrder(OrderReceiptType receipt, string email)
