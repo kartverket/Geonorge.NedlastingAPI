@@ -43,12 +43,13 @@ namespace Kartverket.Geonorge.Download.Services
                         Task t = Task.Run(() => {
                             GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, projection.code);
                         });
-
-                        FileType ft = new FileType();
-                        ft.downloadUrl = "";
-                        ft.name = "Resultatet fra valg i kartet for " + GetMetadataTitle(orderLine.metadataUuid) + " sendes som egen epost.";
-                        fileList.Add(ft);
                     }
+
+                    FileType ft = new FileType();
+                    ft.downloadUrl = "";
+                    ft.name = "Resultatet fra valg i kartet for " + GetMetadataTitle(orderLine.metadataUuid) + " sendes som egen epost.";
+                    fileList.Add(ft);
+
                 }
                 else
                 { 
