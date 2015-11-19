@@ -40,11 +40,11 @@ namespace Kartverket.Geonorge.Download.Services
 
                     foreach (var projection in orderLine.projections)
                     {
-                        foreach (var format in orderLine.formats)
+                        foreach( var format in orderLine.formats)
                         { 
                             Task t = Task.Run(() => {
-                            GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, format.name, projection.code);
-                        });
+                                GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, format.name , projection.code);
+                            });
                         }
                     }
 
@@ -103,7 +103,7 @@ namespace Kartverket.Geonorge.Download.Services
             return fileList.ToArray();
         }
 
-        private async void GetTransformation(string fmeklippeUrl, string metadataUuid, string email, string clippercoords, string output_epsg_code, string format, string clipper_epsg_code = "32633")
+        private async void GetTransformation(string fmeklippeUrl, string metadataUuid, string email, string clippercoords, string format, string output_epsg_code, string clipper_epsg_code = "32633")
         {
             
             if(fmeklippeUrl != null)
@@ -113,9 +113,9 @@ namespace Kartverket.Geonorge.Download.Services
                 urlparams = urlparams + "&CLIPPER_EPSG_CODE=" + clipper_epsg_code;
                 urlparams = urlparams + "&OUTPUT_EPSG_CODE=" + output_epsg_code;
                 urlparams = urlparams + "&opt_servicemode=async";
-                urlparams = urlparams + "&opt_requesteremail=" + email;
+                urlparams = urlparams + "&FORMAT=" + format;
+                urlparams = urlparams + "&EPOST=" + email;
                 urlparams = urlparams + "&UUID=" + metadataUuid;
-                urlparams = urlparams + "&format=" + format;
 
                 using (HttpClient client = new HttpClient())
                 {
