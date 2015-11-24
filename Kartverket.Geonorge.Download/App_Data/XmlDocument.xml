@@ -526,6 +526,24 @@
         <member name="P:AreaType.name">
             <remarks/>
         </member>
+        <member name="P:AreaType.projections">
+            <remarks/>
+        </member>
+        <member name="P:AreaType.formats">
+            <remarks/>
+        </member>
+        <member name="T:OrderAreaType">
+            <remarks/>
+        </member>
+        <member name="P:OrderAreaType.code">
+            <remarks/>
+        </member>
+        <member name="P:OrderAreaType.type">
+            <remarks/>
+        </member>
+        <member name="P:OrderAreaType.name">
+            <remarks/>
+        </member>
         <member name="T:LinkType">
             <remarks/>
         </member>
@@ -622,6 +640,11 @@
         <member name="P:OrderLineType.coordinates">
             <summary>
             If polygon is selected this includes coordinates
+            </summary>
+        </member>
+        <member name="P:OrderLineType.coordinatesystem">
+            <summary>
+            If polygon is selected this includes coordinate system
             </summary>
         </member>
         <member name="P:OrderLineType.projections">

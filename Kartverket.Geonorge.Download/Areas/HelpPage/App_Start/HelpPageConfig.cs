@@ -69,16 +69,38 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             f.Add(f2);
 
             AreaType a1 = new AreaType() { name = "Akershus", code= "02", type= "fylke" };
+            List<ProjectionType> a1P = new List<ProjectionType>();
+            a1P.Add(p1);
+            a1.projections = a1P.ToArray();
+            List<FormatType> a1F = new List<FormatType>();
+            a1F.Add(f1);
+            a1.formats = a1F.ToArray();
+
             AreaType a2 = new AreaType() { name = "Agdenes", code = "1622", type = "kommune" };
+            List<ProjectionType> a2P = new List<ProjectionType>();
+            a2P.Add(p1);
+            a2P.Add(p2);
+            a2.projections = a2P.ToArray();
+            List<FormatType> a2F = new List<FormatType>();
+            a2F.Add(f2);
+            a2.formats = a2F.ToArray();
+
             AreaType a3 = new AreaType() { name = "Landsdekkende", code = "0000", type = "landsdekkende" };
+            List<ProjectionType> a3P = new List<ProjectionType>();
+            a3P.Add(p2);
+            a3.projections = a3P.ToArray();
+            List<FormatType> a3F = new List<FormatType>();
+            a3F.Add(f1);
+            a3F.Add(f2);
+            a3.formats = a3F.ToArray();
 
             List<AreaType> a = new List<AreaType>();
             a.Add(a1);
             a.Add(a2);
             a.Add(a3);
 
-            List<AreaType> at = new List<AreaType>();
-            at.Add(a1);
+            List<OrderAreaType> at = new List<OrderAreaType>();
+            at.Add(new OrderAreaType() { name = a1.name, code = a1.code, type = a1.type });
 
             OrderType o = new OrderType();
             o.email = "bruker@epost.no";

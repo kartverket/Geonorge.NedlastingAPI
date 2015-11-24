@@ -58,15 +58,15 @@ namespace Kartverket.Geonorge.Download.Controllers
         [Route("api/codelists/area/{metadataUuid}")]
         public List<AreaType> GetAreas(string metadataUuid)
         {
-            try
-            {
+            //try
+            //{
                 return new CapabilitiesService().GetAreas(metadataUuid);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error API", ex);
-                return null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error("Error API", ex);
+            //    return null;
+            //}
         }
 
         /// <summary>

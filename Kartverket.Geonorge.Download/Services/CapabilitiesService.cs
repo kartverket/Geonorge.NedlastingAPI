@@ -86,11 +86,11 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var areasQuery = (from p in db.FileList
                               where p.Dataset1.metadataUuid == metadataUuid
-                              select new { p.inndeling, p.inndelingsverdi }).Distinct();
+                              select new { p.inndeling, p.inndelingsverdi, p.projeksjon, p.format }).Distinct().ToList() ;
 
             List<AreaType> areas = new List<AreaType>();
 
-            foreach (var area in areasQuery)
+            foreach (var area in areasQuery.Select(a => new { a.inndeling, a.inndelingsverdi }).Distinct() )
             { 
             AreaType a1 = new AreaType();
             a1.type = area.inndeling;
@@ -100,6 +100,39 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             areas = areas.OrderBy(o => o.type).ThenBy(n => n.name).ToList();
+
+            for (int i = 0; i < areas.Count(); i++)
+            {
+
+                string type = areas[i].type;
+                string code = areas[i].code;
+
+
+                List<ProjectionType> projections = new List<ProjectionType>();
+
+                foreach (var data in areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code).Select(a => new { a.projeksjon }).Distinct())
+                {
+                    projections.Add(new ProjectionType
+                    {
+                        code = data.projeksjon,
+                        codespace = register.GetProjection(data.projeksjon).codespace,
+                        name = register.GetProjection(data.projeksjon).name
+                    });
+                }
+
+                areas[i].projections = projections.ToArray();
+
+                List<FormatType> formats = new List<FormatType>();
+
+
+                foreach (var data in areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code).Select(a => new { a.format }).Distinct())
+                {
+                    formats.Add(new FormatType { name = data.format });
+                }
+
+                areas[i].formats = formats.ToArray();
+
+            }
 
             return areas;
         }
