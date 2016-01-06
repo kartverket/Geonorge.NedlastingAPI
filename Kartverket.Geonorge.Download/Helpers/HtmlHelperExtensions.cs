@@ -25,5 +25,9 @@ namespace Kartverket.Geonorge.Download.Helpers
         {
             return WebConfigurationManager.AppSettings["KartkatalogenUrl"];
         }
+        public static string EnvironmentName(this HtmlHelper helper)
+        {
+            return WebConfigurationManager.AppSettings["EnvironmentName"];
+        }
     }
 }
