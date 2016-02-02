@@ -37,13 +37,16 @@ namespace Kartverket.Geonorge.Download.Services
                 if (orderLine.coordinates != null && o.email != null && orderLine.projections != null)
                 {
                     string fmeklippeUrl = GetTransformationURL(orderLine.metadataUuid);
+                    string input_epsg_code = "32633";
+                    if (!string.IsNullOrEmpty(orderLine.coordinatesystem))
+                        input_epsg_code = orderLine.coordinatesystem;
 
                     foreach (var projection in orderLine.projections)
                     {
                         foreach( var format in orderLine.formats)
                         { 
                             Task t = Task.Run(() => {
-                                GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, format.name , projection.code);
+                                GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, format.name , projection.code, input_epsg_code);
                             });
                         }
                     }
@@ -103,7 +106,7 @@ namespace Kartverket.Geonorge.Download.Services
             return fileList.ToArray();
         }
 
-        private async void GetTransformation(string fmeklippeUrl, string metadataUuid, string email, string clippercoords, string format, string output_epsg_code, string clipper_epsg_code = "32633")
+        private async void GetTransformation(string fmeklippeUrl, string metadataUuid, string email, string clippercoords, string format, string output_epsg_code, string clipper_epsg_code)
         {
             
             if(fmeklippeUrl != null)

@@ -519,105 +519,153 @@
         </member>
         <member name="P:AreaType.code">
             <remarks/>
+            <summary>
+            The areacode
+            </summary>
         </member>
         <member name="P:AreaType.type">
             <remarks/>
+            <summary>
+            The type of area ex. municipality
+            </summary>
         </member>
         <member name="P:AreaType.name">
             <remarks/>
+            <summary>
+            The name of the area
+            </summary>
         </member>
         <member name="P:AreaType.projections">
             <remarks/>
+            <summary>
+            The projections available for this area
+            </summary>
         </member>
         <member name="P:AreaType.formats">
             <remarks/>
+            <summary>
+            The formats available for this area
+            </summary>
         </member>
         <member name="T:OrderAreaType">
             <remarks/>
         </member>
         <member name="P:OrderAreaType.code">
             <remarks/>
+            <summary>
+            The areacode
+            </summary>
         </member>
         <member name="P:OrderAreaType.type">
             <remarks/>
+            <summary>
+            The type of area ex. municipality
+            </summary>
         </member>
         <member name="P:OrderAreaType.name">
             <remarks/>
+            <summary>
+            The name of the area
+            </summary>
         </member>
         <member name="T:LinkType">
             <remarks/>
         </member>
         <member name="P:LinkType.href">
             <remarks/>
+            <summary>
+            Announce where to get the resource
+            </summary>
         </member>
         <member name="P:LinkType.rel">
             <remarks/>
-        </member>
-        <member name="P:LinkType.templated">
-            <remarks/>
-        </member>
-        <member name="P:LinkType.templatedSpecified">
-            <remarks/>
-        </member>
-        <member name="P:LinkType.type">
-            <remarks/>
-        </member>
-        <member name="P:LinkType.deprecation">
-            <remarks/>
-        </member>
-        <member name="P:LinkType.name">
-            <remarks/>
-        </member>
-        <member name="P:LinkType.title">
-            <remarks/>
+            <summary>
+            Announce the relation/key of the resource
+            </summary>
         </member>
         <member name="T:CapabilitiesType">
             <remarks/>
         </member>
         <member name="P:CapabilitiesType.supportsProjectionSelection">
             <remarks/>
+            <summary>
+            Indicates if the service supports projection selection
+            </summary>
         </member>
         <member name="P:CapabilitiesType.supportsFormatSelection">
             <remarks/>
+            <summary>
+            Indicates if the service supports format selection
+            </summary>
         </member>
         <member name="P:CapabilitiesType.supportsPolygonSelection">
             <remarks/>
+            <summary>
+            Indicates if the service supports polygon selection
+            </summary>
         </member>
         <member name="P:CapabilitiesType.supportsAreaSelection">
             <remarks/>
+            <summary>
+            Indicates if the service supports area selection
+            </summary>
         </member>
         <member name="P:CapabilitiesType._links">
             <remarks/>
+            <summary>
+            Describes where the rest of the resources are found
+            </summary>
         </member>
         <member name="T:FileType">
             <remarks/>
         </member>
         <member name="P:FileType.downloadUrl">
             <remarks/>
+            <summary>
+            Url to download file
+            </summary>
         </member>
         <member name="P:FileType.fileSize">
             <remarks/>
+            <summary>
+            Not available
+            </summary>
         </member>
         <member name="P:FileType.name">
             <remarks/>
+            <summary>
+            The filename
+            </summary>
         </member>
         <member name="T:FormatType">
             <remarks/>
         </member>
         <member name="P:FormatType.name">
             <remarks/>
+            <summary>
+            The name of the format
+            </summary>
         </member>
         <member name="P:FormatType.version">
             <remarks/>
+            <summary>
+            Version info
+            </summary>
         </member>
         <member name="T:OrderType">
             <remarks/>
         </member>
         <member name="P:OrderType.email">
             <remarks/>
+            <summary>
+            The email of the person that wish to download
+            </summary>
         </member>
         <member name="P:OrderType.orderLines">
             <remarks/>
+            <summary>
+            The selection of metadata including areas, projections and formats to download.
+            </summary>
         </member>
         <member name="T:OrderLineType">
             <remarks/>
@@ -639,12 +687,12 @@
         </member>
         <member name="P:OrderLineType.coordinates">
             <summary>
-            If polygon is selected this includes coordinates
+            If polygon is selected this includes coordinates. Values are separated by space.
             </summary>
         </member>
         <member name="P:OrderLineType.coordinatesystem">
             <summary>
-            If polygon is selected this includes coordinate system
+            If polygon is selected this includes coordinate system. Default epsg code is 32633
             </summary>
         </member>
         <member name="P:OrderLineType.projections">
@@ -657,21 +705,36 @@
         </member>
         <member name="P:ProjectionType.code">
             <remarks/>
+            <summary>
+            The identifier code (epsg) of the projection
+            </summary>
         </member>
         <member name="P:ProjectionType.name">
             <remarks/>
+            <summary>
+            The name (coordinate system) of the projection
+            </summary>
         </member>
         <member name="P:ProjectionType.codespace">
             <remarks/>
+            <summary>
+            The codespace reference. Not required for OrderLineType
+            </summary>
         </member>
         <member name="T:OrderReceiptType">
             <remarks/>
         </member>
         <member name="P:OrderReceiptType.referenceNumber">
             <remarks/>
+            <summary>
+            The order number generated by the system
+            </summary>
         </member>
         <member name="P:OrderReceiptType.files">
             <remarks/>
+            <summary>
+            The list of files returned from order. Polygon selection is sendt by email with link to download.
+            </summary>
         </member>
         <member name="T:LinkListeType">
             <remarks/>

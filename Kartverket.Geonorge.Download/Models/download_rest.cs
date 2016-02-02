@@ -35,6 +35,9 @@ public partial class AreaType {
     private FormatType[] formatsField;
 
     /// <remarks/>
+    /// <summary>
+    /// The areacode
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string code
     {
@@ -49,6 +52,9 @@ public partial class AreaType {
     }
 
     /// <remarks/>
+    /// <summary>
+    /// The type of area ex. municipality
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string type {
         get {
@@ -58,8 +64,11 @@ public partial class AreaType {
             this.typeField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The name of the area
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string name {
         get {
@@ -71,6 +80,9 @@ public partial class AreaType {
     }
 
     /// <remarks/>
+    /// <summary>
+    /// The projections available for this area
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public ProjectionType[] projections
     {
@@ -85,6 +97,9 @@ public partial class AreaType {
     }
 
     /// <remarks/>
+    /// <summary>
+    /// The formats available for this area
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public FormatType[] formats
     {
@@ -117,6 +132,9 @@ public partial class OrderAreaType
     private string nameField;
 
     /// <remarks/>
+    /// <summary>
+    /// The areacode
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string code
     {
@@ -131,6 +149,9 @@ public partial class OrderAreaType
     }
 
     /// <remarks/>
+    /// <summary>
+    /// The type of area ex. municipality
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string type
     {
@@ -145,6 +166,9 @@ public partial class OrderAreaType
     }
 
     /// <remarks/>
+    /// <summary>
+    /// The name of the area
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string name
     {
@@ -183,8 +207,11 @@ public partial class LinkType {
     private string nameField;
     
     private string titleField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Announce where to get the resource
+    /// </summary>
     public string href {
         get {
             return this.hrefField;
@@ -193,8 +220,11 @@ public partial class LinkType {
             this.hrefField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Announce the relation/key of the resource
+    /// </summary>
     public string rel {
         get {
             return this.relField;
@@ -203,67 +233,85 @@ public partial class LinkType {
             this.relField = value;
         }
     }
+
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //public bool templated {
+    //    get {
+    //        return this.templatedField;
+    //    }
+    //    set {
+    //        this.templatedField = value;
+    //    }
+    //}
+
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //[System.Xml.Serialization.XmlIgnoreAttribute()]
+    //public bool templatedSpecified {
+    //    get {
+    //        return this.templatedFieldSpecified;
+    //    }
+    //    set {
+    //        this.templatedFieldSpecified = value;
+    //    }
+    //}
+
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //public string type {
+    //    get {
+    //        return this.typeField;
+    //    }
+    //    set {
+    //        this.typeField = value;
+    //    }
+    //}
+
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //public string deprecation {
+    //    get {
+    //        return this.deprecationField;
+    //    }
+    //    set {
+    //        this.deprecationField = value;
+    //    }
+    //}
+
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //public string name {
+    //    get {
+    //        return this.nameField;
+    //    }
+    //    set {
+    //        this.nameField = value;
+    //    }
+    //}
     
-    /// <remarks/>
-    public bool templated {
-        get {
-            return this.templatedField;
-        }
-        set {
-            this.templatedField = value;
-        }
-    }
-    
-    /// <remarks/>
-    [System.Xml.Serialization.XmlIgnoreAttribute()]
-    public bool templatedSpecified {
-        get {
-            return this.templatedFieldSpecified;
-        }
-        set {
-            this.templatedFieldSpecified = value;
-        }
-    }
-    
-    /// <remarks/>
-    public string type {
-        get {
-            return this.typeField;
-        }
-        set {
-            this.typeField = value;
-        }
-    }
-    
-    /// <remarks/>
-    public string deprecation {
-        get {
-            return this.deprecationField;
-        }
-        set {
-            this.deprecationField = value;
-        }
-    }
-    
-    /// <remarks/>
-    public string name {
-        get {
-            return this.nameField;
-        }
-        set {
-            this.nameField = value;
-        }
-    }
-    
-    /// <remarks/>
-    public string title {
-        get {
-            return this.titleField;
-        }
-        set {
-            this.titleField = value;
-        }
-    }
+    ///// <remarks/>
+    ///// <summary>
+    ///// Not in use
+    ///// </summary>
+    //public string title {
+    //    get {
+    //        return this.titleField;
+    //    }
+    //    set {
+    //        this.titleField = value;
+    //    }
+    //}
 }
 
 /// <remarks/>
@@ -284,8 +332,11 @@ public partial class CapabilitiesType {
     private System.Nullable<bool> supportsAreaSelectionField;
     
     private LinkType[] _linksField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Indicates if the service supports projection selection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public System.Nullable<bool> supportsProjectionSelection {
         get {
@@ -295,8 +346,11 @@ public partial class CapabilitiesType {
             this.supportsProjectionSelectionField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Indicates if the service supports format selection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public System.Nullable<bool> supportsFormatSelection {
         get {
@@ -306,8 +360,11 @@ public partial class CapabilitiesType {
             this.supportsFormatSelectionField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Indicates if the service supports polygon selection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public System.Nullable<bool> supportsPolygonSelection {
         get {
@@ -317,8 +374,11 @@ public partial class CapabilitiesType {
             this.supportsPolygonSelectionField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Indicates if the service supports area selection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public System.Nullable<bool> supportsAreaSelection {
         get {
@@ -328,8 +388,11 @@ public partial class CapabilitiesType {
             this.supportsAreaSelectionField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Describes where the rest of the resources are found
+    /// </summary>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
     public LinkType[] _links {
@@ -356,8 +419,11 @@ public partial class FileType {
     private string fileSizeField;
     
     private string nameField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Url to download file
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string downloadUrl {
         get {
@@ -367,8 +433,11 @@ public partial class FileType {
             this.downloadUrlField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Not available
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(DataType="integer", IsNullable=true)]
     public string fileSize {
         get {
@@ -378,8 +447,11 @@ public partial class FileType {
             this.fileSizeField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The filename
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string name {
         get {
@@ -403,8 +475,11 @@ public partial class FormatType {
     private string nameField;
     
     private string versionField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The name of the format
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string name {
         get {
@@ -414,8 +489,11 @@ public partial class FormatType {
             this.nameField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// Version info
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string version {
         get {
@@ -439,8 +517,11 @@ public partial class OrderType {
     private string emailField;
     
     private OrderLineType[] orderLinesField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The email of the person that wish to download
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string email {
         get {
@@ -450,8 +531,11 @@ public partial class OrderType {
             this.emailField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The selection of metadata including areas, projections and formats to download.
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public OrderLineType[] orderLines {
         get {
@@ -526,7 +610,7 @@ public partial class OrderLineType {
     }
 
     /// <summary>
-    /// If polygon is selected this includes coordinates
+    /// If polygon is selected this includes coordinates. Values are separated by space.
     /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string coordinates
@@ -542,7 +626,7 @@ public partial class OrderLineType {
     }
 
     /// <summary>
-    /// If polygon is selected this includes coordinate system
+    /// If polygon is selected this includes coordinate system. Default epsg code is 32633
     /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
     public string coordinatesystem
@@ -586,8 +670,11 @@ public partial class ProjectionType {
     private string nameField;
     
     private string codespaceField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The identifier code (epsg) of the projection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string code {
         get {
@@ -597,8 +684,11 @@ public partial class ProjectionType {
             this.codeField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The name (coordinate system) of the projection
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string name {
         get {
@@ -608,8 +698,11 @@ public partial class ProjectionType {
             this.nameField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The codespace reference. Not required for OrderLineType
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string codespace {
         get {
@@ -633,8 +726,11 @@ public partial class OrderReceiptType {
     private string referenceNumberField;
     
     private FileType[] filesField;
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The order number generated by the system
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
     public string referenceNumber {
         get {
@@ -644,8 +740,11 @@ public partial class OrderReceiptType {
             this.referenceNumberField = value;
         }
     }
-    
+
     /// <remarks/>
+    /// <summary>
+    /// The list of files returned from order. Polygon selection is sendt by email with link to download.
+    /// </summary>
     [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
     [System.Xml.Serialization.XmlArrayItemAttribute("file", IsNullable=false)]
     public FileType[] files {
