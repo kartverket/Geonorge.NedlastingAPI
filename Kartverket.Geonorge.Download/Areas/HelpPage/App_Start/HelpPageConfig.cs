@@ -61,8 +61,8 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             p.Add(p2);
             p.Add(p3);
 
-            FormatType f1 = new FormatType() { version="4.5", name = "SOSI 4.5" };
-            FormatType f2 = new FormatType() { version = "3.2.1", name = "GML 3.2.1" };
+            FormatType f1 = new FormatType() { version="4.5", name = "SOSI" };
+            FormatType f2 = new FormatType() { version = "3.2.1", name = "GML" };
 
             List<FormatType> f = new List<FormatType>();
             f.Add(f1);
