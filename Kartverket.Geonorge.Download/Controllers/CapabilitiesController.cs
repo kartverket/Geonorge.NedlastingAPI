@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Configuration;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
@@ -15,6 +16,16 @@ namespace Kartverket.Geonorge.Download.Controllers
     public class CapabilitiesController : ApiController
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        [HttpGet]
+        [Route("api/capabilities/")]
+        public IHttpActionResult Index()
+        {
+            System.Uri uri = new System.Uri(WebConfigurationManager.AppSettings["DownloadUrl"] +  "Help/Api/GET-api-capabilities-metadataUuid");
+            return Redirect(uri);
+
+        }
+
         /// <summary>
         /// Get Capabilities from download service
         /// </summary>
