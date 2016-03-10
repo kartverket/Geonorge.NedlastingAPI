@@ -3,6 +3,7 @@
 @model ModelDescription
 @section breadcrumb {
     <li>@Html.ActionLink("API hjelp", "Index")</li>
+    <li>@Model.Name</li>
 }
 <link type="text/css" href="~/Areas/HelpPage/HelpPage.css" rel="stylesheet" />
 <div id="body" class="help-page">
