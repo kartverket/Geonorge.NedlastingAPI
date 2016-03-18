@@ -30,7 +30,9 @@ namespace Kartverket.Geonorge.Download.Models
 
         public bool? supportsProjectionSelection { get; set; }
 
-        public string fmeklippeUrl { get; set; }       
+        public string fmeklippeUrl { get; set; }
+
+        public string mapSelectionLayer { get; set; }
 
         public virtual ICollection<filliste> filliste { get; set; }
     }

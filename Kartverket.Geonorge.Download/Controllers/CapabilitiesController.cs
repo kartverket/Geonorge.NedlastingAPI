@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Configuration;
+using System.Web.Http.Description;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
@@ -17,6 +18,7 @@ namespace Kartverket.Geonorge.Download.Controllers
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
         [Route("api/capabilities/")]
         public IHttpActionResult Index()

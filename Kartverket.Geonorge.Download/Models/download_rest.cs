@@ -330,7 +330,9 @@ public partial class CapabilitiesType {
     private System.Nullable<bool> supportsPolygonSelectionField;
     
     private System.Nullable<bool> supportsAreaSelectionField;
-    
+
+    private string mapSelectionLayerField;
+
     private LinkType[] _linksField;
 
     /// <remarks/>
@@ -386,6 +388,23 @@ public partial class CapabilitiesType {
         }
         set {
             this.supportsAreaSelectionField = value;
+        }
+    }
+
+    /// <remarks/>
+    /// <summary>
+    /// Reference to selection layer to show in map
+    /// </summary>
+    [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
+    public string mapSelectionLayer
+    {
+        get
+        {
+            return this.mapSelectionLayerField;
+        }
+        set
+        {
+            this.mapSelectionLayerField = value;
         }
     }
 

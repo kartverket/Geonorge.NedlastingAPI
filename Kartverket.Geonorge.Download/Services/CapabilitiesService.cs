@@ -30,6 +30,7 @@ namespace Kartverket.Geonorge.Download.Services
             capabilities.supportsFormatSelection = capability.supportsFormatSelection;
             capabilities.supportsPolygonSelection = capability.supportsPolygonSelection;
             capabilities.supportsProjectionSelection = capability.supportsProjectionSelection;
+            capabilities.mapSelectionLayer = capability.mapSelectionLayer;
 
             List<LinkType> links = new List<LinkType>();
 

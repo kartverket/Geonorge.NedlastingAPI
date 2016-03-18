@@ -610,6 +610,12 @@
             Indicates if the service supports area selection
             </summary>
         </member>
+        <member name="P:CapabilitiesType.mapSelectionLayer">
+            <remarks/>
+            <summary>
+            Reference to selection layer to show in map
+            </summary>
+        </member>
         <member name="P:CapabilitiesType._links">
             <remarks/>
             <summary>
