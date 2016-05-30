@@ -1,3 +1,4 @@
+/*
 .help-page h1,
 .help-page .h1,
 .help-page h2,
@@ -10,7 +11,7 @@
 .help-page-table p {
     font-family: "Segoe UI Light", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
-
+*/
 .help-page pre.wrapped {
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
@@ -22,7 +23,7 @@
     margin-top: 20px;
     padding: 0 10px;
     color: #525252;
-    background: #EFDCA9; 
+    background: #EFDCA9;
     border: 1px solid #CCCCCC;
 }
 
@@ -34,30 +35,30 @@
     border-top: 1px solid #D4D4D4;
 }
 
-.help-page-table th {
-    text-align: left;
-    font-weight: bold;
-    border-bottom: 1px solid #D4D4D4;
-    padding: 5px 6px 5px 6px;
-}
+    .help-page-table th {
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 1px solid #D4D4D4;
+        padding: 5px 6px 5px 6px;
+    }
 
-.help-page-table td {
-    border-bottom: 1px solid #D4D4D4;
-    padding: 10px 8px 10px 8px;
-    vertical-align: top;
-}
+    .help-page-table td {
+        border-bottom: 1px solid #D4D4D4;
+        padding: 10px 8px 10px 8px;
+        vertical-align: top;
+    }
 
-.help-page-table pre,
-.help-page-table p {
-    margin: 0px;
-    padding: 0px;
-    font-family: inherit;
-    font-size: 100%;
-}
+    .help-page-table pre,
+    .help-page-table p {
+        margin: 0px;
+        padding: 0px;
+        font-family: inherit;
+        font-size: 100%;
+    }
 
-.help-page-table tbody tr:hover td {
-    background-color: #F3F3F3;
-}
+    .help-page-table tbody tr:hover td {
+        background-color: #F3F3F3;
+    }
 
 .help-page a:hover {
     background-color: transparent;
@@ -121,7 +122,7 @@
 .help-page .h3 {
     font-size: 20px;
 }
-
+/*
 #body.help-page {
     font-size: 14px;
     line-height: 143%;
@@ -132,3 +133,4 @@
     color: #0000EE;
     text-decoration: none;
 }
+*/

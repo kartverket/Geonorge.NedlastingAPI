@@ -24,16 +24,19 @@
     <link href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,700" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Raleway:400,100,300,500,600,700" rel="stylesheet" type="text/css">
     <!-- Stylesheets -->
-    @Styles.Render(@Html.KartkatalogenUrl() + "Content/kartkatalog-styles")
+    @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
     <!-- Scripts -->
-    @Scripts.Render(@Html.KartkatalogenUrl() + "bundles/kartkatalog-scripts")
+    <script>
+        var applicationEnvironment = '@Html.EnvironmentName()';
+    </script>
+
+    @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
 
 </head>
 
 <body class="geonorge-container prototype  geonorge ng-scope" ng-app="geonorge">
 
-    @Html.Partial("_SharedMenu")
-
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_SharedMenu.min.cshtml")
     <div class="body-content">
         <div class="container container-breadcrumbs" id="navTabCont">
             <ul class="breadcrumbs col-md-12">
