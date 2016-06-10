@@ -12,6 +12,7 @@ namespace Kartverket.Geonorge.Download.Services
 {
     public class OrderService
     {
+        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         DownloadContext db = new DownloadContext();
 
         public OrderService() 
@@ -122,6 +123,7 @@ namespace Kartverket.Geonorge.Download.Services
 
                 using (HttpClient client = new HttpClient())
                 {
+                    Log.Info("Start sending to fmeklippeUrl: " + fmeklippeUrl + urlparams);
                     using (HttpResponseMessage response = await client.GetAsync(fmeklippeUrl + urlparams))
 
                     using (HttpContent content = response.Content)
