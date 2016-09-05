@@ -270,29 +270,20 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_222222_256x240.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\chosen-sprite%402x.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\chosen-sprite.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_444444_256x240.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_454545_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_555555_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_777620_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_777777_256x240.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_cc0000_256x240.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\main.css" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\main.min.css" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\vendor.css" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\vendor.min.css" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\vendorfonts.css" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\css\vendorfonts.min.css" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.svg" />
@@ -300,14 +291,14 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\arrow-select-orange.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\chevron-down.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\chevron-up.svg" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\geonorge.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\gif\gif_loading-01.gif" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\kartverket.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\kvlogo_col.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\loader.gif" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\lock.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\opendata.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\Dot_ffffff_8px-01.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\geonorge.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\kartverket.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-down.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-right.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-up.svg" />
@@ -317,9 +308,9 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\Arrow_968c83_12px_mobile.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\breadcrumb-arrow.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dekningskart.svg" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\ekternlink-disabled.svg" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\ekternlink-white.svg" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\ekternlink.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-disabled.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-white.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\external_link_3867c8_12px-01.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\external_link_ffffff_12px-01.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\geonorge_devlogo.svg" />
@@ -369,6 +360,8 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\vendor.min.js" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_autoCompleteRow.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_autoCompleteRow.min.html" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.html" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.min.html" />
     <Content Include="Global.asax" />
@@ -428,6 +421,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bower_components\kartverket-felleskomponenter\.bower.json" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\702ZOKiLJc3WVjuplzInF5uFdDttMLvmWuJdhhgs.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.woff" />
@@ -437,9 +431,20 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\I4k9un7TZVWzRVT-T8y3USBnSvpkopQaUR-2r7iU.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\JXh38I15wypJXxuGMBp0EAVxt0G0biEntp43Qt6E.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\KeOuBrn4kERxqtaUH3aCWcynf_cDxXwCLxiixG1c.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\lAoFXXQEzZoMSUteGWKCWcynf_cDxXwCLxiixG1c.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\MzqLaYbbbCL9X6EvaIy3USBnSvpkopQaUR-2r7iU.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\oNo9fC8O2RDydKj12by3USBnSvpkopQaUR-2r7iU.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.eot" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.woff" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\tzj9b56b8RgXW8FAriS3USBnSvpkopQaUR-2r7iU.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\Y3_3JNqUVRAQQRNVteQ.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\_ySUJH_bn48VBG8sNSonF5uFdDttMLvmWuJdhhgs.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.cshtml" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\bower.json" />

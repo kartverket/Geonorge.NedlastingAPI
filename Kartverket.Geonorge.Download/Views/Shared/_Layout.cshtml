@@ -20,14 +20,12 @@
         }
         Nedlasting
     </title>
-    <!-- Fonts -->
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,700" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Raleway:400,100,300,500,600,700" rel="stylesheet" type="text/css">
     <!-- Stylesheets -->
     @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
     <!-- Scripts -->
     <script>
         var applicationEnvironment = '@Html.EnvironmentName()';
+        var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
     </script>
 
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
@@ -69,40 +67,6 @@
         </div>
 
     </div>
-    <footer class="page-footer">
-        <div class="container container-footer">
-            <div>
-                <div class="block editorialblock col-md-12 col-lg-4  ">
-
-                    <p><img alt="" src="@Html.KartkatalogenUrl()Content/img/geonorge.png" height="87" width="381" /></p>
-                    <small>Versjon @Html.ApplicationVersionNumber()</small>
-
-                    <ul class="editorialblock-list-item"></ul>
-                </div><div class="block editorialblock col-md-12 col-lg-4  ">
-
-                    <h2>Om nettstedet:</h2>
-
-                    <ul class="editorialblock-list-item">
-                        <li>
-                            <a href="@Html.GeonorgeUrl()informasjon/om-geonorge/">Om Geonorge</a>
-                        </li>
-                        <li>
-                            <a href="@Html.GeonorgeUrl()informasjon/aktuelt/annet/personvern-og-bruk-av-cookies/">Personvern og bruk av cookies</a>
-                        </li>
-                    </ul>
-                </div><div class="block editorialblock col-md-12 col-lg-4  ">
-
-                    <h2>Kontakt</h2>
-                    <p><span style="font-family: 'Open Sans', sans-serif; font-size: 22px;">Telefon: 08700<br /></span>Fra utlandet: +47 32 11 81 21<br /><a title="post@norgedigitalt.no" href="mailto:post@norgedigitalt.no">post@norgedigitalt.no</a><br />Org. nr.: 971 040 238</p>
-                    <hr />
-                    <p>En løsning fra</p>
-                    <p><img alt="" src="@Html.KartkatalogenUrl()Content/img/kartverket.png" height="75" width="195" /></p>
-                    <ul class="editorialblock-list-item"></ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-
+    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.cshtml")
 </body>
 </html>
