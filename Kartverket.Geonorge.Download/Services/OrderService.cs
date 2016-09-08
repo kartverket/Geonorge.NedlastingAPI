@@ -58,8 +58,7 @@ namespace Kartverket.Geonorge.Download.Services
                     fileList.Add(ft);
 
                 }
-                else
-                { 
+
                     IQueryable<filliste> query = db.FileList.AsExpandable();
                     query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
 
@@ -99,8 +98,6 @@ namespace Kartverket.Geonorge.Download.Services
                         ft.name = file.filnavn;
                         fileList.Add(ft);
                     }
-
-                }
 
             }
 
