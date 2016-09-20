@@ -2555,13 +2555,6 @@ textarea, textarea.form-control {
 .custom-select.input-group select {
   margin-bottom: 0; }
 
-.container .searchbar input {
-  border-radius: 0px !important;
-  font-size: 14pt !important; }
-
-.container .searchbar input:focus {
-  border: none; }
-
 .input-group {
   margin-bottom: 10px; }
 
@@ -2970,10 +2963,14 @@ ul#thumbnailsCoverage {
   background-color: #FFF; }
 
 .container .search .searchbar input {
-  -moz-border-radius: 6px !important;
-  -webkit-border-radius: 6px !important;
-  border-radius: 6px !important;
-  padding: 0 0 0 21px; }
+  -moz-border-radius: 6px 0 0 6px !important;
+  -webkit-border-radius: 6px 0 0 6px !important;
+  border-radius: 6px 0 0 6px !important;
+  border-radius: 6px 0 0 6px !important;
+  padding: 0 0 0 21px;
+  font-size: 14pt !important; }
+  .container .search .searchbar input:focus {
+    border: none; }
 
 @media (max-width: 767px) {
   .container-login {
@@ -3112,16 +3109,39 @@ input[type="checkbox"].input-validation-error {
     vertical-align: text-top;
     line-height: 39pt; }
 
-.loading-animation.loading {
-  background-image: url(/Content/bower_components/kartverket-felleskomponenter/assets/images/gif/gif_loading-01.gif);
+.loading-animation {
+  z-index: 2;
+  position: fixed;
   background-repeat: no-repeat;
-  background-position: center; }
-  .loading-animation.loading > *,
-  .loading-animation.loading:hover > *,
-  .loading-animation.loading:active > * {
-    color: transparent !important; }
-  .loading-animation.loading.btn {
-    background-size: 20px; }
+  background-position: 50% 15px;
+  background-color: white;
+  top: 40%;
+  height: auto;
+  width: 200px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  color: #666;
+  margin: auto;
+  display: block;
+  left: 40%;
+  left: calc(50% - 100px);
+  text-align: center;
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2); }
+  .loading-animation:before {
+    content: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/gif/loading.gif");
+    display: block; }
+
+header.main-header {
+  z-index: 5;
+  position: relative; }
+
+.container-top-menu {
+  z-index: 5;
+  position: static; }
+
+.menu-separator {
+  z-index: 4;
+  position: relative; }
 
 .modal-footer .btn {
   margin-bottom: 0; }
@@ -3557,7 +3577,8 @@ a.status-icon-link:hover {
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
   font-size: 12px;
   opacity: .9;
-  position: absolute; }
+  position: absolute;
+  z-index: 5; }
 
 .ui-tooltip:before {
   border-width: 0 5px 5px;

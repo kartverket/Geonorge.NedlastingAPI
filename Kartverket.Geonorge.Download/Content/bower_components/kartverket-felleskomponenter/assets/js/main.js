@@ -14,6 +14,79 @@ if (authenticationData !== {}) {
 var geonorgeUrl = (applicationEnvironment === "") ? "https://www.geonorge.no/" : "https://www.test.geonorge.no/";
 
 
+/* Loading animation */
+function showLoadingAnimation(loadingMessage){
+  $("#loading-animation").html(loadingMessage);
+  $("#loading-animation").show();
+}
+function hideLoadingAnimation(){
+  $("#loading-animation").html('');
+  $("#loading-animation").hide();
+}
+
+function notOpeningInNewTab(event){
+  if ( event.ctrlKey || event.shiftKey || event.metaKey || (event.button && event.button == 1)){
+    return false;
+  }else{
+    return true;
+  }
+}
+
+function addDefaultLoadingAnimation(element){
+  element.addClass('show-loading-animation');
+  element.data('loading-message', 'Henter innhold');
+}
+
+showLoadingAnimation('Laster innhold');
+/* ----------------------------- */
+
+
+$(document).ready( function(){
+
+  // Loading animation
+  hideLoadingAnimation();
+
+  $(document).on("click", ".show-loading-animation", function (event){
+    if (notOpeningInNewTab(event)){
+      var loadingMessage = $(this).data('loading-message') !== undefined ? $(this).data('loading-message') : '';
+      showLoadingAnimation(loadingMessage);
+    }
+  });
+
+
+  // Geonorge logo
+  if ($("#geonorge-logo").length){ 
+    $("#geonorge-logo a").prop("href", geonorgeUrl);
+    $("#geonorge-logo a img").prop("src", "/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/geonorge_" + applicationEnvironment + "logo.svg");
+  }
+
+
+  //Version number
+  if ($("#applicationVersionNumber").length && applicationVersionNumber !== ""){
+    $("#applicationVersionNumber").html("Versjon " + applicationVersionNumber);
+  }
+
+
+  // Shopping cart
+  var downloadUrl = "https://kartkatalog.geonorge.no/Download";
+  if (applicationEnvironment !== "") {
+    downloadUrl = "https://kartkatalog." + applicationEnvironment + ".geonorge.no/Download";
+  }
+  $("#shopping-car-url").prop("href", downloadUrl);
+
+
+  // Login
+  if (supportsLogin && $("#container-login").length){
+    $("#container-login").append("<ul></ul>");
+    $("#container-login ul").append("<li><a href='" + geonorgeUrl + "kartdata/oppslagsverk/Brukernavn-og-passord/'>Ny bruker</a></li>");
+    if (authenticationData.isAuthenticated){
+     $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignOut + "' class='geonorge-aut' title='Logg ut " + authenticationData.userName + "'> Logg ut</a></li>");
+   }else{
+     $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignIn + "' class='geonorge-aut'> Logg inn</a></li>");
+   }
+ }
+});
+
 $(window).load(function () {
   var options = {
     disable_search_threshold: 10,
@@ -35,39 +108,6 @@ $(window).load(function () {
     var doc = document.documentElement;
     doc.setAttribute('data-useragent', navigator.userAgent);
   });
-
-$(document).ready( function(){
-    // Geonorge logo
-    if ($("#geonorge-logo").length){ 
-      $("#geonorge-logo a").prop("href", geonorgeUrl);
-      $("#geonorge-logo a img").prop("src", "/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/geonorge_" + applicationEnvironment + "logo.svg");
-    }
-
-    //Version number
-    if ($("#applicationVersionNumber").length && applicationVersionNumber != ""){
-      $("#applicationVersionNumber").html("Versjon " + applicationVersionNumber);
-    }
-
-    // Shopping cart
-    var downloadUrl = "https://kartkatalog.geonorge.no/Download";
-    if (applicationEnvironment !== "") {
-      downloadUrl = "https://kartkatalog." + applicationEnvironment + ".geonorge.no/Download";
-    }
-    $("#shopping-car-url").prop("href", downloadUrl);
-
-    // Login
-    if (supportsLogin && $("#container-login").length){
-      $("#container-login").append("<ul></ul>");
-      $("#container-login ul").append("<li><a href='" + geonorgeUrl + "kartdata/oppslagsverk/Brukernavn-og-passord/'>Ny bruker</a></li>");
-      if (authenticationData.isAuthenticated){
-       $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignOut + "' class='geonorge-aut' title='Logg ut " + authenticationData.userName + "'> Logg ut</a></li>");
-     }else{
-       $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignIn + "' class='geonorge-aut'> Logg inn</a></li>");
-     }
-   }
- });
-
-
 angular.module('geonorge', ['ui.bootstrap']);
 
 angular.module('geonorge').config(["$sceDelegateProvider", function ($sceDelegateProvider) {
@@ -688,6 +728,17 @@ $(document).ready(function () {
       }]);
 }());
 
+function addShoppingCartTooltip(elementsCount) {
+    var element = $('#shopping-cart-url');
+    var elementsCountText = elementsCount !== 0 ? elementsCount : 'ingen';
+    var text = elementsCount == 1 ? 'Du har ' + elementsCountText + ' nedlasting i kurven din' : 'Du har ' + elementsCountText + ' nedlastinger i kurven din';
+    element.attr('title', text);
+    element.attr('data-original-title', text);
+    element.data('toggle', 'tooltip');
+    element.data('placement', 'bottom');
+    element.tooltip();
+}
+
 function updateShoppingCart() {
     var shoppingCartElement = $('#orderitem-count');
     var orderItems = "";
@@ -705,12 +756,15 @@ function updateShoppingCart() {
         orderItemsObj = JSON.parse(orderItems);
         cookieValue = orderItemsObj.length;
         shoppingCartElement.html(cookieValue);
+        addShoppingCartTooltip(cookieValue);
     } else if (Cookies.get(cookieName) !== undefined && Cookies.get(cookieName) !== 0 && Cookies.get(cookieName) !== "0") {
         cookieValue = Cookies.get(cookieName);
         shoppingCartElement.css("display", "block");
         shoppingCartElement.html(cookieValue);
+        addShoppingCartTooltip(cookieValue);
     } else {
         shoppingCartElement.css("display", "none");
+        addShoppingCartTooltip(0);
     }
     Cookies.set(cookieName, cookieValue, { expires: 7, path: '/', domain: cookieDomain });
 }
@@ -725,9 +779,11 @@ function updateShoppingCartCookie() {
         var orderItemsObj = JSON.parse(orderItems);
         cookieValue = orderItemsObj.length;
         shoppingCartElement.html(cookieValue);
+        addShoppingCartTooltip(cookieValue);
     } else {
         cookieValue = 0;
         shoppingCartElement.css("display", "none");
+        addShoppingCartTooltip(cookieValue);
     }
     Cookies.set(cookieName, cookieValue, { expires: 7, path: '/', domain: cookieDomain });
 }
@@ -814,12 +870,24 @@ function updateCartButton(element) {
 }
 
 
+/* Loading animation for pagination */
 
-/* Loading animation */
-function addLoadingAnimation(element) {
-	element.addClass('loading');
-}
+$("document").ready( function(){
+	$("ul.pagination a, ul.breadcrumbs a").each(function (){
+		if (!$(this).closest('li').hasClass('active')){
+			addDefaultLoadingAnimation($(this));
+		}
+	});
+});
 
-function removeLoadingAnimation(element) {
-	element.removeClass('loading');
+
+/* Breadcrumbs */
+function disableLastBreadcrumb(){
+	if($("ul.breadcrumbs li").last().has('a').length){
+		var lastBreadcrumbText = ($("ul.breadcrumbs li").last().text());
+		$("ul.breadcrumbs li").last().html(lastBreadcrumbText);
+	}
 }
+$("document").ready( function(){
+	disableLastBreadcrumb();
+});
