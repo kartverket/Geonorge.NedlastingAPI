@@ -1900,7 +1900,7 @@ button.btn {
   height: 25px !important;
   line-height: 14pt; }
   .btn-xs:hover {
-    line-height: 14pt !important;
+    line-height: 16pt !important;
     font-size: 10pt; }
 
 .input-group-btn > .btn {
@@ -1964,10 +1964,10 @@ button.btn {
   margin-left: 5px !important; }
 
 .status-icons .custom-icon, .status-icons .fa, .status-icons .glyphicon {
-  width: 16px !important;
-  height: 16px;
+  width: 18px !important;
+  height: 18px;
   line-height: 16px;
-  font-size: 16px;
+  font-size: 18px;
   margin: 2px 4px;
   text-align: center;
   vertical-align: bottom; }
@@ -2068,6 +2068,12 @@ button.btn {
 .custom-icon.custom-icon-seksjonstegn {
   background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/seksjonstegn.svg"); }
 
+.custom-icon.custom-icon-sosi {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/sosi.svg"); }
+
+.custom-icon.custom-icon-gml {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/gml.svg"); }
+
 /* Open data */
 .custom-icon.custom-icon-hengelaas-open-green {
   background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/hengelaas-aapen-green.svg");
@@ -2112,6 +2118,18 @@ button.btn {
 .disabled .custom-icon.custom-icon-hengelaas-closed-red,
 .disabled .custom-icon.custom-icon-hengelaas-closed-yellow {
   background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/hengelaas-lukket-disabled.svg"); }
+
+/* Norgeskart legend */
+.norgeskart-legend .custom-icon {
+  width: 25px !important;
+  height: 25px; }
+
+.custom-icon.custom-icon-norgeskart-marker {
+  background-image: url(/Content/bower_components/kartverket-felleskomponenter/assets/images/png/norgeskart-marker.png);
+  background-size: 100%; }
+
+.custom-icon.custom-icon-norgeskart-area {
+  background-color: #779cfd; }
 
 .download-form p {
   margin-bottom: 0; }
@@ -2415,6 +2433,12 @@ button.btn {
       font-size: 12pt !important;
       line-height: 18pt !important;
       color: #3867C8; }
+  .facet-sok-undertitler li .btn-link.active {
+    color: #414042;
+    font-style: normal; }
+    .facet-sok-undertitler li .btn-link.active:hover {
+      color: #414042;
+      text-decoration: none; }
 
 .facet-sok-emne {
   margin-top: 4px; }
@@ -3110,7 +3134,7 @@ input[type="checkbox"].input-validation-error {
     line-height: 39pt; }
 
 .loading-animation {
-  z-index: 2;
+  z-index: 10;
   position: fixed;
   background-repeat: no-repeat;
   background-position: 50% 15px;
@@ -3140,7 +3164,7 @@ header.main-header {
   position: static; }
 
 .menu-separator {
-  z-index: 4;
+  z-index: 1;
   position: relative; }
 
 .modal-footer .btn {
