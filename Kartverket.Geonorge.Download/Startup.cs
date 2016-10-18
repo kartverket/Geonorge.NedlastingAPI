@@ -12,7 +12,7 @@ namespace Kartverket.Geonorge.Download
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+        
         }
     }
 }
