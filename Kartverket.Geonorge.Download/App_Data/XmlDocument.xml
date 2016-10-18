@@ -538,27 +538,27 @@
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.DatasetController.GetCapabilities">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>
             Get info all datasets
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.DatasetController.GetDataset(System.Int32)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.Int32)">
             <summary>
             Get info dataset
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.DatasetController.PutDataset(System.Int32,Kartverket.Geonorge.Download.Models.Dataset)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
             Update dataset
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
             Create new dataset
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.DatasetController.DeleteDataset(System.Int32)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.Int32)">
             <summary>
             Delete dataset
             </summary>

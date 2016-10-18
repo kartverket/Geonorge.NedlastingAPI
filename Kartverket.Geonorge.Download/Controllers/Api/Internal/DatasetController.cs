@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Kartverket.Geonorge.Download.Models;
 
-namespace Kartverket.Geonorge.Download.Controllers
+namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    //[ApiExplorerSettings(IgnoreApi = true)]
+    [RoutePrefix("api/internal/dataset")]
     public class DatasetController : ApiController
     {
         private DownloadContext db = new DownloadContext();
@@ -20,7 +18,8 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <summary>
         /// Get info all datasets
         /// </summary>
-        // GET: api/Dataset
+        // GET: api/internal/dataset
+        [Route("")]
         public IEnumerable<Dataset> GetCapabilities()
         {
             return db.Capabilities.ToList();
@@ -28,8 +27,9 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <summary>
         /// Get info dataset
         /// </summary>
-        // GET: api/Dataset/5
+        // GET: api/internal/dataset/5
         [ResponseType(typeof(Dataset))]
+        [Route("{id:int}")]
         public IHttpActionResult GetDataset(int id)
         {
             Dataset dataset = db.Capabilities.Find(id);
@@ -43,19 +43,15 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <summary>
         /// Update dataset
         /// </summary>
-        // PUT: api/Dataset/5
+        // PUT: api/internal/dataset/5
         [Authorize(Users = "download")]
+        [Route("")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutDataset(int id, Dataset dataset)
+        public IHttpActionResult PutDataset(Dataset dataset)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != dataset.ID)
-            {
-                return BadRequest();
             }
 
             db.Entry(dataset).State = EntityState.Modified;
@@ -66,7 +62,7 @@ namespace Kartverket.Geonorge.Download.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DatasetExists(id))
+                if (!DatasetExists(dataset.ID))
                 {
                     return NotFound();
                 }
@@ -82,9 +78,10 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <summary>
         /// Create new dataset
         /// </summary>
-        // POST: api/Dataset
+        // POST: api/internal/dataset
         [Authorize(Users = "download")]
         [ResponseType(typeof(Dataset))]
+        [Route("")]
         public IHttpActionResult PostDataset(Dataset dataset)
         {
             if (!ModelState.IsValid)
@@ -101,9 +98,10 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <summary>
         /// Delete dataset
         /// </summary>
-        // DELETE: api/Dataset/5
+        // DELETE: api/internal/dataset/5
         [Authorize(Users = "download")]
         [ResponseType(typeof(Dataset))]
+        [Route("{id:int}")]
         public IHttpActionResult DeleteDataset(int id)
         {
             Dataset dataset = db.Capabilities.Find(id);
