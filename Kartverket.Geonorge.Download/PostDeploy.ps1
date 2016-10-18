@@ -1,0 +1,1 @@
+﻿Copy-Item authentication.default.config authentication.config

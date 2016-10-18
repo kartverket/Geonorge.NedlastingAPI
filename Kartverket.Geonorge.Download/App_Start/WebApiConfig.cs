@@ -7,6 +7,7 @@ using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System.Web.Http.Cors;
+using WebApi.BasicAuth;
 
 namespace Kartverket.Geonorge.Download
 {
@@ -25,6 +26,8 @@ namespace Kartverket.Geonorge.Download
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            config.EnableBasicAuth();
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
@@ -34,6 +37,8 @@ namespace Kartverket.Geonorge.Download
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new DefaultContractResolver();
             config.Formatters.XmlFormatter.UseXmlSerializer = true;
             config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
+            config.EnsureInitialized();
 
         }
     }
