@@ -216,6 +216,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CapabilityLinksCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DownloadContext.cs" />
     <Compile Include="Models\download_rest.cs" />

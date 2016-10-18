@@ -17,7 +17,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
         }
 
-        public CapabilitiesType GetCapabilities(string metadataUuid) 
+        public CapabilitiesType GetCapabilities(string metadataUuid, string apiVersionId) 
         {
 
             var capabilitiesQuery = from c in db.Capabilities
@@ -31,30 +31,7 @@ namespace Kartverket.Geonorge.Download.Services
             capabilities.supportsPolygonSelection = capability.supportsPolygonSelection;
             capabilities.supportsProjectionSelection = capability.supportsProjectionSelection;
             capabilities.mapSelectionLayer = capability.mapSelectionLayer;
-
-            List<LinkType> links = new List<LinkType>();
-
-            LinkType l1 = new LinkType();
-            l1.rel = "http://rel.geonorge.no/download/projection";
-            l1.href = WebConfigurationManager.AppSettings["DownloadUrl"] + "api/codelists/projection/" + metadataUuid;
-
-            LinkType l2 = new LinkType();
-            l2.rel = "http://rel.geonorge.no/download/format";
-            l2.href = WebConfigurationManager.AppSettings["DownloadUrl"] + "api/codelists/format/" + metadataUuid;
-
-            LinkType l3 = new LinkType();
-            l3.rel = "http://rel.geonorge.no/download/area";
-            l3.href = WebConfigurationManager.AppSettings["DownloadUrl"] + "api/codelists/area/" + metadataUuid;
-
-            LinkType l4 = new LinkType();
-            l4.rel = "http://rel.geonorge.no/download/order";
-            l4.href = WebConfigurationManager.AppSettings["DownloadUrl"] + "api/order";
-
-            links.Add(l1); links.Add(l2); links.Add(l3); links.Add(l4);
-
-            capabilities._links = links.ToArray();
-
-
+            capabilities._links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid, apiVersionId).ToArray();
             return capabilities;
         }
 

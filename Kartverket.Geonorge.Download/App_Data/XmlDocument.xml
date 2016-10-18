@@ -505,30 +505,6 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetCapabilities(System.String)">
-            <summary>
-            Get Capabilities from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetProjections(System.String)">
-            <summary>
-            Get Projections from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetAreas(System.String)">
-            <summary>
-            Get Areas from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetFormats(System.String)">
-            <summary>
-            Get Format from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderController.PostOrder(OrderType)">
             <summary>
             Creates new order for data to download
@@ -537,6 +513,30 @@
             <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetCapabilities(System.String)">
+            <summary>
+            Get Capabilities from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
+            <summary>
+            Get Projections from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetAreas(System.String)">
+            <summary>
+            Get Areas from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetFormats(System.String)">
+            <summary>
+            Get Format from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>

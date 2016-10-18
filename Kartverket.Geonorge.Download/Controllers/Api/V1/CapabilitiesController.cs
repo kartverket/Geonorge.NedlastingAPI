@@ -4,6 +4,7 @@ using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V1
@@ -32,8 +33,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         public CapabilitiesType GetCapabilities(string metadataUuid)
         {
             try 
-            { 
-                return new CapabilitiesService().GetCapabilities(metadataUuid);
+            {
+                return new CapabilitiesService().GetCapabilities(metadataUuid, "v1");
             }
             catch (Exception ex)
             {
