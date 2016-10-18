@@ -30,6 +30,8 @@ namespace Kartverket.Geonorge.Download
             config.Formatters.JsonFormatter
                         .SerializerSettings
                         .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
+            MvcHandler.DisableMvcResponseHeader = true;
         }
 
         protected void Application_Error(Object sender, EventArgs e)
