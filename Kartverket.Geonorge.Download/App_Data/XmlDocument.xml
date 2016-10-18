@@ -481,31 +481,55 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.CapabilitiesController.GetCapabilities(System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetCapabilities(System.String)">
             <summary>
             Get Capabilities from download service
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.CapabilitiesController.GetProjections(System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetProjections(System.String)">
             <summary>
             Get Projections from download service
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.CapabilitiesController.GetAreas(System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetAreas(System.String)">
             <summary>
             Get Areas from download service
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.CapabilitiesController.GetFormats(System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetFormats(System.String)">
             <summary>
             Get Format from download service
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.OrderController.PostOrder(OrderType)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetCapabilities(System.String)">
+            <summary>
+            Get Capabilities from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetProjections(System.String)">
+            <summary>
+            Get Projections from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetAreas(System.String)">
+            <summary>
+            Get Areas from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesV2Controller.GetFormats(System.String)">
+            <summary>
+            Get Format from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderController.PostOrder(OrderType)">
             <summary>
             Creates new order for data to download
             </summary>

@@ -1,14 +1,9 @@
-﻿using Kartverket.Geonorge.Download.Services;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Kartverket.Geonorge.Download.Services;
 
-namespace Kartverket.Geonorge.Download.Controllers
+namespace Kartverket.Geonorge.Download.Controllers.Api.V1
 {
     public class OrderController : ApiController
     {
