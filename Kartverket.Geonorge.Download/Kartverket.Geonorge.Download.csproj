@@ -216,6 +216,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610201300527_Initial.cs" />
+    <Compile Include="Migrations\201610201300527_Initial.Designer.cs">
+      <DependentUpon>201610201300527_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CapabilityLinksCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DownloadContext.cs" />
@@ -461,6 +466,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201610201300527_Initial.resx">
+      <DependentUpon>201610201300527_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

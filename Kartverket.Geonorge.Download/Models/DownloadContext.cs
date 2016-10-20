@@ -15,8 +15,7 @@ namespace Kartverket.Geonorge.Download.Models
         public DownloadContext()
             : base("DefaultConnection")
         {
-            //prevents EF from attempting to create the database or generate migrations
-            Database.SetInitializer<DownloadContext>(null);
         }
+
     }
 }
