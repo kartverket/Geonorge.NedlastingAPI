@@ -209,6 +209,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\V1\CapabilitiesController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
+    <Compile Include="Controllers\Api\V2\OrderController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\V1\OrderController.cs" />
@@ -230,6 +231,8 @@
     <Compile Include="Models\NotFoundModel.cs" />
     <Compile Include="Models\OrderDownload.cs" />
     <Compile Include="Models\orderItem.cs" />
+    <Compile Include="Models\V2\FileType.cs" />
+    <Compile Include="Models\V2\OrderReceiptType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\MemoryCacher.cs" />
