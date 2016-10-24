@@ -25,6 +25,10 @@ namespace Kartverket.Geonorge.Download.Services
                                     select c;
 
             var capability = capabilitiesQuery.FirstOrDefault();
+
+            if (capability == null)
+                return null;
+
             CapabilitiesType capabilities = new CapabilitiesType();
             capabilities.supportsAreaSelection = capability.supportsAreaSelection;
             capabilities.supportsFormatSelection = capability.supportsFormatSelection;

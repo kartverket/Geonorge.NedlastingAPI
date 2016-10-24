@@ -30,16 +30,20 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/capabilities/{metadataUuid}")]
-        public CapabilitiesType GetCapabilities(string metadataUuid)
+        public IHttpActionResult GetCapabilities(string metadataUuid)
         {
-            try 
+            try
             {
-                return new CapabilitiesService().GetCapabilities(metadataUuid, "v1");
+                var capabilities = new CapabilitiesService().GetCapabilities(metadataUuid, "v1");
+                if (capabilities == null)
+                    return NotFound();
+
+                return Ok(capabilities);
             }
             catch (Exception ex)
             {
                 Log.Error("Error API", ex);
-                return null;
+                return InternalServerError();
             }
         }
 
