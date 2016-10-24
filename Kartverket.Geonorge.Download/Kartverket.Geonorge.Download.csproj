@@ -237,6 +237,7 @@
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\MemoryCacher.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\OrderServiceV2.cs" />
     <Compile Include="Services\RegisterFetcher.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
