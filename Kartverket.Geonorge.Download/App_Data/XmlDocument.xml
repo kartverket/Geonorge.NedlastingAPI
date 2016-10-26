@@ -549,15 +549,15 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>
-            Get info all datasets
+            List datasets
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.Int32)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
             <summary>
             Get info dataset
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(Kartverket.Geonorge.Download.Models.Dataset)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
             Update dataset
             </summary>
@@ -567,7 +567,7 @@
             Create new dataset
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.Int32)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
             <summary>
             Delete dataset
             </summary>

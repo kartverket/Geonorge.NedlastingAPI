@@ -23,7 +23,7 @@ namespace Kartverket.Geonorge.Download.Migrations
             //            mapSelectionLayer = c.String(),
             //        })
             //    .PrimaryKey(t => t.ID);
-            
+
             //CreateTable(
             //    "dbo.filliste",
             //    c => new
@@ -40,9 +40,9 @@ namespace Kartverket.Geonorge.Download.Migrations
             //            dataset = c.Int(),
             //        })
             //    .PrimaryKey(t => t.id)
-            //    .ForeignKey("dbo.Dataset", t => t.dataset)
+            //    .ForeignKey("dbo.Dataset", t => t.dataset, cascadeDelete: true)
             //    .Index(t => t.dataset);
-            
+
             //CreateTable(
             //    "dbo.orderDownload",
             //    c => new
@@ -52,7 +52,7 @@ namespace Kartverket.Geonorge.Download.Migrations
             //            orderDate = c.DateTime(),
             //        })
             //    .PrimaryKey(t => t.referenceNumber);
-            
+
             //CreateTable(
             //    "dbo.orderItem",
             //    c => new
@@ -65,9 +65,9 @@ namespace Kartverket.Geonorge.Download.Migrations
             //    .PrimaryKey(t => t.id)
             //    .ForeignKey("dbo.orderDownload", t => t.referenceNumber, cascadeDelete: true)
             //    .Index(t => t.referenceNumber);
-            
+
         }
-        
+
         public override void Down()
         {
             //DropForeignKey("dbo.orderItem", "referenceNumber", "dbo.orderDownload");
