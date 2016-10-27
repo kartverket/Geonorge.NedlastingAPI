@@ -153,6 +153,30 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             return Ok(fil);
         }
 
+        /// <summary>
+        /// Delete filename list
+        /// </summary>
+        // DELETE: api/internal/dataset/files
+        [Authorize(Users = "download")]
+        [Route("files")]
+        [HttpDelete]
+        public IHttpActionResult DeleteFiles(List<string> filliste)
+        {
+            foreach (var filnavn in filliste)
+            {
+                filliste fil = db.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+                if (fil == null)
+                {
+                    return NotFound();
+                }
+
+                db.FileList.Remove(fil);
+            }
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.OK);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

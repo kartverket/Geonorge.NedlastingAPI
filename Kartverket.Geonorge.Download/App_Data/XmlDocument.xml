@@ -577,6 +577,11 @@
             Delete file
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
+            <summary>
+            Delete filename list
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.V2.FileType.downloadUrl">
             <remarks/>
             <summary>
