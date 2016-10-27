@@ -54,6 +54,20 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 return BadRequest(ModelState);
             }
 
+            if(dataset.filliste.Count > 0)
+            {
+                //Remove old files
+                var deleteSql = "DELETE FROM filliste FROM Dataset INNER JOIN filliste ON Dataset.ID = filliste.dataset WHERE(Dataset.metadataUuid = {0} )";
+                db.Database.ExecuteSqlCommand(deleteSql, uuid);
+
+                //Add new files
+                foreach (var file in dataset.filliste)
+                {
+                    db.FileList.Add(file);
+                }
+                db.SaveChanges();
+            }
+
             db.Entry(dataset).State = EntityState.Modified;
 
             try
@@ -105,7 +119,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [HttpDelete]
         public IHttpActionResult DeleteDataset(string uuid)
         {
-            Dataset dataset = db.Capabilities.Where(d => d.metadataUuid == uuid).First();
+            Dataset dataset = db.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
             {
                 return NotFound();
@@ -115,6 +129,28 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             db.SaveChanges();
 
             return Ok(dataset);
+        }
+
+        /// <summary>
+        /// Delete file
+        /// </summary>
+        // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
+        [Authorize(Users = "download")]
+        [ResponseType(typeof(filliste))]
+        [Route("file/{filnavn}")]
+        [HttpDelete]
+        public IHttpActionResult Deletefilliste(string filnavn)
+        {
+            filliste fil = db.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+            if (fil == null)
+            {
+                return NotFound();
+            }
+
+            db.FileList.Remove(fil);
+            db.SaveChanges();
+
+            return Ok(fil);
         }
 
         protected override void Dispose(bool disposing)
