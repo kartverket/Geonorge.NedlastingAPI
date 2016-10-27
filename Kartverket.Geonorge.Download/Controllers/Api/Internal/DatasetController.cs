@@ -110,6 +110,32 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
+        /// Add file(s) to dataset
+        /// </summary>
+        // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
+        [Authorize(Users = "download")]
+        [Route("files/{uuid}")]
+        [HttpPost]
+        public IHttpActionResult PostFiles(string uuid, HashSet<filliste> filelist)
+        {
+            Dataset dataset = db.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            if (dataset == null)
+            {
+                return NotFound();
+            }
+
+            foreach(var file in filelist)
+            {
+                file.Dataset1 = null;
+                dataset.filliste.Add(file);
+            }
+
+            db.SaveChanges();
+
+            return Ok(dataset);
+        }
+
+        /// <summary>
         /// Delete dataset
         /// </summary>
         // DELETE: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2

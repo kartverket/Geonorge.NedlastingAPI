@@ -567,6 +567,11 @@
             Create new dataset
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.filliste})">
+            <summary>
+            Add file(s) to dataset
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
             <summary>
             Delete dataset
