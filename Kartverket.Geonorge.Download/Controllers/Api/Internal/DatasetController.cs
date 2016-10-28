@@ -28,7 +28,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [Route("")]
         public IEnumerable<DatasetViewModel> GetCapabilities()
         {
-            return db.Capabilities.Select(d => new DatasetViewModel { ID = d.ID, metadataUuid = d.metadataUuid, Tittel= d.Tittel }).ToList();
+            return db.Capabilities.Select(d => new DatasetViewModel { ID = d.ID, metadataUuid = d.metadataUuid, Tittel= d.Tittel, AccessConstraint = d.AccessConstraint }).ToList();
         }
         /// <summary>
         /// Get info dataset
@@ -340,5 +340,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         public int ID { get; set; }
         public string metadataUuid { get; set; }
         public string Tittel { get; set; }
+        public string AccessConstraint { get; set; }
     }
 }
