@@ -10,6 +10,7 @@ using log4net;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
+    [ApiExplorerSettings(IgnoreApi = true)] // undocumented until version 2 is ready to be released
     [HandleError]
     [EnableCors("*", "*", "*")]
     [System.Web.Http.RoutePrefix("api/v2")]

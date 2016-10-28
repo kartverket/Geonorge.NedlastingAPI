@@ -5,6 +5,7 @@ using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
+    [ApiExplorerSettings(IgnoreApi = true)] // undocumented until version 2 is ready to be released
     public class OrderController : ApiController
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
