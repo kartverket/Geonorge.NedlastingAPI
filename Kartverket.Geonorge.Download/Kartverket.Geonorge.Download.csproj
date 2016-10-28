@@ -221,6 +221,10 @@
     <Compile Include="Migrations\201610201300527_Initial.Designer.cs">
       <DependentUpon>201610201300527_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610280653544_AddedAccessConstraint.cs" />
+    <Compile Include="Migrations\201610280653544_AddedAccessConstraint.Designer.cs">
+      <DependentUpon>201610280653544_AddedAccessConstraint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CapabilityLinksCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
@@ -474,6 +478,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201610201300527_Initial.resx">
       <DependentUpon>201610201300527_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610280653544_AddedAccessConstraint.resx">
+      <DependentUpon>201610280653544_AddedAccessConstraint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

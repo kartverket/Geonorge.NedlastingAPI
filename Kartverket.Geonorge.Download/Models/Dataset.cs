@@ -34,6 +34,8 @@ namespace Kartverket.Geonorge.Download.Models
 
         public string mapSelectionLayer { get; set; }
 
+        public string AccessConstraint { get; set; }
+
         public virtual ICollection<filliste> filliste { get; set; }
     }
 }
