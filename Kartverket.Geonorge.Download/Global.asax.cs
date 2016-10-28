@@ -1,6 +1,8 @@
-﻿using log4net;
+﻿using Kartverket.Geonorge.Download.Models;
+using log4net;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web;
@@ -17,6 +19,7 @@ namespace Kartverket.Geonorge.Download
 
         protected void Application_Start()
         {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DownloadContext, Migrations.Configuration>());
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
