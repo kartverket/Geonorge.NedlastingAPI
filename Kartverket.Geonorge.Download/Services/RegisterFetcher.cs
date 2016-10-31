@@ -77,7 +77,14 @@ namespace Kartverket.Geonorge.Download.Services
         {
             AreaType area = Areas.Where(a => a.type == type && a.code == code).FirstOrDefault();
             if (area == null)
-                area = new AreaType { code = code, name = code, type = type };
+            { 
+                if(code == "0000")
+                    area = new AreaType { code = code, name = "Hele landet", type = type };
+                else if (code == "90")
+                    area = new AreaType { code = code, name = "Utland", type = type };
+                else
+                    area = new AreaType { code = code, name = code, type = type };
+            }
 
             return area;
         }
