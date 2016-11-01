@@ -189,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\DependencyConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -222,7 +223,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\Api\Internal\OrderProcessedController.cs" />
+    <Compile Include="Controllers\Api\Internal\OrderController.cs" />
     <Compile Include="Controllers\Api\V1\CapabilitiesController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\OrderController.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\V1\OrderController.cs" />
     <Compile Include="Controllers\Api\Internal\DatasetController.cs" />
+    <Compile Include="Controllers\RequireHttpsNonLocal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -241,6 +243,10 @@
     <Compile Include="Migrations\201610280653544_AddedAccessConstraint.Designer.cs">
       <DependentUpon>201610280653544_AddedAccessConstraint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.cs" />
+    <Compile Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.Designer.cs">
+      <DependentUpon>201611010937587_AddStatusAndMessageToOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
     <Compile Include="Models\CapabilityLinksCreator.cs" />
@@ -251,11 +257,14 @@
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\NotFoundModel.cs" />
     <Compile Include="Models\OrderDownload.cs" />
-    <Compile Include="Models\orderItem.cs" />
+    <Compile Include="Models\OrderItemStatus.cs" />
+    <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\UpdateFileStatusInformation.cs" />
     <Compile Include="Models\V2\FileType.cs" />
     <Compile Include="Models\V2\OrderReceiptType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
+    <Compile Include="Services\IOrderService.cs" />
     <Compile Include="Services\MemoryCacher.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\OrderServiceV2.cs" />
@@ -498,6 +507,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610280653544_AddedAccessConstraint.resx">
       <DependentUpon>201610280653544_AddedAccessConstraint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.resx">
+      <DependentUpon>201611010937587_AddStatusAndMessageToOrderItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

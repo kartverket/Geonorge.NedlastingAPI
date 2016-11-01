@@ -154,10 +154,10 @@ namespace Kartverket.Geonorge.Download.Services
 
             foreach (var oItem in receipt.files) 
             {
-                orderItem downloadedItem = new orderItem();
-                downloadedItem.downloadUrl = oItem.downloadUrl;
-                downloadedItem.fileName = oItem.name;
-                downloadedItem.referenceNumber = o.referenceNumber;
+                OrderItem downloadedItem = new OrderItem();
+                downloadedItem.DownloadUrl = oItem.downloadUrl;
+                downloadedItem.FileName = oItem.name;
+                downloadedItem.ReferenceNumber = o.referenceNumber;
                 o.orderItem.Add(downloadedItem);
             }
             db.Entry(o).State = EntityState.Modified;

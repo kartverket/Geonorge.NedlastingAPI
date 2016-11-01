@@ -12,6 +12,8 @@ namespace Kartverket.Geonorge.Download.Models
         public DbSet<filliste> FileList { get; set; }
         public DbSet<orderDownload> OrderDownloads { get; set; } 
 
+        public DbSet<OrderItem> OrderItems { get; set; }
+
         public DownloadContext()
             : base("DefaultConnection")
         {

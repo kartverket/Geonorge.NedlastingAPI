@@ -21,6 +21,9 @@ namespace Kartverket.Geonorge.Download
             config.Formatters.XmlFormatter.UseXmlSerializer = true;
             config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore};
 
+            // don't show exception stacktrace to the public
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
+
             config.EnsureInitialized();
         }
     }

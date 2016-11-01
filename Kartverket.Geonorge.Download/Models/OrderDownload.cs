@@ -11,7 +11,7 @@ namespace Kartverket.Geonorge.Download.Models
     {
         public orderDownload()
         {
-            orderItem = new HashSet<orderItem>();
+            orderItem = new HashSet<OrderItem>();
         }
 
         [Key]
@@ -22,6 +22,6 @@ namespace Kartverket.Geonorge.Download.Models
 
         public DateTime? orderDate { get; set; }
 
-        public virtual ICollection<orderItem> orderItem { get; set; }
+        public virtual ICollection<OrderItem> orderItem { get; set; }
     }
 }

@@ -481,9 +481,9 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.OrderProcessedController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.OrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
-            Update status on a given file that has been processed.
+                Update status on a given file that has been processed.
             </summary>
             <param name="request">Updated information about a file.</param>
             <returns>HTTP status codes 200 if ok.</returns>
@@ -594,6 +594,11 @@
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
         </member>
+        <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
+            <summary>
+            Force HTTPS if request is not from local machine
+            </summary>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
             <summary>
             Provides updated information about a file.
@@ -606,7 +611,7 @@
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.Status">
             <summary>
-            Valid values: OK, ERROR
+            Valid values: WaitingForProcessing, ReadyForDownload, Error
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.DownloadUrl">
@@ -617,6 +622,31 @@
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.Message">
             <summary>
             Optional message, should be provided for errors.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.DownloadUrl">
+            <summary>
+            The complete url to the file to be downloaded.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.FileName">
+            <summary>
+            FileName will be used when delivering the file to the user.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.ReferenceNumber">
+            <summary>
+            Reference number of the order it is associated with.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.Status">
+            <summary>
+            Status of the order item. Possible values are WaitingForProcessing, ReadyToDownload and Error
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.Message">
+            <summary>
+            Contains message from processing service (currently FME)
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.V2.FileType.downloadUrl">

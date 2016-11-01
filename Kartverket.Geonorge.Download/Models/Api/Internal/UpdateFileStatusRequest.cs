@@ -1,4 +1,6 @@
-﻿namespace Kartverket.Geonorge.Download.Models.Api.Internal
+﻿using System;
+
+namespace Kartverket.Geonorge.Download.Models.Api.Internal
 {
     /// <summary>
     /// Provides updated information about a file.
@@ -11,7 +13,7 @@
         public string FileId { get; set; }
 
         /// <summary>
-        /// Valid values: OK, ERROR
+        /// Valid values: WaitingForProcessing, ReadyForDownload, Error
         /// </summary>
         public string Status { get; set; }
 
@@ -24,5 +26,6 @@
         /// Optional message, should be provided for errors.
         /// </summary>
         public string Message { get; set; }
+       
     }
 }

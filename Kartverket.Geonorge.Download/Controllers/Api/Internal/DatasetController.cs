@@ -15,6 +15,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
     //[ApiExplorerSettings(IgnoreApi = true)]
     [RoutePrefix("api/internal/dataset")]
+    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
+    [RequireHttpsNonLocal]
     public class DatasetController : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -50,7 +52,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Update dataset
         /// </summary>
         // PUT: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
-        [Authorize(Users = "download")]
         [Route("{uuid:guid}")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutDataset(string uuid, Dataset dataset)
@@ -117,7 +118,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Create new dataset
         /// </summary>
         // POST: api/internal/dataset
-        [Authorize(Users = "download")]
         [ResponseType(typeof(Dataset))]
         [Route]
         public IHttpActionResult PostDataset(Dataset dataset)
@@ -155,7 +155,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Add file(s) to dataset
         /// </summary>
         // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
-        [Authorize(Users = "download")]
         [Route("files/{uuid}")]
         [HttpPost]
         public IHttpActionResult PostFiles(string uuid, HashSet<filliste> filelist)
@@ -199,7 +198,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Delete dataset
         /// </summary>
         // DELETE: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
-        [Authorize(Users = "download")]
         [ResponseType(typeof(Dataset))]
         [Route("{uuid:guid}")]
         [HttpDelete]
@@ -240,7 +238,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Delete file
         /// </summary>
         // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
-        [Authorize(Users = "download")]
         [ResponseType(typeof(filliste))]
         [Route("file/{filnavn}")]
         [HttpDelete]
@@ -281,7 +278,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// Delete filename list
         /// </summary>
         // DELETE: api/internal/dataset/files
-        [Authorize(Users = "download")]
         [Route("files")]
         [HttpDelete]
         public IHttpActionResult DeleteFiles(List<string> filliste)

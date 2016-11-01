@@ -5,6 +5,7 @@ using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.App_Start
 {
@@ -24,6 +25,7 @@ namespace Kartverket.Geonorge.Download.App_Start
         private static void ConfigureApplicationDependencies(ContainerBuilder builder)
         {
             builder.RegisterType<DownloadContext>().InstancePerRequest().AsSelf();
+            builder.RegisterType<OrderServiceV2>().As<IOrderService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)
