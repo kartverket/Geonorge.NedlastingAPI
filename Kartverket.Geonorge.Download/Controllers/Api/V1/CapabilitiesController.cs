@@ -30,6 +30,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/capabilities/{metadataUuid}")]
+        [ResponseType(typeof(CapabilitiesType))]
         public IHttpActionResult GetCapabilities(string metadataUuid)
         {
             try
@@ -52,6 +53,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/projection/{metadataUuid}")]
+        [ResponseType(typeof(List<ProjectionType>))]
         public List<ProjectionType> GetProjections(string metadataUuid)
         { 
             try 
@@ -70,6 +72,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/area/{metadataUuid}")]
+        [ResponseType(typeof(List<AreaType>))]
         public List<AreaType> GetAreas(string metadataUuid)
         {
             //try
@@ -88,6 +91,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/codelists/format/{metadataUuid}")]
+        [ResponseType(typeof(List<FormatType>))]
         public List<FormatType> GetFormats(string metadataUuid)
         {
             try
