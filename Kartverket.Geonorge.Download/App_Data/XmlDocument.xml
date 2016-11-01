@@ -481,6 +481,53 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.OrderProcessedController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
+            <summary>
+            Update status on a given file that has been processed.
+            </summary>
+            <param name="request">Updated information about a file.</param>
+            <returns>HTTP status codes 200 if ok.</returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
+            <summary>
+            List datasets
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
+            <summary>
+            Get info dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
+            <summary>
+            Update dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
+            <summary>
+            Create new dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.filliste})">
+            <summary>
+            Add file(s) to dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
+            <summary>
+            Delete dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
+            <summary>
+            Delete file
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
+            <summary>
+            Delete filename list
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetCapabilities(System.String)">
             <summary>
             Get Capabilities from download service
@@ -547,44 +594,29 @@
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
+        <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
             <summary>
-            List datasets
+            Provides updated information about a file.
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.FileId">
             <summary>
-            Get info dataset
+            The file id
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.Status">
             <summary>
-            Update dataset
+            Valid values: OK, ERROR
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.DownloadUrl">
             <summary>
-            Create new dataset
+            Url to the processed file
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.filliste})">
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.Message">
             <summary>
-            Add file(s) to dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
-            <summary>
-            Delete dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
-            <summary>
-            Delete file
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
-            <summary>
-            Delete filename list
+            Optional message, should be provided for errors.
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.V2.FileType.downloadUrl">

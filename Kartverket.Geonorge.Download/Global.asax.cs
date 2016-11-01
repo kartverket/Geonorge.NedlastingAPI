@@ -10,6 +10,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Autofac;
+using Kartverket.Geonorge.Download.App_Start;
 
 namespace Kartverket.Geonorge.Download
 {
@@ -27,6 +29,9 @@ namespace Kartverket.Geonorge.Download
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("json", "true", "application/json"));
             log4net.Config.XmlConfigurator.Configure();
+
+            DependencyConfig.Configure(new ContainerBuilder());
+
 
             HttpConfiguration config = GlobalConfiguration.Configuration;
 
