@@ -585,7 +585,7 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.OrderController.PostOrder(Geonorge.NedlastingApi.V2.OrderType)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.OrderV2Controller.PostOrder(Geonorge.NedlastingApi.V2.OrderType)">
             <summary>
             Creates new order for data to download
             </summary>
