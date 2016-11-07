@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
@@ -24,12 +25,17 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             { 
+                // this is version 1 of OrderService - todo implement this for version 2
+                /*
                 OrderReceiptType orderrec = new OrderService().Order(order);
                 if (orderrec == null)
                 {
                     return NotFound();
                 }
                 return Ok(orderrec);
+                */
+
+                return Ok();
             }
             catch (Exception ex)
             {

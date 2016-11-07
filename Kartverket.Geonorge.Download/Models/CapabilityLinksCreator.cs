@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Configuration;
+using Geonorge.NedlastingApi.V1;
 
 namespace Kartverket.Geonorge.Download.Models
 {

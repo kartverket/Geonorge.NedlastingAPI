@@ -252,7 +252,6 @@
     <Compile Include="Models\CapabilityLinksCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DownloadContext.cs" />
-    <Compile Include="Models\download_rest.cs" />
     <Compile Include="Models\Filliste.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\NotFoundModel.cs" />
@@ -260,8 +259,6 @@
     <Compile Include="Models\OrderItemStatus.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
-    <Compile Include="Models\V2\FileType.cs" />
-    <Compile Include="Models\V2\OrderReceiptType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\IOrderService.cs" />
@@ -511,6 +508,12 @@
     <EmbeddedResource Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.resx">
       <DependentUpon>201611010937587_AddStatusAndMessageToOrderItem.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
+      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
+      <Name>Geonorge.NedlastingApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
+using Geonorge.NedlastingApi.V1;
+
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
 #endif

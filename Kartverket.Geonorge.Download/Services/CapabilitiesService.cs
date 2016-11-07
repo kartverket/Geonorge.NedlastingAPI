@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Configuration;
+using Geonorge.NedlastingApi.V1;
 
 namespace Kartverket.Geonorge.Download.Services
 {
