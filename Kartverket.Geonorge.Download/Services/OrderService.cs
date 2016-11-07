@@ -147,7 +147,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         private string SaveOrder(OrderReceiptType receipt, string email)
         {
-            orderDownload o = new orderDownload();
+            Order o = new Order();
             o.email = email;
             o.orderDate = DateTime.Now;
             db.OrderDownloads.Add(o);

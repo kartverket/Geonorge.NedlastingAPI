@@ -7,9 +7,9 @@ namespace Kartverket.Geonorge.Download.Models
     using System.Data.Entity.Spatial;
 
     [Table("orderDownload")]
-    public partial class orderDownload
+    public partial class Order
     {
-        public orderDownload()
+        public Order()
         {
             orderItem = new HashSet<OrderItem>();
         }

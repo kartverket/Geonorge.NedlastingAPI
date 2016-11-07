@@ -29,7 +29,7 @@ namespace Kartverket.Geonorge.Download.Models
         /// </summary>
         public int ReferenceNumber { get; set; }
 
-        public virtual orderDownload OrderDownload { get; set; }
+        public virtual Order Order { get; set; }
 
         /// <summary>
         /// Status of the order item. Possible values are WaitingForProcessing, ReadyToDownload and Error

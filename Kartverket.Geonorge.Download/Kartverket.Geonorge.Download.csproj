@@ -255,7 +255,7 @@
     <Compile Include="Models\Filliste.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\NotFoundModel.cs" />
-    <Compile Include="Models\OrderDownload.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItemStatus.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
