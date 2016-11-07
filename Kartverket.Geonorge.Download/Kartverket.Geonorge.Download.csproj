@@ -226,7 +226,7 @@
     <Compile Include="Controllers\Api\Internal\OrderController.cs" />
     <Compile Include="Controllers\Api\V1\CapabilitiesController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
-    <Compile Include="Controllers\Api\V2\OrderController.cs" />
+    <Compile Include="Controllers\Api\V2\OrderV2Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\V1\OrderController.cs" />

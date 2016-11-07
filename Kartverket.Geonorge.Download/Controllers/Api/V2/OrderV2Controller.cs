@@ -7,7 +7,7 @@ using Kartverket.Geonorge.Download.Services;
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
     [ApiExplorerSettings(IgnoreApi = true)] // undocumented until version 2 is ready to be released
-    public class OrderController : ApiController
+    public class OrderV2Controller : ApiController
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
@@ -18,7 +18,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         /// <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
-        [Route("api/order")]
+        [Route("api/v2/order")]
         [HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult PostOrder(OrderType order)
