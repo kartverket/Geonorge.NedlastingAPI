@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,10 +10,14 @@ namespace Kartverket.Geonorge.Download.Models
         public OrderItem()
         {
             Status = OrderItemStatus.WaitingForProcessing;
+            FileId = Guid.NewGuid();
         }
 
         [Key]
         public int Id { get; set; }
+
+        [Index("IDX_FileId", 1, IsUnique = false)]
+        public Guid FileId { get; set; }
 
         /// <summary>
         /// The complete url to the file to be downloaded.
@@ -40,5 +45,12 @@ namespace Kartverket.Geonorge.Download.Models
         /// Contains message from processing service (currently FME)
         /// </summary>
         public string Message { get; set; }
+
+        public string Format { get; set; }
+        public string Area { get; set; }
+        public string Coordinates { get; set; }
+        public string CoordinateSystem { get; set; }
+        public string Projection { get; set; }
+        public string MetadataUuid { get; set; }
     }
 }

@@ -1,171 +1,143 @@
-﻿using Kartverket.Geonorge.Download.Models;
-using LinqKit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-using Geonorge.NedlastingApi.V1;
+using System.Reflection;
+using Geonorge.NedlastingApi.V2;
+using Kartverket.Geonorge.Download.Models;
+using log4net;
+using LinqKit;
 
 namespace Kartverket.Geonorge.Download.Services
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
-        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        DownloadContext db = new DownloadContext();
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IClipperService _clipperService;
+        private readonly DownloadContext _dbContext;
 
-        public OrderService() 
+        public OrderService(DownloadContext dbContext, IClipperService clipperService)
         {
+            _dbContext = dbContext;
+            _clipperService = clipperService;
         }
 
-        public OrderReceiptType Order(OrderType order)
+        public Order CreateOrder(OrderType incomingOrder, string username)
         {
-            OrderReceiptType orderReceipt = new OrderReceiptType();
-            orderReceipt.files = GetFiles(order);
-            orderReceipt.referenceNumber = SaveOrder(orderReceipt, order.email);
-
-            return orderReceipt;
-        }
-
-
-        private FileType[] GetFiles(OrderType o)
-        {
-            List<FileType> fileList = new List<FileType>();
-
-            foreach (var orderLine in o.orderLines)
+            var order = new Order
             {
-                if (orderLine.coordinates != null && o.email != null && orderLine.projections != null)
+                email = incomingOrder.email,
+                username = username
+            };
+            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
+            order.AddOrderItems(_clipperService.GetClippableOrderItems(incomingOrder));
+            SaveOrder(order);
+            return order;
+        }
+
+        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
+        {
+            var orderItems = new List<OrderItem>();
+
+            foreach (var orderLine in order.orderLines)
+            {
+                var query = _dbContext.FileList.AsExpandable();
+                query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
+
+                if (orderLine.projections != null)
                 {
-                    string fmeklippeUrl = GetTransformationURL(orderLine.metadataUuid);
-                    string input_epsg_code = "32633";
-                    if (!string.IsNullOrEmpty(orderLine.coordinatesystem))
-                        input_epsg_code = orderLine.coordinatesystem;
-
-                    foreach (var projection in orderLine.projections)
-                    {
-                        foreach( var format in orderLine.formats)
-                        { 
-                            Task t = Task.Run(() => {
-                                GetTransformation(fmeklippeUrl, orderLine.metadataUuid, o.email, orderLine.coordinates, format.name , projection.code, input_epsg_code);
-                            });
-                        }
-                    }
-
-                    FileType ft = new FileType();
-                    ft.downloadUrl = "";
-                    ft.name = "Resultatet fra valg i kartet for " + GetMetadataTitle(orderLine.metadataUuid) + " sendes som egen epost.";
-                    fileList.Add(ft);
-
+                    var projections = orderLine.projections.Select(p => p.code).ToList();
+                    query = query.Where(p => projections.Contains(p.projeksjon));
                 }
 
-                    IQueryable<filliste> query = db.FileList.AsExpandable();
-                    query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
-
-                    if (orderLine.projections != null) 
-                    { 
-                        var projections = orderLine.projections.Select(p => p.code).ToList();             
-                        query = query.Where(p => projections.Contains(p.projeksjon));
-                    }
-
-                    if (orderLine.formats != null) 
-                    { 
-                        var formats = orderLine.formats.Select(p => p.name).ToList();
-                        query = query.Where(f => formats.Contains(f.format));
-                    }
-
-                    if (orderLine.areas != null) { 
-                        var areas = orderLine.areas.Select(a => new { code = a.code, type = a.type });
-                    
-                        var predicate = PredicateBuilder.False<filliste>();
-                        areas = areas.ToList();
-
-                        foreach (var area in areas)
-                        {
-                            predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.code);
-                        }
-
-                        query = query.Where(predicate);
-
-                    }
-
-                    var files = query.ToList();
-            
-                    foreach(var file in files)
-                    {
-                        FileType ft = new FileType();
-                        ft.downloadUrl = file.url;
-                        ft.name = file.filnavn;
-                        fileList.Add(ft);
-                    }
-
-            }
-
-            return fileList.ToArray();
-        }
-
-        private async void GetTransformation(string fmeklippeUrl, string metadataUuid, string email, string clippercoords, string format, string output_epsg_code, string clipper_epsg_code)
-        {
-            
-            if(fmeklippeUrl != null)
-            {
-                string urlparams = "";
-                urlparams = urlparams + "CLIPPERCOORDS=" + clippercoords;
-                urlparams = urlparams + "&CLIPPER_EPSG_CODE=" + clipper_epsg_code;
-                urlparams = urlparams + "&OUTPUT_EPSG_CODE=" + output_epsg_code;
-                urlparams = urlparams + "&opt_servicemode=async";
-                urlparams = urlparams + "&FORMAT=" + format;
-                urlparams = urlparams + "&EPOST=" + email;
-                urlparams = urlparams + "&UUID=" + metadataUuid;
-
-                using (HttpClient client = new HttpClient())
+                if (orderLine.formats != null)
                 {
-                    Log.Info("Start sending to fmeklippeUrl: " + fmeklippeUrl + urlparams);
-                    using (HttpResponseMessage response = await client.GetAsync(fmeklippeUrl + urlparams))
-
-                    using (HttpContent content = response.Content)
-                    {
-                        string result = await content.ReadAsStringAsync();
-                    }
+                    var formats = orderLine.formats.Select(p => p.name).ToList();
+                    query = query.Where(f => formats.Contains(f.format));
                 }
 
+                if (orderLine.areas != null)
+                {
+                    var areas = orderLine.areas.Select(a => new {a.code, a.type});
+
+                    var predicate = PredicateBuilder.False<filliste>();
+                    areas = areas.ToList();
+
+                    foreach (var area in areas)
+                    {
+                        predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.code);
+                    }
+
+                    query = query.Where(predicate);
+                }
+
+                var files = query.ToList();
+
+                foreach (var item in files)
+                {
+                    orderItems.Add(new OrderItem
+                    {
+                        DownloadUrl = item.url,
+                        FileName = item.filnavn,
+                        Format = item.format,
+                        Area = item.inndelingsverdi,
+                        Projection = item.projeksjon,
+                        MetadataUuid = orderLine.metadataUuid,
+                        Status = OrderItemStatus.ReadyForDownload
+                    });
+                }
             }
+            return orderItems;
         }
 
-        private string GetTransformationURL(string metadataUuid)
+        private void SaveOrder(Order order)
         {
-            var url = db.FileList.Where(ds => ds.Dataset1.metadataUuid == metadataUuid).Select(kl => kl.Dataset1.fmeklippeUrl).ToList();
-            return url.FirstOrDefault().ToString();
+            _dbContext.OrderDownloads.Add(order);
+            _dbContext.SaveChanges();
         }
 
-        private string GetMetadataTitle(string metadataUuid)
+        public void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation)
         {
-            var title = db.FileList.Where(ds => ds.Dataset1.metadataUuid == metadataUuid).Select(kl => kl.Dataset1.Tittel).ToList();
-            return title.FirstOrDefault().ToString();
+            var orderItem = _dbContext.OrderItems.Find(updateFileStatusInformation.FileId);
+            if (orderItem == null)
+                throw new ArgumentException("Invalid file id - no such file exists.");
+
+            orderItem.DownloadUrl = updateFileStatusInformation.DownloadUrl;
+            orderItem.Status = updateFileStatusInformation.Status;
+            orderItem.Message = updateFileStatusInformation.Message;
+
+            _dbContext.Entry(orderItem).State = EntityState.Modified;
+            _dbContext.SaveChanges();
+
+            string logMessage = $"OrderItem {orderItem.Id} has been updated. Status: {orderItem.Status}";
+
+            if (orderItem.Status == OrderItemStatus.Error)
+                Log.Error($"{logMessage}, Message: {orderItem.Message} ");
+            else
+                Log.Info($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
         }
 
-        private string SaveOrder(OrderReceiptType receipt, string email)
+        public OrderReceiptType Find(int referenceNumber)
         {
-            Order o = new Order();
-            o.email = email;
-            o.orderDate = DateTime.Now;
-            db.OrderDownloads.Add(o);
-            db.SaveChanges();
+            var order = _dbContext.OrderDownloads.Find(referenceNumber);
 
-            foreach (var oItem in receipt.files) 
+            return order != null
+                ? new OrderReceiptType
+                {
+                    referenceNumber = order.referenceNumber.ToString(),
+                    files = GetFiles(order)
+                }
+                : null;
+        }
+
+        private static FileType[] GetFiles(Order orderDownload)
+        {
+            return orderDownload.orderItem.Select(orderItem => new FileType
             {
-                OrderItem downloadedItem = new OrderItem();
-                downloadedItem.DownloadUrl = oItem.downloadUrl;
-                downloadedItem.FileName = oItem.name;
-                downloadedItem.ReferenceNumber = o.referenceNumber;
-                o.orderItem.Add(downloadedItem);
-            }
-            db.Entry(o).State = EntityState.Modified;
-            db.SaveChanges();
-
-            return o.referenceNumber.ToString();
+                name = orderItem.FileName,
+                downloadUrl = orderItem.DownloadUrl,
+                status = orderItem.Status.ToString()
+            }).ToArray();
         }
-
     }
 }

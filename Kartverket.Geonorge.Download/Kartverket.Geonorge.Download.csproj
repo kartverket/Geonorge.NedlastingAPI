@@ -248,6 +248,10 @@
     <Compile Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.Designer.cs">
       <DependentUpon>201611010937587_AddStatusAndMessageToOrderItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611081907419_NewFieldsOnOrderItem.cs" />
+    <Compile Include="Migrations\201611081907419_NewFieldsOnOrderItem.Designer.cs">
+      <DependentUpon>201611081907419_NewFieldsOnOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
     <Compile Include="Models\CapabilityLinksCreator.cs" />
@@ -262,11 +266,12 @@
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
+    <Compile Include="Services\IClipperService.cs" />
     <Compile Include="Services\IOrderService.cs" />
     <Compile Include="Services\MemoryCacher.cs" />
     <Compile Include="Services\OrderService.cs" />
-    <Compile Include="Services\OrderServiceV2.cs" />
     <Compile Include="Services\RegisterFetcher.cs" />
+    <Compile Include="Services\ClipperService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -508,6 +513,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611010937587_AddStatusAndMessageToOrderItem.resx">
       <DependentUpon>201611010937587_AddStatusAndMessageToOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611081907419_NewFieldsOnOrderItem.resx">
+      <DependentUpon>201611081907419_NewFieldsOnOrderItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

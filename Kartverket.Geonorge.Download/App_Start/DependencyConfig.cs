@@ -25,7 +25,8 @@ namespace Kartverket.Geonorge.Download.App_Start
         private static void ConfigureApplicationDependencies(ContainerBuilder builder)
         {
             builder.RegisterType<DownloadContext>().InstancePerRequest().AsSelf();
-            builder.RegisterType<OrderServiceV2>().As<IOrderService>();
+            builder.RegisterType<OrderService>().As<IOrderService>();
+            builder.RegisterType<ClipperService>().As<IClipperService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)

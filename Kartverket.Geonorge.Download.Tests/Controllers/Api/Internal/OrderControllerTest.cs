@@ -80,7 +80,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
 
         private IHttpActionResult ExecuteUpdateFileStatus(Mock<IOrderService> orderServiceMock, UpdateFileStatusRequest request)
         {
-            OrderController orderController = CreateController(orderServiceMock);
+            ManageOrderController orderController = CreateController(orderServiceMock);
             IHttpActionResult response = orderController.UpdateFileStatus(request);
             return response;
         }
@@ -92,9 +92,9 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
             return orderServiceMock;
         }
         
-        private OrderController CreateController(Mock<IOrderService> orderServiceMock)
+        private ManageOrderController CreateController(Mock<IOrderService> orderServiceMock)
         {
-            OrderController controller = new OrderController(orderServiceMock.Object);
+            ManageOrderController controller = new ManageOrderController(orderServiceMock.Object);
             controller.Request = new HttpRequestMessage();
             controller.Configuration = new HttpConfiguration();
             return controller;

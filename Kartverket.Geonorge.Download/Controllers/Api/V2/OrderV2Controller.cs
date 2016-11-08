@@ -1,23 +1,34 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V2;
-using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
+using log4net;
+using Kartverket.Geonorge.Download.Models;
+using System.Collections.Generic;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
-    [ApiExplorerSettings(IgnoreApi = true)] // undocumented until version 2 is ready to be released
     public class OrderV2Controller : ApiController
     {
-        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-      
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IOrderService _orderService;
+
+        public OrderV2Controller(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
+
         /// <summary>
-        /// Creates new order for data to download
+        ///     Creates new order for data to download
         /// </summary>
         /// <param name="order">OrderType model</param>
-        /// <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
+        /// <returns>
+        ///     OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
+        ///     the files are delivered via email
+        /// </returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
         [Route("api/v2/order")]
@@ -26,24 +37,48 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         public IHttpActionResult PostOrder(OrderType order)
         {
             try
-            { 
-                // this is version 1 of OrderService - todo implement this for version 2
-                /*
-                OrderReceiptType orderrec = new OrderService().Order(order);
-                if (orderrec == null)
-                {
-                    return NotFound();
-                }
-                return Ok(orderrec);
-                */
-
-                return Ok();
+            {
+                string username = null;
+                Order savedOrder = _orderService.CreateOrder(order, username);
+                return Ok(ConvertToReceipt(savedOrder));
             }
             catch (Exception ex)
             {
                 Log.Error("Error API", ex);
-                return InternalServerError(ex);  
+                return InternalServerError(ex);
             }
+        }
+
+        private OrderReceiptType ConvertToReceipt(Order order)
+        {
+            return new OrderReceiptType()
+            {
+                referenceNumber = order.referenceNumber.ToString(),
+                email = order.email,
+                orderDate = order.orderDate.HasValue ? order.orderDate.Value : DateTime.Now,
+                files = ConvertToFiles(order.orderItem)
+            };
+        }
+
+        private FileType[] ConvertToFiles(List<OrderItem> orderItems)
+        {
+            var files = new List<FileType>();
+            foreach (var item in orderItems)
+            {
+                files.Add(new FileType()
+                {
+                    name = item.FileName,
+                    downloadUrl = item.DownloadUrl,
+                    fileId = item.FileId.ToString(),
+                    area = item.Area,
+                    coordinates = item.Coordinates,
+                    format = item.Format,
+                    metadataUuid = item.MetadataUuid,
+                    projection = item.Projection,
+                    status = item.Status.ToString()
+                });
+            }
+            return files.ToArray();
         }
 
         [Route("api/v2/order/{referenceNumber}")]
@@ -55,7 +90,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             if (Request.Headers.Accept.First().MediaType.Equals("text/html"))
                 return Redirect(Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/order/details/" + referenceNumber);
 
-            var order = new OrderServiceV2(new DownloadContext()).Find(referenceNumber);
+            var order = _orderService.Find(referenceNumber);
             return order != null ? (IHttpActionResult) Ok(order) : NotFound();
         }
     }

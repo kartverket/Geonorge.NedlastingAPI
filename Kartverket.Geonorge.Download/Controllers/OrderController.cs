@@ -1,15 +1,21 @@
 ﻿using System.Web.Mvc;
-using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
     public class OrderController : Controller
     {
-        // GET: /order/details/1307
+        private readonly IOrderService _orderService;
+
+        public OrderController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
+
+        // GET: /order/details/1337
         public ActionResult Details(int id)
         {
-            var order = new OrderServiceV2(new DownloadContext()).Find(id);
+            var order = _orderService.Find(id);
             return order != null ? (ActionResult) View(order) : HttpNotFound();
         }
     }

@@ -1,17 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Kartverket.Geonorge.Download.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
-
     [Table("orderDownload")]
-    public partial class Order
+    public class Order
     {
         public Order()
         {
-            orderItem = new HashSet<OrderItem>();
+            orderItem = new List<OrderItem>();
+            orderDate = DateTime.Now;
         }
 
         [Key]
@@ -22,6 +22,13 @@ namespace Kartverket.Geonorge.Download.Models
 
         public DateTime? orderDate { get; set; }
 
-        public virtual ICollection<OrderItem> orderItem { get; set; }
+        public string username { get; set; }
+
+        public virtual List<OrderItem> orderItem { get; set; }
+
+        public void AddOrderItems(List<OrderItem> items)
+        {
+            orderItem.AddRange(items);
+        }
     }
 }

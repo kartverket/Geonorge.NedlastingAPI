@@ -481,7 +481,7 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.OrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
                 Update status on a given file that has been processed.
             </summary>
@@ -552,7 +552,7 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderController.PostOrder(Geonorge.NedlastingApi.V1.OrderType)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderV1Controller.PostOrder(Geonorge.NedlastingApi.V1.OrderType)">
             <summary>
             Creates new order for data to download
             </summary>
@@ -587,10 +587,13 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.OrderV2Controller.PostOrder(Geonorge.NedlastingApi.V2.OrderType)">
             <summary>
-            Creates new order for data to download
+                Creates new order for data to download
             </summary>
             <param name="order">OrderType model</param>
-            <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
+            <returns>
+                OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
+                the files are delivered via email
+            </returns>
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
         </member>

@@ -11,12 +11,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
     [System.Web.Http.RoutePrefix("api/internal/order")]
     [RequireHttpsNonLocal]
     [System.Web.Http.Authorize(Roles = AuthConfig.DatasetProviderRole)]
-    public class OrderController : ApiController
+    public class ManageOrderController : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IOrderService _orderService;
 
-        public OrderController(IOrderService orderService)
+        public ManageOrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
