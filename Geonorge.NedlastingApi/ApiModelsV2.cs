@@ -24,83 +24,29 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Area", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class AreaType {
         
-        private string typeField;
-        
-        private string nameField;
-        
-        private string codeField;
-        
-        private ProjectionType[] projectionsField;
-        
-        private FormatType[] formatsField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string type;
         
         /// <remarks/>
-        public string type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
+        public string name;
         
         /// <remarks/>
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string code {
-            get {
-                return this.codeField;
-            }
-            set {
-                this.codeField = value;
-            }
-        }
+        public string code;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("projection", IsNullable=false)]
-        public ProjectionType[] projections {
-            get {
-                return this.projectionsField;
-            }
-            set {
-                this.projectionsField = value;
-            }
-        }
+        public ProjectionType[] projections;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("format", IsNullable=false)]
-        public FormatType[] formats {
-            get {
-                return this.formatsField;
-            }
-            set {
-                this.formatsField = value;
-            }
-        }
+        public FormatType[] formats;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -112,55 +58,19 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Projection", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class ProjectionType {
         
-        private string codeField;
-        
-        private string nameField;
-        
-        private string codespaceField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string code;
         
         /// <remarks/>
-        public string code {
-            get {
-                return this.codeField;
-            }
-            set {
-                this.codeField = value;
-            }
-        }
+        public string name;
         
         /// <remarks/>
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string codespace {
-            get {
-                return this.codespaceField;
-            }
-            set {
-                this.codespaceField = value;
-            }
-        }
+        public string codespace;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -172,102 +82,30 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Link", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
     public partial class LinkType {
         
-        private string hrefField;
-        
-        private string relField;
-        
-        private bool templatedField;
-        
-        private bool templatedFieldSpecified;
-        
-        private string typeField;
-        
-        private string deprecationField;
-        
-        private string nameField;
-        
-        private string titleField;
+        /// <remarks/>
+        public string href;
         
         /// <remarks/>
-        public string href {
-            get {
-                return this.hrefField;
-            }
-            set {
-                this.hrefField = value;
-            }
-        }
+        public string rel;
         
         /// <remarks/>
-        public string rel {
-            get {
-                return this.relField;
-            }
-            set {
-                this.relField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool templated {
-            get {
-                return this.templatedField;
-            }
-            set {
-                this.templatedField = value;
-            }
-        }
+        public bool templated;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool templatedSpecified {
-            get {
-                return this.templatedFieldSpecified;
-            }
-            set {
-                this.templatedFieldSpecified = value;
-            }
-        }
+        public bool templatedSpecified;
         
         /// <remarks/>
-        public string type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
+        public string type;
         
         /// <remarks/>
-        public string deprecation {
-            get {
-                return this.deprecationField;
-            }
-            set {
-                this.deprecationField = value;
-            }
-        }
+        public string deprecation;
         
         /// <remarks/>
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
+        public string name;
         
         /// <remarks/>
-        public string title {
-            get {
-                return this.titleField;
-            }
-            set {
-                this.titleField = value;
-            }
-        }
+        public string title;
     }
     
     /// <remarks/>
@@ -279,43 +117,16 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Format", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class FormatType {
         
-        private string nameField;
-        
-        private string versionField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string name;
         
         /// <remarks/>
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string version {
-            get {
-                return this.versionField;
-            }
-            set {
-                this.versionField = value;
-            }
-        }
+        public string version;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -327,43 +138,16 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("CanDownloadRequest", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class CanDownloadRequestType {
         
-        private string metadataUuidField;
-        
-        private string polygonField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string metadataUuid;
         
         /// <remarks/>
-        public string metadataUuid {
-            get {
-                return this.metadataUuidField;
-            }
-            set {
-                this.metadataUuidField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string polygon {
-            get {
-                return this.polygonField;
-            }
-            set {
-                this.polygonField = value;
-            }
-        }
+        public string polygon;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -375,44 +159,17 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("CanDownloadResponse", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class CanDownloadResponseType {
         
-        private bool canDownloadField;
-        
-        private string messageField;
-        
-        private LinkType[] _linksField;
-        
         /// <remarks/>
-        public bool canDownload {
-            get {
-                return this.canDownloadField;
-            }
-            set {
-                this.canDownloadField = value;
-            }
-        }
+        public bool canDownload;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string message {
-            get {
-                return this.messageField;
-            }
-            set {
-                this.messageField = value;
-            }
-        }
+        public string message;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -424,79 +181,25 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Capabilities", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class CapabilitiesType {
         
-        private bool supportsProjectionSelectionField;
-        
-        private bool supportsFormatSelectionField;
-        
-        private bool supportsPolygonSelectionField;
-        
-        private bool supportsAreaSelectionField;
-        
-        private string mapSelectionLayerField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public bool supportsProjectionSelection;
         
         /// <remarks/>
-        public bool supportsProjectionSelection {
-            get {
-                return this.supportsProjectionSelectionField;
-            }
-            set {
-                this.supportsProjectionSelectionField = value;
-            }
-        }
+        public bool supportsFormatSelection;
         
         /// <remarks/>
-        public bool supportsFormatSelection {
-            get {
-                return this.supportsFormatSelectionField;
-            }
-            set {
-                this.supportsFormatSelectionField = value;
-            }
-        }
+        public bool supportsPolygonSelection;
         
         /// <remarks/>
-        public bool supportsPolygonSelection {
-            get {
-                return this.supportsPolygonSelectionField;
-            }
-            set {
-                this.supportsPolygonSelectionField = value;
-            }
-        }
+        public bool supportsAreaSelection;
         
         /// <remarks/>
-        public bool supportsAreaSelection {
-            get {
-                return this.supportsAreaSelectionField;
-            }
-            set {
-                this.supportsAreaSelectionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string mapSelectionLayer {
-            get {
-                return this.mapSelectionLayerField;
-            }
-            set {
-                this.mapSelectionLayerField = value;
-            }
-        }
+        public string mapSelectionLayer;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -508,57 +211,49 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("File", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class FileType {
         
-        private string downloadUrlField;
-        
-        private string fileSizeField;
-        
-        private string nameField;
-        
-        private LinkType[] _linksField;
-        
         /// <remarks/>
-        public string downloadUrl {
-            get {
-                return this.downloadUrlField;
-            }
-            set {
-                this.downloadUrlField = value;
-            }
-        }
+        public string downloadUrl;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="integer")]
-        public string fileSize {
-            get {
-                return this.fileSizeField;
-            }
-            set {
-                this.fileSizeField = value;
-            }
-        }
+        public string fileSize;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
+        public string name;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string fileId;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string metadataUuid;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string area;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string coordinates;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string projection;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string format;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string status;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -570,43 +265,17 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("Order", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class OrderType {
         
-        private string emailField;
-        
-        private OrderLineType orderLinesField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string email;
         
         /// <remarks/>
-        public string email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public OrderLineType orderLines {
-            get {
-                return this.orderLinesField;
-            }
-            set {
-                this.orderLinesField = value;
-            }
-        }
+        [System.Xml.Serialization.XmlArrayItemAttribute("orderline", IsNullable=false)]
+        public OrderLineType[] orderLines;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -618,97 +287,34 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("OrderLine", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class OrderLineType {
         
-        private OrderAreaType[] areasField;
-        
-        private FormatType[] formatsField;
-        
-        private string metadataUuidField;
-        
-        private ProjectionType[] projectionsField;
-        
-        private string coordinatesField;
-        
-        private string coordinatesystemField;
-        
-        private LinkType[] _linksField;
-        
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("orderarea", IsNullable=false)]
-        public OrderAreaType[] areas {
-            get {
-                return this.areasField;
-            }
-            set {
-                this.areasField = value;
-            }
-        }
+        public OrderAreaType[] areas;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("format", IsNullable=false)]
-        public FormatType[] formats {
-            get {
-                return this.formatsField;
-            }
-            set {
-                this.formatsField = value;
-            }
-        }
+        public FormatType[] formats;
         
         /// <remarks/>
-        public string metadataUuid {
-            get {
-                return this.metadataUuidField;
-            }
-            set {
-                this.metadataUuidField = value;
-            }
-        }
+        public string metadataUuid;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("projection", IsNullable=false)]
-        public ProjectionType[] projections {
-            get {
-                return this.projectionsField;
-            }
-            set {
-                this.projectionsField = value;
-            }
-        }
+        public ProjectionType[] projections;
         
         /// <remarks/>
-        public string coordinates {
-            get {
-                return this.coordinatesField;
-            }
-            set {
-                this.coordinatesField = value;
-            }
-        }
+        public string coordinates;
         
         /// <remarks/>
-        public string coordinatesystem {
-            get {
-                return this.coordinatesystemField;
-            }
-            set {
-                this.coordinatesystemField = value;
-            }
-        }
+        public string coordinatesystem;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -720,55 +326,19 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("OrderArea", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class OrderAreaType {
         
-        private string codeField;
-        
-        private string nameField;
-        
-        private string typeField;
-        
-        private LinkType[] _linksField;
+        /// <remarks/>
+        public string code;
         
         /// <remarks/>
-        public string code {
-            get {
-                return this.codeField;
-            }
-            set {
-                this.codeField = value;
-            }
-        }
+        public string name;
         
         /// <remarks/>
-        public string name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
+        public string type;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -780,45 +350,24 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("OrderReceipt", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
     public partial class OrderReceiptType {
         
-        private string referenceNumberField;
-        
-        private FileType[] filesField;
-        
-        private LinkType[] _linksField;
-        
         /// <remarks/>
-        public string referenceNumber {
-            get {
-                return this.referenceNumberField;
-            }
-            set {
-                this.referenceNumberField = value;
-            }
-        }
+        public string referenceNumber;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("file", IsNullable=false)]
-        public FileType[] files {
-            get {
-                return this.filesField;
-            }
-            set {
-                this.filesField = value;
-            }
-        }
+        public FileType[] files;
+        
+        /// <remarks/>
+        public string email;
+        
+        /// <remarks/>
+        public System.DateTime orderDate;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
     
     /// <remarks/>
@@ -830,17 +379,8 @@ namespace Geonorge.NedlastingApi.V2 {
     [System.Xml.Serialization.XmlRootAttribute("LinkListe", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
     public partial class LinkListeType {
         
-        private LinkType[] _linksField;
-        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("_links")]
-        public LinkType[] _links {
-            get {
-                return this._linksField;
-            }
-            set {
-                this._linksField = value;
-            }
-        }
+        public LinkType[] _links;
     }
 }
