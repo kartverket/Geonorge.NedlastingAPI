@@ -16,13 +16,13 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage.ModelDescriptions
                 return modelNameAttribute.Name;
             }
 
-            string modelName = type.Name;
+            string modelName = type.FullName;
             if (type.IsGenericType)
             {
                 // Format the generic type name to something like: GenericOfAgurment1AndArgument2
                 Type genericType = type.GetGenericTypeDefinition();
                 Type[] genericArguments = type.GetGenericArguments();
-                string genericTypeName = genericType.Name;
+                string genericTypeName = genericType.FullName;
 
                 // Trim the generic parameter counts from the name
                 genericTypeName = genericTypeName.Substring(0, genericTypeName.IndexOf('`'));
