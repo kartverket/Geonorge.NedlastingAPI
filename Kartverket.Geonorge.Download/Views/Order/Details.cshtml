@@ -1,0 +1,25 @@
+﻿@model Geonorge.NedlastingApi.V2.OrderReceiptType
+
+<h2>Ordre @Model.referenceNumber</h2>
+
+<div>
+    <hr/>
+    <ul>
+        @foreach (var file in Model.files)
+        {
+            <li class="list-group">
+                @if (!string.IsNullOrEmpty(file.downloadUrl))
+                {
+                    <a href="@file.downloadUrl">@file.name</a>
+                }
+                else
+                {
+                    @file.name
+                }
+                <small>
+                    <i>(@file.status)</i>
+                </small>
+            </li>
+        }
+    </ul>
+</div>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Reflection;
+using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
 
@@ -35,6 +37,30 @@ namespace Kartverket.Geonorge.Download.Services
                 Log.Error($"{logMessage}, Message: {orderItem.Message} ");
             else
                 Log.Info($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
+        }
+
+        public OrderReceiptType Find(int referenceNumber)
+        {
+            var order = _dbContext.OrderDownloads.Find(referenceNumber);
+
+            return order != null
+                ? new OrderReceiptType
+                {
+                    referenceNumber = order.referenceNumber.ToString(),
+                    files = GetFiles(order),
+                }
+                : null;
+        }
+
+        private static FileType[] GetFiles(Order orderDownload)
+        {
+            return orderDownload.orderItem.Select(orderItem => new FileType
+            {
+                name = orderItem.FileName,
+                downloadUrl = orderItem.DownloadUrl,
+                status = orderItem.Status.ToString()
+                
+            }).ToArray();
         }
     }
 }

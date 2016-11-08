@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V2;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
@@ -43,7 +45,18 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                 return InternalServerError(ex);  
             }
         }
-       
 
+        [Route("api/v2/order/{referenceNumber}")]
+        [HttpGet]
+        [ResponseType(typeof(OrderReceiptType))]
+        public IHttpActionResult GetOrder(int referenceNumber)
+        {
+            // Redirect to web controller if html is requested:
+            if (Request.Headers.Accept.First().MediaType.Equals("text/html"))
+                return Redirect(Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/order/details/" + referenceNumber);
+
+            var order = new OrderServiceV2(new DownloadContext()).Find(referenceNumber);
+            return order != null ? (IHttpActionResult) Ok(order) : NotFound();
+        }
     }
 }
