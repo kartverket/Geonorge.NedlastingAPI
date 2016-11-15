@@ -8,9 +8,13 @@ using Kartverket.Geonorge.Download.Services;
 using log4net;
 using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
+using System.Web.Http.Cors;
+using System.Web.Mvc;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
+    [HandleError]
+    [EnableCors("*", "*", "*")]
     public class OrderV2Controller : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -31,8 +35,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         /// </returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
-        [Route("api/v2/order")]
-        [HttpPost]
+        [System.Web.Http.Route("api/v2/order")]
+        [System.Web.Http.HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult PostOrder(OrderType order)
         {
@@ -81,8 +85,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             return files.ToArray();
         }
 
-        [Route("api/v2/order/{referenceNumber}")]
-        [HttpGet]
+        [System.Web.Http.Route("api/v2/order/{referenceNumber}")]
+        [System.Web.Http.HttpGet]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult GetOrder(int referenceNumber)
         {
