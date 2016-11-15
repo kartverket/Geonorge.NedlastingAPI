@@ -26,6 +26,20 @@
     <script>
         var applicationEnvironment = '@Html.EnvironmentName()';
         var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
+        var authenticationData = {
+            supportsLogin: true,
+            isAuthenticated: @Request.IsAuthenticated.ToString().ToLower(),
+            urlActionSignOut: '@Url.Action("LogOut", "AuthServices")',
+            urlActionSignIn: '@Url.Action("SignIn", "AuthServices", new { ReturnUrl = Request.Url })'
+            @if (Request.IsAuthenticated)
+            {
+                foreach (var c in System.Security.Claims.ClaimsPrincipal.Current.Claims) {
+                    if (c.Type == "urn:oid:0.9.2342.19200300.100.1.1" || c.Type == "username") {
+                        <text>, userName: '@c.Value'</text>
+                    }
+                }
+            }
+        }
     </script>
 
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
