@@ -5,12 +5,12 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Mvc;
+using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
-    [ApiExplorerSettings(IgnoreApi = true)] // undocumented until version 2 is ready to be released
     [HandleError]
     [EnableCors("*", "*", "*")]
     [System.Web.Http.RoutePrefix("api/v2")]
@@ -105,5 +105,22 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                 return InternalServerError();
             }
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("can-download")]
+        public IHttpActionResult CanDownload(CanDownloadRequestType request)
+        {
+            try
+            {
+                return Ok(new CanDownloadResponseType() { canDownload = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
+                return InternalServerError();
+            }
+        }
+
+
     }
 }
