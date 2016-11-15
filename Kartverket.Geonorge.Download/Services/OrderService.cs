@@ -98,7 +98,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation)
         {
-            var orderItem = _dbContext.OrderItems.Find(updateFileStatusInformation.FileId);
+            var orderItem = _dbContext.OrderItems.FirstOrDefault(x => x.FileId == updateFileStatusInformation.FileIdAsGuid);
             if (orderItem == null)
                 throw new ArgumentException("Invalid file id - no such file exists.");
 
@@ -109,7 +109,7 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext.Entry(orderItem).State = EntityState.Modified;
             _dbContext.SaveChanges();
 
-            string logMessage = $"OrderItem {orderItem.Id} has been updated. Status: {orderItem.Status}";
+            string logMessage = $"OrderItem [id={orderItem.Id}, fileId={orderItem.FileId}] has been updated. Status: {orderItem.Status}";
 
             if (orderItem.Status == OrderItemStatus.Error)
                 Log.Error($"{logMessage}, Message: {orderItem.Message} ");

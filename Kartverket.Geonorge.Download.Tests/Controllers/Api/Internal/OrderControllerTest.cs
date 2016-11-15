@@ -32,22 +32,6 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
         }
 
         [Fact]
-        public void ShouldReturnBadRequestWhenFileIdIsNotANumber()
-        {
-            var orderServiceMock = CreateOrderServiceMock();
-            var response = ExecuteUpdateFileStatus(orderServiceMock, new UpdateFileStatusRequest
-            {
-                FileId = "aaaaaaaa123",
-                DownloadUrl = "http://blabla.com/testfile.zip",
-                Status = "ReadyForDownload"
-            });
-
-            orderServiceMock.Verify(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()), Times.Never);
-
-            response.GetType().Should().Be(typeof(BadRequestErrorMessageResult));
-        }
-
-        [Fact]
         public void ShouldReturnBadRequestWhenInvalidStatus()
         {
             var orderServiceMock = CreateOrderServiceMock();

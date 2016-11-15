@@ -34,19 +34,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             {
                 UpdateFileStatusInformation updateFileStatusInformation = new UpdateFileStatusInformation
                 {
-                    
+                    FileId = request.FileId,
                     DownloadUrl = request.DownloadUrl,
                     Message = request.Message
                 };
                 
-                int fileIdAsInt;
-                if (!int.TryParse(request.FileId, out fileIdAsInt))
-                {
-                    Log.Info("Bad request - invalid file id: " + request.FileId);
-                    return BadRequest("Invalid file id.");
-                }
-                updateFileStatusInformation.FileId = fileIdAsInt;
-
                 OrderItemStatus itemStatus;
                 if (!System.Enum.TryParse(request.Status, true, out itemStatus))
                 {
