@@ -9,7 +9,7 @@ using Geonorge.NedlastingApi.V1;
 
 namespace Kartverket.Geonorge.Download.Services
 {
-    public class CapabilitiesService
+    public class CapabilitiesService : ICapabilitiesService
     {
         DownloadContext db = new DownloadContext();
         RegisterFetcher register = new RegisterFetcher();
@@ -20,26 +20,27 @@ namespace Kartverket.Geonorge.Download.Services
 
         public CapabilitiesType GetCapabilities(string metadataUuid, string apiVersionId) 
         {
+            var dataset = GetDataset(metadataUuid);
 
-            var capabilitiesQuery = from c in db.Capabilities
-                                    where c.metadataUuid == metadataUuid
-                                    select c;
+            if (dataset == null) return null;
 
-            var capability = capabilitiesQuery.FirstOrDefault();
-
-            if (capability == null)
-                return null;
-
-            CapabilitiesType capabilities = new CapabilitiesType();
-            capabilities.supportsAreaSelection = capability.supportsAreaSelection;
-            capabilities.supportsFormatSelection = capability.supportsFormatSelection;
-            capabilities.supportsPolygonSelection = capability.supportsPolygonSelection;
-            capabilities.supportsProjectionSelection = capability.supportsProjectionSelection;
-            capabilities.mapSelectionLayer = capability.mapSelectionLayer;
-            capabilities._links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid, apiVersionId).ToArray();
-            return capabilities;
+            return new CapabilitiesType
+            {
+                supportsAreaSelection = dataset.supportsAreaSelection,
+                supportsFormatSelection = dataset.supportsFormatSelection,
+                supportsPolygonSelection = dataset.supportsPolygonSelection,
+                supportsProjectionSelection = dataset.supportsProjectionSelection,
+                mapSelectionLayer = dataset.mapSelectionLayer,
+                _links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid, apiVersionId).ToArray()
+            };
         }
 
+        public Dataset GetDataset(string metadataUuid)
+        {
+            return (from c in db.Capabilities
+                where c.metadataUuid == metadataUuid
+                select c).FirstOrDefault();
+        }
 
         public List<ProjectionType> GetProjections(string metadataUuid)
         {
