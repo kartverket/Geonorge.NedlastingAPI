@@ -10,6 +10,7 @@ using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
 using System.Web.Http.Cors;
 using System.Web.Mvc;
+using Kartverket.Geonorge.Utilities;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
@@ -42,7 +43,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                string username = null;
+                string username = SecurityClaim.GetUsername();
                 Order savedOrder = _orderService.CreateOrder(order, username);
                 return Ok(ConvertToReceipt(savedOrder));
             }
