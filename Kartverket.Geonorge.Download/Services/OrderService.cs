@@ -24,6 +24,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public Order CreateOrder(OrderType incomingOrder, string username)
         {
+            Log.Debug($"Creating order for email={incomingOrder.email}, username={username}");
             var order = new Order
             {
                 email = incomingOrder.email,

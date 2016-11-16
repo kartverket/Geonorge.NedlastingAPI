@@ -24,6 +24,8 @@ namespace Kartverket.Geonorge.Download
             // don't show exception stacktrace to the public
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
+            config.MessageHandlers.Add(new MessageLoggingHandler());
+
             config.EnsureInitialized();
         }
     }
