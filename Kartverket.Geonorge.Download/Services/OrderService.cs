@@ -31,9 +31,27 @@ namespace Kartverket.Geonorge.Download.Services
                 username = username
             };
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
-            order.AddOrderItems(_clipperService.GetClippableOrderItems(incomingOrder));
+            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
+            order.AddOrderItems(clippableOrderItems);
+
+            CheckAccessRestrictions(order, username);
+
             SaveOrder(order);
+
+            _clipperService.SendClippingRequests(clippableOrderItems, order.email);
+
             return order;
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private void CheckAccessRestrictions(Order order, string username)
+        {
+            List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
+
+            bool hasAnyRestrictedDatasets = _dbContext.Capabilities.Any(d => distinctMetadataUuids.Contains(d.metadataUuid) && d.AccessConstraint != null);
+            if (hasAnyRestrictedDatasets && string.IsNullOrEmpty(username))
+                throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
+
         }
 
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)

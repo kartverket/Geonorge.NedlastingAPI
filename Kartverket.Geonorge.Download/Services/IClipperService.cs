@@ -7,5 +7,6 @@ namespace Kartverket.Geonorge.Download.Services
     public interface IClipperService
     {
         List<OrderItem> GetClippableOrderItems(OrderType incomingOrder);
+        void SendClippingRequests(List<OrderItem> orderItems, string email);
     }
 }

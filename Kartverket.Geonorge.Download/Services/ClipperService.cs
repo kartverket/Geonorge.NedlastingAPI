@@ -45,14 +45,21 @@ namespace Kartverket.Geonorge.Download.Services
                             };
 
                             orderItems.Add(orderItem);
-
-                            var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
-                            Task.Run(() => { SendClippingRequestAsync(orderItem, incomingOrder.email, clipperUrl); });
                         }
                     }
                 }
             }
             return orderItems;
+        }
+
+
+        public void SendClippingRequests(List<OrderItem> orderItems, string email)
+        {
+            foreach (var orderItem in orderItems)
+            {
+                var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
+                Task.Run(() => { SendClippingRequestAsync(orderItem, email, clipperUrl); });
+            }
         }
 
 

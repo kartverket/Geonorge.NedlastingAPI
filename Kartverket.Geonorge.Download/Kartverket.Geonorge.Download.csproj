@@ -282,6 +282,7 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AccessRestrictionException.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\ICapabilitiesService.cs" />

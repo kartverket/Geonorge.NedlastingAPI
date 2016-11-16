@@ -47,6 +47,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                 Order savedOrder = _orderService.CreateOrder(order, username);
                 return Ok(ConvertToReceipt(savedOrder));
             }
+            catch (AccessRestrictionException e)
+            {
+                Log.Info("Download Access denied", e);
+                return Unauthorized();
+            }
             catch (Exception ex)
             {
                 Log.Error("Error API", ex);
