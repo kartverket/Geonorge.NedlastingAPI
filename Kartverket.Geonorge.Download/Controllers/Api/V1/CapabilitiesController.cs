@@ -14,7 +14,13 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class CapabilitiesController : ApiController
     {
+        private readonly ICapabilitiesService _capabilitiesService;
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public CapabilitiesController(ICapabilitiesService capabilitiesService)
+        {
+            _capabilitiesService = capabilitiesService;
+        }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet]
@@ -36,7 +42,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         {
             try
             {
-                var capabilities = new CapabilitiesService().GetCapabilities(metadataUuid, "v1");
+                var capabilities = _capabilitiesService.GetCapabilities(metadataUuid, "v1");
                 if (capabilities == null)
                     return NotFound();
 
@@ -59,7 +65,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         { 
             try 
             { 
-                return new CapabilitiesService().GetProjections(metadataUuid);
+                return _capabilitiesService.GetProjections(metadataUuid);
             }
             catch (Exception ex)
             {
@@ -76,15 +82,15 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         [ResponseType(typeof(List<AreaType>))]
         public List<AreaType> GetAreas(string metadataUuid)
         {
-            //try
-            //{
-                return new CapabilitiesService().GetAreas(metadataUuid);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.Error("Error API", ex);
-            //    return null;
-            //}
+            try
+            {
+                return _capabilitiesService.GetAreas(metadataUuid);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error API", ex);
+                return null;
+            }
         }
 
         /// <summary>
@@ -97,7 +103,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         {
             try
             {
-                return new CapabilitiesService().GetFormats(metadataUuid);
+                return _capabilitiesService.GetFormats(metadataUuid);
             }
             catch (Exception ex)
             {

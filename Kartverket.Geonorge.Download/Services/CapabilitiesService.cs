@@ -1,21 +1,19 @@
 ﻿using Kartverket.Geonorge.Download.Models;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
-using System.Web.Configuration;
 using Geonorge.NedlastingApi.V1;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public class CapabilitiesService : ICapabilitiesService
     {
-        DownloadContext db = new DownloadContext();
-        RegisterFetcher register = new RegisterFetcher();
+        private readonly DownloadContext _dbContext;
+        private readonly RegisterFetcher _registerFetcher;
 
-        public CapabilitiesService() 
+        public CapabilitiesService(DownloadContext dbContextContext, RegisterFetcher registerFetcherFetcher)
         {
+            _dbContext = dbContextContext;
+            _registerFetcher = registerFetcherFetcher;
         }
 
         public CapabilitiesType GetCapabilities(string metadataUuid, string apiVersionId) 
@@ -37,7 +35,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public Dataset GetDataset(string metadataUuid)
         {
-            return (from c in db.Capabilities
+            return (from c in _dbContext.Capabilities
                 where c.metadataUuid == metadataUuid
                 select c).FirstOrDefault();
         }
@@ -45,7 +43,7 @@ namespace Kartverket.Geonorge.Download.Services
         public List<ProjectionType> GetProjections(string metadataUuid)
         {
 
-            var projectionsQuery = (from p in db.FileList
+            var projectionsQuery = (from p in _dbContext.FileList
                                    where p.Dataset1.metadataUuid == metadataUuid
                                    select p.projeksjon).Distinct();
 
@@ -56,8 +54,8 @@ namespace Kartverket.Geonorge.Download.Services
 
                 ProjectionType p1 = new ProjectionType();
                 p1.code = projection.ToString();
-                p1.codespace = register.GetProjection(projection.ToString()).codespace;
-                p1.name = register.GetProjection(projection.ToString()).name;
+                p1.codespace = _registerFetcher.GetProjection(projection.ToString()).codespace;
+                p1.name = _registerFetcher.GetProjection(projection.ToString()).name;
 
                 projections.Add(p1);
             }
@@ -68,7 +66,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public List<AreaType> GetAreas(string metadataUuid)
         {
-            var areasQuery = (from p in db.FileList
+            var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset1.metadataUuid == metadataUuid
                               select new { p.inndeling, p.inndelingsverdi, p.projeksjon, p.format }).Distinct().ToList() ;
 
@@ -79,7 +77,7 @@ namespace Kartverket.Geonorge.Download.Services
             AreaType a1 = new AreaType();
             a1.type = area.inndeling;
             a1.code = area.inndelingsverdi;
-            a1.name = register.GetArea(a1.type, a1.code).name;
+            a1.name = _registerFetcher.GetArea(a1.type, a1.code).name;
             areas.Add(a1);
             }
 
@@ -99,8 +97,8 @@ namespace Kartverket.Geonorge.Download.Services
                     projections.Add(new ProjectionType
                     {
                         code = data.projeksjon,
-                        codespace = register.GetProjection(data.projeksjon).codespace,
-                        name = register.GetProjection(data.projeksjon).name
+                        codespace = _registerFetcher.GetProjection(data.projeksjon).codespace,
+                        name = _registerFetcher.GetProjection(data.projeksjon).name
                     });
                 }
 
@@ -124,7 +122,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public List<FormatType> GetFormats(string metadataUuid)
         {
-            var formatsQuery = (from p in db.FileList
+            var formatsQuery = (from p in _dbContext.FileList
                               where p.Dataset1.metadataUuid == metadataUuid
                               select p.format).Distinct();
 

@@ -16,7 +16,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
     [System.Web.Http.RoutePrefix("api/v2")]
     public class CapabilitiesV2Controller : ApiController
     {
+        private readonly ICapabilitiesService _capabilitiesService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+
+        public CapabilitiesV2Controller(ICapabilitiesService capabilitiesService)
+        {
+            _capabilitiesService = capabilitiesService;
+        }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [System.Web.Http.HttpGet]
@@ -36,7 +43,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                var capabilities = new CapabilitiesService().GetCapabilities(metadataUuid, "v2");
+                var capabilities = _capabilitiesService.GetCapabilities(metadataUuid, "v2");
                 if (capabilities == null)
                 {
                     Log.Info("Capabilities not found for uuid: " + metadataUuid);
@@ -61,7 +68,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                return Ok(new CapabilitiesService().GetProjections(metadataUuid));
+                return Ok(_capabilitiesService.GetProjections(metadataUuid));
             }
             catch (Exception ex)
             {
@@ -79,7 +86,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                return Ok(new CapabilitiesService().GetAreas(metadataUuid));
+                return Ok(_capabilitiesService.GetAreas(metadataUuid));
             }
             catch (Exception ex)
             {
@@ -97,7 +104,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                return Ok(new CapabilitiesService().GetFormats(metadataUuid));
+                return Ok(_capabilitiesService.GetFormats(metadataUuid));
             }
             catch (Exception ex)
             {
