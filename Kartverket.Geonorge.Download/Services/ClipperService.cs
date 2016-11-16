@@ -46,7 +46,8 @@ namespace Kartverket.Geonorge.Download.Services
 
                             orderItems.Add(orderItem);
 
-                            Task.Run(() => { SendClippingRequestAsync(orderItem, incomingOrder.email); });
+                            var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
+                            Task.Run(() => { SendClippingRequestAsync(orderItem, incomingOrder.email, clipperUrl); });
                         }
                     }
                 }
@@ -55,9 +56,8 @@ namespace Kartverket.Geonorge.Download.Services
         }
 
 
-        private async void SendClippingRequestAsync(OrderItem orderItem, string email)
+        private async void SendClippingRequestAsync(OrderItem orderItem, string email, string clipperUrl)
         {
-            var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
             if (string.IsNullOrWhiteSpace(clipperUrl))
             {
                 Log.Error("ClipperUrl is not defined for metadata uuid: " + orderItem.MetadataUuid +
