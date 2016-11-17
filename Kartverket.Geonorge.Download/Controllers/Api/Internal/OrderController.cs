@@ -9,7 +9,6 @@ using log4net;
 namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
     [System.Web.Http.RoutePrefix("api/internal/order")]
-    [RequireHttpsNonLocal]
     [System.Web.Http.Authorize(Roles = AuthConfig.DatasetProviderRole)]
     public class ManageOrderController : ApiController
     {
