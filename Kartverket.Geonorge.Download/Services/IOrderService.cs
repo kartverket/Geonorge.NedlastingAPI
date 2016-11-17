@@ -9,7 +9,9 @@ namespace Kartverket.Geonorge.Download.Services
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
-        OrderReceiptType Find(int referenceNumber);
+        Order Find(string referenceNumber);
+
+        void CheckAccessRestrictions(Order order, string username);
 
     }
 }

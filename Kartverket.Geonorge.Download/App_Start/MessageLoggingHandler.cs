@@ -21,9 +21,12 @@ namespace Kartverket.Geonorge.Download
             {
                 string logMessage = $"[{correlationId}] Request: {requestInfo}";
 
-                string messageAsString = Encoding.UTF8.GetString(message);
-                if (!messageAsString.IsNullOrWhiteSpace())
-                    logMessage = logMessage + "\r\n" + messageAsString;
+                if (message != null)
+                {
+                    string messageAsString = Encoding.UTF8.GetString(message);
+                    if (!messageAsString.IsNullOrWhiteSpace())
+                        logMessage = logMessage + "\r\n" + messageAsString;
+                }
                 
                 Log.Info(logMessage);
             });
@@ -34,7 +37,9 @@ namespace Kartverket.Geonorge.Download
         {
             await Task.Run(() =>
             {
-                var logMessage = $"[{correlationId}] Response: {requestInfo} {(int)responseStatusCode} {responseStatusCode}\r\n{Encoding.UTF8.GetString(message)}";
+                var logMessage = $"[{correlationId}] Response: {requestInfo} {(int)responseStatusCode} {responseStatusCode}";
+                if (message != null)
+                    logMessage = logMessage + "\r\n" + Encoding.UTF8.GetString(message);
 
                 if ((int)responseStatusCode >= 200 && (int) responseStatusCode < 400)
                     Log.Info(logMessage);
@@ -55,14 +60,19 @@ namespace Kartverket.Geonorge.Download
 
             await IncommingMessageAsync(corrId, requestInfo, requestMessage);
 
-            var response = await base.SendAsync(request, cancellationToken);
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-            byte[] responseMessage;
+            byte[] responseMessage = null;
 
             if (response.IsSuccessStatusCode)
-                responseMessage = await response.Content.ReadAsByteArrayAsync();
+            {
+                if (response.Content != null)
+                    responseMessage = await response.Content.ReadAsByteArrayAsync();
+            }
             else
+            {
                 responseMessage = Encoding.UTF8.GetBytes(response.ReasonPhrase);
+            }
 
             await OutgoingMessageAsync(corrId, requestInfo, response.StatusCode, responseMessage);
 

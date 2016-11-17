@@ -1,5 +1,8 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
+using Kartverket.Geonorge.Utilities;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
@@ -21,31 +24,28 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             _capabilitiesService = capabilitiesService;
         }
 
-        // GET /api/download/order/1307/4047
-        [Route("api/download/order/{referenceNumber}/{fileId}")]
-        public IHttpActionResult GetFile(int referenceNumber, int fileId)
+        [Route("api/v2/download/order/{referenceNumber}/{fileId}")]
+        public IHttpActionResult GetFile(string referenceNumber, string fileId)
         {
-            var orderReceiptType = _orderService.Find(referenceNumber);
-            if (orderReceiptType == null)
+            Order order = _orderService.Find(referenceNumber);
+            if (order == null)
                 return NotFound();
 
-            // TODO: if (orderReceiptType doesn't belong to authenticated user) return Unauthorized();
+            string username = SecurityClaim.GetUsername();
 
-            var fileType = _downloadService.GetFileType(orderReceiptType, fileId);
+            if (!order.CanBeDownloadedByUser(username))
+                return Unauthorized();
+
+            OrderItem item = order.GetItemWithFileId(fileId);
+            if (item == null || !item.IsReadyForDownload())
+                return NotFound();
             
-            if ((fileType == null) || !_downloadService.IsReadyToDownload(fileType))
-                return NotFound();
-            
-            var dataSet = _capabilitiesService.GetDataset(fileType.metadataUuid);
-            if (dataSet == null)
-                return NotFound();
-
             // Download open data directly from it's location:
-            if (string.IsNullOrEmpty(dataSet.AccessConstraint))
-                return Redirect(fileType.downloadUrl);
+            if (item.AccessConstraint.IsOpen())
+                return Redirect(item.DownloadUrl);
             
             // Download restricted data as stream trought this api:
-            return Ok(_downloadService.CreateResponseFromRemoteFile(fileType.downloadUrl));
+            return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
         }
     }
 }

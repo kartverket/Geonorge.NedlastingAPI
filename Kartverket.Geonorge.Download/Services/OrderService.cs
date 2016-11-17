@@ -33,7 +33,7 @@ namespace Kartverket.Geonorge.Download.Services
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
             List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
             order.AddOrderItems(clippableOrderItems);
-
+            
             CheckAccessRestrictions(order, username);
 
             SaveOrder(order);
@@ -44,14 +44,12 @@ namespace Kartverket.Geonorge.Download.Services
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private void CheckAccessRestrictions(Order order, string username)
+        public void CheckAccessRestrictions(Order order, string username)
         {
-            List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
+            bool hasAnyRestrictedDatasets = GetAccessRestrictionsForOrder(order).Any();
 
-            bool hasAnyRestrictedDatasets = _dbContext.Capabilities.Any(d => distinctMetadataUuids.Contains(d.metadataUuid) && d.AccessConstraint != null);
-            if (hasAnyRestrictedDatasets && string.IsNullOrEmpty(username))
+            if (hasAnyRestrictedDatasets && string.IsNullOrWhiteSpace(username))
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
-
         }
 
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
@@ -136,27 +134,27 @@ namespace Kartverket.Geonorge.Download.Services
                 Log.Info($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
         }
 
-        public OrderReceiptType Find(int referenceNumber)
+        public Order Find(string referenceNumber)
         {
-            var order = _dbContext.OrderDownloads.Find(referenceNumber);
-
-            return order != null
-                ? new OrderReceiptType
-                {
-                    referenceNumber = order.referenceNumber.ToString(),
-                    files = GetFiles(order)
-                }
-                : null;
+            var referenceNumberAsGuid = Guid.Parse(referenceNumber);
+            var order = _dbContext.OrderDownloads.FirstOrDefault(o => o.Uuid == referenceNumberAsGuid);
+            order?.AddAccessConstraints(GetAccessRestrictionsForOrder(order));
+            return order;
         }
 
-        private static FileType[] GetFiles(Order orderDownload)
+        private List<DatasetAccessConstraint> GetAccessRestrictionsForOrder(Order order)
         {
-            return orderDownload.orderItem.Select(orderItem => new FileType
-            {
-                name = orderItem.FileName,
-                downloadUrl = orderItem.DownloadUrl,
-                status = orderItem.Status.ToString()
-            }).ToArray();
+            List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
+
+            List<DatasetAccessConstraint> accessConstraints = _dbContext.Capabilities
+                .Where(d => distinctMetadataUuids.Contains(d.metadataUuid) && d.AccessConstraint != null)
+                .Select(d => new DatasetAccessConstraint() {
+                    MetadataUuid = d.metadataUuid,
+                    AccessConstraint = new AccessConstraint() { Constraint = d.AccessConstraint}
+                    })
+                .ToList();
+
+            return accessConstraints;
         }
     }
 }

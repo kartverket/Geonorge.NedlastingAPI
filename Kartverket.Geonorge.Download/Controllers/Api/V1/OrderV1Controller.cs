@@ -36,11 +36,16 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
             {
                 global::Geonorge.NedlastingApi.V2.OrderType convertedOrder = ConvertFromVersion1ToVersion2(order);
 
-                string username = null; // todo fetch username claim
-
-                Order savedOrder = _orderService.CreateOrder(convertedOrder, username);
+                // no support for authentication in version 1 of api - username is always null
+                // order requests for restricted datasets will always throw AccessRestrictionException
+                Order savedOrder = _orderService.CreateOrder(convertedOrder, null); 
 
                 return Ok(ConvertToReceipt(savedOrder));
+            }
+            catch (AccessRestrictionException e)
+            {
+                Log.Info("Download Access denied", e);
+                return Unauthorized();
             }
             catch (Exception ex)
             {

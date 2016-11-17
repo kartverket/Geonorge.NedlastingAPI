@@ -11,6 +11,7 @@ namespace Kartverket.Geonorge.Download.Models
         {
             Status = OrderItemStatus.WaitingForProcessing;
             FileId = Guid.NewGuid();
+            AccessConstraint = new AccessConstraint();
         }
 
         [Key]
@@ -52,5 +53,16 @@ namespace Kartverket.Geonorge.Download.Models
         public string CoordinateSystem { get; set; }
         public string Projection { get; set; }
         public string MetadataUuid { get; set; }
+
+        [NotMapped]
+        public AccessConstraint AccessConstraint { get; set; }
+
+        [NotMapped]
+        public Guid MetadataUuidAsGuid => Guid.Parse(MetadataUuid);
+
+        public bool IsReadyForDownload()
+        {
+            return Status == OrderItemStatus.ReadyForDownload;
+        }
     }
 }

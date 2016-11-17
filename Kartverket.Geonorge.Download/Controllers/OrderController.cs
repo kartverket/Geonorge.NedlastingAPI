@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Kartverket.Geonorge.Download.Services;
+using Kartverket.Geonorge.Utilities;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
@@ -13,10 +14,20 @@ namespace Kartverket.Geonorge.Download.Controllers
         }
 
         // GET: /order/details/1337
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            var order = _orderService.Find(id);
-            return order != null ? (ActionResult) View(order) : HttpNotFound();
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                var order = _orderService.Find(id);
+                if (order != null)
+                {
+                    if (!order.BelongsToUser(SecurityClaim.GetUsername()))
+                        return new HttpUnauthorizedResult();
+
+                    return View(order);
+                }
+            }
+            return HttpNotFound();
         }
     }
 }

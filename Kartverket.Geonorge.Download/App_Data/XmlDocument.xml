@@ -627,6 +627,26 @@
             Optional message, should be provided for errors.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.referenceNumber">
+            <summary>
+            this used to be the external identifier
+            deprecated in favour of the Uuid property
+            this is still the primary key in the database
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.Uuid">
+            <summary>
+            The identifier used for external referencing 
+            Unique for all new orders, currently set to zero value guid for all old orders
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Models.Order.CanBeDownloadedByUser(System.String)">
+            <summary>
+            Restricted datasets require registered username in order and the username must be the same as the requesting username
+            </summary>
+            <param name="requestUsername"></param>
+            <returns></returns>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.DownloadUrl">
             <summary>
             The complete url to the file to be downloaded.

@@ -63,14 +63,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             return new OrderReceiptType()
             {
-                referenceNumber = order.referenceNumber.ToString(),
+                referenceNumber = order.Uuid.ToString(),
                 email = order.email,
-                orderDate = order.orderDate.HasValue ? order.orderDate.Value : DateTime.Now,
-                files = ConvertToFiles(order.orderItem)
+                orderDate = order.orderDate ?? DateTime.Now,
+                files = ConvertToFiles(order.orderItem, order.Uuid)
             };
         }
 
-        private FileType[] ConvertToFiles(List<OrderItem> orderItems)
+        private FileType[] ConvertToFiles(List<OrderItem> orderItems, Guid orderUuid)
         {
             var files = new List<FileType>();
             foreach (var item in orderItems)
@@ -78,7 +78,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                 files.Add(new FileType()
                 {
                     name = item.FileName,
-                    downloadUrl = item.DownloadUrl,
+                    downloadUrl = item.IsReadyForDownload() ? new DownloadUrlBuilder().OrderId(orderUuid).FileId(item.FileId).Build() : null,
                     fileId = item.FileId.ToString(),
                     area = item.Area,
                     coordinates = item.Coordinates,
@@ -94,14 +94,20 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         [System.Web.Http.Route("api/v2/order/{referenceNumber}")]
         [System.Web.Http.HttpGet]
         [ResponseType(typeof(OrderReceiptType))]
-        public IHttpActionResult GetOrder(int referenceNumber)
+        public IHttpActionResult GetOrder(string referenceNumber)
         {
             // Redirect to web controller if html is requested:
             if (Request.Headers.Accept.First().MediaType.Equals("text/html"))
                 return Redirect(Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/order/details/" + referenceNumber);
 
-            var order = _orderService.Find(referenceNumber);
-            return order != null ? (IHttpActionResult) Ok(order) : NotFound();
+            Order order = _orderService.Find(referenceNumber);
+            if (order == null)
+                return NotFound();
+
+            if (!order.BelongsToUser(SecurityClaim.GetUsername()))
+                return Unauthorized();
+
+            return Ok(ConvertToReceipt(order));
         }
     }
 }
