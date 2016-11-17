@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0" xmlns:app="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0" xmlns:rest="http://www.kxml.no/rest/1.0" elementFormDefault="qualified">
-  <!-- Generert av MetaTrans(1.1.0.0) - 08.11.2016 09.08.18-->
-    <xs:import namespace="http://www.kxml.no/rest/1.0" schemaLocation="rest.xsd"/>
-
+  <xs:import namespace="http://www.kxml.no/rest/1.0" schemaLocation="rest.xsd"/>
+  <!-- Generert av MetaTrans(1.1.0.0) - 17.11.2016 14.39.26-->
   <xs:element name="Area" type="app:AreaType" />
   <xs:complexType name="AreaListe">
     <xs:sequence>
@@ -28,7 +27,8 @@
   <xs:complexType name="CanDownloadRequestType">
     <xs:sequence>
       <xs:element name="metadataUuid" minOccurs="1" maxOccurs="1" type="xs:string" />
-      <xs:element name="polygon" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="coordinates" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="coordinateSystem" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>
@@ -79,6 +79,7 @@
       <xs:element name="projection" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="format" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="status" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
+      <xs:element name="metadataName" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>
@@ -165,6 +166,18 @@
       <xs:element name="code" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="name" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="codespace" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VersionResponse" type="app:VersionResponseType" />
+  <xs:complexType name="VersionResponseListe">
+    <xs:sequence>
+      <xs:element name="versionresponse" type="app:VersionResponseType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VersionResponseType">
+    <xs:sequence>
+      <xs:element name="version" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>
