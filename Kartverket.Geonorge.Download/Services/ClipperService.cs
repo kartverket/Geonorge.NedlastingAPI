@@ -41,7 +41,8 @@ namespace Kartverket.Geonorge.Download.Services
                                 CoordinateSystem = epsgCode,
                                 Format = format.name,
                                 Projection = projection.code,
-                                MetadataUuid = orderLine.metadataUuid
+                                MetadataUuid = orderLine.metadataUuid,
+                                MetadataName = GetMetadataName(orderLine.metadataUuid)
                             };
 
                             orderItems.Add(orderItem);
@@ -101,8 +102,17 @@ namespace Kartverket.Geonorge.Download.Services
 
         private string GetClipperServiceUrl(string metadataUuid)
         {
-            var dataset = _dbContext.Capabilities.FirstOrDefault(ds => ds.metadataUuid == metadataUuid);
-            return dataset?.fmeklippeUrl;
+            return GetDataset(metadataUuid)?.fmeklippeUrl;
+        }
+
+        private string GetMetadataName(string metadataUuid)
+        {
+            return GetDataset(metadataUuid)?.Tittel;
+        }
+
+        private Dataset GetDataset(string metadataUuid)
+        {
+            return _dbContext.Capabilities.FirstOrDefault(d => d.metadataUuid == metadataUuid);
         }
     }
 }

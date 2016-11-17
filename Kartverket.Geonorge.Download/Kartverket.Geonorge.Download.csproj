@@ -279,6 +279,10 @@
     <Compile Include="Migrations\201611171917158_AddMaxAreaToDataset.Designer.cs">
       <DependentUpon>201611171917158_AddMaxAreaToDataset.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611171933141_AddMetadataNameToOrderItem.cs" />
+    <Compile Include="Migrations\201611171933141_AddMetadataNameToOrderItem.Designer.cs">
+      <DependentUpon>201611171933141_AddMetadataNameToOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
@@ -560,6 +564,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611171917158_AddMaxAreaToDataset.resx">
       <DependentUpon>201611171917158_AddMaxAreaToDataset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611171933141_AddMetadataNameToOrderItem.resx">
+      <DependentUpon>201611171933141_AddMetadataNameToOrderItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

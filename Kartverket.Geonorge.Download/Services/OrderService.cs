@@ -88,9 +88,9 @@ namespace Kartverket.Geonorge.Download.Services
                     query = query.Where(predicate);
                 }
 
-                var files = query.ToList();
+                List<filliste> files = query.ToList();
 
-                foreach (var item in files)
+                foreach (filliste item in files)
                 {
                     orderItems.Add(new OrderItem
                     {
@@ -100,7 +100,8 @@ namespace Kartverket.Geonorge.Download.Services
                         Area = item.inndelingsverdi,
                         Projection = item.projeksjon,
                         MetadataUuid = orderLine.metadataUuid,
-                        Status = OrderItemStatus.ReadyForDownload
+                        Status = OrderItemStatus.ReadyForDownload,
+                        MetadataName = item.Dataset1.Tittel
                     });
                 }
             }

@@ -85,7 +85,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                     format = item.Format,
                     metadataUuid = item.MetadataUuid,
                     projection = item.Projection,
-                    status = item.Status.ToString()
+                    status = item.Status.ToString(),
+                    metadataName = item.MetadataName
                 });
             }
             return files.ToArray();
