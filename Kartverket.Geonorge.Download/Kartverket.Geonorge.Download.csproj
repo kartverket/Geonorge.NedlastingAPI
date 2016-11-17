@@ -245,6 +245,7 @@
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\DownloadController.cs" />
     <Compile Include="Controllers\Api\V2\OrderV2Controller.cs" />
+    <Compile Include="Controllers\Api\VersionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\V1\OrderV1Controller.cs" />
