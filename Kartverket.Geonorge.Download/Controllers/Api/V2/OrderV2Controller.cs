@@ -49,7 +49,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             }
             catch (AccessRestrictionException e)
             {
-                Log.Info("Download Access denied", e);
+                Log.Info(e.Message, e);
                 return Unauthorized();
             }
             catch (Exception ex)

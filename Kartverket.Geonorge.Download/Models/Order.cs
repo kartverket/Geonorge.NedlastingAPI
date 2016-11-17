@@ -73,13 +73,10 @@ namespace Kartverket.Geonorge.Download.Models
         /// <returns></returns>
         public bool CanBeDownloadedByUser(string requestUsername)
         {
-            if (ContainsRestrictedDatasets() && BelongsToUser(requestUsername))
-                return true;
+            if (ContainsRestrictedDatasets() && !BelongsToUser(requestUsername))
+                return false;
 
-            if (BelongsToUser(requestUsername))
-                return true;
-
-            return false;
+            return true;
         }
 
         public bool BelongsToUser(string requestUsername)
