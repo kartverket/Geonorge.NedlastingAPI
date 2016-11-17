@@ -36,6 +36,9 @@ namespace Kartverket.Geonorge.Download.Models
 
         public string AccessConstraint { get; set; }
 
+        [Column("maxArea")]
+        public int MaxArea { get; set; }
+
         public virtual ICollection<filliste> filliste { get; set; }
     }
 }
