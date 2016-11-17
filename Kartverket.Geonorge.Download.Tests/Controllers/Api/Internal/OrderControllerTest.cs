@@ -75,10 +75,18 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
             orderServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
             return orderServiceMock;
         }
+
+        private static Mock<INotificationService> CreateNotificationServiceMock()
+        {
+            var notificationServiceMock = new Mock<INotificationService>();
+            notificationServiceMock.Setup(m => m.SendReadyForDownloadNotification(It.IsAny<string>()));
+            return notificationServiceMock;
+        }
         
         private ManageOrderController CreateController(Mock<IOrderService> orderServiceMock)
         {
-            ManageOrderController controller = new ManageOrderController(orderServiceMock.Object);
+            var notificationServiceMock = CreateNotificationServiceMock();
+            ManageOrderController controller = new ManageOrderController(orderServiceMock.Object, notificationServiceMock.Object);
             controller.Request = new HttpRequestMessage();
             controller.Configuration = new HttpConfiguration();
             return controller;
