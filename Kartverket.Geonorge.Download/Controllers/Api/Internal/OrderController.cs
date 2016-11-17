@@ -15,10 +15,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IOrderService _orderService;
+        private readonly INotificationService _notificationService;
 
-        public ManageOrderController(IOrderService orderService)
+        public ManageOrderController(IOrderService orderService, INotificationService notificationService)
         {
             _orderService = orderService;
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -49,6 +51,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 
 
                 _orderService.UpdateFileStatus(updateFileStatusInformation);
+                
+                if (request.Status == "ReadyForDownload")
+                    _notificationService.SendReadyForDownloadNotification(request.FileId);
             }
             catch (Exception e)
             {

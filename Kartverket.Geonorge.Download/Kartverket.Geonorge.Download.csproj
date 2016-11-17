@@ -293,9 +293,13 @@
     <Compile Include="Services\AccessRestrictionException.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\DownloadService.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ICapabilitiesService.cs" />
     <Compile Include="Services\IClipperService.cs" />
     <Compile Include="Services\IDownloadService.cs" />
+    <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\IOrderService.cs" />
     <Compile Include="Services\MemoryCacher.cs" />
     <Compile Include="Services\OrderService.cs" />

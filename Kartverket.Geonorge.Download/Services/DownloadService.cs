@@ -1,21 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using Geonorge.NedlastingApi.V2;
+using Kartverket.Geonorge.Download.Models;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public class DownloadService : IDownloadService
     {
-        public FileType GetFileType(OrderReceiptType order, int fileId)
-        {
-            return order.files.FirstOrDefault(f => int.Parse(f.fileId) == fileId);
-        }
+        private readonly DownloadContext _dbContext;
 
-        public bool IsReadyToDownload(FileType file)
+        public DownloadService(DownloadContext dbContext)
         {
-            return file.status.Equals("ReadyToDownLoad");
+            _dbContext = dbContext;
         }
 
         public HttpResponse CreateResponseFromRemoteFile(string url)

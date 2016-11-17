@@ -13,5 +13,6 @@ namespace Kartverket.Geonorge.Download.Services
 
         void CheckAccessRestrictions(Order order, string username);
 
+        OrderItem FindOrderItem(string fileId);
     }
 }

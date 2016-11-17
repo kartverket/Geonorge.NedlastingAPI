@@ -142,6 +142,13 @@ namespace Kartverket.Geonorge.Download.Services
             return order;
         }
 
+        public OrderItem FindOrderItem(string fileId)
+        {
+            var fileIdGuid = Guid.Parse(fileId);
+
+            return _dbContext.OrderItems.FirstOrDefault(o => o.FileId == fileIdGuid);
+        }
+
         private List<DatasetAccessConstraint> GetAccessRestrictionsForOrder(Order order)
         {
             List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
