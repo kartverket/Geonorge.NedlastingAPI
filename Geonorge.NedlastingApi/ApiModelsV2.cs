@@ -142,7 +142,10 @@ namespace Geonorge.NedlastingApi.V2 {
         public string metadataUuid;
         
         /// <remarks/>
-        public string polygon;
+        public string coordinates;
+        
+        /// <remarks/>
+        public string coordinateSystem;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
@@ -249,6 +252,9 @@ namespace Geonorge.NedlastingApi.V2 {
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
         public string status;
+        
+        /// <remarks/>
+        public string metadataName;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
@@ -363,6 +369,24 @@ namespace Geonorge.NedlastingApi.V2 {
         
         /// <remarks/>
         public System.DateTime orderDate;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
+        public LinkType[] _links;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0")]
+    [System.Xml.Serialization.XmlRootAttribute("VersionResponse", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/2.0", IsNullable=false)]
+    public partial class VersionResponseType {
+        
+        /// <remarks/>
+        public string version;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
