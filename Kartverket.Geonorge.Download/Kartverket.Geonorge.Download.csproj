@@ -240,7 +240,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\Api\Internal\OrderController.cs" />
+    <Compile Include="Controllers\Api\Internal\ManageOrderController.cs" />
     <Compile Include="Controllers\Api\V1\CapabilitiesController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\DownloadController.cs" />
