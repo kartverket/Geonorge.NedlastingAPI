@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Web;
+using System.Web.Mvc;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Utilities;
 
@@ -21,13 +22,13 @@ namespace Kartverket.Geonorge.Download.Controllers
                 var order = _orderService.Find(id);
                 if (order != null)
                 {
-                    if (!order.BelongsToUser(SecurityClaim.GetUsername()))
-                        return new HttpUnauthorizedResult();
+                    if (!order.CanBeDownloadedByUser(SecurityClaim.GetUsername()))
+                        throw new HttpException(401, "unauthorized");
 
                     return View(order);
                 }
             }
-            return HttpNotFound();
+            throw new HttpException(404, "not found");
         }
     }
 }
