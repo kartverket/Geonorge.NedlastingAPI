@@ -1,15 +1,19 @@
-﻿using System;
+﻿using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Text;
 using System.Web;
-using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Models;
+using log4net;
+using Newtonsoft.Json.Linq;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public class DownloadService : IDownloadService
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public HttpResponse CreateResponseFromRemoteFile(string url)
         {
             //Create a stream for the file
@@ -81,6 +85,64 @@ namespace Kartverket.Geonorge.Download.Services
                 //Close the input stream
                 stream?.Close();
             }
+        }
+
+        public bool AreaIsWithinDownloadLimits(string coordinates, string coordinateSystem, string metadataUuid)
+        {
+            var areaCheckerApiUrl = MakeAreaCheckerApiUrl(coordinates, coordinateSystem, metadataUuid);
+
+            var areaCheckerResult = CallAreaChecker(areaCheckerApiUrl);
+
+            var areaIsWithinDownloadLimits = areaCheckerResult.Value<bool>("allowed");
+
+            return areaIsWithinDownloadLimits;
+        }
+
+        private static string MakeAreaCheckerApiUrl(string coordinates, string coordinateSystem, string metadataUuid)
+        {
+            var areaCheckerUrl = ConfigurationManager.AppSettings["FmeAreaChecker"];
+
+            var urlBuilder = new StringBuilder(areaCheckerUrl);
+
+            urlBuilder.Append("CLIPPERCOORDS=").Append(coordinates);
+            urlBuilder.Append("&CLIPPERCOORDSYS=").Append(coordinateSystem);
+            urlBuilder.Append("&UUID=").Append(metadataUuid);
+
+            return urlBuilder.ToString();
+        }
+
+        private static JObject CallAreaChecker(string url)
+        {
+            string jsonResult;
+
+            var request = (HttpWebRequest) WebRequest.Create(url);
+
+            try
+            {
+                var response = request.GetResponse();
+
+                using (var responseStream = response.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.UTF8);
+                    jsonResult = reader.ReadToEnd();
+                }
+            }
+            catch (WebException exception)
+            {
+                var errorResponse = exception.Response;
+
+                using (var responseStream = errorResponse.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                    var errorText = reader.ReadToEnd();
+                    Log.Error(errorText, exception);
+                }
+                throw;
+            }
+
+            jsonResult = jsonResult.Trim('[', ']'); // [{"allowed":true}] -> {"allowed":true}
+
+            return JObject.Parse(jsonResult);
         }
     }
 }

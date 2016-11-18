@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Reflection;
 using System.Web.Configuration;
 using System.Web.Http;
@@ -17,12 +18,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
     public class CapabilitiesV2Controller : ApiController
     {
         private readonly ICapabilitiesService _capabilitiesService;
+        private readonly IDownloadService _downloadService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public CapabilitiesV2Controller(ICapabilitiesService capabilitiesService)
+        public CapabilitiesV2Controller(ICapabilitiesService capabilitiesService, IDownloadService downloadService)
         {
             _capabilitiesService = capabilitiesService;
+            _downloadService = downloadService;
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -119,7 +122,13 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                return Ok(new CanDownloadResponseType() { canDownload = true });
+                var canDownload = true;
+
+                if (ConfigurationManager.AppSettings["FmeAreaCheckerEnabled"].Equals("true"))
+                    canDownload = _downloadService.AreaIsWithinDownloadLimits(request.coordinates,
+                        request.coordinateSystem, request.metadataUuid);
+
+                return Ok(new CanDownloadResponseType() {canDownload = canDownload});
             }
             catch (Exception ex)
             {
