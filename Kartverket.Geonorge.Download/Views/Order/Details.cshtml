@@ -1,24 +1,21 @@
-﻿@model Geonorge.NedlastingApi.V2.OrderReceiptType
+﻿@model Kartverket.Geonorge.Download.Models.Order
 
 <h2>Ordre @Model.referenceNumber</h2>
 
 <div>
     <hr/>
     <ul>
-        @foreach (var file in Model.files)
+        @foreach (var item in Model.orderItem)
         {
             <li class="list-group">
-                @if (!string.IsNullOrEmpty(file.downloadUrl))
+                @if (item.IsReadyForDownload())
                 {
-                    <a href="@file.downloadUrl">@file.name</a>
+                    <a href="@item.DownloadUrl">@item.MetadataName: @item.FileName</a>
                 }
                 else
                 {
-                    @file.name
+                    @item.MetadataName <text>(venter på behandling)</text>
                 }
-                <small>
-                    <i>(@file.status)</i>
-                </small>
             </li>
         }
     </ul>
