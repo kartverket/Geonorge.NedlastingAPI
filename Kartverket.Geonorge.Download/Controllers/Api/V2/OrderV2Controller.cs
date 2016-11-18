@@ -15,7 +15,7 @@ using Kartverket.Geonorge.Utilities;
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
     [HandleError]
-    [EnableCors("kartkatalog.dev.geonorge.no,kartkatalog.test.geonorge.no,kartkatalog.geonorge.no", "*", "*", SupportsCredentials = true)]
+    [EnableCors("http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no", "*", "*", SupportsCredentials = true)]
     public class OrderV2Controller : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
