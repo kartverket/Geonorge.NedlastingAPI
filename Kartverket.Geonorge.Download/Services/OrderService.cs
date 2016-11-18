@@ -137,9 +137,14 @@ namespace Kartverket.Geonorge.Download.Services
 
         public Order Find(string referenceNumber)
         {
-            var referenceNumberAsGuid = Guid.Parse(referenceNumber);
-            var order = _dbContext.OrderDownloads.FirstOrDefault(o => o.Uuid == referenceNumberAsGuid);
-            order?.AddAccessConstraints(GetAccessRestrictionsForOrder(order));
+            Order order = null;
+            Guid referenceNumberAsGuid;
+            var parseResult = Guid.TryParse(referenceNumber, out referenceNumberAsGuid);
+            if (parseResult)
+            {
+                order = _dbContext.OrderDownloads.FirstOrDefault(o => o.Uuid == referenceNumberAsGuid);
+                order?.AddAccessConstraints(GetAccessRestrictionsForOrder(order));
+            }
             return order;
         }
 
