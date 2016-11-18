@@ -61,19 +61,19 @@ namespace Kartverket.Geonorge.Download.Services
                 var query = _dbContext.FileList.AsExpandable();
                 query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
 
-                if (orderLine.projections != null)
+                if (orderLine.projections != null && orderLine.projections.Any())
                 {
                     var projections = orderLine.projections.Select(p => p.code).ToList();
                     query = query.Where(p => projections.Contains(p.projeksjon));
                 }
 
-                if (orderLine.formats != null)
+                if (orderLine.formats != null && orderLine.formats.Any())
                 {
                     var formats = orderLine.formats.Select(p => p.name).ToList();
                     query = query.Where(f => formats.Contains(f.format));
                 }
 
-                if (orderLine.areas != null)
+                if (orderLine.areas != null && orderLine.areas.Any())
                 {
                     var areas = orderLine.areas.Select(a => new {a.code, a.type});
 
