@@ -27,7 +27,7 @@ namespace Kartverket.Geonorge.Download.Services
 
             foreach (var orderLine in incomingOrder.orderLines)
             {
-                if (orderLine.coordinates != null && incomingOrder.email != null && orderLine.projections != null)
+                if (!string.IsNullOrWhiteSpace(orderLine.coordinates) && incomingOrder.email != null && orderLine.projections != null)
                 {
                     var epsgCode = !string.IsNullOrEmpty(orderLine.coordinatesystem) ? orderLine.coordinatesystem : DefaultEpsgCode;
 
