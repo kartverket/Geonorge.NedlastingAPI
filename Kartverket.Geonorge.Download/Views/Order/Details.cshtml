@@ -10,7 +10,7 @@
             <li class="list-group">
                 @if (item.IsReadyForDownload())
                 {
-                    <a href="@item.DownloadUrl">@item.MetadataName: @item.FileName</a>
+                    <a href="@ViewBag.ApiMethodGetFile/@item.Order.Uuid/@item.FileId">@item.MetadataName: @item.FileName</a>
                 }
                 else
                 {

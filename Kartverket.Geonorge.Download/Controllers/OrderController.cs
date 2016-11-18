@@ -25,6 +25,8 @@ namespace Kartverket.Geonorge.Download.Controllers
                     if (!order.CanBeDownloadedByUser(SecurityClaim.GetUsername()))
                         throw new HttpException(401, "unauthorized");
 
+                    ViewBag.ApiMethodGetFile = "/api/v2/download/order"; // TODO: Handle dynamically ...
+
                     return View(order);
                 }
             }
