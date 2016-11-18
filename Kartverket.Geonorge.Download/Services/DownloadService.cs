@@ -10,13 +10,6 @@ namespace Kartverket.Geonorge.Download.Services
 {
     public class DownloadService : IDownloadService
     {
-        private readonly DownloadContext _dbContext;
-
-        public DownloadService(DownloadContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
         public HttpResponse CreateResponseFromRemoteFile(string url)
         {
             //Create a stream for the file
