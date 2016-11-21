@@ -20,10 +20,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IOrderService _orderService;
+        private readonly RegisterFetcher _registerFetcher;
 
-        public OrderV2Controller(IOrderService orderService)
+        public OrderV2Controller(IOrderService orderService, RegisterFetcher registerFetcherFetcher)
         {
             _orderService = orderService;
+            _registerFetcher = registerFetcherFetcher;
         }
 
         /// <summary>
@@ -80,11 +82,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                     name = item.FileName,
                     downloadUrl = item.IsReadyForDownload() ? new DownloadUrlBuilder().OrderId(orderUuid).FileId(item.FileId).Build() : null,
                     fileId = item.FileId.ToString(),
-                    area = item.Area,
+                    area = new AreaType { code = item.Area.code, name = _registerFetcher.GetArea(item.Area.type, item.Area.name).name },
                     coordinates = item.Coordinates,
                     format = item.Format,
                     metadataUuid = item.MetadataUuid,
-                    projection = item.Projection,
+                    projection = new ProjectionType { code = item.Projection.code, name = _registerFetcher.GetProjection(item.Projection.code).name },
                     status = item.Status.ToString(),
                     metadataName = item.MetadataName
                 });

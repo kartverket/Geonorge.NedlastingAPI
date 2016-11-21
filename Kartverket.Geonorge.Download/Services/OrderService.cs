@@ -15,11 +15,13 @@ namespace Kartverket.Geonorge.Download.Services
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IClipperService _clipperService;
         private readonly DownloadContext _dbContext;
+        private readonly RegisterFetcher _registerFetcher;
 
-        public OrderService(DownloadContext dbContext, IClipperService clipperService)
+        public OrderService(DownloadContext dbContext, IClipperService clipperService, RegisterFetcher registerFetcherFetcher)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
+            _registerFetcher = registerFetcherFetcher;
         }
 
         public Order CreateOrder(OrderType incomingOrder, string username)
@@ -97,8 +99,8 @@ namespace Kartverket.Geonorge.Download.Services
                         DownloadUrl = item.url,
                         FileName = item.filnavn,
                         Format = item.format,
-                        Area = item.inndelingsverdi,
-                        Projection = item.projeksjon,
+                        Area = new AreaType { code = item.inndelingsverdi, name = _registerFetcher.GetArea(item.inndeling, item.inndelingsverdi).name } ,
+                        Projection = new ProjectionType { code = item.projeksjon, name = _registerFetcher.GetProjection(item.projeksjon).name },
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
                         MetadataName = item.Dataset1.Tittel

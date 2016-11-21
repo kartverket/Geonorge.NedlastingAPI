@@ -235,7 +235,7 @@ namespace Geonorge.NedlastingApi.V2 {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string area;
+        public AreaType area;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
@@ -243,7 +243,7 @@ namespace Geonorge.NedlastingApi.V2 {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string projection;
+        public ProjectionType projection;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
