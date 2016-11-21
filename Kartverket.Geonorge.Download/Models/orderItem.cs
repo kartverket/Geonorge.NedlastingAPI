@@ -49,10 +49,10 @@ namespace Kartverket.Geonorge.Download.Models
         public string Message { get; set; }
 
         public string Format { get; set; }
-        public AreaType Area { get; set; }
+        public string Area { get; set; }
         public string Coordinates { get; set; }
         public string CoordinateSystem { get; set; }
-        public ProjectionType Projection { get; set; }
+        public string Projection { get; set; }
         public string MetadataUuid { get; set; }
         public string MetadataName { get; set; }
 

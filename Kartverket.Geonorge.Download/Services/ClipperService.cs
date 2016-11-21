@@ -40,7 +40,7 @@ namespace Kartverket.Geonorge.Download.Services
                                 Coordinates = orderLine.coordinates,
                                 CoordinateSystem = epsgCode,
                                 Format = format.name,
-                                Projection = new ProjectionType { code = projection.code },
+                                Projection = projection.code,
                                 MetadataUuid = orderLine.metadataUuid,
                                 MetadataName = GetMetadataName(orderLine.metadataUuid)
                             };
