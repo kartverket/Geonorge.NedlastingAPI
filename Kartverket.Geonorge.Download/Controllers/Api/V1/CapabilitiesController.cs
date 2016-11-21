@@ -4,7 +4,7 @@ using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
-using Geonorge.NedlastingApi.V1;
+using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 
@@ -20,39 +20,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V1
         public CapabilitiesController(ICapabilitiesService capabilitiesService)
         {
             _capabilitiesService = capabilitiesService;
-        }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet]
-        [Route("api/capabilities/")]
-        public IHttpActionResult Index()
-        {
-            System.Uri uri = new System.Uri(WebConfigurationManager.AppSettings["DownloadUrl"] +  "Help/Api/GET-api-capabilities-metadataUuid");
-            return Redirect(uri);
-
-        }
-
-        /// <summary>
-        /// Get Capabilities from download service
-        /// </summary>
-        /// <param name="metadataUuid">The metadata identifier</param>
-        [Route("api/capabilities/{metadataUuid}")]
-        [ResponseType(typeof(CapabilitiesType))]
-        public IHttpActionResult GetCapabilities(string metadataUuid)
-        {
-            try
-            {
-                var capabilities = _capabilitiesService.GetCapabilities(metadataUuid, "v1");
-                if (capabilities == null)
-                    return NotFound();
-
-                return Ok(capabilities);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error API", ex);
-                return InternalServerError();
-            }
         }
 
         /// <summary>

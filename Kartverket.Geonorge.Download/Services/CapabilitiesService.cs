@@ -1,7 +1,7 @@
 ﻿using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Geonorge.NedlastingApi.V1;
+using Geonorge.NedlastingApi.V2;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -16,7 +16,7 @@ namespace Kartverket.Geonorge.Download.Services
             _registerFetcher = registerFetcherFetcher;
         }
 
-        public CapabilitiesType GetCapabilities(string metadataUuid, string apiVersionId) 
+        public CapabilitiesType GetCapabilities(string metadataUuid) 
         {
             var dataset = GetDataset(metadataUuid);
 
@@ -24,12 +24,12 @@ namespace Kartverket.Geonorge.Download.Services
 
             return new CapabilitiesType
             {
-                supportsAreaSelection = dataset.supportsAreaSelection,
-                supportsFormatSelection = dataset.supportsFormatSelection,
-                supportsPolygonSelection = dataset.supportsPolygonSelection,
-                supportsProjectionSelection = dataset.supportsProjectionSelection,
+                supportsAreaSelection = dataset.supportsAreaSelection.GetValueOrDefault(),
+                supportsFormatSelection = dataset.supportsFormatSelection.GetValueOrDefault(),
+                supportsPolygonSelection = dataset.supportsPolygonSelection.GetValueOrDefault(),
+                supportsProjectionSelection = dataset.supportsProjectionSelection.GetValueOrDefault(),
                 mapSelectionLayer = dataset.mapSelectionLayer,
-                _links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid, apiVersionId).ToArray()
+                _links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
         }
 

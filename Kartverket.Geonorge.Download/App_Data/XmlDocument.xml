@@ -481,6 +481,12 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.CapabilitiesGlobalController.GetCapabilities(System.String)">
+            <summary>
+                Get Capabilities from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
                 Update status on a given file that has been processed.
@@ -528,12 +534,6 @@
             Delete filename list
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetCapabilities(System.String)">
-            <summary>
-            Get Capabilities from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetProjections(System.String)">
             <summary>
             Get Projections from download service
@@ -560,12 +560,6 @@
             <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetCapabilities(System.String)">
-            <summary>
-                Get Capabilities from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
             <summary>
