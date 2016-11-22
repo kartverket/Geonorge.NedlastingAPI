@@ -99,8 +99,10 @@ namespace Kartverket.Geonorge.Download.Services
                         DownloadUrl = item.url,
                         FileName = item.filnavn,
                         Format = item.format,
-                        Area = _registerFetcher.GetArea(item.inndeling, item.inndelingsverdi).name,
-                        Projection =  _registerFetcher.GetProjection(item.projeksjon).name,
+                        Area = item.inndelingsverdi,
+                        AreaName = _registerFetcher.GetArea(item.inndeling, item.inndelingsverdi).name,
+                        Projection = item.projeksjon,
+                        ProjectionName =  _registerFetcher.GetProjection(item.projeksjon).name,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
                         MetadataName = item.Dataset1.Tittel
