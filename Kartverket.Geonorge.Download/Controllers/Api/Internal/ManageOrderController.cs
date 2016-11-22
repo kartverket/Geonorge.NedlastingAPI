@@ -56,6 +56,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             }
             catch (Exception e)
             {
+                Log.Error(e.Message, e);
                 return InternalServerError(e);
             }
             return Ok();
