@@ -15,10 +15,12 @@ namespace Kartverket.Geonorge.Download.Services
         private const string DefaultEpsgCode = "32633";
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly DownloadContext _dbContext;
+        private readonly RegisterFetcher _registerFetcher;
 
-        public ClipperService(DownloadContext dbContext)
+        public ClipperService(DownloadContext dbContext, RegisterFetcher registerFetcherFetcher)
         {
             _dbContext = dbContext;
+            _registerFetcher = registerFetcherFetcher;
         }
 
         public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder)
@@ -41,6 +43,7 @@ namespace Kartverket.Geonorge.Download.Services
                                 CoordinateSystem = epsgCode,
                                 Format = format.name,
                                 Projection = projection.code,
+                                ProjectionName = _registerFetcher.GetProjection(projection.code).name,
                                 MetadataUuid = orderLine.metadataUuid,
                                 MetadataName = GetMetadataName(orderLine.metadataUuid)
                             };
