@@ -82,10 +82,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
                     downloadUrl = item.IsReadyForDownload() ? new DownloadUrlBuilder().OrderId(orderUuid).FileId(item.FileId).Build() : null,
                     fileId = item.FileId.ToString(),
                     area =  item.Area ,
+                    areaName = item.AreaName,
                     coordinates = item.Coordinates,
                     format = item.Format,
                     metadataUuid = item.MetadataUuid,
                     projection = item.Projection,
+                    projectionName = item.ProjectionName,
                     status = item.Status.ToString(),
                     metadataName = item.MetadataName
                 });
