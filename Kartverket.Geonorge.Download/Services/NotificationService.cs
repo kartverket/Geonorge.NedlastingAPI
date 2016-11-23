@@ -42,16 +42,15 @@ namespace Kartverket.Geonorge.Download.Services
             var email = orderItem.Order.email;
             message.To.Add(new MailAddress(email));
             message.From = new MailAddress(WebConfigurationManager.AppSettings["WebmasterEmail"]);
-            message.Subject = "Fil klar for nedlasting";
+            message.Subject = "Data til nedlasting fra Geonorge";
             var body = new StringBuilder();
-            body.Append(orderItem.FileName + " er klar for nedlasting.");
+            body.AppendLine($"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {orderItem.ReferenceNumber} er ferdig produsert.\n");
+            body.AppendLine("Klikk her for å laste ned resultatet: ");
 
             var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId).Build();
+            body.AppendLine(downLoadApiUrl);
             
-            body.Append(" <a href=\"" + downLoadApiUrl + "\">Klikk her for å laste ned</a>");
-
             message.Body = body.ToString();
-            message.IsBodyHtml = true;
 
             Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {fileId}");
 
