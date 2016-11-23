@@ -12,14 +12,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
     [System.Web.Http.Authorize(Roles = AuthConfig.DatasetProviderRole)]
     public class ManageOrderController : ApiController
     {
+        private readonly IUpdateFileStatusService _updateFileStatusService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly IOrderService _orderService;
-        private readonly INotificationService _notificationService;
 
-        public ManageOrderController(IOrderService orderService, INotificationService notificationService)
+        public ManageOrderController(IUpdateFileStatusService updateFileStatusService)
         {
-            _orderService = orderService;
-            _notificationService = notificationService;
+            _updateFileStatusService = updateFileStatusService;
         }
 
         /// <summary>
@@ -48,11 +46,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 }
                 updateFileStatusInformation.Status = itemStatus;
 
-
-                _orderService.UpdateFileStatus(updateFileStatusInformation);
-                
-                if (request.Status == "ReadyForDownload")
-                    _notificationService.SendReadyForDownloadNotification(request.FileId);
+                _updateFileStatusService.UpdateFileStatus(updateFileStatusInformation);
             }
             catch (Exception e)
             {

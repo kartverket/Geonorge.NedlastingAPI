@@ -120,7 +120,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation)
         {
-            var orderItem = _dbContext.OrderItems.FirstOrDefault(x => x.FileId == updateFileStatusInformation.FileIdAsGuid);
+            OrderItem orderItem = _dbContext.OrderItems.FirstOrDefault(x => x.FileId == updateFileStatusInformation.FileIdAsGuid);
             if (orderItem == null)
                 throw new ArgumentException("Invalid file id - no such file exists.");
 

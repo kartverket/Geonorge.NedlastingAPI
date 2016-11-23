@@ -32,6 +32,7 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<RegisterFetcher>().AsSelf();
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<EmailService>().As<IEmailService>();
+            builder.RegisterType<UpdateFileStatusService>().As<IUpdateFileStatusService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)

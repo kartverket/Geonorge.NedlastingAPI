@@ -1,12 +1,16 @@
 ﻿using System.Net.Mail;
+using System.Reflection;
 using System.Text;
 using System.Web.Configuration;
 using Kartverket.Geonorge.Download.Models;
+using log4net;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public class NotificationService : INotificationService
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IDownloadService _downloadService;
         private readonly IEmailService _emailService;
         private readonly IOrderService _orderService;
@@ -35,7 +39,8 @@ namespace Kartverket.Geonorge.Download.Services
             var orderItem = _orderService.FindOrderItem(fileId);
 
             var message = new MailMessage();
-            message.To.Add(new MailAddress(orderItem.Order.email));
+            var email = orderItem.Order.email;
+            message.To.Add(new MailAddress(email));
             message.From = new MailAddress(WebConfigurationManager.AppSettings["WebmasterEmail"]);
             message.Subject = "Fil klar for nedlasting";
             var body = new StringBuilder();
@@ -47,6 +52,8 @@ namespace Kartverket.Geonorge.Download.Services
 
             message.Body = body.ToString();
             message.IsBodyHtml = true;
+
+            Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {fileId}");
 
             return message;
         }

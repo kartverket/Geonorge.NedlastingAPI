@@ -14,15 +14,7 @@ namespace Kartverket.Geonorge.Download.Services
             using (var smtpClient = new SmtpClient())
             {
                 smtpClient.Host = WebConfigurationManager.AppSettings["SmtpHost"];
-
-                try
-                {
-                    smtpClient.Send(message); // TODO: Send async (?)
-                }
-                catch (SmtpException e)
-                {
-                    Log.Error("Could not send email notification to " + message.To, e);
-                }
+                smtpClient.Send(message); // TODO: Send async (?)
             }
         }
     }

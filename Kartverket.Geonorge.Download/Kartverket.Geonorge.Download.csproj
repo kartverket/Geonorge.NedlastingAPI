@@ -308,6 +308,7 @@
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\IUpdateFileStatusService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ICapabilitiesService.cs" />
     <Compile Include="Services\IClipperService.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\RegisterFetcher.cs" />
     <Compile Include="Services\ClipperService.cs" />
+    <Compile Include="Services\UpdateFileStatusService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
