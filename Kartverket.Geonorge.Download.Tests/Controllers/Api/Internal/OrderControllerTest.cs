@@ -14,45 +14,27 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
 {
     public class OrderControllerTest
     {
-
-        [Fact]
-        public void ShouldUpdateFileStatus()
+        private IHttpActionResult ExecuteUpdateFileStatus(IUpdateFileStatusService updateService, UpdateFileStatusRequest request)
         {
-            var orderServiceMock = CreateOrderServiceMock();
-            var response = ExecuteUpdateFileStatus(orderServiceMock, new UpdateFileStatusRequest
-            {
-                FileId = "123",
-                DownloadUrl = "http://blabla.com/testfile.zip",
-                Status = "ReadyForDownload"
-            });
-
-            orderServiceMock.Verify(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
-
-            response.GetType().Should().Be(typeof(OkResult));
+            var orderController = CreateController(updateService);
+            var response = orderController.UpdateFileStatus(request);
+            return response;
         }
 
-        [Fact]
-        public void ShouldReturnBadRequestWhenInvalidStatus()
+        private ManageOrderController CreateController(IUpdateFileStatusService updateFileStatusService)
         {
-            var orderServiceMock = CreateOrderServiceMock();
-            var response = ExecuteUpdateFileStatus(orderServiceMock, new UpdateFileStatusRequest
-            {
-                FileId = "123",
-                DownloadUrl = "http://blabla.com/testfile.zip",
-                Status = "ThisIsNotAValidStatus"
-            });
-
-            orderServiceMock.Verify(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()), Times.Never);
-
-            response.GetType().Should().Be(typeof(BadRequestErrorMessageResult));
+            var controller = new ManageOrderController(updateFileStatusService);
+            controller.Request = new HttpRequestMessage();
+            controller.Configuration = new HttpConfiguration();
+            return controller;
         }
 
         [Fact]
         public void ShouldReturInternalServerErrorWhenExceptionIsThrown()
         {
-            var orderServiceMock = new Mock<IOrderService>();
-            orderServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>())).Throws(new ArgumentException());
-            var response = ExecuteUpdateFileStatus(orderServiceMock, new UpdateFileStatusRequest
+            var updateServiceMock = new Mock<IUpdateFileStatusService>();
+            updateServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>())).Throws(new Exception());
+            var response = ExecuteUpdateFileStatus(updateServiceMock.Object, new UpdateFileStatusRequest
             {
                 FileId = "123",
                 DownloadUrl = "http://blabla.com/testfile.zip",
@@ -62,35 +44,38 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
             response.GetType().Should().Be(typeof(ExceptionResult));
         }
 
-        private IHttpActionResult ExecuteUpdateFileStatus(Mock<IOrderService> orderServiceMock, UpdateFileStatusRequest request)
+        [Fact]
+        public void ShouldReturnBadRequestWhenInvalidStatus()
         {
-            ManageOrderController orderController = CreateController(orderServiceMock);
-            IHttpActionResult response = orderController.UpdateFileStatus(request);
-            return response;
+            var updateServiceMock = new Mock<IUpdateFileStatusService>();
+            updateServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
+            var response = ExecuteUpdateFileStatus(updateServiceMock.Object, new UpdateFileStatusRequest
+            {
+                FileId = "123",
+                DownloadUrl = "http://blabla.com/testfile.zip",
+                Status = "ThisIsNotAValidStatus"
+            });
+
+            updateServiceMock.Verify(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()), Times.Never);
+
+            response.GetType().Should().Be(typeof(BadRequestErrorMessageResult));
         }
 
-        private static Mock<IOrderService> CreateOrderServiceMock()
+        [Fact]
+        public void ShouldUpdateFileStatus()
         {
-            var orderServiceMock = new Mock<IOrderService>();
-            orderServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
-            return orderServiceMock;
-        }
+            var updateServiceMock = new Mock<IUpdateFileStatusService>();
+            updateServiceMock.Setup(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
+            var response = ExecuteUpdateFileStatus(updateServiceMock.Object, new UpdateFileStatusRequest
+            {
+                FileId = "123",
+                DownloadUrl = "http://blabla.com/testfile.zip",
+                Status = "ReadyForDownload"
+            });
 
-        private static Mock<INotificationService> CreateNotificationServiceMock()
-        {
-            var notificationServiceMock = new Mock<INotificationService>();
-            notificationServiceMock.Setup(m => m.SendReadyForDownloadNotification(It.IsAny<string>()));
-            return notificationServiceMock;
-        }
-        
-        private ManageOrderController CreateController(Mock<IOrderService> orderServiceMock)
-        {
-            var notificationServiceMock = CreateNotificationServiceMock();
-            ManageOrderController controller = new ManageOrderController(orderServiceMock.Object, notificationServiceMock.Object);
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
-            return controller;
-        }
+            updateServiceMock.Verify(m => m.UpdateFileStatus(It.IsAny<UpdateFileStatusInformation>()));
 
+            response.GetType().Should().Be(typeof(OkResult));
+        }
     }
 }
