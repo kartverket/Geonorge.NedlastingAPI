@@ -45,11 +45,19 @@ namespace Kartverket.Geonorge.Download.Services
             message.Subject = "Data til nedlasting fra Geonorge";
             var body = new StringBuilder();
             body.AppendLine($"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {orderItem.ReferenceNumber} er ferdig produsert.\n");
-            body.AppendLine("Klikk her for å laste ned resultatet: ");
+            body.AppendLine($"Datasett: {orderItem.MetadataName}\n");
 
-            var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId).Build();
-            body.AppendLine(downLoadApiUrl);
-            
+            if (!string.IsNullOrEmpty(orderItem.DownloadUrl))
+            {
+                body.AppendLine("Klikk her for å laste ned resultatet: ");
+                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId).Build();
+                body.AppendLine(downLoadApiUrl);
+            }
+            else
+            {
+                body.AppendLine("Det er dessverre ingen data å laste ned. Det finnes ingen objekter innenfor valgt område.");
+            }
+
             message.Body = body.ToString();
 
             Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {fileId}");
