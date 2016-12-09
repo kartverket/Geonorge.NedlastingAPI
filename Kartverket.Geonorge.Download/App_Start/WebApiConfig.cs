@@ -15,7 +15,7 @@ namespace Kartverket.Geonorge.Download
 
             config.MapHttpAttributeRoutes();
 
-         //   config.EnableBasicAuth();
+            config.EnableBasicAuth();
 
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new DefaultContractResolver();
             config.Formatters.XmlFormatter.UseXmlSerializer = true;
