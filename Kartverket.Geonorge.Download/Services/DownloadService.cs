@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -79,6 +80,11 @@ namespace Kartverket.Geonorge.Download.Services
                 } while (length > 0); //Repeat until no data is read
 
                 return response;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error serving file from url: " + url, e);
+                throw;
             }
             finally
             {
