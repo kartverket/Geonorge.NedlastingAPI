@@ -9,7 +9,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
-        Order Find(string referenceNumber);
+        Order Find(string orderUuid);
 
         void CheckAccessRestrictions(Order order, string username);
 

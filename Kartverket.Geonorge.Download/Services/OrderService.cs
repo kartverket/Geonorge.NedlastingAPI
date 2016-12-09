@@ -139,11 +139,11 @@ namespace Kartverket.Geonorge.Download.Services
                 Log.Info($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
         }
 
-        public Order Find(string referenceNumber)
+        public Order Find(string orderUuid)
         {
             Order order = null;
             Guid referenceNumberAsGuid;
-            var parseResult = Guid.TryParse(referenceNumber, out referenceNumberAsGuid);
+            var parseResult = Guid.TryParse(orderUuid, out referenceNumberAsGuid);
             if (parseResult)
             {
                 order = _dbContext.OrderDownloads.FirstOrDefault(o => o.Uuid == referenceNumberAsGuid);
