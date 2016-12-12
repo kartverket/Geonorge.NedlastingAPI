@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.Net;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -11,33 +13,40 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
     public class DownloadController : ApiController
     {
-        private readonly ICapabilitiesService _capabilitiesService;
         private readonly IDownloadService _downloadService;
         private readonly IOrderService _orderService;
 
         public DownloadController
         (
             IOrderService orderService,
-            IDownloadService downloadService,
-            ICapabilitiesService capabilitiesService
+            IDownloadService downloadService
         )
         {
             _orderService = orderService;
             _downloadService = downloadService;
-            _capabilitiesService = capabilitiesService;
         }
         
         [Route("api/v2/download/order/{orderUuid}/{fileId}")]
         public IHttpActionResult GetFile(string orderUuid, string fileId)
         {
+            if (!IsValidUuid(orderUuid))
+                return BadRequest("orderUuid is not a valid uuid.");
+
+            if (!IsValidUuid(fileId))
+                return BadRequest("fileId is not a valid uuid.");
+
             Order order = _orderService.Find(orderUuid);
             if (order == null)
                 return NotFound();
 
             string username = SecurityClaim.GetUsername();
+            bool userIsLoggedIn = !string.IsNullOrWhiteSpace(username);
 
-            if (!order.CanBeDownloadedByUser(username))
+            if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(orderUuid, fileId));
+
+            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(username))
+                return Content(HttpStatusCode.Forbidden, "User not allowed to download order");
 
             OrderItem item = order.GetItemWithFileId(fileId);
             if (item == null || !item.IsReadyForDownload())
@@ -49,6 +58,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
+        }
+
+        private bool IsValidUuid(string input)
+        {
+            Guid result;
+            return Guid.TryParse(input, out result);
         }
 
         private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string orderUuid, string fileId)

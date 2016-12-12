@@ -84,7 +84,7 @@ namespace Kartverket.Geonorge.Download.Models
             return string.Equals(username, requestUsername, StringComparison.CurrentCultureIgnoreCase);
         }
 
-        private bool ContainsRestrictedDatasets()
+        public bool ContainsRestrictedDatasets()
         {
             return orderItem.Any(o => o.AccessConstraint.IsRestricted());
         }
