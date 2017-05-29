@@ -633,6 +633,11 @@
   <ItemGroup>
     <Content Include="Views\Order\Details.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Nedlastnings-API-et.doc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
