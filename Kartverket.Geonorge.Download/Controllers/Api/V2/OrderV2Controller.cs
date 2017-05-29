@@ -95,6 +95,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             return files.ToArray();
         }
 
+        /// <summary>
+        ///     Get info about files in order
+        /// </summary>
         [System.Web.Http.Route("api/v2/order/{referenceNumber}")]
         [System.Web.Http.HttpGet]
         [ResponseType(typeof(OrderReceiptType))]

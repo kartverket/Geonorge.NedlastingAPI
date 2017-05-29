@@ -579,6 +579,18 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.CanDownload(Geonorge.NedlastingApi.V2.CanDownloadRequestType)">
+            <summary>
+               If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.DownloadController.GetFile(System.String,System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+            <param name="fileId">The fileId to download from order</param>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.OrderV2Controller.PostOrder(Geonorge.NedlastingApi.V2.OrderType)">
             <summary>
                 Creates new order for data to download
@@ -590,6 +602,11 @@
             </returns>
             <response code="400">Bad request</response>
             <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.OrderV2Controller.GetOrder(System.String)">
+            <summary>
+                Get info about files in order
+            </summary>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>

@@ -78,6 +78,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             }
         }
 
+        /// <summary>
+        ///    If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+        /// </summary>
         [HttpPost]
         [Route("can-download")]
         public IHttpActionResult CanDownload(CanDownloadRequestType request)

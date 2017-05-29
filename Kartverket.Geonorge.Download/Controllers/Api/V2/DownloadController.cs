@@ -25,7 +25,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             _orderService = orderService;
             _downloadService = downloadService;
         }
-        
+
+        /// <summary>
+        ///     Get file to download for order
+        /// </summary>
+        /// <param name="orderUuid">The reference number returned from the order</param>
+        /// <param name="fileId">The fileId to download from order</param>
         [Route("api/v2/download/order/{orderUuid}/{fileId}")]
         public IHttpActionResult GetFile(string orderUuid, string fileId)
         {
