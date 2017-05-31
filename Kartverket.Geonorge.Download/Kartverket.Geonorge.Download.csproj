@@ -634,11 +634,6 @@
     <Content Include="Views\Order\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Nedlastnings-API-et.doc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\HelpPage\Views\Help\Documentation.cshtml" />
   </ItemGroup>
   <PropertyGroup>
