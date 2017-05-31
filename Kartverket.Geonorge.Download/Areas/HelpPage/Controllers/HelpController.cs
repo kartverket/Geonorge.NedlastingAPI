@@ -59,5 +59,10 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage.Controllers
 
             return View(ErrorViewName);
         }
+
+        public ActionResult Documentation()
+        {
+            return View();
+        }
     }
 }
