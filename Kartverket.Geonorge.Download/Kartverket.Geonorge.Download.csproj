@@ -600,6 +600,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Order\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\HelpPage\Views\Help\Documentation.cshtml" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
     <Content Include="Content\bower_components\kartverket-felleskomponenter\.bower.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\702ZOKiLJc3WVjuplzInF5uFdDttMLvmWuJdhhgs.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.eot" />
@@ -628,13 +635,9 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\bower.json" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Order\Details.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\HelpPage\Views\Help\Documentation.cshtml" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
