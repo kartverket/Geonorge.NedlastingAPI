@@ -67,6 +67,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/capabilities/{metadataUuid}")]
+        [Route("api/v2/capabilities/{metadataUuid}")]
         [ResponseType(typeof(CapabilitiesType))]
         public IHttpActionResult GetCapabilities(string metadataUuid)
         {

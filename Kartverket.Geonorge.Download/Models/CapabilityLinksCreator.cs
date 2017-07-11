@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Configuration;
 using Geonorge.NedlastingApi.V2;
+using System.Web;
 
 namespace Kartverket.Geonorge.Download.Models
 {
@@ -107,7 +108,11 @@ namespace Kartverket.Geonorge.Download.Models
         }
         private static string GetCapabilitiesUrl(string metadataUuid, string apiBaseUrl)
         {
-            return GetTemplatedUrlIfEmptyParam(apiBaseUrl + "capabilities/", metadataUuid);
+            var currentUrl = HttpContext.Current.Request.Url.AbsoluteUri;
+            if (currentUrl.Contains("capabilities"))
+                return currentUrl;
+            else
+                return GetTemplatedUrlIfEmptyParam(apiBaseUrl + "capabilities/", metadataUuid);
         }
 
         private static string GetAreaUrl(string metadataUuid, string apiBaseUrl)
