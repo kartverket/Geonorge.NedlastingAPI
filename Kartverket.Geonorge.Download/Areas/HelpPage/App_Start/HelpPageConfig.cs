@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 using Geonorge.NedlastingApi.V1;
+using V2 = Geonorge.NedlastingApi.V2;
 
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
@@ -132,6 +133,11 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             ftl.Add(file6);
             or.files = ftl.ToArray();
 
+            V2.CanDownloadRequestType canDownloadRequestType = new V2.CanDownloadRequestType();
+            canDownloadRequestType.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
+            canDownloadRequestType.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
+            canDownloadRequestType.coordinateSystem = "32633";
+
 
             config.SetSampleObjects(new Dictionary<Type, object>
             {
@@ -140,6 +146,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
                 {typeof(List<AreaType>),a },
                 {typeof(OrderType),o },
                 {typeof(OrderReceiptType),or },
+                {typeof(V2.CanDownloadRequestType),canDownloadRequestType },
                 {typeof(List<ProjectionType>),p },
                 {typeof(List<FormatType>),f }
             });
