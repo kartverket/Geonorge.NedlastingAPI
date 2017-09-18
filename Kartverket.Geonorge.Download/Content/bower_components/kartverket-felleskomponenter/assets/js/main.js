@@ -1,17 +1,41 @@
 var applicationEnvironment = (applicationEnvironment === undefined) ? "" : applicationEnvironment;
 var applicationVersionNumber = (applicationVersionNumber === undefined) ? "" : applicationVersionNumber;
 var supportsLogin = false;
+var supportsMultiCulture = false;
+
 var authenticationData = (authenticationData === undefined) ? {} : authenticationData;
 if (authenticationData !== {}) {
     supportsLogin = (authenticationData.supportsLogin === undefined) ? false : authenticationData.supportsLogin;
-    authenticationData.isAuthenticated = (authenticationData.isAuthenticated === undefined) ? false : authenticationData.isAuthenticated;
-    authenticationData.urlActionSignIn = (authenticationData.urlActionSignIn === undefined) ? "" : authenticationData.urlActionSignIn;
-    authenticationData.urlActionSignOut = (authenticationData.urlActionSignOut === undefined) ? "" : authenticationData.urlActionSignOut;
-    authenticationData.userName = (authenticationData.userName === undefined) ? "" : authenticationData.userName;
+    authenticationData.isAuthenticated = authenticationData.isAuthenticated === undefined ? false : authenticationData.isAuthenticated;
+    authenticationData.urlActionSignIn = authenticationData.urlActionSignIn === undefined ? "" : authenticationData.urlActionSignIn;
+    authenticationData.urlActionSignOut = authenticationData.urlActionSignOut === undefined ? "" : authenticationData.urlActionSignOut;
+    authenticationData.userName = authenticationData.userName === undefined ? "" : authenticationData.userName;
 }
 
+var cultureData = (cultureData === undefined) ? {} : cultureData;
+if (cultureData !== {}) {
+    supportsMultiCulture = cultureData.supportsMultiCulture === undefined ? false : cultureData.supportsMultiCulture;
+    cultureData.urlSetCulture = cultureData.urlSetCulture === undefined ? "" : cultureData.urlSetCulture;
+    cultureData.urlSetCultureNorwegian = cultureData.urlSetCultureNorwegian === undefined ? "" : cultureData.urlSetCultureNorwegian;
+    cultureData.currentCulture = cultureData.currentCulture === undefined ? "" : cultureData.currentCulture;
+}
 
-var geonorgeUrl = (applicationEnvironment === "") ? "https://www.geonorge.no/" : "https://www.test.geonorge.no/";
+function environmentIsProduction() {
+    var productionEnvironment = "";
+    return applicationEnvironment === productionEnvironment;
+}
+
+var geonorgeUrl = environmentIsProduction() ? "https://www.geonorge.no/" : "https://www.test.geonorge.no/";
+
+// Check if string contains parameters
+function containsParameters(string) {
+    return string.length && string.indexOf("?") > -1 ? true : false;
+}
+
+// Check active URL contains parameters
+function urlContainsParameters() {
+    return containsParameters(window.location.search);
+}
 
 
 /* Loading animation */
@@ -76,16 +100,26 @@ $(document).ready(function() {
     $("#shopping-cart-url").prop("href", downloadUrl);
 
 
-    // Login
-    if (supportsLogin && $("#container-login").length) {
-        $("#container-login").append("<ul></ul>");
-        $("#container-login ul").append("<li><a href='" + geonorgeUrl + "kartdata/oppslagsverk/Brukernavn-og-passord/'>Ny bruker</a></li>");
-        if (authenticationData.isAuthenticated) {
-            $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignOut + "' class='geonorge-aut' title='Logg ut " + authenticationData.userName + "'> Logg ut</a></li>");
+    // MultiCulture
+    if (supportsMultiCulture && $("#container-user-menu").length) {
+        if (cultureData.currentCulture == "nb-NO" || cultureData.currentCulture == "nn-NO" || cultureData.currentCulture == "no") {
+            $("#container-user-menu").append("<a href='" + cultureData.urlSetCulture + "' class='geonorge-culture' title='English'> English</a>");
         } else {
-            $("#container-login ul").append("<li id='login'><a href='" + authenticationData.urlActionSignIn + "' class='geonorge-aut'> Logg inn</a></li>");
+            $("#container-user-menu").append("<a href='" + cultureData.urlSetCultureNorwegian + "' class='geonorge-culture'> Norsk</a>");
         }
     }
+
+    // Login
+    if (supportsLogin && $("#container-user-menu").length) {
+        $("#container-user-menu").append("<a href='" + geonorgeUrl + "kartdata/oppslagsverk/Brukernavn-og-passord/'>Ny bruker</a>");
+        if (authenticationData.isAuthenticated) {
+            $("#container-user-menu").append("<a href='" + authenticationData.urlActionSignOut + "' title='Logg ut " + authenticationData.userName + "'> Logg ut</a>");
+        } else {
+            $("#container-user-menu").append("<a href='" + authenticationData.urlActionSignIn + "'> Logg inn</a>");
+        }
+    }
+
+
 });
 
 $(window).load(function() {
@@ -112,6 +146,65 @@ $(window).load(function() {
     doc.setAttribute('data-useragent', navigator.userAgent);
 });
 
+function setMainSearchUrl(urlSlug, environment){
+    environmentIsSet = false;
+    var environmentSlug = '';
+    if (typeof environment !== 'undefined'){
+        if (environment == 'dev' || environment == 'test' || environment == 'prod'){
+            environmentIsSet = true;
+            environmentSlug = environment == 'prod' ? '' : '.' + environment;
+        }else{
+            console.error("incorrect value for environment. Use 'dev', 'test' or 'prod'");
+        }
+    }
+    if (environmentIsSet){
+        searchOptionsArray[environment].url = "//kartkatalog" + environmentSlug + ".geonorge.no/" + urlSlug;
+    }else{
+        searchOptionsArray.dev.url = "//kartkatalog.dev.geonorge.no/" + urlSlug;
+        searchOptionsArray.test.url = "//kartkatalog.test.geonorge.no/" + urlSlug;
+        searchOptionsArray.prod.url = "//kartkatalog.geonorge.no/" + urlSlug;
+    }
+}
+
+function setMainSearchApiUrl(urlSlug, environment){
+    environmentIsSet = false;
+    var environmentSlug = '';
+    if (typeof environment !== 'undefined'){
+        if (environment == 'dev' || environment == 'test' || environment == 'prod'){
+            environmentIsSet = true;
+            environmentSlug = environment == 'prod' ? '' : '.' + environment;
+        }else{
+            console.error("incorrect value for environment. Use 'dev', 'test' or 'prod'");
+        }
+    }
+    if (environmentIsSet){
+        searchOptionsArray[environment].api = "//kartkatalog" + environmentSlug + ".geonorge.no/api/" + urlSlug;
+    }else{
+        searchOptionsArray.dev.api = "//kartkatalog.dev.geonorge.no/api/" + urlSlug;
+        searchOptionsArray.test.api = "//kartkatalog.test.geonorge.no/api/" + urlSlug;
+        searchOptionsArray.prod.api = "//kartkatalog.geonorge.no/api/" + urlSlug;
+    }
+}
+
+function setMainSearchPlaceholder(placeholder, environment) { 
+    environmentIsSet = false; 
+    var environmentSlug = ''; 
+    if (typeof environment !== 'undefined') { 
+        if (environment == 'dev' || environment == 'test' || environment == 'prod') { 
+            environmentIsSet = true; 
+        } else { 
+            console.error("incorrect value for environment. Use 'dev', 'test' or 'prod'"); 
+        } 
+    } 
+    if (environmentIsSet) { 
+        searchOptionsArray[environment].searchPlaceholder = placeholder; 
+    } else { 
+        searchOptionsArray.dev.searchPlaceholder = placeholder; 
+        searchOptionsArray.test.searchPlaceholder = placeholder; 
+        searchOptionsArray.prod.searchPlaceholder = placeholder; 
+    } 
+} 
+
 angular.module('geonorge', ['ui.bootstrap']);
 
 angular.module('geonorge').config(["$sceDelegateProvider", function ($sceDelegateProvider) {
@@ -122,6 +215,7 @@ var searchOptionsArray =
     "dev" : {
         text: "Kartkatalogen",
 	    searchTitle: "Kartkatalogen",
+	    searchPlaceholder: "S\u00F8k etter kartdata",
 	    buttonCss: "edgesKartkatalogen",
 	    listCss: "left-edge-kartkatalogen",
 	    baseUrl: "//kartkatalog.dev.geonorge.no",
@@ -135,6 +229,7 @@ var searchOptionsArray =
     "test" : {
         text: "Kartkatalogen",
 	    searchTitle: "Kartkatalogen",
+	    searchPlaceholder: "S\u00F8k etter kartdata",
 	    buttonCss: "edgesKartkatalogen",
 	    listCss: "left-edge-kartkatalogen",
 	    baseUrl: "//kartkatalog.test.geonorge.no",
@@ -148,6 +243,7 @@ var searchOptionsArray =
     "prod" : {
         text: "Kartkatalogen",
 	    searchTitle: "Kartkatalogen",
+	    searchPlaceholder: "S\u00F8k etter kartdata",
 	    buttonCss: "edgesKartkatalogen",
 	    listCss: "left-edge-kartkatalogen",
 	    baseUrl: "//kartkatalog.geonorge.no",
@@ -199,8 +295,8 @@ var baseurl_local = searchOption.baseUrl;
     }
 
     function performSearch(query, filters, limit, section) {
-
-      var menuService = encodeURI(searchOption.api + '?limit=5&facets[1]name=type&facets[1]value=dataset' + '&text=' + query);
+      var parameterSeparator = containsParameters(searchOption.api) ? "&" : "?";
+      var menuService = encodeURI(searchOption.api + parameterSeparator + 'limit=5&facets[1]name=type&facets[1]value=dataset' + '&text=' + query);
       var request = $http({
         method: 'GET',
         url: menuService,
@@ -212,9 +308,10 @@ var baseurl_local = searchOption.baseUrl;
       });
 
       function getSearchParameters(facetValue, query){
+        var parameterSeparator = containsParameters(searchOption.api) ? "&" : "?";
         var facetParameters = 'facets[1]name=type&facets[1]value=' + facetValue;
         var queryParameters = 'text=' + query;
-        return '?limit=5&' + facetParameters + '&' + queryParameters;
+        return parameterSeparator + 'limit=5&' + facetParameters + '&' + queryParameters;
       }
 
       var menuService1 = encodeURI(searchOption.api + getSearchParameters('servicelayer', query));
@@ -250,7 +347,18 @@ var baseurl_local = searchOption.baseUrl;
         data: {}
       });
 
-      return $q.all([request3, request, request2, request1]);
+      var menuService4 = encodeURI(searchOption.api + getSearchParameters('software', query));
+      var request4 = $http({
+        method: 'GET',
+        url: menuService4,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'accept': '*/*'
+        },
+        data: {}
+      });
+
+      return $q.all([request3, request, request2, request1, request4]);
     }
 
   }]).controller('searchTopController', [
@@ -493,7 +601,7 @@ var baseurl_local = searchOption.baseUrl;
                       for (var x = 0; x < list.length; x++) {
                         var item = {};
                         var curr = list[x];
-                        if (curr.data.Results.length === 0) continue;
+                        if (curr.data == null || curr.data.Results.length === 0) continue;
                         item.type = curr.Section;
 
                         item.title = curr.SectionName;
@@ -530,6 +638,8 @@ var baseurl_local = searchOption.baseUrl;
                       return "Tjenester";
                       case "dimensionGroup":
                       return "Datapakker";
+                      case "software":
+                      return "Applikasjon";
                       default:
                     }
                   }
@@ -728,6 +838,43 @@ function addShoppingCartTooltip(elementsCount) {
     element.tooltip();
 }
 
+function removeSingleItemFromArray(array, undesirableItem) {
+    var index = array.indexOf(undesirableItem);
+    if (index >= 0) {
+        array.splice(index, 1);
+    }
+    return array;
+}
+
+function removeFromArray(array, undesirableItems) {
+    var multiple = Array.isArray(undesirableItems);
+    if (multiple) {
+        undesirableItems.forEach(function (undesirableItem) {
+            array = removeSingleItemFromArray(array, undesirableItem);
+        });
+    } else {
+        array = removeSingleItemFromArray(array, undesirableItems);
+    }
+}
+
+function orderItemHasMetadata(orderItemUuid){
+    var orderItemHasMetadata = localStorage.getItem(orderItemUuid + ".metadata") !== null ? true : false;
+    return orderItemHasMetadata;
+}
+
+function removeBrokenOrderItems() {
+    var orderItems = JSON.parse(localStorage.getItem("orderItems"));
+    if (orderItems !== null){
+        removeFromArray(orderItems, [null, undefined, "null", {}, ""]);
+        orderItems.forEach(function (orderItem) {
+            if (!orderItemHasMetadata(orderItem)) {
+                removeSingleItemFromArray(orderItems, orderItem);
+            }
+        });
+        localStorage.setItem('orderItems', JSON.stringify(orderItems));
+    }
+}
+
 function updateShoppingCart() {
     var shoppingCartElement = $('#orderitem-count');
     var orderItems = "";
@@ -736,16 +883,22 @@ function updateShoppingCart() {
     var cookieValue = 0;
     var cookieDomain = ".geonorge.no";
 
-    if (localStorage.getItem("orderItems") !== null && localStorage.getItem("orderItems") != "[]") {
+    if (localStorage.getItem("orderItems") !== null) {
         orderItems = localStorage.getItem("orderItems");
     }
-
+    
     if (orderItems !== "") {
-        shoppingCartElement.css("display", "block");
         orderItemsObj = JSON.parse(orderItems);
         cookieValue = orderItemsObj.length;
-        shoppingCartElement.html(cookieValue);
-        addShoppingCartTooltip(cookieValue);
+        if (cookieValue > 0) {
+            shoppingCartElement.css("display", "block");
+            shoppingCartElement.html(cookieValue);
+            addShoppingCartTooltip(cookieValue);
+        } else {
+            shoppingCartElement.css("display", "none");
+            addShoppingCartTooltip(0);
+        }
+        
     } else if (Cookies.get(cookieName) !== undefined && Cookies.get(cookieName) !== 0 && Cookies.get(cookieName) !== "0") {
         cookieValue = Cookies.get(cookieName);
         shoppingCartElement.css("display", "block");
@@ -778,7 +931,8 @@ function updateShoppingCartCookie() {
 }
 
 
-$(window).load(function() {
+$(window).load(function () {
+    removeBrokenOrderItems();
     updateShoppingCart();
 });
 
@@ -937,6 +1091,22 @@ function getParameterByName(name) {
   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+// Remove URL parameters from string
+function removeParameterByName(name, urlParameters) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "([^&#]*)"),
+  results = regex.exec(urlParameters);
+  urlParameters = urlParameters.replace(results[0], "");
+  return urlParameters;
+}
+
+// Remove URL parameters from url field
+function removeParameterByNameFromUrl(name) {
+  var urlParameters = location.search.toLowerCase();
+  urlParameters = removeParameterByName(name, urlParameters);
+  var newRelativeUrl = location.pathname + urlParameters;
+  window.history.replaceState({ path: newRelativeUrl }, null, newRelativeUrl);
+}
 $(document).on('focus', '.custom-select-list-input', function() {
   var customSelectListElement = $(this).closest('.custom-select-list');
   var dropdownElement = customSelectListElement.find('.custom-select-list-dropdown-container');

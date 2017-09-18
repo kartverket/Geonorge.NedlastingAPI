@@ -466,10 +466,14 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\main.min.js" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\vendor.js" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\vendor.min.js" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.html" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.min.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_autoCompleteRow.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_autoCompleteRow.min.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.html" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.html" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.min.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.min.html" />
     <Content Include="Global.asax" />
@@ -630,8 +634,12 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\tzj9b56b8RgXW8FAriS3USBnSvpkopQaUR-2r7iU.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\Y3_3JNqUVRAQQRNVteQ.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\_ySUJH_bn48VBG8sNSonF5uFdDttMLvmWuJdhhgs.ttf" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.cshtml" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.cshtml" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.cshtml" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_SharedMenu.min.cshtml" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\bower.json" />
