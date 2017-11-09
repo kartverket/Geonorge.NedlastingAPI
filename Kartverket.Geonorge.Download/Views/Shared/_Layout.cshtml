@@ -1,4 +1,5 @@
-﻿@using Kartverket.Geonorge.Download.Helpers﻿
+﻿@using Kartverket.Geonorge.Download.Helpers
+@using Kartverket.Geonorge.Download.Helpers﻿
 <!DOCTYPE html>
 <html class=" js flexbox no-flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg no-smil svgclippaths">
 <head>
@@ -40,6 +41,13 @@
                 }
             }
         }
+
+        var cultureData = {
+            supportsMultiCulture: @(Html.SupportsMultiCulture() ? "true" : "false"),
+            urlSetCulture: '@VirtualPathUtility.ToAbsolute("~/Home/SetCulture?culture=")@Kartverket.Geonorge.Download.Models.Translations.Culture.EnglishCode&ReturnUrl=@Request.Url',
+            urlSetCultureNorwegian: '@VirtualPathUtility.ToAbsolute("~/Home/SetCulture?culture=")@Kartverket.Geonorge.Download.Models.Translations.Culture.NorwegianCode&ReturnUrl=@Request.Url',
+            currentCulture: '@CultureHelper.GetCurrentCulture()'
+        };
     </script>
 
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
