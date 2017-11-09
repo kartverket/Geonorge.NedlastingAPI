@@ -700,5 +700,36 @@
             Contains message from processing service (currently FME)
             </summary>
         </member>
+        <member name="T:Kartverket.Geonorge.Download.Resources.UI">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.APIsAndInterfaces">
+            <summary>
+              Looks up a localized string similar to API-er og grensesnitt.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.DownloadAPI">
+            <summary>
+              Looks up a localized string similar to Nedlasting API.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ForDevelopers">
+            <summary>
+              Looks up a localized string similar to For utviklere.
+            </summary>
+        </member>
     </members>
 </doc>

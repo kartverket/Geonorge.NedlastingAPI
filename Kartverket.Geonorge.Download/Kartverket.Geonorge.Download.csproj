@@ -306,6 +306,16 @@
     <Compile Include="Models\Translations\Culture.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\UI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UI.en.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UI.en.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\AccessRestrictionException.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\DownloadService.cs" />
@@ -595,6 +605,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611220752161_AddAreaAndProjectionNameToOrder.resx">
       <DependentUpon>201611220752161_AddAreaAndProjectionNameToOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\UI.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\UI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
