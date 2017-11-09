@@ -88,6 +88,15 @@ namespace Kartverket.Geonorge.Download.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kontakt oss.
+        /// </summary>
+        public static string ContactUs {
+            get {
+                return ResourceManager.GetString("ContactUs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nedlasting API.
         /// </summary>
         public static string DownloadAPI {
@@ -97,11 +106,66 @@ namespace Kartverket.Geonorge.Download.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Feil.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt..
+        /// </summary>
+        public static string ErrorInfo {
+            get {
+                return ResourceManager.GetString("ErrorInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;Feilen er logget og vil sjekkes av systemansvarlig.&lt;/p&gt;
+        ///&lt;p&gt;Du kan også rapportere feilen til &lt;a mailto:&quot;post@norgedigitalt.no&quot;&gt;post@norgedigitalt.no&lt;/a&gt;.&lt;/p&gt;.
+        /// </summary>
+        public static string ErrorReport {
+            get {
+                return ResourceManager.GetString("ErrorReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For utviklere.
         /// </summary>
         public static string ForDevelopers {
             get {
                 return ResourceManager.GetString("ForDevelopers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forside.
+        /// </summary>
+        public static string Home {
+            get {
+                return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vi finner ikke siden du leter etter, men Geonorge skal hjelpe deg videre..
+        /// </summary>
+        public static string NotFoundText {
+            get {
+                return ResourceManager.GetString("NotFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Søk etter.
+        /// </summary>
+        public static string SearchFor {
+            get {
+                return ResourceManager.GetString("SearchFor", resourceCulture);
             }
         }
     }

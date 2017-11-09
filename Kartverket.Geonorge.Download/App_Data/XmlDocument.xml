@@ -716,9 +716,24 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ApiDocumentation">
+            <summary>
+              Looks up a localized string similar to API dokumentasjon.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ApiHelp">
+            <summary>
+              Looks up a localized string similar to API hjelp.
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Resources.UI.APIsAndInterfaces">
             <summary>
               Looks up a localized string similar to API-er og grensesnitt.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ContactUs">
+            <summary>
+              Looks up a localized string similar to Kontakt oss.
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Resources.UI.DownloadAPI">
@@ -726,9 +741,40 @@
               Looks up a localized string similar to Nedlasting API.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Error">
+            <summary>
+              Looks up a localized string similar to Feil.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ErrorInfo">
+            <summary>
+              Looks up a localized string similar to Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt..
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ErrorReport">
+             <summary>
+               Looks up a localized string similar to &lt;p&gt;Feilen er logget og vil sjekkes av systemansvarlig.&lt;/p&gt;
+            &lt;p&gt;Du kan også rapportere feilen til &lt;a mailto:&quot;post@norgedigitalt.no&quot;&gt;post@norgedigitalt.no&lt;/a&gt;.&lt;/p&gt;.
+             </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Resources.UI.ForDevelopers">
             <summary>
               Looks up a localized string similar to For utviklere.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Home">
+            <summary>
+              Looks up a localized string similar to Forside.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.NotFoundText">
+            <summary>
+              Looks up a localized string similar to Vi finner ikke siden du leter etter, men Geonorge skal hjelpe deg videre..
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.SearchFor">
+            <summary>
+              Looks up a localized string similar to Søk etter.
             </summary>
         </member>
     </members>

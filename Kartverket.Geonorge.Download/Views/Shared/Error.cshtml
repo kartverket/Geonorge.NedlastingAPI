@@ -1,14 +1,13 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
+﻿@using Kartverket.Geonorge.Download.Resources
+@model HandleErrorInfo
 
 @{
-    ViewBag.Title = "Feil";
+    ViewBag.Title = UI.Error;
 }
 
-<h1 class="text-danger">Feil</h1>
-<p>Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt.</p>
+<h1 class="text-danger"><p>@UI.ErrorInfo</p></h1>
 @if (HttpContext.Current.IsCustomErrorEnabled)
 {
-    <p>Feilmelding: @Model.Exception.Message</p>
+    <p>@UI.Error: @Model.Exception.Message</p>
 }
-<p>Feilen er logget og vil sjekkes av systemansvarlig.</p>
-<p>Du kan også rapportere feilen til <a href="mailto:@System.Web.Configuration.WebConfigurationManager.AppSettings["WebmasterEmail"]">@System.Web.Configuration.WebConfigurationManager.AppSettings["WebmasterEmail"]</a>.</p>
+@Html.Raw(UI.ErrorReport)
