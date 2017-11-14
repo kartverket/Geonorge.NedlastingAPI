@@ -145,6 +145,7 @@
     <Compile Include="Models\OrderTest.cs" />
     <Compile Include="MvcMockHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\OrderServiceTest.cs" />
     <Compile Include="Services\UpdateFileStatusServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
