@@ -25,8 +25,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// </summary>
         /// <param name="request">Updated information about a file.</param>
         /// <returns>HTTP status codes 200 if ok.</returns>
-        [System.Web.Http.Route("update-file-status")]
-        [System.Web.Http.HttpPost]
+        [Route("update-file-status")]
+        [HttpPost]
         public IHttpActionResult UpdateFileStatus(UpdateFileStatusRequest request)
         {
             try
@@ -37,7 +37,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     DownloadUrl = request.DownloadUrl,
                     Message = request.Message
                 };
-                
+
                 OrderItemStatus itemStatus;
                 if (!System.Enum.TryParse(request.Status, true, out itemStatus))
                 {
@@ -47,6 +47,22 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 updateFileStatusInformation.Status = itemStatus;
 
                 _updateFileStatusService.UpdateFileStatus(updateFileStatusInformation);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message, e);
+                return InternalServerError(e);
+            }
+            return Ok();
+        }
+
+        [Route("update-order-status")]
+        [HttpPost]
+        public IHttpActionResult UpdateOrderStatus(UpdateOrderStatusRequest request)
+        {
+            try
+            {
+                Log.Info($"UpdateOrderStatus invoked for order: {request.OrderUuid} - not implemented yet");
             }
             catch (Exception e)
             {

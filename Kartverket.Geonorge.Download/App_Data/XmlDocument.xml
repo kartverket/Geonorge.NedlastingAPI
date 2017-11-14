@@ -655,6 +655,31 @@
             Optional message, should be provided for errors.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.OrderUuid">
+            <summary>
+                The order uuid
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.DownloadUrl">
+            <summary>
+            Url to the processed file
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Status">
+            <summary>
+                Valid values: WaitingForProcessing, ReadyForDownload, Error
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Event">
+            <summary>
+                The event that has occured. Valid values: FilePackingFinished
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Message">
+            <summary>
+                Optional message, should be provided for errors.
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Order.referenceNumber">
             <summary>
             this used to be the external identifier
