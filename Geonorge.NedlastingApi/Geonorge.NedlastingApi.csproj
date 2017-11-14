@@ -42,11 +42,15 @@
   <ItemGroup>
     <Compile Include="ApiModelsV1.cs" />
     <Compile Include="ApiModelsV2.cs" />
+    <Compile Include="ApiModelsV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="xsd\GenerateClasses.bat" />
     <None Include="xsd\nedlastingapiv2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="xsd\nedlastingapiv3.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="xsd\rest.xsd">
