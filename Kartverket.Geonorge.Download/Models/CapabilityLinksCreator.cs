@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Configuration;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using System.Web;
 
 namespace Kartverket.Geonorge.Download.Models
@@ -17,7 +17,7 @@ namespace Kartverket.Geonorge.Download.Models
 
         public string GetDefaultApiVersion()
         {
-            return "2";
+            return "3";
         }
 
         public List<LinkType> CreateCapabilityLinks(string metadataUuid)

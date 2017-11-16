@@ -608,6 +608,29 @@
                 Get info about files in order
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetProjections(System.String)">
+            <summary>
+                Get Projections from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String)">
+            <summary>
+                Get Areas from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetFormats(System.String)">
+            <summary>
+                Get Format from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
+            <summary>
+               If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+            </summary>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
             Force HTTPS if request is not from local machine

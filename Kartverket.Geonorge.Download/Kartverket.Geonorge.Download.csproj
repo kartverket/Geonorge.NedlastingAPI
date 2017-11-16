@@ -247,6 +247,7 @@
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\DownloadController.cs" />
     <Compile Include="Controllers\Api\V2\OrderV2Controller.cs" />
+    <Compile Include="Controllers\Api\V3\CapabilitiesV3Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\V1\OrderV1Controller.cs" />
@@ -617,12 +618,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
-      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
-      <Name>Geonorge.NedlastingApi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Order\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -667,6 +662,13 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\README.md" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
+      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
+      <Name>Geonorge.NedlastingApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

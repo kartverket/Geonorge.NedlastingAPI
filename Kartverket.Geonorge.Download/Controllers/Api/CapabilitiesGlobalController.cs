@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
@@ -68,6 +68,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("api/capabilities/{metadataUuid}")]
         [Route("api/v2/capabilities/{metadataUuid}")]
+        [Route("api/v3/capabilities/{metadataUuid}")]
         [ResponseType(typeof(CapabilitiesType))]
         public IHttpActionResult GetCapabilities(string metadataUuid)
         {

@@ -4,7 +4,7 @@ using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 
