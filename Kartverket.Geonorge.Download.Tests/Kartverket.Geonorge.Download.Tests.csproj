@@ -145,6 +145,7 @@
     <Compile Include="Models\OrderTest.cs" />
     <Compile Include="MvcMockHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CapabilitiesServiceTest.cs" />
     <Compile Include="Services\OrderServiceTest.cs" />
     <Compile Include="Services\UpdateFileStatusServiceTest.cs" />
   </ItemGroup>
@@ -153,6 +154,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
+      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
+      <Name>Geonorge.NedlastingApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kartverket.Geonorge.Download\Kartverket.Geonorge.Download.csproj">
       <Project>{1A42D6F4-65B1-4264-88B0-A4E2EDF8D1B0}</Project>
       <Name>Kartverket.Geonorge.Download</Name>

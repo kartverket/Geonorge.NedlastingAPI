@@ -323,6 +323,7 @@
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\IRegisterFetcher.cs" />
     <Compile Include="Services\IUpdateFileStatusService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ICapabilitiesService.cs" />

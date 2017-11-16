@@ -8,9 +8,9 @@ namespace Kartverket.Geonorge.Download.Services
     public class CapabilitiesService : ICapabilitiesService
     {
         private readonly DownloadContext _dbContext;
-        private readonly RegisterFetcher _registerFetcher;
+        private readonly IRegisterFetcher _registerFetcher;
 
-        public CapabilitiesService(DownloadContext dbContextContext, RegisterFetcher registerFetcherFetcher)
+        public CapabilitiesService(DownloadContext dbContextContext, IRegisterFetcher registerFetcherFetcher)
         {
             _dbContext = dbContextContext;
             _registerFetcher = registerFetcherFetcher;

@@ -6,7 +6,7 @@ using Geonorge.NedlastingApi.V1;
 
 namespace Kartverket.Geonorge.Download.Services
 {
-    public class RegisterFetcher
+    public class RegisterFetcher : IRegisterFetcher
     {
 
         List<AreaType> Areas = new List<AreaType>();

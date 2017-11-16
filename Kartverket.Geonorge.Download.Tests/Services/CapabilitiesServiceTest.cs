@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using EntityFramework.MoqHelper;
+using FluentAssertions;
+using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Services;
+using Moq;
+using Xunit;
+using System.Linq;
+using Geonorge.NedlastingApi.V1;
+
+namespace Kartverket.Geonorge.Download.Tests.Services
+{
+    public class CapabilitiesServiceTest
+    {
+        [Fact]
+        public void GetAreaShouldReturnArea()
+        {
+            var uuid = "d1422d17-6d95-4ef1-96ab-8af31744dd63";
+            var capability = new List<Dataset>();
+            var dataset = new Dataset { metadataUuid = uuid };
+            var filListe = new List<filliste>();
+            var file = new filliste { inndeling = "kommune", inndelingsverdi = "0919", projeksjon = "25833", format = "FGDB 10.0" };
+            file.Dataset1 = dataset;
+            filListe.Add(file);
+            dataset.filliste = filListe;
+            capability.Add(dataset);
+
+            var capabilitiesService = CreateCapabilitiesService(capability);
+
+            var areas = capabilitiesService.GetAreas(uuid);
+            areas.Should().NotBeNull();
+        }
+
+        private static CapabilitiesService CreateCapabilitiesService(List<Dataset> dataset)
+        {
+            var dbContext = CreateDbContextMock(dataset);
+            Mock<IRegisterFetcher> registerMock = CreateRegisterFetcherMock();
+
+            return new CapabilitiesService(dbContext, registerMock.Object);
+        }
+
+        private static Mock<IRegisterFetcher> CreateRegisterFetcherMock()
+        {
+            AreaType area = new AreaType { code = "0919", name = "Kommunenavn" };
+            ProjectionType projection = new ProjectionType { code = "25833", name = "Projeksjonnavn" };
+            var mockRegister = new Mock<IRegisterFetcher>();
+            mockRegister.Setup(m => m.GetArea("kommune", "0919")).Returns(area);
+            mockRegister.Setup(m => m.GetProjection("25833")).Returns(projection);
+
+            return mockRegister;
+        }
+
+        private static DownloadContext CreateDbContextMock(List<Dataset> dataset)
+        {
+            Mock<DbSet<Dataset>> mockCapabilities = EntityFrameworkMoqHelper
+                .CreateMockForDbSet<Dataset>().SetupForQueryOn(dataset);
+
+            Mock<DbSet<filliste>> mockFileList= EntityFrameworkMoqHelper
+            .CreateMockForDbSet<filliste>().SetupForQueryOn(dataset[0].filliste.ToList());
+
+            Mock<DownloadContext> mockDbContext = EntityFrameworkMoqHelper
+                .CreateMockForDbContext<DownloadContext>();
+   
+
+            mockDbContext.Setup(m => m.Capabilities).Returns(mockCapabilities.Object);
+            mockDbContext.Setup(m => m.FileList).Returns(mockFileList.Object);
+
+            return mockDbContext.Object;
+        }
+    }
+}
