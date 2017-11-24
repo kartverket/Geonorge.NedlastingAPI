@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:app="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:rest="http://www.kxml.no/rest/1.0" elementFormDefault="qualified">
   <xs:import namespace="http://www.kxml.no/rest/1.0" schemaLocation="rest.xsd"/>
-  <!-- Generert av MetaTrans(1.1.0.0) - 14.11.2017 20.13.31-->
+  <!-- Generert av MetaTrans(1.1.0.0) - 24.11.2017 16.07.45-->
   <xs:element name="Area" type="app:AreaType" />
   <xs:complexType name="AreaListe">
     <xs:sequence>
@@ -105,7 +105,9 @@
   </xs:complexType>
   <xs:complexType name="OrderType">
     <xs:sequence>
+      <xs:element name="downloadAsBundle" minOccurs="0" maxOccurs="1" nillable="true" type="xs:boolean" />
       <xs:element name="email" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="downloadBundleUrl" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="orderLines" minOccurs="1" maxOccurs="1" type="app:OrderLineListe" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
