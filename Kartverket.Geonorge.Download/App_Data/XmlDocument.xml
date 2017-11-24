@@ -646,7 +646,13 @@
             Returns true if current language is norwegian. Otherwise, false.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)" -->
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
+            <summary>
+            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
+            </summary>
+            <param name="name">Culture's name (e.g. en-US)</param>
+            <returns></returns>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
             <summary>
             Returns default culture name which is the first name decalared (e.g. en-US)
