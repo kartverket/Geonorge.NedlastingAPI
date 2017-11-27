@@ -534,33 +534,6 @@
             Delete filename list
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetProjections(System.String)">
-            <summary>
-            Get Projections from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetAreas(System.String)">
-            <summary>
-            Get Areas from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetFormats(System.String)">
-            <summary>
-            Get Format from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderV1Controller.PostOrder(Geonorge.NedlastingApi.V1.OrderType)">
-            <summary>
-            Creates new order for data to download
-            </summary>
-            <param name="order">OrderType model</param>
-            <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
-            <response code="400">Bad request</response>
-            <response code="500">Internal Server Error</response>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
             <summary>
                 Get Projections from download service
@@ -629,6 +602,23 @@
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
             <summary>
                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.PostOrder(Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+                Creates new order for data to download
+            </summary>
+            <param name="order">OrderType model</param>
+            <returns>
+                OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
+                the files are delivered via email
+            </returns>
+            <response code="400">Bad request</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.GetOrder(System.String)">
+            <summary>
+                Get info about files in order
             </summary>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
@@ -720,6 +710,16 @@
             <summary>
             The identifier used for external referencing 
             Unique for all new orders, currently set to zero value guid for all old orders
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.DownloadAsBundle">
+            <summary>
+            Set to true if the client has requested that the order items should be bundled together.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.DownloadBundleUrl">
+            <summary>
+            The url to the bundle of all order items in this order. Can be null until the bundle has been created.
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Models.Order.CanBeDownloadedByUser(System.String)">
