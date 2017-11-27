@@ -9,18 +9,16 @@ using log4net;
 using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
 using System.Web.Http.Cors;
-using System.Web.Mvc;
 using Kartverket.Geonorge.Utilities;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 {
-    [HandleError]
+    [System.Web.Mvc.HandleError]
     [EnableCors("http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,http://kurv.dev.geonorge.no,https://kurv.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no", "*", "*", SupportsCredentials = true)]
     public class OrderV2Controller : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IOrderService _orderService;
-        private readonly RegisterFetcher _registerFetcher;
 
         public OrderV2Controller(IOrderService orderService)
         {
@@ -37,15 +35,15 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         /// </returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
-        [System.Web.Http.Route("api/v2/order")]
-        [System.Web.Http.HttpPost]
+        [Route("api/v2/order")]
+        [HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult PostOrder(OrderType order)
         {
             try
             {
                 string username = SecurityClaim.GetUsername();
-                Order savedOrder = _orderService.CreateOrder(order, username);
+                Order savedOrder = _orderService.CreateOrder(new OrderMapper().ConvertToV3(order), username);
                 return Ok(ConvertToReceipt(savedOrder));
             }
             catch (AccessRestrictionException e)
@@ -60,6 +58,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             }
         }
 
+        
         private OrderReceiptType ConvertToReceipt(Order order)
         {
             return new OrderReceiptType()
@@ -98,16 +97,16 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         /// <summary>
         ///     Get info about files in order
         /// </summary>
-        [System.Web.Http.Route("api/v2/order/{referenceNumber}")]
-        [System.Web.Http.HttpGet]
+        [Route("api/v2/order/{orderUuid}")]
+        [HttpGet]
         [ResponseType(typeof(OrderReceiptType))]
-        public IHttpActionResult GetOrder(string referenceNumber)
+        public IHttpActionResult GetOrder(string orderUuid)
         {
             // Redirect to web controller if html is requested:
             if (Request.Headers.Accept.First().MediaType.Equals("text/html"))
-                return Redirect(Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/order/details/" + referenceNumber);
+                return Redirect(Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/order/details/" + orderUuid);
 
-            Order order = _orderService.Find(referenceNumber);
+            Order order = _orderService.Find(orderUuid);
             if (order == null)
                 return NotFound();
 
@@ -116,5 +115,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 
             return Ok(ConvertToReceipt(order));
         }
+        
     }
 }

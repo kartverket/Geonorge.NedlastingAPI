@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.Results;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Utilities;
@@ -32,6 +30,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         /// <param name="orderUuid">The reference number returned from the order</param>
         /// <param name="fileId">The fileId to download from order</param>
         [Route("api/v2/download/order/{orderUuid}/{fileId}")]
+        [Route("api/v3/download/order/{orderUuid}/{fileId}")]
         public IHttpActionResult GetFile(string orderUuid, string fileId)
         {
             if (!IsValidUuid(orderUuid))

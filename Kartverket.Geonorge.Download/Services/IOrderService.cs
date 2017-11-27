@@ -1,4 +1,4 @@
-﻿using Geonorge.NedlastingApi.V2;
+﻿using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 
 namespace Kartverket.Geonorge.Download.Services
@@ -14,5 +14,7 @@ namespace Kartverket.Geonorge.Download.Services
         void CheckAccessRestrictions(Order order, string username);
 
         OrderItem FindOrderItem(string fileId);
+
+        void UpdateOrder(Order order);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
 using LinqKit;
@@ -172,6 +172,11 @@ namespace Kartverket.Geonorge.Download.Services
                 .ToList();
 
             return accessConstraints;
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            _dbContext.SaveChanges();
         }
     }
 }

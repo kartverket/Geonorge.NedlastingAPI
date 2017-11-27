@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
 
