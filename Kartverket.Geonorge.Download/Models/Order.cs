@@ -40,6 +40,16 @@ namespace Kartverket.Geonorge.Download.Models
 
         public virtual List<OrderItem> orderItem { get; set; }
 
+        /// <summary>
+        /// Set to true if the client has requested that the order items should be bundled together.
+        /// </summary>
+        public bool DownloadAsBundle { get; set; }
+
+        /// <summary>
+        /// The url to the bundle of all order items in this order. Can be null until the bundle has been created.
+        /// </summary>
+        public string DownloadBundleUrl { get; set; }
+
         public void AddOrderItems(List<OrderItem> items)
         {
             orderItem.AddRange(items);

@@ -268,6 +268,14 @@ namespace Geonorge.NedlastingApi.V3 {
         public string metadataName;
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string areaName;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string projectionName;
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
         public LinkType[] _links;
@@ -283,12 +291,7 @@ namespace Geonorge.NedlastingApi.V3 {
     public partial class OrderType {
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public System.Nullable<bool> downloadAsBundle;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool downloadAsBundleSpecified;
+        public bool downloadAsBundle;
         
         /// <remarks/>
         public string email;
@@ -394,6 +397,13 @@ namespace Geonorge.NedlastingApi.V3 {
         public System.DateTime orderDate;
         
         /// <remarks/>
+        public bool downloadAsBundle;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string downloadBundleUrl;
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
         public LinkType[] _links;
@@ -410,10 +420,6 @@ namespace Geonorge.NedlastingApi.V3 {
         
         /// <remarks/>
         public string version;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("supportedOperations", IsNullable=true)]
-        public string[] supportedOperations;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
