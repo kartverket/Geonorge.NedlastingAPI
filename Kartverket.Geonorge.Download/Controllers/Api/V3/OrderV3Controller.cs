@@ -10,17 +10,18 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
+using Microsoft.Web.Http;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 {
-    [System.Web.Mvc.HandleError]
+    [ApiVersion("3.0")]
     [EnableCors("http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,http://kurv.dev.geonorge.no,https://kurv.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no", "*", "*", SupportsCredentials = true)]
-
+    [System.Web.Mvc.HandleError]
     public class OrderV3Controller : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private IOrderService _orderService;
+        private readonly IOrderService _orderService;
 
         public OrderV3Controller(IOrderService orderService)
         {
@@ -38,7 +39,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// </returns>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
-        [Route("api/v3/order")]
+        [Route("api/order")]
         [HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult PostOrder(OrderType order)
@@ -64,7 +65,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// <summary>
         ///     Get info about files in order
         /// </summary>
-        [Route("api/v3/order/{orderUuid}")]
+        [Route("api/order/{orderUuid}")]
         [HttpGet]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult GetOrder(string orderUuid)
@@ -84,7 +85,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         }
 
         [HttpPut]
-        [Route("api/v3/order/{orderUuid}")]
+        [Route("api/order/{orderUuid}")]
         [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult UpdateOrder(string orderUuid, [FromBody] OrderType updatedOrder)
         {
