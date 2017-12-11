@@ -3,14 +3,17 @@ using System.Configuration;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
+using Microsoft.Web.Http;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 {
+    [ApiVersion("3.0")]
     [EnableCors("*", "*", "*")]
-    [RoutePrefix("api/v3")]
+    [RoutePrefix("api")]
     public class CapabilitiesV3Controller : ApiController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -23,6 +26,28 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             _capabilitiesService = capabilitiesService;
             _downloadService = downloadService;
         }
+        [Route("capabilities/{metadataUuid}")]
+        [ResponseType(typeof(CapabilitiesType))]
+        public IHttpActionResult GetCapabilities(string metadataUuid)
+        {
+            try
+            {
+                var capabilities = _capabilitiesService.GetCapabilities(metadataUuid);
+                if (capabilities == null)
+                {
+                    Log.Info("Capabilities not found for uuid: " + metadataUuid);
+                    return NotFound();
+                }
+                Log.Info("Capabilities found for uuid: " + metadataUuid);
+                return Ok(capabilities);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error getting capabilities for uuid: " + metadataUuid, ex);
+                return InternalServerError();
+            }
+        }
+
 
         /// <summary>
         ///     Get Projections from download service
