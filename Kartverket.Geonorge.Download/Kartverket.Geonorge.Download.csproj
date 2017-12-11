@@ -296,6 +296,10 @@
     <Compile Include="Migrations\201611220752161_AddAreaAndProjectionNameToOrder.Designer.cs">
       <DependentUpon>201611220752161_AddAreaAndProjectionNameToOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712010906273_AddOrderBundleFields.cs" />
+    <Compile Include="Migrations\201712010906273_AddOrderBundleFields.Designer.cs">
+      <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
@@ -622,6 +626,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611220752161_AddAreaAndProjectionNameToOrder.resx">
       <DependentUpon>201611220752161_AddAreaAndProjectionNameToOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712010906273_AddOrderBundleFields.resx">
+      <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
