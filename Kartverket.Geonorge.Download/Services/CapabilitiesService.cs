@@ -56,9 +56,9 @@ namespace Kartverket.Geonorge.Download.Services
             {
 
                 ProjectionType p1 = new ProjectionType();
-                p1.code = projection.ToString();
-                p1.codespace = _registerFetcher.GetProjection(projection.ToString()).codespace;
-                p1.name = _registerFetcher.GetProjection(projection.ToString()).name;
+                p1.code = projection;
+                p1.codespace = _registerFetcher.GetProjection(projection).codespace;
+                p1.name = _registerFetcher.GetProjection(projection).name;
 
                 var projectionFormats = query.Where(p => p.projeksjon == projection).Select(a => new { a.format }).Distinct();
 
@@ -163,7 +163,7 @@ namespace Kartverket.Geonorge.Download.Services
             foreach (var format in formatsQuery)
             {
                 FormatType f1 = new FormatType();
-                f1.name = format.ToString();
+                f1.name = format;
 
                 var formatProjections = query.Where(p => p.format == format).Select(a => new { a.projeksjon }).Distinct();
 
