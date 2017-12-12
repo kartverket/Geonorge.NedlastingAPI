@@ -28,6 +28,7 @@ namespace Kartverket.Geonorge.Download.Services
                 supportsFormatSelection = dataset.supportsFormatSelection.GetValueOrDefault(),
                 supportsPolygonSelection = dataset.supportsPolygonSelection.GetValueOrDefault(),
                 supportsProjectionSelection = dataset.supportsProjectionSelection.GetValueOrDefault(),
+                supportsDownloadBundling = true,
                 mapSelectionLayer = dataset.mapSelectionLayer,
                 _links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
