@@ -42,7 +42,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [Route("api/order")]
         [HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
-        public IHttpActionResult PostOrder(OrderType order)
+        public IHttpActionResult PostOrder([FromBody]OrderType order)
         {
             try
             {
