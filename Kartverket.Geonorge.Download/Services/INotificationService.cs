@@ -1,7 +1,10 @@
-﻿namespace Kartverket.Geonorge.Download.Services
+﻿using Kartverket.Geonorge.Download.Models;
+
+namespace Kartverket.Geonorge.Download.Services
 {
     public interface INotificationService
     {
-        void SendReadyForDownloadNotification(string fileId);
+        void SendReadyForDownloadNotification(OrderItem orderItem);
+        void SendReadyForDownloadBundleNotification(Order order);
     }
 }

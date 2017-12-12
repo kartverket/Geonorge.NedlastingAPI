@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Models.Api.Internal;
 using log4net;
 using LinqKit;
 
@@ -17,16 +18,19 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;
         private readonly IOrderBundleService _orderBundleService;
+        private readonly INotificationService _notificationService;
 
         public OrderService(DownloadContext dbContext, 
             IClipperService clipperService, 
             IRegisterFetcher registerFetcherFetcher, 
-            IOrderBundleService orderBundleService)
+            IOrderBundleService orderBundleService,
+            INotificationService notificationService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
             _registerFetcher = registerFetcherFetcher;
             _orderBundleService = orderBundleService;
+            _notificationService = notificationService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, string username)
@@ -197,6 +201,18 @@ namespace Kartverket.Geonorge.Download.Services
             if (sendToBundling)
             {
                 _orderBundleService.SendToBundling(order);
+            }
+        }
+
+        public void UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
+        {
+            Order order = Find(orderStatus.OrderUuid);
+            order.DownloadBundleUrl = orderStatus.DownloadUrl;
+            _dbContext.SaveChanges();
+
+            if (orderStatus.Status == "ReadyForDownload")
+            {
+                _notificationService.SendReadyForDownloadBundleNotification(order);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Reflection;
 using System.Web.Http;
 using Kartverket.Geonorge.Download.Models;
@@ -14,10 +15,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IUpdateFileStatusService _updateFileStatusService;
+        private readonly IOrderService _orderService;
 
-        public ManageOrderController(IUpdateFileStatusService updateFileStatusService)
+        public ManageOrderController(IUpdateFileStatusService updateFileStatusService, IOrderService orderService)
         {
             _updateFileStatusService = updateFileStatusService;
+            _orderService = orderService;
         }
 
         /// <summary>
@@ -59,18 +62,20 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 
         [Route("update-order-status")]
         [HttpPost]
-        public IHttpActionResult UpdateOrderStatus(UpdateOrderStatusRequest request)
+        public IHttpActionResult UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
         {
             try
             {
-                Log.Info($"UpdateOrderStatus invoked for order: {request.OrderUuid} - not implemented yet");
+                Log.Info($"UpdateOrderStatus invoked for order: {orderStatus.OrderUuid}");
+
+                _orderService.UpdateOrderStatus(orderStatus);
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
                 return InternalServerError(e);
             }
-            return Ok();
+            return StatusCode(HttpStatusCode.NoContent);
         }
     }
 }

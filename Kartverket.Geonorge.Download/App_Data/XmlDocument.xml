@@ -604,6 +604,12 @@
                 If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetBundleFile(System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetFile(System.String,System.String)">
             <summary>
                 Get file to download for order
