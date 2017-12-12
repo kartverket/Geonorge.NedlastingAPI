@@ -13,7 +13,6 @@ namespace Kartverket.Geonorge.Download.Models
         private const string RelFormat = "http://rel.geonorge.no/download/format";
         private const string RelArea = "http://rel.geonorge.no/download/area";
         private const string RelOrder = "http://rel.geonorge.no/download/order";
-        private const string RelOrderBundle = "http://rel.geonorge.no/download/order-bundle";
         private const string RelCanDownload = "http://rel.geonorge.no/download/can-download";
 
         public string GetDefaultApiVersion()
@@ -47,7 +46,6 @@ namespace Kartverket.Geonorge.Download.Models
             links.Add(CreateFormatLink(metadataUuid, apiBaseUrl));
             links.Add(CreateAreaLink(metadataUuid, apiBaseUrl));
             links.Add(CreateOrderLink(apiBaseUrl));
-            links.Add(CreateOrderBundleLink(apiBaseUrl));
             links.Add(CreateCapabilitiesLink(metadataUuid, apiBaseUrl));
             links.Add(CreateCanDownloadLink(apiBaseUrl));
             return links;
@@ -68,15 +66,6 @@ namespace Kartverket.Geonorge.Download.Models
             {
                 rel = RelOrder,
                 href = apiBaseUrl + "order"
-            };
-        }
-        private static LinkType CreateOrderBundleLink(string apiBaseUrl)
-        {
-            return new LinkType
-            {
-                rel = RelOrderBundle,
-                href = apiBaseUrl + "order/{orderUuid}",
-                templated = true
             };
         }
 
