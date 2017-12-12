@@ -15,9 +15,9 @@ namespace Kartverket.Geonorge.Download.Services
         private const string DefaultEpsgCode = "32633";
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly DownloadContext _dbContext;
-        private readonly RegisterFetcher _registerFetcher;
+        private readonly IRegisterFetcher _registerFetcher;
 
-        public ClipperService(DownloadContext dbContext, RegisterFetcher registerFetcherFetcher)
+        public ClipperService(DownloadContext dbContext, IRegisterFetcher registerFetcherFetcher)
         {
             _dbContext = dbContext;
             _registerFetcher = registerFetcherFetcher;

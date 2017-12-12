@@ -15,9 +15,9 @@ namespace Kartverket.Geonorge.Download.Services
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IClipperService _clipperService;
         private readonly DownloadContext _dbContext;
-        private readonly RegisterFetcher _registerFetcher;
+        private readonly IRegisterFetcher _registerFetcher;
 
-        public OrderService(DownloadContext dbContext, IClipperService clipperService, RegisterFetcher registerFetcherFetcher)
+        public OrderService(DownloadContext dbContext, IClipperService clipperService, IRegisterFetcher registerFetcherFetcher)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
