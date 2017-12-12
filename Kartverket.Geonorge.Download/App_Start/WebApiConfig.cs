@@ -30,7 +30,7 @@ namespace Kartverket.Geonorge.Download
             config.AddApiVersioning(
                 options =>
                 {
-                    options.ApiVersionReader = new MediaTypeApiVersionReader();
+                    options.ApiVersionReader = new HeaderApiVersionReader("api-version");
                     options.AssumeDefaultVersionWhenUnspecified = true;
                     options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
                 });
