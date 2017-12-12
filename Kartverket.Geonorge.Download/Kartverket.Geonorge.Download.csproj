@@ -254,6 +254,7 @@
     <Compile Include="Controllers\Api\V2\OrderMapper.cs" />
     <Compile Include="Controllers\Api\V2\OrderV2Controller.cs" />
     <Compile Include="Controllers\Api\V3\CapabilitiesV3Controller.cs" />
+    <Compile Include="Controllers\Api\V3\DownloadV3Controller.cs" />
     <Compile Include="Controllers\Api\V3\OrderV3Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

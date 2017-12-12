@@ -490,42 +490,42 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>
-            List datasets
+                List datasets
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
             <summary>
-            Get info dataset
+                Get info dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
-            Update dataset
+                Update dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
-            Create new dataset
+                Create new dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.filliste})">
             <summary>
-            Add file(s) to dataset
+                Add file(s) to dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
             <summary>
-            Delete dataset
+                Delete dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
             <summary>
-            Delete file
+                Delete file
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
             <summary>
-            Delete filename list
+                Delete filename list
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
@@ -548,7 +548,7 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.CanDownload(Geonorge.NedlastingApi.V2.CanDownloadRequestType)">
             <summary>
-               If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetCapabilities(System.String)">
@@ -601,8 +601,15 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
             <summary>
-               If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetFile(System.String,System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+            <param name="fileId">The fileId to download from order</param>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.PostOrder(Geonorge.NedlastingApi.V3.OrderType)">
             <summary>
@@ -623,7 +630,7 @@
         </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
-            Force HTTPS if request is not from local machine
+                Force HTTPS if request is not from local machine
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
@@ -830,6 +837,15 @@
             <summary>
               Looks up a localized string similar to Søk etter.
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.OrderService.UpdateOrder(Kartverket.Geonorge.Download.Models.Order,Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+            Updates an order. Currently only these fields are updated:
+            * email
+            * downloadAsBundle
+            </summary>
+            <param name="order"></param>
+            <param name="incomingOrder"></param>
         </member>
     </members>
 </doc>
