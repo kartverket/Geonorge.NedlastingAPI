@@ -23,7 +23,7 @@ namespace Kartverket.Geonorge.Download.Models
 
         public List<LinkType> CreateCapabilityLinks(string metadataUuid)
         {
-            List<LinkType> links = CreateLinks(metadataUuid, GetDefaultApiVersion());
+            List<LinkType> links = CreateLinks(metadataUuid);
 
             var capabilityLink = links.FirstOrDefault(l => l.rel == RelCapabilities);
             if (capabilityLink != null)
@@ -35,12 +35,12 @@ namespace Kartverket.Geonorge.Download.Models
 
         public List<LinkType> CreateLinks()
         {
-            return CreateLinks(null, GetDefaultApiVersion());
+            return CreateLinks(null);
         }
 
-        public List<LinkType> CreateLinks(string metadataUuid, string versionId)
+        public List<LinkType> CreateLinks(string metadataUuid)
         {
-            var apiBaseUrl = GetApiBaseUrl(versionId);
+            var apiBaseUrl = GetApiBaseUrl();
 
             var links = new List<LinkType>();
             links.Add(CreateProjectionLink(metadataUuid, apiBaseUrl));
@@ -149,10 +149,9 @@ namespace Kartverket.Geonorge.Download.Models
             return baseUrl + metadataUuid;
         }
 
-        private static string GetApiBaseUrl(string versionId)
+        private static string GetApiBaseUrl()
         {
-            var applicationUrl = WebConfigurationManager.AppSettings["DownloadUrl"];
-            return applicationUrl + "api/v" + versionId + "/";
+            return WebConfigurationManager.AppSettings["DownloadUrl"] + "api/";
         }
     }
 }
