@@ -838,6 +838,13 @@
               Looks up a localized string similar to Søk etter.
             </summary>
         </member>
+        <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
+            <summary>
+            This service forward a bundle request to the FME bundling service. 
+            All files in an order is bundled together in a zip file. 
+            See Jira #GEOPORTAL-2616 for details.
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Services.OrderService.UpdateOrder(Kartverket.Geonorge.Download.Models.Order,Geonorge.NedlastingApi.V3.OrderType)">
             <summary>
             Updates an order. Currently only these fields are updated:

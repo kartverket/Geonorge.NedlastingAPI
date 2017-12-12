@@ -334,6 +334,11 @@
       <DependentUpon>UI.en.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\AccessRestrictionException.cs" />
+    <Compile Include="Services\ExternalRequestException.cs" />
+    <Compile Include="Services\ExternalRequestService.cs" />
+    <Compile Include="Services\IExternalRequestService.cs" />
+    <Compile Include="Services\IOrderBundleService.cs" />
+    <Compile Include="Services\OrderBundleService.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\EmailService.cs" />

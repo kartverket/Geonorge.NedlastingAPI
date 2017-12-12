@@ -16,12 +16,17 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly IClipperService _clipperService;
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;
+        private readonly IOrderBundleService _orderBundleService;
 
-        public OrderService(DownloadContext dbContext, IClipperService clipperService, IRegisterFetcher registerFetcherFetcher)
+        public OrderService(DownloadContext dbContext, 
+            IClipperService clipperService, 
+            IRegisterFetcher registerFetcherFetcher, 
+            IOrderBundleService orderBundleService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
             _registerFetcher = registerFetcherFetcher;
+            _orderBundleService = orderBundleService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, string username)
@@ -183,9 +188,16 @@ namespace Kartverket.Geonorge.Download.Services
         /// <param name="incomingOrder"></param>
         public void UpdateOrder(Order order, OrderType incomingOrder)
         {
+            bool sendToBundling = incomingOrder.downloadAsBundle;
+
             order.DownloadAsBundle = incomingOrder.downloadAsBundle;
             order.email = incomingOrder.email;
             _dbContext.SaveChanges();
+
+            if (sendToBundling)
+            {
+                _orderBundleService.SendToBundling(order);
+            }
         }
     }
 }
