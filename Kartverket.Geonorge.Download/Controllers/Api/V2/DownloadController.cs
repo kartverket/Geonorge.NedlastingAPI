@@ -39,12 +39,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             if (!IsValidUuid(fileId))
                 return BadRequest("fileId is not a valid uuid.");
 
-            Order order = _orderService.Find(orderUuid);
+            var order = _orderService.Find(orderUuid);
             if (order == null)
                 return NotFound();
 
-            string username = SecurityClaim.GetUsername();
-            bool userIsLoggedIn = !string.IsNullOrWhiteSpace(username);
+            var username = SecurityClaim.GetUsername();
+            var userIsLoggedIn = !string.IsNullOrWhiteSpace(username);
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(orderUuid, fileId));
@@ -52,14 +52,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(username))
                 return Content(HttpStatusCode.Forbidden, "User not allowed to download order");
 
-            OrderItem item = order.GetItemWithFileId(fileId);
+            var item = order.GetItemWithFileId(fileId);
             if (item == null || !item.IsReadyForDownload())
                 return NotFound();
-            
+
             // Download open data directly from it's location:
             if (item.AccessConstraint.IsOpen())
                 return Redirect(item.DownloadUrl);
-            
+
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
         }
@@ -72,9 +72,10 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
 
         private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string orderUuid, string fileId)
         {
-            var downloadUrl = new DownloadUrlBuilder().OrderId(Guid.Parse(orderUuid)).FileId(Guid.Parse(fileId)).Build();
+            var downloadUrl = new DownloadUrlBuilder().OrderId(Guid.Parse(orderUuid)).FileId(Guid.Parse(fileId))
+                .Build();
             var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
-            string server = ConfigurationManager.AppSettings["DownloadUrl"];
+            var server = ConfigurationManager.AppSettings["DownloadUrl"];
             return $"{server}/AuthServices/SignIn?ReturnUrl={encodedReturnUrl}";
         }
     }

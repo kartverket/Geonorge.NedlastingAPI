@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
-using System.Reflection;
-using System;
-using System.Data.Entity.Validation;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
@@ -29,32 +29,38 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// List datasets
+        ///     List datasets
         /// </summary>
         // GET: api/internal/dataset
         [Route("")]
         public IEnumerable<DatasetViewModel> GetCapabilities()
         {
-            return _dbContext.Capabilities.Select(d => new DatasetViewModel { ID = d.ID, metadataUuid = d.metadataUuid, Tittel= d.Tittel, AccessConstraint = d.AccessConstraint }).ToList();
+            return _dbContext.Capabilities.Select(d => new DatasetViewModel
+            {
+                ID = d.ID,
+                metadataUuid = d.metadataUuid,
+                Tittel = d.Tittel,
+                AccessConstraint = d.AccessConstraint
+            }).ToList();
         }
+
         /// <summary>
-        /// Get info dataset
+        ///     Get info dataset
         /// </summary>
         // GET: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
         [ResponseType(typeof(Dataset))]
         [Route("{uuid:guid}")]
         public IHttpActionResult GetDataset(string uuid)
         {
-            Dataset dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
-            {
                 return NotFound();
-            }
 
             return Ok(dataset);
         }
+
         /// <summary>
-        /// Update dataset
+        ///     Update dataset
         /// </summary>
         // PUT: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
         [Route("{uuid:guid}")]
@@ -62,15 +68,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         public IHttpActionResult PutDataset(string uuid, Dataset dataset)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
             try
             {
                 if (dataset.filliste.Count > 0)
                 {
                     //Remove old files
-                    var deleteSql = "DELETE FROM filliste FROM Dataset INNER JOIN filliste ON Dataset.ID = filliste.dataset WHERE(Dataset.metadataUuid = {0} )";
+                    var deleteSql =
+                        "DELETE FROM filliste FROM Dataset INNER JOIN filliste ON Dataset.ID = filliste.dataset WHERE(Dataset.metadataUuid = {0} )";
                     Log.Info("Deleting from filliste for uuid: " + uuid);
                     _dbContext.Database.ExecuteSqlCommand(deleteSql, uuid);
 
@@ -79,7 +84,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     {
                         Log.Info("Adding file " + file.filnavn + " for uuid: " + uuid);
                         _dbContext.FileList.Add(file);
-
                     }
                     _dbContext.SaveChanges();
                 }
@@ -91,23 +95,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             catch (DbUpdateConcurrencyException)
             {
                 if (!DatasetExists(dataset.ID))
-                {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
             catch (DbEntityValidationException ex)
             {
                 foreach (var err in ex.EntityValidationErrors)
-                {
-                    foreach (var e in err.ValidationErrors)
-                    {
-                        Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var e in err.ValidationErrors)
+                    Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -120,7 +115,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// Create new dataset
+        ///     Create new dataset
         /// </summary>
         // POST: api/internal/dataset
         [ResponseType(typeof(Dataset))]
@@ -128,23 +123,18 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         public IHttpActionResult PostDataset(Dataset dataset)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            try { 
-            _dbContext.Capabilities.Add(dataset);
-            Log.Info("Adding new dataset with uuid: " + dataset.metadataUuid);
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.Capabilities.Add(dataset);
+                Log.Info("Adding new dataset with uuid: " + dataset.metadataUuid);
+                _dbContext.SaveChanges();
             }
             catch (DbEntityValidationException ex)
             {
                 foreach (var err in ex.EntityValidationErrors)
-                {
-                    foreach (var e in err.ValidationErrors)
-                    {
-                        Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var e in err.ValidationErrors)
+                    Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -157,7 +147,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// Add file(s) to dataset
+        ///     Add file(s) to dataset
         /// </summary>
         // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
         [Route("files/{uuid}")]
@@ -166,11 +156,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         {
             try
             {
-                Dataset dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+                var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
                 if (dataset == null)
-                {
                     return NotFound();
-                }
 
                 foreach (var file in filelist)
                 {
@@ -185,11 +173,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             }
             catch (DbEntityValidationException ex)
             {
-                foreach(var err in ex.EntityValidationErrors) {
-                    foreach(var e in err.ValidationErrors) { 
-                    Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var err in ex.EntityValidationErrors)
+                foreach (var e in err.ValidationErrors) Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -200,7 +185,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// Delete dataset
+        ///     Delete dataset
         /// </summary>
         // DELETE: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
         [ResponseType(typeof(Dataset))]
@@ -208,13 +193,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [HttpDelete]
         public IHttpActionResult DeleteDataset(string uuid)
         {
-            Dataset dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
-            {
                 return NotFound();
-            }
             try
-            { 
+            {
                 _dbContext.Capabilities.Remove(dataset);
                 Log.Info("Removing dataset with uuid: " + uuid);
                 _dbContext.SaveChanges();
@@ -222,12 +205,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             catch (DbEntityValidationException ex)
             {
                 foreach (var err in ex.EntityValidationErrors)
-                {
-                    foreach (var e in err.ValidationErrors)
-                    {
-                        Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var e in err.ValidationErrors)
+                    Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -240,7 +219,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// Delete file
+        ///     Delete file
         /// </summary>
         // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
         [ResponseType(typeof(filliste))]
@@ -248,13 +227,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [HttpDelete]
         public IHttpActionResult Deletefilliste(string filnavn)
         {
-            filliste fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+            var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
             if (fil == null)
-            {
                 return NotFound();
-            }
             try
-            { 
+            {
                 _dbContext.FileList.Remove(fil);
                 Log.Info("Removing file:" + fil);
                 _dbContext.SaveChanges();
@@ -262,12 +239,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             catch (DbEntityValidationException ex)
             {
                 foreach (var err in ex.EntityValidationErrors)
-                {
-                    foreach (var e in err.ValidationErrors)
-                    {
-                        Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var e in err.ValidationErrors)
+                    Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -280,7 +253,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        /// Delete filename list
+        ///     Delete filename list
         /// </summary>
         // DELETE: api/internal/dataset/files
         [Route("files")]
@@ -288,14 +261,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         public IHttpActionResult DeleteFiles(List<string> filliste)
         {
             try
-            { 
+            {
                 foreach (var filnavn in filliste)
                 {
-                    filliste fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+                    var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
                     if (fil == null)
-                    {
                         return NotFound();
-                    }
                     Log.Info("Deleting file: " + filnavn);
                     _dbContext.FileList.Remove(fil);
                 }
@@ -304,12 +275,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             catch (DbEntityValidationException ex)
             {
                 foreach (var err in ex.EntityValidationErrors)
-                {
-                    foreach (var e in err.ValidationErrors)
-                    {
-                        Log.Error(e.ErrorMessage);
-                    }
-                }
+                foreach (var e in err.ValidationErrors)
+                    Log.Error(e.ErrorMessage);
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
             catch (Exception ex)
@@ -324,9 +291,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 _dbContext.Dispose();
-            }
             base.Dispose(disposing);
         }
 

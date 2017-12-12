@@ -26,6 +26,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             _capabilitiesService = capabilitiesService;
             _downloadService = downloadService;
         }
+
         [Route("capabilities/{metadataUuid}")]
         [ResponseType(typeof(CapabilitiesType))]
         public IHttpActionResult GetCapabilities(string metadataUuid)
@@ -104,7 +105,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         }
 
         /// <summary>
-        ///    If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+        ///     If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
         /// </summary>
         [HttpPost]
         [Route("can-download")]
@@ -118,7 +119,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     canDownload = _downloadService.AreaIsWithinDownloadLimits(request.coordinates,
                         request.coordinateSystem, request.metadataUuid);
 
-                return Ok(new CanDownloadResponseType { canDownload = canDownload });
+                return Ok(new CanDownloadResponseType {canDownload = canDownload});
             }
             catch (Exception ex)
             {

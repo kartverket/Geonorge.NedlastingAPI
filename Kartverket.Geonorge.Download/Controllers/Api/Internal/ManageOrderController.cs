@@ -8,12 +8,12 @@ using log4net;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
-    [System.Web.Http.RoutePrefix("api/internal/order")]
-    [System.Web.Http.Authorize(Roles = AuthConfig.DatasetProviderRole)]
+    [RoutePrefix("api/internal/order")]
+    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
     public class ManageOrderController : ApiController
     {
-        private readonly IUpdateFileStatusService _updateFileStatusService;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IUpdateFileStatusService _updateFileStatusService;
 
         public ManageOrderController(IUpdateFileStatusService updateFileStatusService)
         {
@@ -31,7 +31,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         {
             try
             {
-                UpdateFileStatusInformation updateFileStatusInformation = new UpdateFileStatusInformation
+                var updateFileStatusInformation = new UpdateFileStatusInformation
                 {
                     FileId = request.FileId,
                     DownloadUrl = request.DownloadUrl,
@@ -39,10 +39,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 };
 
                 OrderItemStatus itemStatus;
-                if (!System.Enum.TryParse(request.Status, true, out itemStatus))
+                if (!Enum.TryParse(request.Status, true, out itemStatus))
                 {
                     Log.Info("Bad request - invalid file status: " + request.Status);
-                    return BadRequest("Invalid file status, valid values are: [WaitingForProcessing, ReadyForDownload, Error]");
+                    return BadRequest(
+                        "Invalid file status, valid values are: [WaitingForProcessing, ReadyForDownload, Error]");
                 }
                 updateFileStatusInformation.Status = itemStatus;
 
