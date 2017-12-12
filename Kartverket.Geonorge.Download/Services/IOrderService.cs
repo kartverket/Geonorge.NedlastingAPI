@@ -15,6 +15,6 @@ namespace Kartverket.Geonorge.Download.Services
 
         OrderItem FindOrderItem(string fileId);
 
-        void UpdateOrder(Order order);
+        void UpdateOrder(Order order, OrderType incomingOrder);
     }
 }

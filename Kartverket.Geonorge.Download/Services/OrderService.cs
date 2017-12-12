@@ -174,8 +174,17 @@ namespace Kartverket.Geonorge.Download.Services
             return accessConstraints;
         }
 
-        public void UpdateOrder(Order order)
+        /// <summary>
+        /// Updates an order. Currently only these fields are updated:
+        /// * email
+        /// * downloadAsBundle
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="incomingOrder"></param>
+        public void UpdateOrder(Order order, OrderType incomingOrder)
         {
+            order.DownloadAsBundle = incomingOrder.downloadAsBundle;
+            order.email = incomingOrder.email;
             _dbContext.SaveChanges();
         }
     }

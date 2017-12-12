@@ -90,7 +90,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/order/{orderUuid}")]
         [ResponseType(typeof(OrderReceiptType))]
-        public IHttpActionResult UpdateOrder(string orderUuid, [FromBody] OrderType updatedOrder)
+        public IHttpActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
         {
             var order = _orderService.Find(orderUuid);
             if (order == null)
@@ -99,9 +99,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (!order.BelongsToUser(SecurityClaim.GetUsername()))
                 return Unauthorized();
 
-            order.DownloadAsBundle = updatedOrder.downloadAsBundle;
-
-            _orderService.UpdateOrder(order);
+            _orderService.UpdateOrder(order, incomingOrder);
 
             return Ok(ConvertToReceipt(order));
         }
