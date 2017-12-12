@@ -481,12 +481,6 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.CapabilitiesGlobalController.GetCapabilities(System.String)">
-            <summary>
-                Get Capabilities from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
                 Update status on a given file that has been processed.
@@ -556,6 +550,12 @@
             <summary>
                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetCapabilities(System.String)">
+            <summary>
+                Get Capabilities from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.DownloadController.GetFile(System.String,System.String)">
             <summary>
