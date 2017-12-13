@@ -121,7 +121,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 orderDate = order.orderDate ?? DateTime.Now,
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
-                downloadBundleUrl = order.DownloadBundleUrl
+                downloadBundleUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle()
             };
         }
 
