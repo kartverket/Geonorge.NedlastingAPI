@@ -60,7 +60,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             }
             catch (Exception ex)
             {
-                Log.Error("Error API", ex);
+                Log.Error("Error creating new order.", ex);
                 return InternalServerError(ex);
             }
         }
@@ -98,8 +98,16 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
             if (!order.BelongsToUser(SecurityClaim.GetUsername()))
                 return Unauthorized();
-
-            _orderService.UpdateOrder(order, incomingOrder);
+            try
+            {
+                _orderService.UpdateOrder(order, incomingOrder);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error while updating order.", e);
+                return InternalServerError(e);
+            }
+            
 
             return Ok(ConvertToReceipt(order));
         }
