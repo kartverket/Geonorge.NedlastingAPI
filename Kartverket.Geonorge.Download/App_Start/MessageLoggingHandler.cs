@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Microsoft.Ajax.Utilities;
 
 namespace Kartverket.Geonorge.Download
 {
@@ -24,7 +23,7 @@ namespace Kartverket.Geonorge.Download
                 if (message != null)
                 {
                     string messageAsString = Encoding.UTF8.GetString(message);
-                    if (!messageAsString.IsNullOrWhiteSpace())
+                    if (!string.IsNullOrWhiteSpace(messageAsString))
                         logMessage = logMessage + "\r\n" + messageAsString;
                 }
                 
@@ -42,7 +41,7 @@ namespace Kartverket.Geonorge.Download
                     logMessage = logMessage + "\r\n" + Encoding.UTF8.GetString(message);
 
                 if ((int)responseStatusCode >= 200 && (int) responseStatusCode < 400)
-                    Log.Info(logMessage);
+                    Log.Debug(logMessage);
                 else
                     Log.Error(logMessage);
             });

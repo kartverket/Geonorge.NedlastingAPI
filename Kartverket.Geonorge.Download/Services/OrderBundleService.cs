@@ -33,7 +33,7 @@ namespace Kartverket.Geonorge.Download.Services
             string bundleRequestUrl = CreateBundleRequestUrl(order);
 
             Log.Info($"Sending order [uuid={order.Uuid}, referenceNumber={order.referenceNumber}] to bundling.");
-            Log.Debug("Sending bundling request: " + bundleRequestUrl);
+            Log.Info("Bundling request: " + bundleRequestUrl);
 
             HttpResponseMessage httpResponseMessage;
             try
@@ -41,8 +41,7 @@ namespace Kartverket.Geonorge.Download.Services
                 Task<HttpResponseMessage> httpRequestTask = _externalRequestService.RunRequestAsync(bundleRequestUrl);
                 httpResponseMessage = httpRequestTask.Result;
 
-                Log.Debug("Response from bundle service: " + httpResponseMessage.StatusCode);
-            
+                Log.Info("Response from bundle service: " + httpResponseMessage.StatusCode);
             }
             catch (Exception e)
             {
