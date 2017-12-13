@@ -92,7 +92,7 @@ namespace Kartverket.Geonorge.Download.Services
             if (!string.IsNullOrEmpty(orderItem.DownloadUrl))
             {
                 body.AppendLine("Klikk her for å laste ned resultatet: ");
-                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId)
+                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.Uuid)
                     .Build();
                 body.AppendLine(downLoadApiUrl);
             }
@@ -106,7 +106,7 @@ namespace Kartverket.Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {orderItem.FileId}");
+            Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {orderItem.Uuid}");
 
             return message;
         }

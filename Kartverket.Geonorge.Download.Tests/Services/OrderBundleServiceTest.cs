@@ -18,7 +18,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         private const string FileId3 = "8d33e1aa-6293-494b-95e8-5e20702f126e";
 
         private readonly string _expectedUrl =
-            $"http://example.com/api?UUIDS={FileId1} {FileId2} {FileId3}&ORDERID={OrderUuid}";
+            "http://example.com/api?UUIDS="+FileId1+" "+FileId2+" "+FileId3+"&ORDERID="+OrderUuid;
 
         private readonly Order _order = new Order
         {
@@ -27,13 +27,13 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             {
                 new OrderItem
                 {
-                    FileId = Guid.Parse(FileId1)
+                    Uuid = Guid.Parse(FileId1)
                 },
                 new OrderItem
                 {
-                    FileId = Guid.Parse(FileId2)
+                    Uuid = Guid.Parse(FileId2)
                 },
-                new OrderItem {FileId = Guid.Parse(FileId3)}
+                new OrderItem {Uuid = Guid.Parse(FileId3)}
             }
         };
 

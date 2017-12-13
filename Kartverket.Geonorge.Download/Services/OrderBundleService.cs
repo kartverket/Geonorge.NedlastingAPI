@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -57,7 +56,7 @@ namespace Kartverket.Geonorge.Download.Services
             string orderBundleServiceUrl = ConfigurationManager.AppSettings["OrderBundleServiceUrl"];
             var urlBuilder = new StringBuilder(orderBundleServiceUrl);
             urlBuilder.Append("?");
-            var fileIds = string.Join(" ", order.orderItem.Select(o => o.FileId));
+            var fileIds = string.Join(" ", order.CollectFileIdsForBundling());
             urlBuilder.Append("UUIDS=").Append(fileIds);
             urlBuilder.Append("&ORDERID=").Append(order.Uuid);
             var bundleRequestUrl = urlBuilder.ToString();

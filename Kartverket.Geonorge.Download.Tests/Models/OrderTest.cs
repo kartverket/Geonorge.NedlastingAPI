@@ -40,6 +40,33 @@ namespace Kartverket.Geonorge.Download.Tests.Models
 
             order.CanBeDownloadedByUser("username").Should().BeTrue();
         }
+        
+        [Fact]
+        public void ShouldCollectFileUuidOrUuidIfNoFileUuidExists()
+        {
+            var orderItemUuid = Guid.NewGuid();
+            var fileUuid1 = Guid.NewGuid();
+            var fileUuid2 = Guid.NewGuid();
+            var fileUuid3 = Guid.NewGuid();
+            var order = new Order()
+            {
+                orderItem = new List<OrderItem>()
+                {
+                    new OrderItem() { Uuid = Guid.NewGuid(), FileUuid = fileUuid1 },
+                    new OrderItem() { Uuid = Guid.NewGuid(), FileUuid = fileUuid2 },
+                    new OrderItem() { Uuid = orderItemUuid },
+                    new OrderItem() { Uuid = Guid.NewGuid(), FileUuid = fileUuid3 },
+                }
+            };
+
+            List<string> ids = order.CollectFileIdsForBundling();
+            ids.Should().HaveCount(4);
+            ids.Should().Contain(orderItemUuid.ToString());
+            ids.Should().Contain(fileUuid1.ToString());
+            ids.Should().Contain(fileUuid2.ToString());
+            ids.Should().Contain(fileUuid3.ToString());
+        }
+
 
         private static Order CreateOrder(string username, params OrderItem[] orderItems)
         {

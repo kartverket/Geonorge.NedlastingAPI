@@ -44,7 +44,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
                 {
                     new OrderItem
                     {
-                        FileId = Guid.Parse(fileId),
+                        Uuid = Guid.Parse(fileId),
                         AccessConstraint = new AccessConstraint(accessConstraint),
                         Status = orderItemStatus,
                         DownloadUrl = DownloadUrl

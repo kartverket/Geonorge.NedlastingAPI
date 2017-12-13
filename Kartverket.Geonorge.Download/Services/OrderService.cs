@@ -107,6 +107,7 @@ namespace Kartverket.Geonorge.Download.Services
                     {
                         DownloadUrl = item.url,
                         FileName = item.filnavn,
+                        FileUuid = item.id,
                         Format = item.format,
                         Area = item.inndelingsverdi,
                         AreaName = _registerFetcher.GetArea(item.inndeling, item.inndelingsverdi).name,
@@ -129,7 +130,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation)
         {
-            OrderItem orderItem = _dbContext.OrderItems.FirstOrDefault(x => x.FileId == updateFileStatusInformation.FileIdAsGuid);
+            OrderItem orderItem = _dbContext.OrderItems.FirstOrDefault(x => x.Uuid == updateFileStatusInformation.FileIdAsGuid);
             if (orderItem == null)
                 throw new ArgumentException("Invalid file id - no such file exists.");
 
@@ -140,7 +141,7 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext.Entry(orderItem).State = EntityState.Modified;
             _dbContext.SaveChanges();
 
-            string logMessage = $"OrderItem [id={orderItem.Id}, fileId={orderItem.FileId}] has been updated. Status: {orderItem.Status}";
+            string logMessage = $"OrderItem [id={orderItem.Id}, fileId={orderItem.Uuid}] has been updated. Status: {orderItem.Status}";
 
             if (orderItem.Status == OrderItemStatus.Error)
                 Log.Error($"{logMessage}, Message: {orderItem.Message} ");
@@ -165,7 +166,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var fileIdGuid = Guid.Parse(fileId);
 
-            return _dbContext.OrderItems.FirstOrDefault(o => o.FileId == fileIdGuid);
+            return _dbContext.OrderItems.FirstOrDefault(o => o.Uuid == fileIdGuid);
         }
 
         private List<DatasetAccessConstraint> GetAccessRestrictionsForOrder(Order order)

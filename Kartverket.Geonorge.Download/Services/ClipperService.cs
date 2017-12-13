@@ -72,7 +72,7 @@ namespace Kartverket.Geonorge.Download.Services
             if (string.IsNullOrWhiteSpace(clipperUrl))
             {
                 Log.Error("ClipperUrl is not defined for metadata uuid: " + orderItem.MetadataUuid +
-                          ". Cannot process clipping request for orderItem: " + orderItem.FileId);
+                          ". Cannot process clipping request for orderItem: " + orderItem.Uuid);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace Kartverket.Geonorge.Download.Services
             urlBuilder.Append("&OUTPUT_EPSG_CODE=").Append(orderItem.Projection);
             urlBuilder.Append("&opt_servicemode=async");
             urlBuilder.Append("&FORMAT=").Append(orderItem.Format);
-            urlBuilder.Append("&FILEID=").Append(orderItem.FileId);
+            urlBuilder.Append("&FILEID=").Append(orderItem.Uuid);
             urlBuilder.Append("&UUID=").Append(orderItem.MetadataUuid);
 
             // TODO - remove this when FME has implemented callback method
@@ -91,7 +91,7 @@ namespace Kartverket.Geonorge.Download.Services
             using (var client = new HttpClient())
             {
                 var url = urlBuilder.ToString();
-                Log.Info($"Sending clipping request for orderItem [{orderItem.FileId}]: {url}");
+                Log.Info($"Sending clipping request for orderItem [{orderItem.Uuid}]: {url}");
                 using (var response = await client.GetAsync(url))
                 {
                     using (var content = response.Content)
