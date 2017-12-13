@@ -23,7 +23,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.Internal
 
         private ManageOrderController CreateController(IUpdateFileStatusService updateFileStatusService)
         {
-            var controller = new ManageOrderController(updateFileStatusService);
+            var controller = new ManageOrderController(updateFileStatusService, null);
             controller.Request = new HttpRequestMessage();
             controller.Configuration = new HttpConfiguration();
             return controller;

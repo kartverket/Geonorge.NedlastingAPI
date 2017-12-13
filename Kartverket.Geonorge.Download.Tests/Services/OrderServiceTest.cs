@@ -30,8 +30,8 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         private OrderService CreateOrderService(List<Order> listOfOrders)
         {
             var dbContext = CreateDbContextMock(listOfOrders);
-
-            return new OrderService(dbContext, null, null, _orderBundlingServiceMock.Object);
+            var notificationServiceMock = new Mock<INotificationService>();
+            return new OrderService(dbContext, null, null, _orderBundlingServiceMock.Object, notificationServiceMock.Object);
         }
 
         private DownloadContext CreateDbContextMock(List<Order> listOfOrders)
