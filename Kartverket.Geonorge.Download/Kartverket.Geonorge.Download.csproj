@@ -301,10 +301,6 @@
     <Compile Include="Migrations\201712010906273_AddOrderBundleFields.Designer.cs">
       <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.cs" />
-    <Compile Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.Designer.cs">
-      <DependentUpon>201712121327348_AddDownloadBundleNotificationSent.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
@@ -641,9 +637,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712010906273_AddOrderBundleFields.resx">
       <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.resx">
-      <DependentUpon>201712121327348_AddDownloadBundleNotificationSent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
