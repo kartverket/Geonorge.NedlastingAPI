@@ -58,7 +58,7 @@ namespace Kartverket.Geonorge.Download.Services
             string orderBundleServiceUrl = ConfigurationManager.AppSettings["OrderBundleServiceUrl"];
             var urlBuilder = new StringBuilder(orderBundleServiceUrl);
             urlBuilder.Append("?");
-            var fileIds = string.Join(",", order.orderItem.Select(o => o.FileId));
+            var fileIds = string.Join(" ", order.orderItem.Select(o => o.FileId));
             urlBuilder.Append("UUIDS=").Append(fileIds);
             urlBuilder.Append("&ORDERID=").Append(order.Uuid);
             var bundleRequestUrl = urlBuilder.ToString();
