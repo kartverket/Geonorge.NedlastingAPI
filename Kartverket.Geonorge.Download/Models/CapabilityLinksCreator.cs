@@ -1,28 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Configuration;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using System.Web;
 
 namespace Kartverket.Geonorge.Download.Models
 {
     public class CapabilityLinksCreator
     {
-        public static string RelCapabilities = "http://rel.geonorge.no/download/capabilities";
-        public static string RelProjection = "http://rel.geonorge.no/download/projection";
-        public static string RelFormat = "http://rel.geonorge.no/download/format";
-        public static string RelArea = "http://rel.geonorge.no/download/area";
-        public static string RelOrder = "http://rel.geonorge.no/download/order";
-        public static string RelCanDownload = "http://rel.geonorge.no/download/can-download";
+        private const string RelCapabilities = "http://rel.geonorge.no/download/capabilities";
+        private const string RelProjection = "http://rel.geonorge.no/download/projection";
+        private const string RelFormat = "http://rel.geonorge.no/download/format";
+        private const string RelArea = "http://rel.geonorge.no/download/area";
+        private const string RelOrder = "http://rel.geonorge.no/download/order";
+        private const string RelCanDownload = "http://rel.geonorge.no/download/can-download";
 
         public string GetDefaultApiVersion()
         {
-            return "2";
+            return "3";
         }
 
         public List<LinkType> CreateCapabilityLinks(string metadataUuid)
         {
-            List<LinkType> links = CreateLinks(metadataUuid, GetDefaultApiVersion());
+            List<LinkType> links = CreateLinks(metadataUuid);
 
             var capabilityLink = links.FirstOrDefault(l => l.rel == RelCapabilities);
             if (capabilityLink != null)
@@ -34,12 +34,12 @@ namespace Kartverket.Geonorge.Download.Models
 
         public List<LinkType> CreateLinks()
         {
-            return CreateLinks(null, GetDefaultApiVersion());
+            return CreateLinks(null);
         }
 
-        public List<LinkType> CreateLinks(string metadataUuid, string versionId)
+        public List<LinkType> CreateLinks(string metadataUuid)
         {
-            var apiBaseUrl = GetApiBaseUrl(versionId);
+            var apiBaseUrl = GetApiBaseUrl();
 
             var links = new List<LinkType>();
             links.Add(CreateProjectionLink(metadataUuid, apiBaseUrl));
@@ -138,10 +138,9 @@ namespace Kartverket.Geonorge.Download.Models
             return baseUrl + metadataUuid;
         }
 
-        private static string GetApiBaseUrl(string versionId)
+        private static string GetApiBaseUrl()
         {
-            var applicationUrl = WebConfigurationManager.AppSettings["DownloadUrl"];
-            return applicationUrl + "api/v" + versionId + "/";
+            return WebConfigurationManager.AppSettings["DownloadUrl"] + "api/";
         }
     }
 }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using Geonorge.NedlastingApi.V2;
+using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Models.Api.Internal;
 using log4net;
 using LinqKit;
 
@@ -15,13 +16,21 @@ namespace Kartverket.Geonorge.Download.Services
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IClipperService _clipperService;
         private readonly DownloadContext _dbContext;
-        private readonly RegisterFetcher _registerFetcher;
+        private readonly IRegisterFetcher _registerFetcher;
+        private readonly IOrderBundleService _orderBundleService;
+        private readonly INotificationService _notificationService;
 
-        public OrderService(DownloadContext dbContext, IClipperService clipperService, RegisterFetcher registerFetcherFetcher)
+        public OrderService(DownloadContext dbContext, 
+            IClipperService clipperService, 
+            IRegisterFetcher registerFetcherFetcher, 
+            IOrderBundleService orderBundleService,
+            INotificationService notificationService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
             _registerFetcher = registerFetcherFetcher;
+            _orderBundleService = orderBundleService;
+            _notificationService = notificationService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, string username)
@@ -172,6 +181,39 @@ namespace Kartverket.Geonorge.Download.Services
                 .ToList();
 
             return accessConstraints;
+        }
+
+        /// <summary>
+        /// Updates an order. Currently only these fields are updated:
+        /// * email
+        /// * downloadAsBundle
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="incomingOrder"></param>
+        public void UpdateOrder(Order order, OrderType incomingOrder)
+        {
+            bool sendToBundling = incomingOrder.downloadAsBundle;
+
+            order.DownloadAsBundle = incomingOrder.downloadAsBundle;
+            order.email = incomingOrder.email;
+            _dbContext.SaveChanges();
+
+            if (sendToBundling)
+            {
+                _orderBundleService.SendToBundling(order);
+            }
+        }
+
+        public void UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
+        {
+            Order order = Find(orderStatus.OrderUuid);
+            order.DownloadBundleUrl = orderStatus.DownloadUrl;
+            _dbContext.SaveChanges();
+
+            if (orderStatus.Status == "ReadyForDownload")
+            {
+                _notificationService.SendReadyForDownloadBundleNotification(order);
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Kartverket.Geonorge.Download.Services
                 _orderService.UpdateFileStatus(statusInfo);
 
                 if (statusInfo.Status == OrderItemStatus.ReadyForDownload)
-                    _notificationService.SendReadyForDownloadNotification(statusInfo.FileId);
+                    _notificationService.SendReadyForDownloadNotification(orderItem);
             }
             else
             {

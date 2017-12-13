@@ -11,56 +11,102 @@ namespace Kartverket.Geonorge.Download.Services
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly IDownloadService _downloadService;
         private readonly IEmailService _emailService;
-        private readonly IOrderService _orderService;
 
-        public NotificationService
-        (
-            IDownloadService downloadService,
-            IOrderService orderService,
-            IEmailService emailService
-        )
+        public NotificationService(IEmailService emailService)
         {
-            _downloadService = downloadService;
-            _orderService = orderService;
             _emailService = emailService;
         }
 
-        public void SendReadyForDownloadNotification(string fileId)
+        public void SendReadyForDownloadNotification(OrderItem orderItem)
         {
-            var message = CreateReadyForDownloadEmailMessage(fileId);
+            var message = CreateReadyForDownloadEmailMessage(orderItem);
 
             SendEmailNotification(message);
         }
 
-        public MailMessage CreateReadyForDownloadEmailMessage(string fileId)
+        public void SendReadyForDownloadBundleNotification(Order order)
         {
-            var orderItem = _orderService.FindOrderItem(fileId);
+            var message = CreateReadyForDownloadBundleEmailMessage(order);
 
+            SendEmailNotification(message);
+        }
+
+        public MailMessage CreateReadyForDownloadBundleEmailMessage(Order order)
+        {
+            var message = CreateEmail(order.email);
+            var body = new StringBuilder();
+            body.AppendLine(
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} er ferdig produsert.\n");
+
+            body.AppendLine("Du har bestilt en nedlastingspakke som inneholder følgende data:\n");
+
+            foreach (var orderItem in order.orderItem)
+            {
+                body.Append($"* {orderItem.MetadataName} (");
+
+                if (!string.IsNullOrEmpty(orderItem.AreaName))
+                    body.Append(orderItem.AreaName);
+                else
+                    body.Append("utsnitt valgt i kart");
+
+                body.AppendLine($" , {orderItem.ProjectionName}, {orderItem.Format})");
+            }
+
+            body.AppendLine("\nKlikk her for å laste ned resultatet: ");
+            var downLoadApiUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle();
+            body.AppendLine(downLoadApiUrl);
+
+            AddFooter(body);
+
+            message.Body = body.ToString();
+
+            Log.Info($"Sending ReadyForDownload email notification to: {order.email}, orderUuid: {order.Uuid}");
+
+            return message;
+        }
+
+        private void AddFooter(StringBuilder body)
+        {
+            body.AppendLine().AppendLine("--").AppendLine("Med vennlig hilsen").AppendLine("Geonorge");
+        }
+
+        private static MailMessage CreateEmail(string email)
+        {
             var message = new MailMessage();
-            var email = orderItem.Order.email;
             message.To.Add(new MailAddress(email));
             message.From = new MailAddress(WebConfigurationManager.AppSettings["WebmasterEmail"]);
             message.Subject = "Data til nedlasting fra Geonorge";
+            return message;
+        }
+
+        public MailMessage CreateReadyForDownloadEmailMessage(OrderItem orderItem)
+        {
+            var email = orderItem.Order.email;
+            var message = CreateEmail(email);
             var body = new StringBuilder();
-            body.AppendLine($"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {orderItem.ReferenceNumber} er ferdig produsert.\n");
+            body.AppendLine(
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {orderItem.ReferenceNumber} er ferdig produsert.\n");
             body.AppendLine($"Datasett: {orderItem.MetadataName}\n");
 
             if (!string.IsNullOrEmpty(orderItem.DownloadUrl))
             {
                 body.AppendLine("Klikk her for å laste ned resultatet: ");
-                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId).Build();
+                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.FileId)
+                    .Build();
                 body.AppendLine(downLoadApiUrl);
             }
             else
             {
-                body.AppendLine("Det er dessverre ingen data å laste ned. Det finnes ingen objekter innenfor valgt område.");
+                body.AppendLine(
+                    "Det er dessverre ingen data å laste ned. Det finnes ingen objekter innenfor valgt område.");
             }
+
+            AddFooter(body);
 
             message.Body = body.ToString();
 
-            Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {fileId}");
+            Log.Info($"Sending ReadyForDownload email notification to: {email}, fileId: {orderItem.FileId}");
 
             return message;
         }

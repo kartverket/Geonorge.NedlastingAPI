@@ -29,10 +29,12 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<ClipperService>().As<IClipperService>();
             builder.RegisterType<CapabilitiesService>().As<ICapabilitiesService>();
             builder.RegisterType<DownloadService>().As<IDownloadService>();
-            builder.RegisterType<RegisterFetcher>().AsSelf();
+            builder.RegisterType<RegisterFetcher>().As<IRegisterFetcher>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<EmailService>().As<IEmailService>();
             builder.RegisterType<UpdateFileStatusService>().As<IUpdateFileStatusService>();
+            builder.RegisterType<OrderBundleService>().As<IOrderBundleService>();
+            builder.RegisterType<ExternalRequestService>().As<IExternalRequestService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)

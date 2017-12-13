@@ -1,9 +1,6 @@
-﻿using Kartverket.Geonorge.Download.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
+using Kartverket.Geonorge.Download.Models;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
@@ -13,8 +10,8 @@ namespace Kartverket.Geonorge.Download.Controllers
         {
             var originalUri = url ?? Request.QueryString["aspxerrorpath"] ?? Request.Url.OriginalString;
 
-            var controllerName = (string)RouteData.Values["controller"];
-            var actionName = (string)RouteData.Values["action"];
+            var controllerName = (string) RouteData.Values["controller"];
+            var actionName = (string) RouteData.Values["action"];
             var model = new NotFoundModel(new HttpException(404, "Failed to find page"), controllerName, actionName)
             {
                 RequestedUrl = originalUri,
@@ -28,16 +25,16 @@ namespace Kartverket.Geonorge.Download.Controllers
         protected override void HandleUnknownAction(string actionName)
         {
             var name = GetViewName(ControllerContext,
-                                                        "~/Views/Error/Error.cshtml",
-                                                        "~/Views/Error/General.cshtml",
-                                                        "~/Views/Shared/Error.cshtml");
+                "~/Views/Error/Error.cshtml",
+                "~/Views/Error/General.cshtml",
+                "~/Views/Shared/Error.cshtml");
 
-            var controllerName = (string)RouteData.Values["controller"];
+            var controllerName = (string) RouteData.Values["controller"];
             var model = new HandleErrorInfo(Server.GetLastError(), controllerName, actionName);
             var result = new ViewResult
             {
                 ViewName = name,
-                ViewData = new ViewDataDictionary<HandleErrorInfo>(model),
+                ViewData = new ViewDataDictionary<HandleErrorInfo>(model)
             };
 
 

@@ -33,5 +33,10 @@ namespace Kartverket.Geonorge.Download.Helpers
         {
             return WebConfigurationManager.AppSettings["WebmasterEmail"];
         }
+
+        public static bool SupportsMultiCulture(this HtmlHelper helper)
+        {
+            return Boolean.Parse(WebConfigurationManager.AppSettings["SupportsMultiCulture"]); ;
+        }
     }
 }

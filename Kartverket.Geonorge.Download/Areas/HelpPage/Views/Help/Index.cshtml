@@ -2,7 +2,7 @@
 @using System.Web.Http.Controllers
 @using System.Web.Http.Description
 @using System.Collections.ObjectModel
-@using Kartverket.Geonorge.Download.Areas.HelpPage.Models
+@using Kartverket.Geonorge.Download.Resources
 @model Collection<ApiDescription>
 
 @{
@@ -12,7 +12,7 @@
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
 }
 @section breadcrumb {
-    <li class="active">API hjelp</li>
+    <li class="active">@UI.ApiHelp</li>
 }
 <header class="help-page">
     <div class="content-wrapper">

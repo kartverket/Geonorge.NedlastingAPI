@@ -210,56 +210,61 @@ angular.module('geonorge', ['ui.bootstrap']);
 angular.module('geonorge').config(["$sceDelegateProvider", function ($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['**']);
 }]);
+var defaultSearchPlaceholder = "Søk etter kartdata";
+if (cultureData.currentCulture !== undefined && cultureData.currentCulture == "en") {
+	defaultSearchPlaceholder = "Search for map data";
+}
+
 var searchOptionsArray =
 {
-    "dev" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.dev.geonorge.no",
-	    url: "//kartkatalog.dev.geonorge.no/search",
-	    api: "//kartkatalog.dev.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.test.geonorge.no"
-    },
-    "test" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.test.geonorge.no",
-	    url: "//kartkatalog.test.geonorge.no/search",
-	    api: "//kartkatalog.test.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.test.geonorge.no"
-    },
-    "prod" : {
-        text: "Kartkatalogen",
-	    searchTitle: "Kartkatalogen",
-	    searchPlaceholder: "S\u00F8k etter kartdata",
-	    buttonCss: "edgesKartkatalogen",
-	    listCss: "left-edge-kartkatalogen",
-	    baseUrl: "//kartkatalog.geonorge.no",
-	    url: "//kartkatalog.geonorge.no/search",
-	    api: "//kartkatalog.geonorge.no/api/search",
-	    queryParameter: '?text=',
-	    localUrl: false,
-	    autoComplete: true,
-	    geonorgeUrl: "//www.geonorge.no"
-    }
+	"dev" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.dev.geonorge.no",
+		url: "//kartkatalog.dev.geonorge.no/search",
+		api: "//kartkatalog.dev.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.test.geonorge.no"
+	},
+	"test" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.test.geonorge.no",
+		url: "//kartkatalog.test.geonorge.no/search",
+		api: "//kartkatalog.test.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.test.geonorge.no"
+	},
+	"prod" : {
+		text: "Kartkatalogen",
+		searchTitle: "Kartkatalogen",
+		searchPlaceholder: defaultSearchPlaceholder,
+		buttonCss: "edgesKartkatalogen",
+		listCss: "left-edge-kartkatalogen",
+		baseUrl: "//kartkatalog.geonorge.no",
+		url: "//kartkatalog.geonorge.no/search",
+		api: "//kartkatalog.geonorge.no/api/search",
+		queryParameter: '?text=',
+		localUrl: false,
+		autoComplete: true,
+		geonorgeUrl: "//www.geonorge.no"
+	}
 };
 
 var searchOption = searchOptionsArray.prod;
 
 if (applicationEnvironment !== '' && applicationEnvironment !== null) {
-    var searchOption = searchOptionsArray[applicationEnvironment];
+	var searchOption = searchOptionsArray[applicationEnvironment];
 }
 var baseurl_local = searchOption.baseUrl;
 
@@ -300,6 +305,7 @@ var baseurl_local = searchOption.baseUrl;
       var request = $http({
         method: 'GET',
         url: menuService,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -318,6 +324,7 @@ var baseurl_local = searchOption.baseUrl;
       var request1 = $http({
         method: 'GET',
         url: menuService1,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -329,6 +336,7 @@ var baseurl_local = searchOption.baseUrl;
       var request2 = $http({
         method: 'GET',
         url: menuService2,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -340,6 +348,7 @@ var baseurl_local = searchOption.baseUrl;
       var request3 = $http({
         method: 'GET',
         url: menuService3,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -351,6 +360,7 @@ var baseurl_local = searchOption.baseUrl;
       var request4 = $http({
         method: 'GET',
         url: menuService4,
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'accept': '*/*'
@@ -374,6 +384,24 @@ var baseurl_local = searchOption.baseUrl;
     $scope.searchString = "";
     $rootScope.selectedSearch = searchOption;
     $rootScope.searchQuery = parseLocation(window.location.search).text;
+    $rootScope.activePageUrl = "//" + window.location.host + window.location.pathname + window.location.search; 
+
+    // Values based on selected language
+    if (cultureData.currentCulture === undefined || cultureData.currentCulture === '' || cultureData.currentCulture == 'no') {
+      $rootScope.showAllText = "Vis alle treff...";
+      $rootScope.noResultsText = "Søket gir ingen treff";
+      $rootScope.loadingContentText = "Henter innhold";
+      $rootScope.loadingSearchResultsText = "Henter søkeresultater";
+    } else if (cultureData.currentCulture == 'en') {
+      $rootScope.showAllText = "Show all results...";
+      $rootScope.noResultsText = "Your search did not return any data";
+      $rootScope.loadingContentText = "Loading content";
+      $rootScope.loadingSearchResultsText = "Loading search results";
+    }
+
+    
+
+
     $scope.autoCompleteResult = [];
 
     $scope.autoCompletePartial = '/Content/bower_components/kartverket-felleskomponenter/assets/partials/_autoCompleteRow.html';
@@ -602,11 +630,10 @@ var baseurl_local = searchOption.baseUrl;
                         var item = {};
                         var curr = list[x];
                         if (curr.data == null || curr.data.Results.length === 0) continue;
-                        item.type = curr.Section;
 
-                        item.title = curr.SectionName;
-
+                        item.showAllUrl = getUrl(curr.data.Results[0].Type) + '?text=' + $rootScope.searchQuery;
                         item.list = [];
+                        
                         for (var y = 0; y < curr.data.Results.length; y++) {
                           var currResult = curr.data.Results[y];
 
@@ -628,18 +655,34 @@ var baseurl_local = searchOption.baseUrl;
                   }
 
                   function getType(type) {
-                    switch (type) {
-                      case "dataset":
-                      return "Datasett";
-                      case "servicelayer":
-                      return "Tjenestelag";
-                      case "service":
-                      return "Tjenester";
-                      case "dimensionGroup":
-                      return "Datapakker";
-                      case "software":
-                      return "Applikasjon";
-                      default:
+                    if (cultureData.currentCulture === undefined || cultureData.currentCulture == '' || cultureData.currentCulture == 'no') {
+                      switch (type) {
+                        case "dataset":
+                        return "Datasett";
+                        case "servicelayer":
+                        return "Tjenestelag";
+                        case "service":
+                        return "Tjenester";
+                        case "dimensionGroup":
+                        return "Datapakker";
+                        case "software":
+                        return "Applikasjon";
+                        default:
+                      }
+                    } else if (cultureData.currentCulture == 'en') {
+                      switch (type) {
+                        case "dataset":
+                        return "Dataset";
+                        case "servicelayer":
+                        return "Service layer";
+                        case "service":
+                        return "Service";
+                        case "dimensionGroup":
+                        return "Data package";
+                        case "software":
+                        return "Application";
+                        default:
+                      }
                     }
                   }
 
@@ -1161,7 +1204,7 @@ $(document).on('keyup', '.custom-select-list', function(){
   filterDropdownList(inputElement, $(this));
 });
 
-$("document").ready(function () {
+function initCustomSelectList(){
   if ($('.custom-select-list').length){
     $(document).on('click', function(e){
       var insideContainer = false;
@@ -1187,5 +1230,9 @@ $("document").ready(function () {
       });
     });
   }
+}
+
+$("document").ready(function () {
+  initCustomSelectList();
 });
 

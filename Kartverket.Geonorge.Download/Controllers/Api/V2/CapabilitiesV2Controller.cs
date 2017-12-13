@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
@@ -79,7 +80,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         }
 
         /// <summary>
-        ///    If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+        ///     If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
         /// </summary>
         [HttpPost]
         [Route("can-download")]
@@ -98,6 +99,32 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             catch (Exception ex)
             {
                 Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
+                return InternalServerError();
+            }
+        }
+
+        /// <summary>
+        ///     Get Capabilities from download service
+        /// </summary>
+        /// <param name="metadataUuid">The metadata identifier</param>
+        [Route("api/v2/capabilities/{metadataUuid}")]
+        [ResponseType(typeof(CapabilitiesType))]
+        public IHttpActionResult GetCapabilities(string metadataUuid)
+        {
+            try
+            {
+                var capabilities = _capabilitiesService.GetCapabilities(metadataUuid);
+                if (capabilities == null)
+                {
+                    Log.Info("Capabilities not found for uuid: " + metadataUuid);
+                    return NotFound();
+                }
+                Log.Info("Capabilities found for uuid: " + metadataUuid);
+                return Ok(capabilities);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error getting capabilities for uuid: " + metadataUuid, ex);
                 return InternalServerError();
             }
         }

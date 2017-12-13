@@ -1,4 +1,3 @@
-using System;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Moq;
@@ -26,7 +25,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
 
 
             orderServiceMock.Verify(o => o.UpdateFileStatus(updateFileStatusInformation));
-            notificationServiceMock.Verify(n => n.SendReadyForDownloadNotification(It.IsAny<string>()));
+            notificationServiceMock.Verify(n => n.SendReadyForDownloadNotification(It.IsAny<OrderItem>()));
 
         }
 
@@ -46,7 +45,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             service.UpdateFileStatus(updateFileStatusInformation);
 
             orderServiceMock.Verify(o => o.UpdateFileStatus(updateFileStatusInformation), Times.Never);
-            notificationServiceMock.Verify(n => n.SendReadyForDownloadNotification(It.IsAny<string>()), Times.Never);
+            notificationServiceMock.Verify(n => n.SendReadyForDownloadNotification(It.IsAny<OrderItem>()), Times.Never);
         }
     }
 }

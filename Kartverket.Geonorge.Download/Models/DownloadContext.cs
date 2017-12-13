@@ -9,11 +9,11 @@ namespace Kartverket.Geonorge.Download.Models
         {
         }
 
-        public DbSet<Dataset> Capabilities { get; set; }
-        public DbSet<filliste> FileList { get; set; }
-        public DbSet<Order> OrderDownloads { get; set; }
+        public virtual DbSet<Dataset> Capabilities { get; set; }
+        public virtual DbSet<filliste> FileList { get; set; }
+        public virtual DbSet<Order> OrderDownloads { get; set; }
 
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

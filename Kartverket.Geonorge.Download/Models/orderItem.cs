@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Geonorge.NedlastingApi.V2;
 
 namespace Kartverket.Geonorge.Download.Models
 {

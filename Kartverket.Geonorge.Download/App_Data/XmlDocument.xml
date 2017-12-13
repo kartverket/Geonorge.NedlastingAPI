@@ -481,12 +481,6 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.CapabilitiesGlobalController.GetCapabilities(System.String)">
-            <summary>
-                Get Capabilities from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
                 Update status on a given file that has been processed.
@@ -496,70 +490,43 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>
-            List datasets
+                List datasets
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
             <summary>
-            Get info dataset
+                Get info dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
-            Update dataset
+                Update dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
             <summary>
-            Create new dataset
+                Create new dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.filliste})">
             <summary>
-            Add file(s) to dataset
+                Add file(s) to dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
             <summary>
-            Delete dataset
+                Delete dataset
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
             <summary>
-            Delete file
+                Delete file
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
             <summary>
-            Delete filename list
+                Delete filename list
             </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetProjections(System.String)">
-            <summary>
-            Get Projections from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetAreas(System.String)">
-            <summary>
-            Get Areas from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.CapabilitiesController.GetFormats(System.String)">
-            <summary>
-            Get Format from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V1.OrderV1Controller.PostOrder(Geonorge.NedlastingApi.V1.OrderType)">
-            <summary>
-            Creates new order for data to download
-            </summary>
-            <param name="order">OrderType model</param>
-            <returns>OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise the files are delivered via email</returns>
-            <response code="400">Bad request</response>
-            <response code="500">Internal Server Error</response>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
             <summary>
@@ -581,8 +548,14 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.CanDownload(Geonorge.NedlastingApi.V2.CanDownloadRequestType)">
             <summary>
-               If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetCapabilities(System.String)">
+            <summary>
+                Get Capabilities from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.DownloadController.GetFile(System.String,System.String)">
             <summary>
@@ -608,10 +581,86 @@
                 Get info about files in order
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetProjections(System.String)">
+            <summary>
+                Get Projections from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String)">
+            <summary>
+                Get Areas from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetFormats(System.String)">
+            <summary>
+                Get Format from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
+            <summary>
+                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetBundleFile(System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetFile(System.String,System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+            <param name="fileId">The fileId to download from order</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.PostOrder(Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+                Creates new order for data to download
+            </summary>
+            <param name="order">OrderType model</param>
+            <returns>
+                OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
+                the files are delivered via email
+            </returns>
+            <response code="400">Bad request</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.GetOrder(System.String)">
+            <summary>
+                Get info about files in order
+            </summary>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
-            Force HTTPS if request is not from local machine
+                Force HTTPS if request is not from local machine
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
+            <summary>
+            Returns true if the language is a right-to-left language. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
+            <summary>
+            Returns true if current language is norwegian. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
+            <summary>
+            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
+            </summary>
+            <param name="name">Culture's name (e.g. en-US)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
+            <summary>
+            Returns default culture name which is the first name decalared (e.g. en-US)
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
             <summary>
@@ -638,6 +687,31 @@
             Optional message, should be provided for errors.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.OrderUuid">
+            <summary>
+                The order uuid
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.DownloadUrl">
+            <summary>
+            Url to the processed file
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Status">
+            <summary>
+                Valid values: WaitingForProcessing, ReadyForDownload, Error
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Event">
+            <summary>
+                The event that has occured. Valid values: FilePackingFinished
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.Message">
+            <summary>
+                Optional message, should be provided for errors.
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Order.referenceNumber">
             <summary>
             this used to be the external identifier
@@ -649,6 +723,16 @@
             <summary>
             The identifier used for external referencing 
             Unique for all new orders, currently set to zero value guid for all old orders
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.DownloadAsBundle">
+            <summary>
+            Set to true if the client has requested that the order items should be bundled together.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Order.DownloadBundleUrl">
+            <summary>
+            The url to the bundle of all order items in this order. Can be null until the bundle has been created.
             </summary>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Models.Order.CanBeDownloadedByUser(System.String)">
@@ -682,6 +766,99 @@
             <summary>
             Contains message from processing service (currently FME)
             </summary>
+        </member>
+        <member name="T:Kartverket.Geonorge.Download.Resources.UI">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ApiDocumentation">
+            <summary>
+              Looks up a localized string similar to API dokumentasjon.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ApiHelp">
+            <summary>
+              Looks up a localized string similar to API hjelp.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.APIsAndInterfaces">
+            <summary>
+              Looks up a localized string similar to API-er og grensesnitt.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ContactUs">
+            <summary>
+              Looks up a localized string similar to Kontakt oss.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.DownloadAPI">
+            <summary>
+              Looks up a localized string similar to Nedlasting API.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Error">
+            <summary>
+              Looks up a localized string similar to Feil.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ErrorInfo">
+            <summary>
+              Looks up a localized string similar to Det har desverre skjedd en feil med din forespørsel. Prøv igjen om litt..
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ErrorReport">
+             <summary>
+               Looks up a localized string similar to &lt;p&gt;Feilen er logget og vil sjekkes av systemansvarlig.&lt;/p&gt;
+            &lt;p&gt;Du kan også rapportere feilen til &lt;a mailto:&quot;post@norgedigitalt.no&quot;&gt;post@norgedigitalt.no&lt;/a&gt;.&lt;/p&gt;.
+             </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.ForDevelopers">
+            <summary>
+              Looks up a localized string similar to For utviklere.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.Home">
+            <summary>
+              Looks up a localized string similar to Forside.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.NotFoundText">
+            <summary>
+              Looks up a localized string similar to Vi finner ikke siden du leter etter, men Geonorge skal hjelpe deg videre..
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.SearchFor">
+            <summary>
+              Looks up a localized string similar to Søk etter.
+            </summary>
+        </member>
+        <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
+            <summary>
+            This service forward a bundle request to the FME bundling service. 
+            All files in an order is bundled together in a zip file. 
+            See Jira #GEOPORTAL-2616 for details.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.OrderService.UpdateOrder(Kartverket.Geonorge.Download.Models.Order,Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+            Updates an order. Currently only these fields are updated:
+            * email
+            * downloadAsBundle
+            </summary>
+            <param name="order"></param>
+            <param name="incomingOrder"></param>
         </member>
     </members>
 </doc>

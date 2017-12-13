@@ -25,6 +25,7 @@
     <ApplicationInsightsResourceId>/subscriptions/b08e763f-d77e-48ab-b59c-1077af779a5c/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/Kartverket.Geonorge.Download</ApplicationInsightsResourceId>
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +102,12 @@
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.2.1.0\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning.ApiExplorer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.ApiExplorer.1.0.2\lib\net45\Microsoft.AspNet.WebApi.Versioning.ApiExplorer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -240,21 +247,24 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\Api\CapabilitiesGlobalController.cs" />
+    <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\Internal\ManageOrderController.cs" />
-    <Compile Include="Controllers\Api\V1\CapabilitiesController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\DownloadController.cs" />
+    <Compile Include="Controllers\Api\V2\OrderMapper.cs" />
     <Compile Include="Controllers\Api\V2\OrderV2Controller.cs" />
+    <Compile Include="Controllers\Api\V3\CapabilitiesV3Controller.cs" />
+    <Compile Include="Controllers\Api\V3\DownloadV3Controller.cs" />
+    <Compile Include="Controllers\Api\V3\OrderV3Controller.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Api\V1\OrderV1Controller.cs" />
     <Compile Include="Controllers\Api\Internal\DatasetController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RequireHttpsNonLocal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CultureHelper.cs" />
     <Compile Include="Migrations\201610201300527_Initial.cs" />
     <Compile Include="Migrations\201610201300527_Initial.Designer.cs">
       <DependentUpon>201610201300527_Initial.cs</DependentUpon>
@@ -287,9 +297,18 @@
     <Compile Include="Migrations\201611220752161_AddAreaAndProjectionNameToOrder.Designer.cs">
       <DependentUpon>201611220752161_AddAreaAndProjectionNameToOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712010906273_AddOrderBundleFields.cs" />
+    <Compile Include="Migrations\201712010906273_AddOrderBundleFields.Designer.cs">
+      <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.cs" />
+    <Compile Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.Designer.cs">
+      <DependentUpon>201712121327348_AddDownloadBundleNotificationSent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
+    <Compile Include="Models\Api\Internal\UpdateOrderStatusRequest.cs" />
     <Compile Include="Models\CapabilityLinksCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DatasetAccessConstraint.cs" />
@@ -301,13 +320,30 @@
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItemStatus.cs" />
     <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\Translations\Culture.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\UI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UI.en.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UI.en.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\AccessRestrictionException.cs" />
+    <Compile Include="Services\ExternalRequestException.cs" />
+    <Compile Include="Services\ExternalRequestService.cs" />
+    <Compile Include="Services\IExternalRequestService.cs" />
+    <Compile Include="Services\IOrderBundleService.cs" />
+    <Compile Include="Services\OrderBundleService.cs" />
     <Compile Include="Services\CapabilitiesService.cs" />
     <Compile Include="Services\DownloadService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\IEmailService.cs" />
+    <Compile Include="Services\IRegisterFetcher.cs" />
     <Compile Include="Services\IUpdateFileStatusService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ICapabilitiesService.cs" />
@@ -359,6 +395,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\geonorge.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\kartverket.png" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\png\norgeskart-marker.png" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arealplan.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-down.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-right.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-up.svg" />
@@ -385,7 +422,10 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\danger.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\datadeling.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dekningskart.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\den-norske-loeve.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dok.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink.svg" />
@@ -423,6 +463,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\inspire.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-white.svg" />
@@ -439,6 +480,8 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned-white.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lukk_968c83_50px-01-01.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\metadatatjeneste.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\norge-digitalt.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\open_fe5000_50px-01.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\produktark.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-checked-disabled.svg" />
@@ -451,6 +494,7 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-checked.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked-disabled.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked.svg" />
+    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn-circle.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-green.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-red.svg" />
@@ -513,9 +557,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bower.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="authentication.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="authentication.default.config" />
@@ -596,12 +637,20 @@
     <EmbeddedResource Include="Migrations\201611220752161_AddAreaAndProjectionNameToOrder.resx">
       <DependentUpon>201611220752161_AddAreaAndProjectionNameToOrder.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
-      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
-      <Name>Geonorge.NedlastingApi</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="Migrations\201712010906273_AddOrderBundleFields.resx">
+      <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712121327348_AddDownloadBundleNotificationSent.resx">
+      <DependentUpon>201712121327348_AddDownloadBundleNotificationSent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\UI.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\UI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Order\Details.cshtml" />
@@ -609,7 +658,9 @@
   <ItemGroup>
     <Content Include="Areas\HelpPage\Views\Help\Documentation.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="authentication.config" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bower_components\kartverket-felleskomponenter\.bower.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\702ZOKiLJc3WVjuplzInF5uFdDttMLvmWuJdhhgs.ttf" />
@@ -646,6 +697,12 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\README.md" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
+      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
+      <Name>Geonorge.NedlastingApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -22,8 +22,18 @@ namespace Kartverket.Geonorge.Download.Models
 
         public string Build()
         {
+            return BaseUrl() + $"{_fileId}";
+        }
+
+        public string AsBundle()
+        {
+            return BaseUrl() + "bundle";
+        }
+
+        private string BaseUrl()
+        {
             string server = ConfigurationManager.AppSettings["DownloadUrl"];
-            return $"{server}api/v2/download/order/{_orderUuid}/{_fileId}";
+            return $"{server}api/download/order/{_orderUuid}/";
         }
     }
 }

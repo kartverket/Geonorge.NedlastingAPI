@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Cors;
+using Microsoft.Web.Http.Versioning;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebApi.BasicAuth;
@@ -25,6 +26,14 @@ namespace Kartverket.Geonorge.Download
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
             config.MessageHandlers.Add(new MessageLoggingHandler());
+
+            config.AddApiVersioning(
+                options =>
+                {
+                    options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
+                });
 
             config.EnsureInitialized();
         }
