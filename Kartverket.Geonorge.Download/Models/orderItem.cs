@@ -10,15 +10,25 @@ namespace Kartverket.Geonorge.Download.Models
         public OrderItem()
         {
             Status = OrderItemStatus.WaitingForProcessing;
-            FileId = Guid.NewGuid();
+            Uuid = Guid.NewGuid();
             AccessConstraint = new AccessConstraint();
         }
 
         [Key]
         public int Id { get; set; }
 
-        [Index("IDX_FileId", 1, IsUnique = false)]
-        public Guid FileId { get; set; }
+        /// <summary>
+        /// The identifier used for external referencing to this order item
+        /// Unique for all new orders, currently set to zero value guid for all old orders
+        /// </summary>
+        [Index("IDX_Uuid", 1, IsUnique = false)]
+        public Guid Uuid { get; set; }
+
+        /// <summary>
+        /// The id of the file in filliste
+        /// </summary>
+        [Index("IDX_FileUuid", 1, IsUnique = false)]
+        public Guid? FileUuid { get; set; }
 
         /// <summary>
         /// The complete url to the file to be downloaded.
@@ -66,6 +76,11 @@ namespace Kartverket.Geonorge.Download.Models
         public bool IsReadyForDownload()
         {
             return Status == OrderItemStatus.ReadyForDownload;
+        }
+
+        public string CollectIdForBundling()
+        {
+            return FileUuid?.ToString() ?? Uuid.ToString();
         }
     }
 }

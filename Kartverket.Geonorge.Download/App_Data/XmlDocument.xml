@@ -742,6 +742,24 @@
             <param name="requestUsername"></param>
             <returns></returns>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Models.Order.CollectFileIdsForBundling">
+            <summary>
+            Bundling can work on both pre-generated files referenced by FileUuid in Filliste
+            and on OrderItem.Uuid if the client has requested a clippable area of a dataset.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.Uuid">
+            <summary>
+            The identifier used for external referencing to this order item
+            Unique for all new orders, currently set to zero value guid for all old orders
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.FileUuid">
+            <summary>
+            The id of the file in filliste
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.OrderItem.DownloadUrl">
             <summary>
             The complete url to the file to be downloaded.

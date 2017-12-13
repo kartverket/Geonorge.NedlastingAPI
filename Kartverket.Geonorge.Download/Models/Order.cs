@@ -63,7 +63,7 @@ namespace Kartverket.Geonorge.Download.Models
             if (!parseResult)
                 return null;
 
-            return orderItem.FirstOrDefault(o => o.FileId == fileIdAsGuid);
+            return orderItem.FirstOrDefault(o => o.Uuid == fileIdAsGuid);
         }
 
         public void AddAccessConstraints(List<DatasetAccessConstraint> accessConstraints)
@@ -97,6 +97,21 @@ namespace Kartverket.Geonorge.Download.Models
         public bool ContainsRestrictedDatasets()
         {
             return orderItem.Any(o => o.AccessConstraint.IsRestricted());
+        }
+
+        /// <summary>
+        /// Bundling can work on both pre-generated files referenced by FileUuid in Filliste
+        /// and on OrderItem.Uuid if the client has requested a clippable area of a dataset.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> CollectFileIdsForBundling()
+        {
+            var ids = new List<string>();
+            foreach (var item in orderItem)
+            {
+                ids.Add(item.CollectIdForBundling());
+            }
+            return ids;
         }
     }
 }

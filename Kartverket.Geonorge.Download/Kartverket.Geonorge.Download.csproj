@@ -301,6 +301,14 @@
     <Compile Include="Migrations\201712010906273_AddOrderBundleFields.Designer.cs">
       <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712131903141_RenameFileIdToUuidOnOrderItem.cs" />
+    <Compile Include="Migrations\201712131903141_RenameFileIdToUuidOnOrderItem.Designer.cs">
+      <DependentUpon>201712131903141_RenameFileIdToUuidOnOrderItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131931146_AddFileUuidOnOrderItem.cs" />
+    <Compile Include="Migrations\201712131931146_AddFileUuidOnOrderItem.Designer.cs">
+      <DependentUpon>201712131931146_AddFileUuidOnOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
@@ -637,6 +645,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712010906273_AddOrderBundleFields.resx">
       <DependentUpon>201712010906273_AddOrderBundleFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131903141_RenameFileIdToUuidOnOrderItem.resx">
+      <DependentUpon>201712131903141_RenameFileIdToUuidOnOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131931146_AddFileUuidOnOrderItem.resx">
+      <DependentUpon>201712131931146_AddFileUuidOnOrderItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
