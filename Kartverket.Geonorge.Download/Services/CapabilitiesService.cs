@@ -1,5 +1,6 @@
 ﻿using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Geonorge.NedlastingApi.V3;
 
@@ -30,7 +31,8 @@ namespace Kartverket.Geonorge.Download.Services
                 supportsProjectionSelection = dataset.supportsProjectionSelection.GetValueOrDefault(),
                 supportsDownloadBundling = true,
                 mapSelectionLayer = dataset.mapSelectionLayer,
-                _links = new CapabilityLinksCreator().CreateCapabilityLinks(metadataUuid).ToArray()
+                distributedBy = ConfigurationManager.AppSettings["DistributedBy"],
+                _links = new LinkCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
         }
 

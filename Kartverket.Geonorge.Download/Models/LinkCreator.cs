@@ -1,19 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Configuration;
 using Geonorge.NedlastingApi.V3;
-using System.Web;
 
 namespace Kartverket.Geonorge.Download.Models
 {
-    public class CapabilityLinksCreator
+    public class LinkCreator
     {
+        private const string RelSelf = "self";
         private const string RelCapabilities = "http://rel.geonorge.no/download/capabilities";
         private const string RelProjection = "http://rel.geonorge.no/download/projection";
         private const string RelFormat = "http://rel.geonorge.no/download/format";
         private const string RelArea = "http://rel.geonorge.no/download/area";
         private const string RelOrder = "http://rel.geonorge.no/download/order";
         private const string RelCanDownload = "http://rel.geonorge.no/download/can-download";
+        private const string RelOrderBundle = "http://rel.geonorge.no/download/order/bundle";
+        
 
         public string GetDefaultApiVersion()
         {
@@ -22,11 +26,11 @@ namespace Kartverket.Geonorge.Download.Models
 
         public List<LinkType> CreateCapabilityLinks(string metadataUuid)
         {
-            List<LinkType> links = CreateLinks(metadataUuid);
+            var links = CreateLinks(metadataUuid);
 
             var capabilityLink = links.FirstOrDefault(l => l.rel == RelCapabilities);
             if (capabilityLink != null)
-                capabilityLink.rel = "self";
+                capabilityLink.rel = RelSelf;
 
             return links;
         }
@@ -37,18 +41,39 @@ namespace Kartverket.Geonorge.Download.Models
             return CreateLinks(null);
         }
 
-        public List<LinkType> CreateLinks(string metadataUuid)
+        private List<LinkType> CreateLinks(string metadataUuid)
         {
             var apiBaseUrl = GetApiBaseUrl();
 
-            var links = new List<LinkType>();
-            links.Add(CreateProjectionLink(metadataUuid, apiBaseUrl));
-            links.Add(CreateFormatLink(metadataUuid, apiBaseUrl));
-            links.Add(CreateAreaLink(metadataUuid, apiBaseUrl));
-            links.Add(CreateOrderLink(apiBaseUrl));
-            links.Add(CreateCapabilitiesLink(metadataUuid, apiBaseUrl));
-            links.Add(CreateCanDownloadLink(apiBaseUrl));
+            var links = new List<LinkType>
+            {
+                CreateProjectionLink(metadataUuid, apiBaseUrl),
+                CreateFormatLink(metadataUuid, apiBaseUrl),
+                CreateAreaLink(metadataUuid, apiBaseUrl),
+                CreateOrderLink(apiBaseUrl),
+                CreateCapabilitiesLink(metadataUuid, apiBaseUrl),
+                CreateCanDownloadLink(apiBaseUrl)
+            };
             return links;
+        }
+
+        public LinkType[] CreateOrderReceiptLinks(Guid orderUuid)
+        {
+            var apiBaseUrl = GetApiBaseUrl();
+
+            var links = new List<LinkType>
+            {
+                CreateOrderLink(apiBaseUrl, orderUuid, true),
+                CreateOrderBundleLink(apiBaseUrl, orderUuid)
+            };
+            return links.ToArray();
+        }
+
+        private LinkType CreateOrderBundleLink(string apiBaseUrl, Guid orderUuid)
+        {
+            LinkType link = CreateOrderLink(apiBaseUrl, orderUuid);
+            link.rel = RelOrderBundle;
+            return link;
         }
 
         private LinkType CreateCanDownloadLink(string apiBaseUrl)
@@ -60,12 +85,21 @@ namespace Kartverket.Geonorge.Download.Models
             };
         }
 
-        private static LinkType CreateOrderLink(string apiBaseUrl)
+        private static LinkType CreateOrderLink(string apiBaseUrl, Guid? orderUuid = null, bool isSelf=false)
         {
+            string href = apiBaseUrl + "order";
+
+            if (orderUuid.HasValue)
+                href = href + "/" + orderUuid.Value;
+
+            string rel = RelOrder;
+            if (isSelf)
+                rel = RelSelf;
+
             return new LinkType
             {
-                rel = RelOrder,
-                href = apiBaseUrl + "order"
+                rel = rel,
+                href = href
             };
         }
 
@@ -78,7 +112,6 @@ namespace Kartverket.Geonorge.Download.Models
             };
         }
 
-       
 
         private static LinkType CreateAreaLink(string metadataUuid, string apiBaseUrl)
         {
@@ -106,13 +139,13 @@ namespace Kartverket.Geonorge.Download.Models
                 href = GetProjectionUrl(metadataUuid, apiBaseUrl)
             };
         }
+
         private static string GetCapabilitiesUrl(string metadataUuid, string apiBaseUrl)
         {
             var currentUrl = HttpContext.Current.Request.Url.AbsoluteUri;
             if (currentUrl.Contains("capabilities"))
                 return currentUrl;
-            else
-                return GetTemplatedUrlIfEmptyParam(apiBaseUrl + "capabilities/", metadataUuid);
+            return GetTemplatedUrlIfEmptyParam(apiBaseUrl + "capabilities/", metadataUuid);
         }
 
         private static string GetAreaUrl(string metadataUuid, string apiBaseUrl)

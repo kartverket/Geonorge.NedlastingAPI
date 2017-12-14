@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:app="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:rest="http://www.kxml.no/rest/1.0" elementFormDefault="qualified">
   <xs:import namespace="http://www.kxml.no/rest/1.0" schemaLocation="rest.xsd"/>
-  <!-- Generert av MetaTrans(1.1.0.0) - 12.12.2017 10:38:12-->
+  <!-- Generert av MetaTrans(1.1.0.0) - 14.12.2017 09:23:52-->
   <xs:element name="Area" type="app:AreaType" />
   <xs:complexType name="AreaListe">
     <xs:sequence>
@@ -59,6 +59,7 @@
       <xs:element name="supportsAreaSelection" minOccurs="1" maxOccurs="1" type="xs:boolean" />
       <xs:element name="mapSelectionLayer" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="supportsDownloadBundling" minOccurs="1" maxOccurs="1" type="xs:boolean" />
+      <xs:element name="distributedBy" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>

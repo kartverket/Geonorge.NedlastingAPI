@@ -313,7 +313,7 @@
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
     <Compile Include="Models\Api\Internal\UpdateOrderStatusRequest.cs" />
-    <Compile Include="Models\CapabilityLinksCreator.cs" />
+    <Compile Include="Models\LinkCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DatasetAccessConstraint.cs" />
     <Compile Include="Models\DownloadContext.cs" />

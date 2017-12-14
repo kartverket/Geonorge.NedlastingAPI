@@ -114,15 +114,21 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
         private OrderReceiptType ConvertToReceipt(Order order)
         {
-            return new OrderReceiptType
+            string downloadBundleUrl = null;
+            if (order.DownloadBundleUrl != null)
+                downloadBundleUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle();
+
+            var receipt = new OrderReceiptType
             {
                 referenceNumber = order.Uuid.ToString(),
                 email = order.email,
                 orderDate = order.orderDate ?? DateTime.Now,
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
-                downloadBundleUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle()
+                downloadBundleUrl = downloadBundleUrl,
+                _links = new LinkCreator().CreateOrderReceiptLinks(order.Uuid)
             };
+            return receipt;
         }
 
         private FileType[] ConvertToFiles(List<OrderItem> orderItems, Guid orderUuid)
