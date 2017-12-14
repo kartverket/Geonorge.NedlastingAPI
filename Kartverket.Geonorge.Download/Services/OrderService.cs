@@ -147,6 +147,9 @@ namespace Kartverket.Geonorge.Download.Services
                 Log.Error($"{logMessage}, Message: {orderItem.Message} ");
             else
                 Log.Info($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
+
+            if (orderItem.Order.IsReadyForBundleDownload()) 
+                _orderBundleService.SendToBundling(orderItem.Order);
         }
 
         public Order Find(string orderUuid)
@@ -193,13 +196,11 @@ namespace Kartverket.Geonorge.Download.Services
         /// <param name="incomingOrder"></param>
         public void UpdateOrder(Order order, OrderType incomingOrder)
         {
-            bool sendToBundling = incomingOrder.downloadAsBundle;
-
             order.DownloadAsBundle = incomingOrder.downloadAsBundle;
             order.email = incomingOrder.email;
             _dbContext.SaveChanges();
 
-            if (sendToBundling)
+            if (order.IsReadyForBundleDownload())
             {
                 _orderBundleService.SendToBundling(order);
             }

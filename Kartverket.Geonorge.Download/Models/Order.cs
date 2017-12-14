@@ -113,5 +113,10 @@ namespace Kartverket.Geonorge.Download.Models
             }
             return ids;
         }
+
+        public bool IsReadyForBundleDownload()
+        {
+            return DownloadAsBundle && orderItem.All(item => item.IsReadyForDownload());
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void UpdateFileStatus(UpdateFileStatusInformation statusInfo)
         {
-            var orderItem = _orderService.FindOrderItem(statusInfo.FileId);
+            OrderItem orderItem = _orderService.FindOrderItem(statusInfo.FileId);
             if (orderItem.Status != statusInfo.Status)
             {
                 _orderService.UpdateFileStatus(statusInfo);
