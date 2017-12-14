@@ -41,7 +41,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api
 
         private static VersionResponseType ApiDescription()
         {
-            var capabilityLinksCreator = new CapabilityLinksCreator();
+            var capabilityLinksCreator = new LinkCreator();
             var apiVersionDescription = new VersionResponseType
             {
                 version = capabilityLinksCreator.GetDefaultApiVersion(),

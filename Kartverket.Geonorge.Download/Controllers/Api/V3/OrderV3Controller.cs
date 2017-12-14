@@ -114,7 +114,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
         private OrderReceiptType ConvertToReceipt(Order order)
         {
-            return new OrderReceiptType
             string downloadBundleUrl = null;
             if (order.DownloadBundleUrl != null)
                 downloadBundleUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle();
@@ -127,7 +126,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
                 downloadBundleUrl = downloadBundleUrl,
+                _links = new LinkCreator().CreateOrderReceiptLinks(order.Uuid)
             };
+            return receipt;
         }
 
         private FileType[] ConvertToFiles(List<OrderItem> orderItems, Guid orderUuid)
