@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using Geonorge.NedlastingApi.V3;
@@ -138,7 +137,6 @@ namespace Kartverket.Geonorge.Download.Services
             orderItem.Status = updateFileStatusInformation.Status;
             orderItem.Message = updateFileStatusInformation.Message;
 
-            _dbContext.Entry(orderItem).State = EntityState.Modified;
             _dbContext.SaveChanges();
 
             string logMessage = $"OrderItem [id={orderItem.Id}, fileId={orderItem.Uuid}] has been updated. Status: {orderItem.Status}";
