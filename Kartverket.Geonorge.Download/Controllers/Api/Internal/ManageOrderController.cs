@@ -75,7 +75,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 Log.Error(e.Message, e);
                 return InternalServerError(e);
             }
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok();
         }
     }
 }
