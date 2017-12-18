@@ -22,6 +22,7 @@ namespace Kartverket.Geonorge.Download.Models
         /// this is still the primary key in the database
         /// </summary>
         [Key]
+        [Column("referenceNumber")]
         public int referenceNumber { get; set; }
 
         /// <summary>
@@ -32,10 +33,13 @@ namespace Kartverket.Geonorge.Download.Models
         public Guid Uuid { get; set; }
 
         [StringLength(50)]
+        [Column("email")]
         public string email { get; set; }
 
+        [Column("orderDate")]
         public DateTime? orderDate { get; set; }
 
+        [Column("username")]
         public string username { get; set; }
 
         public virtual List<OrderItem> orderItem { get; set; }
@@ -49,6 +53,11 @@ namespace Kartverket.Geonorge.Download.Models
         /// The url to the bundle of all order items in this order. Can be null until the bundle has been created.
         /// </summary>
         public string DownloadBundleUrl { get; set; }
+
+        /// <summary>
+        /// Timestamp of when an email notification with bundle download url was sent to user.
+        /// </summary>
+        public DateTime? DownloadBundleNotificationSent { get; set; }
 
         public void AddOrderItems(List<OrderItem> items)
         {

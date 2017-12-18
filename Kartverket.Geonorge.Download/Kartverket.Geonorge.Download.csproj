@@ -309,6 +309,10 @@
     <Compile Include="Migrations\201712131931146_AddFileUuidOnOrderItem.Designer.cs">
       <DependentUpon>201712131931146_AddFileUuidOnOrderItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712180931420_AddDownloadBundleNotificationSent.cs" />
+    <Compile Include="Migrations\201712180931420_AddDownloadBundleNotificationSent.Designer.cs">
+      <DependentUpon>201712180931420_AddDownloadBundleNotificationSent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
@@ -651,6 +655,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712131931146_AddFileUuidOnOrderItem.resx">
       <DependentUpon>201712131931146_AddFileUuidOnOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712180931420_AddDownloadBundleNotificationSent.resx">
+      <DependentUpon>201712180931420_AddDownloadBundleNotificationSent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
