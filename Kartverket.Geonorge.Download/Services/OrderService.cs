@@ -210,10 +210,13 @@ namespace Kartverket.Geonorge.Download.Services
             order.DownloadBundleUrl = orderStatus.DownloadUrl;
             _dbContext.SaveChanges();
 
-            if (orderStatus.Status == "ReadyForDownload")
+            if (orderStatus.Status == "ReadyForDownload" && !order.DownloadBundleNotificationSent.HasValue)
             {
                 _notificationService.SendReadyForDownloadBundleNotification(order);
             }
+
+            order.DownloadBundleNotificationSent = DateTime.Now;
+            _dbContext.SaveChanges();
         }
     }
 }
