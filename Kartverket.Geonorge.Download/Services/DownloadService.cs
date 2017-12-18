@@ -122,21 +122,21 @@ namespace Kartverket.Geonorge.Download.Services
             string jsonResult;
 
             var request = (HttpWebRequest) WebRequest.Create(url);
-
+            Log.Info("Area checker request: " + url);
             try
             {
                 var response = request.GetResponse();
-
                 using (var responseStream = response.GetResponseStream())
                 {
                     var reader = new StreamReader(responseStream, Encoding.UTF8);
                     jsonResult = reader.ReadToEnd();
                 }
+                Log.Info("Area checker response: " + ((HttpWebResponse)response).StatusCode + " Body: "+jsonResult);
             }
             catch (WebException exception)
             {
                 var errorResponse = exception.Response;
-
+                
                 using (var responseStream = errorResponse.GetResponseStream())
                 {
                     var reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
