@@ -52,7 +52,7 @@ namespace Kartverket.Geonorge.Download.Services
                 }
 
                 //kommune
-                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer";
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer-alle";
                 data = c.DownloadString(url);
                 response = Newtonsoft.Json.Linq.JObject.Parse(data);
 
@@ -62,6 +62,12 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var codevalue = code["codevalue"].ToString();
                     var label = code["label"].ToString();
+                    var status = code["status"].ToString();
+
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
 
                     AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
 
