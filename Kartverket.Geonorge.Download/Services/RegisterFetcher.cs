@@ -33,7 +33,7 @@ namespace Kartverket.Geonorge.Download.Services
             else { 
                 
                 //fylke
-                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer";
+                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer-alle";
                 System.Net.WebClient c = new System.Net.WebClient();
                 c.Encoding = System.Text.Encoding.UTF8;
                 var data = c.DownloadString(url);
@@ -44,7 +44,12 @@ namespace Kartverket.Geonorge.Download.Services
                 foreach (var code in codeList)
                 {
                     var codevalue = code["codevalue"].ToString();
-                    var label = code["label"].ToString();
+                    var label = code["description"].ToString();
+                    var status = code["status"].ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
 
                     AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
 
