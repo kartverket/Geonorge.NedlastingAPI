@@ -7,6 +7,7 @@ using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Models.Api.Internal;
 using log4net;
 using LinqKit;
+using System.Data.Entity;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -167,7 +168,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var fileIdGuid = Guid.Parse(fileId);
 
-            return _dbContext.OrderItems.FirstOrDefault(o => o.Uuid == fileIdGuid);
+            return _dbContext.OrderItems.Include(p => p.Order).FirstOrDefault(o => o.Uuid == fileIdGuid);
         }
 
         private List<DatasetAccessConstraint> GetAccessRestrictionsForOrder(Order order)

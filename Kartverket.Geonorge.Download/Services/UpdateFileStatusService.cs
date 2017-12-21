@@ -37,7 +37,8 @@ namespace Kartverket.Geonorge.Download.Services
 
         private bool IsReadyForDownloadNotification(OrderItem orderItem)
         {
-            var orderItems = orderItem.Order.orderItem;
+            var orderInfo = _orderService.FindOrderItem(orderItem.FileUuid.ToString());
+            var orderItems = orderInfo.Order.orderItem;
             bool waitingForProcessing = false;
             foreach (var item in orderItems)
             {

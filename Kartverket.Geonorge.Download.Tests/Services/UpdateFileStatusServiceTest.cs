@@ -1,6 +1,7 @@
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Moq;
+using System;
 using Xunit;
 
 namespace Kartverket.Geonorge.Download.Tests.Services
@@ -12,7 +13,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         {
             var fileId = "8910c2bb-6323-42d0-8230-fda622ce6f43";
             var order = new Order();
-            var orderItem = new OrderItem {Status = OrderItemStatus.WaitingForProcessing};
+            var orderItem = new OrderItem {Status = OrderItemStatus.WaitingForProcessing, FileUuid = Guid.Parse(fileId) };
             order.orderItem.Add(new OrderItem { Status = OrderItemStatus.ReadyForDownload });
             orderItem.Order = order;
 
