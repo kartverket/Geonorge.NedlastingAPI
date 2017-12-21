@@ -21,17 +21,34 @@ namespace Kartverket.Geonorge.Download.Services
         public void UpdateFileStatus(UpdateFileStatusInformation statusInfo)
         {
             OrderItem orderItem = _orderService.FindOrderItem(statusInfo.FileId);
+
             if (orderItem.Status != statusInfo.Status)
             {
                 _orderService.UpdateFileStatus(statusInfo);
 
-                if (statusInfo.Status == OrderItemStatus.ReadyForDownload)
+                if (IsReadyForDownloadNotification(orderItem))
                     _notificationService.SendReadyForDownloadNotification(orderItem);
             }
             else
             {
-                Log.Info($"Not updating status of fileId: {statusInfo.FileId}, status is already {statusInfo.Status}");   
+                Log.Info($"Not updating status of fileId: {statusInfo.FileId}, status is already {statusInfo.Status}");
             }
+        }
+
+        private bool IsReadyForDownloadNotification(OrderItem orderItem)
+        {
+            var orderItems = orderItem.Order.orderItem;
+            bool waitingForProcessing = false;
+            foreach (var item in orderItems)
+            {
+                if (item.Status == OrderItemStatus.WaitingForProcessing)
+                    waitingForProcessing = true;
+            }
+
+            if (waitingForProcessing)
+                return false;
+            else
+                return true;
         }
     }
 }

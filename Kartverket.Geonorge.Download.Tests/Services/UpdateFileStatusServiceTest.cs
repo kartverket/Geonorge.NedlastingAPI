@@ -11,7 +11,10 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         public void ShouldUpdateStatusWhenChanged()
         {
             var fileId = "8910c2bb-6323-42d0-8230-fda622ce6f43";
+            var order = new Order();
             var orderItem = new OrderItem {Status = OrderItemStatus.WaitingForProcessing};
+            order.orderItem.Add(new OrderItem { Status = OrderItemStatus.ReadyForDownload });
+            orderItem.Order = order;
 
             var orderServiceMock = new Mock<IOrderService>();
             orderServiceMock.Setup(o => o.FindOrderItem(fileId)).Returns(orderItem);

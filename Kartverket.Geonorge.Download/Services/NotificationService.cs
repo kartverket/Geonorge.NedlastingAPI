@@ -87,21 +87,25 @@ namespace Kartverket.Geonorge.Download.Services
             var body = new StringBuilder();
             body.AppendLine(
                 $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {orderItem.ReferenceNumber} er ferdig produsert.\n");
-            body.AppendLine($"Datasett: {orderItem.MetadataName}\n");
+            foreach(var item in orderItem.Order.orderItem)
+            { 
+                body.AppendLine($"Datasett: {item.MetadataName}\n");
 
-            if (!string.IsNullOrEmpty(orderItem.DownloadUrl))
-            {
-                body.AppendLine("Klikk her for å laste ned resultatet: ");
-                var downLoadApiUrl = new DownloadUrlBuilder().OrderId(orderItem.Order.Uuid).FileId(orderItem.Uuid)
-                    .Build();
-                body.AppendLine(downLoadApiUrl);
-            }
-            else
-            {
-                body.AppendLine(
-                    "Det er dessverre ingen data å laste ned. Det finnes ingen objekter innenfor valgt område.");
-            }
+                if (!string.IsNullOrEmpty(item.DownloadUrl))
+                {
+                    body.AppendLine("Klikk her for å laste ned resultatet: ");
+                    var downLoadApiUrl = new DownloadUrlBuilder().OrderId(item.Order.Uuid).FileId(item.Uuid)
+                        .Build();
+                    body.AppendLine(downLoadApiUrl);
+                }
+                else
+                {
+                    body.AppendLine(
+                        "Det er dessverre ingen data å laste ned. Det finnes ingen objekter innenfor valgt område.");
+                }
 
+                body.AppendLine("\n");
+            }
             AddFooter(body);
 
             message.Body = body.ToString();
