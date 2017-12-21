@@ -37,19 +37,26 @@ namespace Kartverket.Geonorge.Download.Services
 
         private bool IsReadyForDownloadNotification(OrderItem orderItem)
         {
+            Log.Info($"Check IsReadyForDownloadNotification orderItemId: {orderItem.Id}");
             var orderInfo = _orderService.FindOrderItem(orderItem.FileUuid.ToString());
+            Log.Info($"Check IsReadyForDownloadNotification order uuid: {orderInfo.Order.Uuid}");
             var orderItems = orderInfo.Order.orderItem;
             bool waitingForProcessing = false;
             foreach (var item in orderItems)
             {
+                Log.Info($"Check status orderitem: {item.ReferenceNumber}");
                 if (item.Status == OrderItemStatus.WaitingForProcessing)
                     waitingForProcessing = true;
             }
 
-            if (waitingForProcessing)
+            if (waitingForProcessing) {
+                Log.Info("IsReadyForDownloadNotification orderitem: false");
                 return false;
-            else
+            }
+            else {
+                Log.Info("IsReadyForDownloadNotification orderitem: true");
                 return true;
+            }
         }
     }
 }
