@@ -25,7 +25,7 @@ namespace Kartverket.Geonorge.Download.Services
             if (orderItem.Status != statusInfo.Status)
             {
                 _orderService.UpdateFileStatus(statusInfo);
-
+                orderItem = _orderService.FindOrderItem(statusInfo.FileId);
                 if (IsReadyForDownloadNotification(orderItem))
                     _notificationService.SendReadyForDownloadNotification(orderItem);
             }
@@ -44,7 +44,7 @@ namespace Kartverket.Geonorge.Download.Services
             bool waitingForProcessing = false;
             foreach (var item in orderItem.Order.orderItem)
             {
-                Log.Info($"Check status orderitem: {item.ReferenceNumber}");
+                Log.Info($"Check status orderitem: {item.Id}, status: {item.Status}");
                 if (item.Status == OrderItemStatus.WaitingForProcessing)
                     waitingForProcessing = true;
             }
