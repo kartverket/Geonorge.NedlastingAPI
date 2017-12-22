@@ -38,11 +38,11 @@ namespace Kartverket.Geonorge.Download.Services
         private bool IsReadyForDownloadNotification(OrderItem orderItem)
         {
             Log.Info($"Check IsReadyForDownloadNotification orderItemId: {orderItem.Id}");
-            var orderInfo = _orderService.FindOrderItem(orderItem.Uuid.ToString());
-            Log.Info($"Check IsReadyForDownloadNotification order uuid: {orderItem.Uuid.ToString()}");
-            var orderItems = orderInfo.Order.orderItem;
+            //var orderInfo = _orderService.FindOrderItem(orderItem.Uuid.ToString());
+            //Log.Info($"Check IsReadyForDownloadNotification order uuid: {orderItem.Uuid.ToString()}");
+            //var orderItems = orderInfo.Order.orderItem;
             bool waitingForProcessing = false;
-            foreach (var item in orderItems)
+            foreach (var item in orderItem.Order.orderItem)
             {
                 Log.Info($"Check status orderitem: {item.ReferenceNumber}");
                 if (item.Status == OrderItemStatus.WaitingForProcessing)
