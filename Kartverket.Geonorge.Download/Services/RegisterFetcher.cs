@@ -79,6 +79,29 @@ namespace Kartverket.Geonorge.Download.Services
                     areas.Add(kommune);
                 }
 
+                //område utenfor fastlandsnorge
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/omradenummer";
+                data = c.DownloadString(url);
+                response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["label"].ToString();
+                    var label = code["description"].ToString();
+                    var status = code["status"].ToString();
+
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
+
+                    AreaType omraade = new AreaType { code = codevalue, name = label, type = "utenfor fastlandsnorge" };
+
+                    areas.Add(omraade);
+                }
+
                 memCacher.Add("areas", areas, new DateTimeOffset(DateTime.Now.AddHours(1)));
             }
 
