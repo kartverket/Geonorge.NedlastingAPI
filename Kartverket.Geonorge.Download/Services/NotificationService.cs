@@ -98,6 +98,11 @@ namespace Kartverket.Geonorge.Download.Services
                         .Build();
                     body.AppendLine(downLoadApiUrl);
                 }
+                else if (item.Status == OrderItemStatus.Error)
+                {
+                    body.AppendLine(
+                        "Produksjonen av datasettet feilet.");
+                }
                 else
                 {
                     body.AppendLine(
