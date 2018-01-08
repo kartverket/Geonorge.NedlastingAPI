@@ -678,6 +678,12 @@
     <Content Include="authentication.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
+      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
+      <Name>Geonorge.NedlastingApi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Content\bower_components\kartverket-felleskomponenter\.bower.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\702ZOKiLJc3WVjuplzInF5uFdDttMLvmWuJdhhgs.ttf" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.eot" />
@@ -713,12 +719,6 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\README.md" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
-      <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
-      <Name>Geonorge.NedlastingApi</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

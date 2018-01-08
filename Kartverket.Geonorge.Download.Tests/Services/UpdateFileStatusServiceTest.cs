@@ -1,6 +1,7 @@
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Moq;
+using System;
 using Xunit;
 
 namespace Kartverket.Geonorge.Download.Tests.Services
@@ -11,7 +12,10 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         public void ShouldUpdateStatusWhenChanged()
         {
             var fileId = "8910c2bb-6323-42d0-8230-fda622ce6f43";
-            var orderItem = new OrderItem {Status = OrderItemStatus.WaitingForProcessing};
+            var order = new Order();
+            var orderItem = new OrderItem {Status = OrderItemStatus.WaitingForProcessing, FileUuid = Guid.Parse(fileId) };
+            order.orderItem.Add(new OrderItem { Status = OrderItemStatus.ReadyForDownload, FileUuid = Guid.Parse(fileId) });
+            orderItem.Order = order;
 
             var orderServiceMock = new Mock<IOrderService>();
             orderServiceMock.Setup(o => o.FindOrderItem(fileId)).Returns(orderItem);

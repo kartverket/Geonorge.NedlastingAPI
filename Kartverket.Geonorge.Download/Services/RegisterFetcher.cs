@@ -33,7 +33,7 @@ namespace Kartverket.Geonorge.Download.Services
             else { 
                 
                 //fylke
-                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer";
+                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/fylkesnummer-alle";
                 System.Net.WebClient c = new System.Net.WebClient();
                 c.Encoding = System.Text.Encoding.UTF8;
                 var data = c.DownloadString(url);
@@ -43,8 +43,13 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var code in codeList)
                 {
-                    var codevalue = code["codevalue"].ToString();
-                    var label = code["label"].ToString();
+                    var codevalue = code["label"].ToString();
+                    var label = code["description"].ToString();
+                    var status = code["status"].ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
 
                     AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
 
@@ -52,7 +57,7 @@ namespace Kartverket.Geonorge.Download.Services
                 }
 
                 //kommune
-                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer";
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/kommunenummer-alle";
                 data = c.DownloadString(url);
                 response = Newtonsoft.Json.Linq.JObject.Parse(data);
 
@@ -60,12 +65,41 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var code in codeList)
                 {
-                    var codevalue = code["codevalue"].ToString();
-                    var label = code["label"].ToString();
+                    var codevalue = code["label"].ToString();
+                    var label = code["description"].ToString();
+                    var status = code["status"].ToString();
+
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
 
                     AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
 
                     areas.Add(kommune);
+                }
+
+                //område utenfor fastlandsnorge
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/subregister/sosi-kodelister/kartverket/omradenummer";
+                data = c.DownloadString(url);
+                response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["label"].ToString();
+                    var label = code["description"].ToString();
+                    var status = code["status"].ToString();
+
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn")
+                        label = label + " (ny)";
+
+                    AreaType omraade = new AreaType { code = codevalue, name = label, type = "utenfor fastlandsnorge" };
+
+                    areas.Add(omraade);
                 }
 
                 memCacher.Add("areas", areas, new DateTimeOffset(DateTime.Now.AddHours(1)));
