@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Http;
 using Geonorge.NedlastingApi.V1;
 using V2 = Geonorge.NedlastingApi.V2;
+using V3 = Geonorge.NedlastingApi.V3;
 
 #if Handle_PageResultOfT
 using System.Web.Http.OData;
@@ -38,6 +39,8 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
         {
             //// Uncomment the following to use the documentation from XML documentation file.
             config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/App_Data/XmlDocument.xml")));
+
+            //V1
 
             CapabilitiesType c = new CapabilitiesType();
             c.supportsAreaSelection = true;
@@ -133,22 +136,233 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             ftl.Add(file6);
             or.files = ftl.ToArray();
 
-            V2.CanDownloadRequestType canDownloadRequestType = new V2.CanDownloadRequestType();
-            canDownloadRequestType.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
-            canDownloadRequestType.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
-            canDownloadRequestType.coordinateSystem = "32633";
+
+            //V2
+
+            V2.CapabilitiesType c_2 = new V2.CapabilitiesType();
+            c_2.supportsAreaSelection = true;
+            c_2.supportsFormatSelection = true;
+            c_2.supportsProjectionSelection = true;
+            c_2.supportsPolygonSelection = false;
+
+            V2.LinkType l1_2 = new V2.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/projection" };
+            V2.LinkType l2_2 = new V2.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/format" };
+            V2.LinkType l3_2 = new V2.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/area" };
+            V2.LinkType l4_2 = new V2.LinkType() { href = "http://download.dev.geonorge.no/api/order", rel = "http://rel.geonorge.no/download/order" };
+            List<V2.LinkType> l_2 = new List<V2.LinkType>();
+            l_2.Add(l1_2);
+            l_2.Add(l2_2);
+            l_2.Add(l3_2);
+            l_2.Add(l4_2);
+            c_2._links = l_2.ToArray();
+
+            V2.ProjectionType p1_2 = new V2.ProjectionType() { code = "25832", name = "EUREF89 UTM sone 32, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25832" };
+            V2.ProjectionType p2_2 = new V2.ProjectionType() { code = "25833", name = "EUREF89 UTM sone 33, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25833" };
+            V2.ProjectionType p3_2 = new V2.ProjectionType() { code = "25835", name = "EUREF89 UTM sone 35, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25835" };
+            List<V2.ProjectionType> p_2 = new List<V2.ProjectionType>();
+            p_2.Add(p1_2);
+            p_2.Add(p2_2);
+            p_2.Add(p3_2);
+
+            V2.FormatType f1_2 = new V2.FormatType() { name = "SOSI 4.5" };
+            V2.FormatType f2_2 = new V2.FormatType() { name = "GML 3.2.1" };
+
+            List<V2.FormatType> f_2 = new List<V2.FormatType>();
+            f_2.Add(f1_2);
+            f_2.Add(f2_2);
+
+            V2.AreaType a1_2 = new V2.AreaType() { name = "Akershus", code = "02", type = "fylke" };
+            List<V2.ProjectionType> a1P_2 = new List<V2.ProjectionType>();
+            a1P_2.Add(p1_2);
+            a1_2.projections = a1P_2.ToArray();
+            List<V2.FormatType> a1F_2 = new List<V2.FormatType>();
+            a1F_2.Add(f1_2);
+            a1_2.formats = a1F_2.ToArray();
+
+            V2.AreaType a2_2 = new V2.AreaType() { name = "Agdenes", code = "1622", type = "kommune" };
+            List<V2.ProjectionType> a2P_2 = new List<V2.ProjectionType>();
+            a2P_2.Add(p1_2);
+            a2P_2.Add(p2_2);
+            a2_2.projections = a2P_2.ToArray();
+            List<V2.FormatType> a2F_2 = new List<V2.FormatType>();
+            a2F_2.Add(f2_2);
+            a2_2.formats = a2F_2.ToArray();
+
+            V2.AreaType a3_2 = new V2.AreaType() { name = "Landsdekkende", code = "0000", type = "landsdekkende" };
+            List<V2.ProjectionType> a3P_2 = new List<V2.ProjectionType>();
+            a3P_2.Add(p2_2);
+            a3_2.projections = a3P_2.ToArray();
+            List<V2.FormatType> a3F_2 = new List<V2.FormatType>();
+            a3F_2.Add(f1_2);
+            a3F_2.Add(f2_2);
+            a3_2.formats = a3F_2.ToArray();
+
+            List<V2.AreaType> a_2 = new List<V2.AreaType>();
+            a_2.Add(a1_2);
+            a_2.Add(a2_2);
+            a_2.Add(a3_2);
+
+            List<V2.OrderAreaType> at_2 = new List<V2.OrderAreaType>();
+            at_2.Add(new V2.OrderAreaType() { name = a1.name, code = a1.code, type = a1.type });
+
+            V2.OrderType o_2 = new V2.OrderType();
+            o_2.email = "bruker@epost.no";
+            List<V2.OrderLineType> ol_2 = new List<V2.OrderLineType>();
+            V2.OrderLineType ol1_2 = new V2.OrderLineType();
+            ol1_2.metadataUuid = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b";
+            ol1_2.projections = p_2.ToArray();
+            ol1_2.formats = f_2.ToArray();
+            ol1_2.areas = at_2.ToArray();
+            ol_2.Add(ol1_2);
+            o_2.orderLines = ol_2.ToArray();
+
+            V2.OrderReceiptType or_2 = new V2.OrderReceiptType();
+            or_2.referenceNumber = "O-123456789";
+            V2.FileType file_2 = new V2.FileType() { name = "AdministrativeEnheter_02_32.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V2.FileType file2_2 = new V2.FileType() { name = "AdministrativeEnheter_02_32.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V2.FileType file3_2 = new V2.FileType() { name = "AdministrativeEnheter_02_33.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V2.FileType file4_2 = new V2.FileType() { name = "AdministrativeEnheter_02_33.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V2.FileType file5_2 = new V2.FileType() { name = "AdministrativeEnheter_02_35.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V2.FileType file6_2 = new V2.FileType() { name = "AdministrativeEnheter_02_35.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            List<V2.FileType> ftl_2 = new List<V2.FileType>();
+            ftl_2.Add(file_2);
+            ftl_2.Add(file2_2);
+            ftl_2.Add(file3_2);
+            ftl_2.Add(file4_2);
+            ftl_2.Add(file5_2);
+            ftl_2.Add(file6_2);
+            or_2.files = ftl_2.ToArray();
+
+            V2.CanDownloadRequestType canDownloadRequestType_2 = new V2.CanDownloadRequestType();
+            canDownloadRequestType_2.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
+            canDownloadRequestType_2.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
+            canDownloadRequestType_2.coordinateSystem = "32633";
+
+
+            //V3
+
+            V3.CapabilitiesType c_3 = new V3.CapabilitiesType();
+            c_3.supportsAreaSelection = true;
+            c_3.supportsFormatSelection = true;
+            c_3.supportsProjectionSelection = true;
+            c_3.supportsPolygonSelection = false;
+
+            V3.LinkType l1_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/projection" };
+            V3.LinkType l2_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/format" };
+            V3.LinkType l3_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/area" };
+            V3.LinkType l4_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/order", rel = "http://rel.geonorge.no/download/order" };
+            List<V3.LinkType> l_3 = new List<V3.LinkType>();
+            l_3.Add(l1_3);
+            l_3.Add(l2_3);
+            l_3.Add(l3_3);
+            l_3.Add(l4_3);
+            c_3._links = l_3.ToArray();
+
+            V3.ProjectionType p1_3 = new V3.ProjectionType() { code = "25832", name = "EUREF89 UTM sone 32, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25832" };
+            V3.ProjectionType p2_3 = new V3.ProjectionType() { code = "25833", name = "EUREF89 UTM sone 33, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25833" };
+            V3.ProjectionType p3_3 = new V3.ProjectionType() { code = "25835", name = "EUREF89 UTM sone 35, 2d", codespace = "http://www.opengis.net/def/crs/EPSG/0/25835" };
+            List<V3.ProjectionType> p_3 = new List<V3.ProjectionType>();
+            p_3.Add(p1_3);
+            p_3.Add(p2_3);
+            p_3.Add(p3_3);
+
+            V3.FormatType f1_3 = new V3.FormatType() { name = "SOSI 4.5" };
+            V3.FormatType f2_3 = new V3.FormatType() { name = "GML 3.2.1" };
+
+            List<V3.FormatType> f_3 = new List<V3.FormatType>();
+            f_3.Add(f1_3);
+            f_3.Add(f2_3);
+
+            V3.AreaType a1_3 = new V3.AreaType() { name = "Akershus", code = "02", type = "fylke" };
+            List<V3.ProjectionType> a1P_3 = new List<V3.ProjectionType>();
+            a1P_3.Add(p1_3);
+            a1_3.projections = a1P_3.ToArray();
+            List<V3.FormatType> a1F_3 = new List<V3.FormatType>();
+            a1F_3.Add(f1_3);
+            a1_3.formats = a1F_3.ToArray();
+
+            V3.AreaType a2_3 = new V3.AreaType() { name = "Agdenes", code = "1622", type = "kommune" };
+            List<V3.ProjectionType> a2P_3 = new List<V3.ProjectionType>();
+            a2P_3.Add(p1_3);
+            a2P_3.Add(p2_3);
+            a2_3.projections = a2P_3.ToArray();
+            List<V3.FormatType> a2F_3 = new List<V3.FormatType>();
+            a2F_3.Add(f2_3);
+            a2_3.formats = a2F_3.ToArray();
+
+            V3.AreaType a3_3 = new V3.AreaType() { name = "Landsdekkende", code = "0000", type = "landsdekkende" };
+            List<V3.ProjectionType> a3P_3 = new List<V3.ProjectionType>();
+            a3P_3.Add(p2_3);
+            a3_3.projections = a3P_3.ToArray();
+            List<V3.FormatType> a3F_3 = new List<V3.FormatType>();
+            a3F_3.Add(f1_3);
+            a3F_3.Add(f2_3);
+            a3_3.formats = a3F_3.ToArray();
+
+            List<V3.AreaType> a_3 = new List<V3.AreaType>();
+            a_3.Add(a1_3);
+            a_3.Add(a2_3);
+            a_3.Add(a3_3);
+
+            List<V3.OrderAreaType> at_3 = new List<V3.OrderAreaType>();
+            at_3.Add(new V3.OrderAreaType() { name = a1.name, code = a1.code, type = a1.type });
+
+            V3.OrderType o_3 = new V3.OrderType();
+            o_3.email = "bruker@epost.no";
+            List<V3.OrderLineType> ol_3 = new List<V3.OrderLineType>();
+            V3.OrderLineType ol1_3 = new V3.OrderLineType();
+            ol1_3.metadataUuid = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b";
+            ol1_3.projections = p_3.ToArray();
+            ol1_3.formats = f_3.ToArray();
+            ol1_3.areas = at_3.ToArray();
+            ol_3.Add(ol1_3);
+            o_3.orderLines = ol_3.ToArray();
+
+            V3.OrderReceiptType or_3 = new V3.OrderReceiptType();
+            or_3.referenceNumber = "O-123456789";
+            V3.FileType file_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file2_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file3_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file4_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file5_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file6_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            List<V3.FileType> ftl_3 = new List<V3.FileType>();
+            ftl_3.Add(file_3);
+            ftl_3.Add(file2_3);
+            ftl_3.Add(file3_3);
+            ftl_3.Add(file4_3);
+            ftl_3.Add(file5_3);
+            ftl_3.Add(file6_3);
+            or_3.files = ftl_3.ToArray();
+
+            V3.CanDownloadRequestType canDownloadRequestType_3 = new V3.CanDownloadRequestType();
+            canDownloadRequestType_3.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
+            canDownloadRequestType_3.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
+            canDownloadRequestType_3.coordinateSystem = "32633";
+
 
 
             config.SetSampleObjects(new Dictionary<Type, object>
             {
                 {typeof(string), "sample string"},
                 {typeof(CapabilitiesType), c},
+                {typeof(V2.CapabilitiesType), c_2},
+                {typeof(V3.CapabilitiesType), c_3},
                 {typeof(List<AreaType>),a },
+                {typeof(List<V2.AreaType>),a_2 },
+                {typeof(List<V3.AreaType>),a_3 },
                 {typeof(OrderType),o },
+                {typeof(V2.OrderType),o_2 },
+                {typeof(V3.OrderType),o_3 },
                 {typeof(OrderReceiptType),or },
-                {typeof(V2.CanDownloadRequestType),canDownloadRequestType },
+                {typeof(V2.OrderReceiptType),or_2 },
+                {typeof(V3.OrderReceiptType),or_3 },
                 {typeof(List<ProjectionType>),p },
-                {typeof(List<FormatType>),f }
+                {typeof(List<V2.ProjectionType>),p_2 },
+                {typeof(List<V3.ProjectionType>),p_3 },
+                {typeof(List<FormatType>),f },
+                {typeof(List<V2.FormatType>),f_2 },
+                {typeof(List<V3.FormatType>),f_2 }
             });
 
 
