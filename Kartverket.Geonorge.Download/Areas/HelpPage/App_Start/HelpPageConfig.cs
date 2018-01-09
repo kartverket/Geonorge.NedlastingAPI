@@ -245,7 +245,9 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             c_3.supportsAreaSelection = true;
             c_3.supportsFormatSelection = true;
             c_3.supportsProjectionSelection = true;
-            c_3.supportsPolygonSelection = false;
+            c_3.supportsPolygonSelection = true;
+            c_3.supportsDownloadBundling = false;
+            c_3.mapSelectionLayer = "raster-n250";
 
             V3.LinkType l1_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/projection" };
             V3.LinkType l2_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/format" };
@@ -299,10 +301,20 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             a3F_3.Add(f2_3);
             a3_3.formats = a3F_3.ToArray();
 
+            V3.AreaType a4_3 = new V3.AreaType() { name = "101", code = "101", type = "celle" };
+            List<V3.ProjectionType> a4P_3 = new List<V3.ProjectionType>();
+            a4P_3.Add(p3_3);
+            a4_3.projections = a4P_3.ToArray();
+            List<V3.FormatType> a4F_3 = new List<V3.FormatType>();
+            a4F_3.Add(f1_3);
+            a4F_3.Add(f2_3);
+            a4_3.formats = a4F_3.ToArray();
+
             List<V3.AreaType> a_3 = new List<V3.AreaType>();
             a_3.Add(a1_3);
             a_3.Add(a2_3);
             a_3.Add(a3_3);
+            a_3.Add(a4_3);
 
             List<V3.OrderAreaType> at_3 = new List<V3.OrderAreaType>();
             at_3.Add(new V3.OrderAreaType() { name = a1.name, code = a1.code, type = a1.type });
