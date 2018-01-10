@@ -15,54 +15,56 @@
 <div id="body" class="help-page">
     <section class="featured">
         <div class="content-wrapper">
-            <br />
-            <p>Dokumentet har som hensikt å beskrive hvordan nedlastings-API-et fungerer.</p><p>Eksempelet som benyttes er datasettet Kulturminner - Brannsmitteområder (<a href="https://kartkatalog.geonorge.no/metadata/riksantikvaren/kulturminner-brannsmitteomrader/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://kartkatalog.geonorge.no/metadata/riksantikvaren/kulturminner-brannsmitteomrader/73f863ba-628f-48af-b7fa-30d3ab331b8d</a>)</p><p>I metadataene for datasettet settes distribusjonen sin distribusjonstype til &quot;Geonorge nedlastings-api&quot; og url til <a href="https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/capabilities/</a> (husk å bytte til etatens domene).<br />Det er viktig at man benytter https på eget domene for at det skal fungere, samt at man åpner opp for at <a href="https://kartkatalog.geonorge.no">https://kartkatalog.geonorge.no</a> kan sende forespørsler til etatens domene (enable cors).</p><h3>Hente informasjon om hva som tilbys av ressurser (capabilities)</h3><p>Api utvekslingsformatet er json.<br />Kartkatalogen eller annen klient kaller på metadata sin distribusjons-url med uuid: <span style="color: rgb(80,80,80);text-decoration: none;"><a href="https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d</a> som gir:</span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="8d20cbbd-eef2-402c-b341-f4b5182006fd" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>{
-  "supportsProjectionSelection": true,
-  "supportsFormatSelection": true,
-  "supportsPolygonSelection": true,
-  "supportsAreaSelection": true,
-  "_links": [
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d",
-      "rel": "http://rel.geonorge.no/download/projection",
-      "templatedSpecified": false
-    },
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d",
-      "rel": "http://rel.geonorge.no/download/format",
-      "templatedSpecified": false
-    },
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d",
-      "rel": "http://rel.geonorge.no/download/area",
-      "templatedSpecified": false
-    },
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/order",
-      "rel": "http://rel.geonorge.no/download/order",
-      "templatedSpecified": false
-    },
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d",
-      "rel": "self",
-      "templatedSpecified": false
-    },
-    {
-      "href": "https://nedlasting.test.geonorge.no/api/v2/can-download",
-      "rel": "http://rel.geonorge.no/download/can-download",
-      "templatedSpecified": false
-    }
-  ]
+                <p>Dokumentet har som hensikt å beskrive hvordan nedlastings-API-et fungerer.</p><p>Eksempelet som benyttes er datasettet Kulturminner - Brannsmitteområder&nbsp;(<a href="https://kartkatalog.geonorge.no/metadata/riksantikvaren/kulturminner-brannsmitteomrader/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://kartkatalog.geonorge.no/metadata/riksantikvaren/kulturminner-brannsmitteomrader/73f863ba-628f-48af-b7fa-30d3ab331b8d</a>)</p><p>I metadataene for datasettet settes distribusjonen sin distribusjonstype til "Geonorge nedlastings-api" og url til&nbsp;<a href="https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/capabilities/</a>&nbsp;(husk å bytte til etatens domene).<br>Det er viktig at man benytter https på eget domene for at det skal fungere, samt at man åpner opp for at&nbsp;<a href="https://kartkatalog.geonorge.no">https://kartkatalog.geonorge.no</a>&nbsp;kan sende forespørsler til etatens domene (enable cors).</p><p>Hente informasjon om hva som tilbys av ressurser (capabilities)</p><p>Api utvekslingsformatet er json.<br>Kartkatalogen eller annen klient kaller på metadata sin distribusjons-url med uuid: <span style="color: rgb(80,80,80); text-decoration: none"><a href="https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d</a> som gir:</span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-body-type="PLAIN_TEXT" data-macro-schema-version="1" data-macro-id="8d20cbbd-eef2-402c-b341-f4b5182006fd" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
+&nbsp; "supportsProjectionSelection": true,
+&nbsp; "supportsFormatSelection": true,
+&nbsp; "supportsPolygonSelection": true,
+&nbsp; "supportsAreaSelection": true,
+&nbsp; "_links": [
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "http://rel.geonorge.no/download/projection",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "http://rel.geonorge.no/download/format",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "http://rel.geonorge.no/download/area",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/order",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "http://rel.geonorge.no/download/order",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "self",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "href": "https://nedlasting.test.geonorge.no/api/v2/can-download",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rel": "http://rel.geonorge.no/download/can-download",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "templatedSpecified": false
+&nbsp;&nbsp;&nbsp; }
+&nbsp; ]
 }</pre>
-                    </td>
-                </tr>
-            </table><p>supportsProjectionSelection, supportsFormatSelection og supportsAreaSelection må alle settes til true da det for tiden er påkrevd å velge alt dette i kartkatalogen. <br />supportsPolygonSelection settes til true kun dersom det finnes en klippetjeneste.</p><h3>Hente ut områder, projeksjoner og formater</h3><p>I _links listen for capabilities finner man info om tilgjengelige ressurser. For eksempel vil rel = <a href="http://rel.geonorge.no/download/area">http://rel.geonorge.no/download/area</a> angi hvor man finner hvilke områder det kan lastes ned data for, samt for hvert område, hvilke projeksjoner og formater som finnes. rel er nøkkelen, så det er href som etaten må endre til sin link.</p><p>Eks. utdrag område (projeksjon/format) <a href="https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d</a> gir respons:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="45f1e9a4-4dbf-4f61-a3f5-a7e092633edc" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>[
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><p>supportsProjectionSelection, supportsFormatSelection og supportsAreaSelection må alle settes til true da det for tiden er påkrevd å velge alt dette i kartkatalogen. <br>supportsPolygonSelection settes til true kun dersom det finnes en klippetjeneste.</p><h3>Hente ut områder, projeksjoner og formater</h3><p>I _links listen for capabilities finner man info om tilgjengelige ressurser. For eksempel vil rel =&nbsp;<a href="http://rel.geonorge.no/download/area">http://rel.geonorge.no/download/area</a>&nbsp;angi hvor man finner hvilke områder det kan lastes ned data for, samt for hvert område, hvilke projeksjoner og formater som finnes. rel er nøkkelen, så det er href som etaten må endre til sin link.</p><p>Eks. utdrag område (projeksjon/format)&nbsp;<a href="https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.test.geonorge.no/api/v2/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d</a>&nbsp;gir respons:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="45f1e9a4-4dbf-4f61-a3f5-a7e092633edc" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>[
   {
     "type": "fylke",
     "name": "Akershus",
@@ -84,20 +86,24 @@
     ]
   }
 ]</pre>
-                    </td>
-                </tr>
-            </table><h3>Sjekke om polygon er innenfor et lovlig område</h3><p>Kallene til <a href="https://nedlasting.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d</a> og <a href="https://nedlasting.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d</a> benyttes kun ved valg i kart (supportsPolygonSelection=true).</p><p>Dersom capabilities returnerer supportsPolygonSelection=true vil man kunne velge koordinater i norgeskart. </p><p>Da sendes et kall til: <a href="https://nedlasting.geonorge.no/api/v2/can-download:">https://nedlasting.geonorge.no/api/v2/can-download</a> som sjekker at valgt polygon ikke er for stort til å laste ned:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="765411a7-b552-4b89-a29c-c9ae42f8eb90" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre>{"metadataUuid":"73f863ba-628f-48af-b7fa-30d3ab331b8d","coordinates":"344754 7272921 404330 7187619 304134 7156477 344754 7272921","coordinateSystem":"32633"}</pre></td></tr></table><p>som returnerer:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="37ec22cb-990e-4a78-84db-8482ada35d12" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>{
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><h3>Sjekke om polygon er innenfor et lovlig område</h3><p>Kallene til <a href="https://nedlasting.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/v2/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d</a>&nbsp;og&nbsp;<a href="https://nedlasting.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d">https://nedlasting.geonorge.no/api/v2/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d</a>&nbsp;benyttes kun ved valg i kart (supportsPolygonSelection=true).</p><p>Dersom capabilities returnerer supportsPolygonSelection=true vil man kunne velge koordinater i norgeskart.&nbsp;</p><p>Da sendes et kall til:&nbsp;<a href="https://nedlasting.geonorge.no/api/v2/can-download:">https://nedlasting.geonorge.no/api/v2/can-download</a>&nbsp;som sjekker at valgt polygon ikke er for stort til å laste ned:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="765411a7-b552-4b89-a29c-c9ae42f8eb90" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat"><tbody><tr><td class="wysiwyg-macro-body"><pre>{"metadataUuid":"73f863ba-628f-48af-b7fa-30d3ab331b8d","coordinates":"344754 7272921 404330 7187619 304134 7156477 344754 7272921","coordinateSystem":"32633"}</pre></td></tr></tbody></table><p>som returnerer:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="37ec22cb-990e-4a78-84db-8482ada35d12" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
   "canDownload": true
 }</pre>
-                    </td>
-                </tr>
-            </table><h3>Sende inn en ordre/bestilling</h3><p>Når man velger å laste ned det man har i kurv går det et kall til de ulike etatene man har valgt data for, her er eksempel for Geonorge, https://nedlasting.geonorge.no/api/v2/order:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="62efbc43-5bbc-49f1-bab5-fc619ade7bb7" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>{
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><h3>Sende inn en ordre/bestilling</h3><p>Når man velger å laste ned det man har i kurv går det et kall til de ulike etatene man har valgt data for, her er eksempel for Geonorge, https://nedlasting.geonorge.no/api/v2/order:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="62efbc43-5bbc-49f1-bab5-fc619ade7bb7" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
   "email": "bruker@epost.no",
   "orderLines": [
     {
@@ -153,12 +159,14 @@
      }
   ]
 }</pre>
-                    </td>
-                </tr>
-            </table><p>Gir respons:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="5a2609cc-31e0-454e-bd24-38dd24547b29" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>{
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><p>Gir respons:</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="5a2609cc-31e0-454e-bd24-38dd24547b29" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
   "referenceNumber": "11bb65e1-600f-4d2f-ba23-4ef4ac6fab41",
   "files": [
     {
@@ -188,12 +196,14 @@
   "email": "bruker@epost.no",
   "orderDate": "2017-05-29T13:44:10.0705398+02:00"
 }</pre>
-                    </td>
-                </tr>
-            </table><h3>Oppdatere ordre-status</h3><p>For ordre som skal klippes og har status = WaitingForProcessing, kan man benytte seg av <span style="color: rgb(80,80,80);"><a href="https://nedlasting.geonorge.no/api/internal/order/update-file-status">https://nedlasting.geonorge.no/api/internal/order/update-file-status</a> (<a href="https://nedlasting.geonorge.no/Help/Api/POST-api-internal-order-update-file-status">https://nedlasting.geonorge.no/Help/Api/POST-api-internal-order-update-file-status</a>), men det er jo opptil den enkelte etat hvordan dette skal oppdateres.</span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="8d555f96-7c03-430e-ae40-28cef72ad232" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre>{ "FileId" : "0F2F7602-6520-425A-8735-730CCCCC02F5", "Status" : "ReadyForDownload", "DownloadUrl" : "http://testnedlasting.geonorge.no/fmedatadownload/results/FME_2D59470B_1479891186705_8996.zip" }</pre></td></tr></table><p>Som da f.eks sender epost til brukeren om nedlastingslink etter at status er oppdatert.<br />Se <a href="http://nedlasting.dev.geonorge.no/Help/Api/POST-api-internal-order-update-file-status">http://nedlasting.dev.geonorge.no/Help/Api/POST-api-internal-order-update-file-status</a> for statusverdier.</p><h3>Hente info om ordre</h3><p>Får å finne info om ordre: <span style="color: rgb(80,80,80);"><a href="http://nedlasting.geonorge.no/api/v2/order/11bb65e1-600f-4d2f-ba23-4ef4ac6fab41">http://nedlasting.geonorge.no/api/v2/order/11bb65e1-600f-4d2f-ba23-4ef4ac6fab41</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-id="a6102479-4f69-42f3-ab7f-879d87bff8eb" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT">
-                <tr>
-                    <td class="wysiwyg-macro-body">
-                        <pre>{
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><h3>Oppdatere ordre-status</h3><p>For ordre som skal klippes og har status = WaitingForProcessing, kan man benytte seg av <span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/internal/order/update-file-status">https://nedlasting.geonorge.no/api/internal/order/update-file-status</a> (<a href="https://nedlasting.geonorge.no/Help/Api/POST-api-internal-order-update-file-status">https://nedlasting.geonorge.no/Help/Api/POST-api-internal-order-update-file-status</a>), men det er jo opptil den enkelte etat hvordan dette skal oppdateres.</span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="8d555f96-7c03-430e-ae40-28cef72ad232" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat"><tbody><tr><td class="wysiwyg-macro-body"><pre>{ "FileId" : "0F2F7602-6520-425A-8735-730CCCCC02F5", "Status" : "ReadyForDownload", "DownloadUrl" : "http://testnedlasting.geonorge.no/fmedatadownload/results/FME_2D59470B_1479891186705_8996.zip" }</pre></td></tr></tbody></table><p>Som da f.eks sender epost til brukeren om nedlastingslink etter at status er oppdatert.<br>Se&nbsp;<a href="http://nedlasting.dev.geonorge.no/Help/Api/POST-api-internal-order-update-file-status">http://nedlasting.dev.geonorge.no/Help/Api/POST-api-internal-order-update-file-status</a>&nbsp;for statusverdier.</p><h3>Hente info om ordre</h3><p>Får å finne info om ordre:&nbsp;<span style="color: rgb(80,80,80)"><a href="http://nedlasting.geonorge.no/api/v2/order/11bb65e1-600f-4d2f-ba23-4ef4ac6fab41">http://nedlasting.geonorge.no/api/v2/order/11bb65e1-600f-4d2f-ba23-4ef4ac6fab41</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="a6102479-4f69-42f3-ab7f-879d87bff8eb" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
   "referenceNumber": "11bb65e1-600f-4d2f-ba23-4ef4ac6fab41",
   "files": [
     {
@@ -224,9 +234,118 @@
   "email": "bruker@epost.no",
   "orderDate": "2017-05-29T13:44:10.07"
 }</pre>
-                    </td>
-                </tr>
-            </table><p><span style="color: rgb(80,80,80);">For å laste ned en fil med parameter for </span>referenceNumber/fileId eks<span style="color: rgb(80,80,80);">: </span><span style="color: rgb(80,80,80);"><a href="https://nedlasting.geonorge.no/api/v2/download/order/cd759630-346b-44de-b465-45ad4cb585e5/dcf1256d-014f-4515-9be1-fd12a90227a1">https://nedlasting.geonorge.no/api/v2/download/order/cd759630-346b-44de-b465-45ad4cb585e5/dcf1256d-014f-4515-9be1-fd12a90227a1</a></span></p><h3><span style="color: rgb(80,80,80);">Tilgangsbegrensede data</span></h3><p><span style="color: rgb(80,80,80);">Settes i metadataeditoren under Restriksjoner og tilgangsrestriksjoner. Da må man logge på med en BAAT-bruker for å legge i kurven i kartkatalogen. Geonorge sin nedlastingsløsning sjekker om man har gyldig pålogging for å kunne laste ned.<br />Dersom det er tilgangsbegrenset data må man implementere en authentiserings-mekanisme for at brukeren skal kunne laste ned filen.</span></p><h3>Mer om implementering</h3><p><span style="color: rgb(80,80,80);">Apiet må returnere på formatet dokumentert her <a href="https://nedlasting.geonorge.no/help">https://nedlasting.geonorge.no/help</a>. Man finner også mer informasjon under Geonorge sin implementasjon av nedlastingsløsningen på <a href="https://github.com/kartverket/Geonorge.NedlastingAPI">https://github.com/kartverket/Geonorge.NedlastingAPI</a>.<br />Hvordan man strukturerer datane og oppdateringsprosessene internt er opp til den enkelte etat, men det er en mulighet å benyttes seg av kildekoden på </span><a href="https://github.com/kartverket/Geonorge.NedlastingAPI">https://github.com/kartverket/Geonorge.NedlastingAPI</a><span style="color: rgb(80,80,80);">. Da får man generert opp nødvendige tabeller og kan f.eks. benytte Dataset api for å legge inn informasjon om datasett. På github finner man også xsd-fil dersom man ønsker det: <a href="https://github.com/kartverket/Geonorge.NedlastingAPI/tree/master/Geonorge.NedlastingApi/xsd">https://github.com/kartverket/Geonorge.NedlastingAPI/tree/master/Geonorge.NedlastingApi/xsd</a>.</span></p><p><br /></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><p><span style="color: rgb(80,80,80)">For å laste ned en fil med parameter for&nbsp;</span>referenceNumber/fileId eks<span style="color: rgb(80,80,80)">:&nbsp;</span><span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/v2/download/order/cd759630-346b-44de-b465-45ad4cb585e5/dcf1256d-014f-4515-9be1-fd12a90227a1">https://nedlasting.geonorge.no/api/v2/download/order/cd759630-346b-44de-b465-45ad4cb585e5/dcf1256d-014f-4515-9be1-fd12a90227a1</a></span></p><h3><span style="color: rgb(80,80,80)">Valg fra kartblad</span></h3><p><span style="color: rgb(80,80,80)">For hjelp til å velge kartblad via norgeskart settes egenskapen mapSelectionLayer eks:&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22</a></span></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-parameters="language=text" data-macro-id="3538f468-dc59-4f1d-a44e-b910dba209db" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>{
+    "supportsProjectionSelection": true,
+    "supportsFormatSelection": true,
+    "supportsPolygonSelection": false,
+    "supportsAreaSelection": true,
+    "mapSelectionLayer": "raster-n250",
+    "_links": [
+        {
+            "href": "https://nedlasting.geonorge.no/api/codelists/projection/d2ae29bd-0692-40de-a173-833afcddfe22",
+            "rel": "http://rel.geonorge.no/download/projection",
+            "templatedSpecified": false
+        },
+        {
+            "href": "https://nedlasting.geonorge.no/api/codelists/format/d2ae29bd-0692-40de-a173-833afcddfe22",
+            "rel": "http://rel.geonorge.no/download/format",
+            "templatedSpecified": false
+        },
+        {
+            "href": "https://nedlasting.geonorge.no/api/codelists/area/d2ae29bd-0692-40de-a173-833afcddfe22",
+            "rel": "http://rel.geonorge.no/download/area",
+            "templatedSpecified": false
+        },
+        {
+            "href": "https://nedlasting.geonorge.no/api/order",
+            "rel": "http://rel.geonorge.no/download/order",
+            "templatedSpecified": false
+        },
+        {
+            "href": "http://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22",
+            "rel": "self",
+            "templatedSpecified": false
+        },
+        {
+            "href": "https://nedlasting.geonorge.no/api/can-download",
+            "rel": "http://rel.geonorge.no/download/can-download",
+            "templatedSpecified": false
+        }
+    ]
+}</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><p>Oversikt over tilgjengelige lag (mapSelectionLayer) finner man her:&nbsp;&nbsp;<a href="https://github.com/kartverket/anathem/tree/norgeskart/themes/layers/geoJSON">https://github.com/kartverket/anathem/tree/norgeskart/themes/layers/geoJSON<br></a>Fra valgt lag (f.eks <a href="https://github.com/kartverket/anathem/blob/norgeskart/themes/layers/geoJSON/raster-n250.yaml">https://github.com/kartverket/anathem/blob/norgeskart/themes/layers/geoJSON/raster-n250.yaml</a>) legger man inn verdien fra egenskapen id i egenskapen mapSelectionLayer.&nbsp;<br>Tilgjengelige kartblad finner man ved å følge egenskapen url som er relativ til norgeskart, eks.&nbsp;<a href="http://norgeskart.no/json/dekning/raster/n250_ny.geojson">http://norgeskart.no/json/dekning/raster/n250_ny.geojson</a>.<br>Området (kartbladet) må være tilgjengelig i listen over områder:&nbsp;<a href="https://nedlasting.geonorge.no/api/codelists/area/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/codelists/area/d2ae29bd-0692-40de-a173-833afcddfe22</a></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-parameters="language=text" data-macro-id="6c229531-46a3-4266-9022-183486371fd0" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
+                    <tbody>
+                        <tr>
+                            <td class="wysiwyg-macro-body">
+                                <pre>[
+    {
+        "type": "celle",
+        "name": "101",
+        "code": "101",
+        "projections": [
+            {
+                "code": "25833",
+                "name": "EUREF89 UTM sone 33, 2d",
+                "codespace": "http://www.opengis.net/def/crs/EPSG/0/25833",
+                "formats": [
+                    {
+                        "name": "TIFF"
+                    }
+                ]
+            }
+        ],
+        "formats": [
+            {
+                "name": "TIFF"
+            },
+            {
+                "name": "TIFF",
+                "projections": [
+                    {
+                        "code": "25833",
+                        "name": "EUREF89 UTM sone 33, 2d",
+                        "codespace": "http://www.opengis.net/def/crs/EPSG/0/25833"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "celle",
+        "name": "102",
+        "code": "102",
+        "projections": [
+            {
+                "code": "25833",
+                "name": "EUREF89 UTM sone 33, 2d",
+                "codespace": "http://www.opengis.net/def/crs/EPSG/0/25833"
+            }
+        ],
+        "formats": [
+            {
+                "name": "TIFF"
+            },
+            {
+                "name": "TIFF"
+            }
+        ]
+    },
+osv.</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table><p>&nbsp;</p><h3><span style="color: rgb(80,80,80)">Tilgangsbegrensede data</span></h3><p><span style="color: rgb(80,80,80)">Settes i metadataeditoren under Restriksjoner og tilgangsrestriksjoner. Da må man logge på med en BAAT-bruker for å legge i kurven i kartkatalogen. Geonorge sin nedlastingsløsning sjekker om man har gyldig pålogging for å kunne laste ned.<br>Dersom det er tilgangsbegrenset data må man implementere en authentiserings-mekanisme for at brukeren skal kunne laste ned filen.</span></p><h3>Mer om implementering</h3><p><span style="color: rgb(80,80,80)">Apiet må returnere på formatet dokumentert her <a href="https://nedlasting.geonorge.no/help">https://nedlasting.geonorge.no/help</a>.&nbsp;Man finner også mer informasjon under Geonorge sin implementasjon av nedlastingsløsningen på&nbsp;<a href="https://github.com/kartverket/Geonorge.NedlastingAPI">https://github.com/kartverket/Geonorge.NedlastingAPI</a>.<br>Hvordan man strukturerer datane og oppdateringsprosessene internt er opp til den enkelte etat, men det er en mulighet å benyttes seg av kildekoden på </span><a href="https://github.com/kartverket/Geonorge.NedlastingAPI">https://github.com/kartverket/Geonorge.NedlastingAPI</a><span style="color: rgb(80,80,80)">. Da får man generert opp nødvendige tabeller og kan f.eks. benytte Dataset api for å legge inn informasjon om datasett. På github finner man også xsd-fil dersom man ønsker det:&nbsp;<a href="https://github.com/kartverket/Geonorge.NedlastingAPI/tree/master/Geonorge.NedlastingApi/xsd">https://github.com/kartverket/Geonorge.NedlastingAPI/tree/master/Geonorge.NedlastingApi/xsd</a>.</span></p><p><br></p><div contenteditable="false" data-mce-bogus="true" class="synchrony-container synchrony-exclude" style="user-select: none;"><div contenteditable="false" data-mce-bogus="true"></div></div>
         </div>
     </section>
 </div>
+<p><a href="~/Help/DocumentationV3">Endringer i versjon 3 av nedlastingsApi</a></p>
