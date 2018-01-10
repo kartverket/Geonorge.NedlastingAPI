@@ -113,7 +113,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// </summary>
         [HttpPost]
         [Route("can-download")]
-        [ResponseType(typeof(List<CanDownloadResponseType>))]
+        [ResponseType(typeof(CanDownloadResponseType))]
         public IHttpActionResult CanDownload(CanDownloadRequestType request)
         {
             try
