@@ -374,7 +374,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
                 {typeof(List<V3.ProjectionType>),p_3 },
                 {typeof(List<FormatType>),f },
                 {typeof(List<V2.FormatType>),f_2 },
-                {typeof(List<V3.FormatType>),f_2 },
+                {typeof(List<V3.FormatType>),f_3 },
                 {typeof(V3.CanDownloadRequestType),canDownloadRequestType_3 }
             });
 
