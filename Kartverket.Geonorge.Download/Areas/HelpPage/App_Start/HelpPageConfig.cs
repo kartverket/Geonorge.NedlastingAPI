@@ -248,6 +248,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             c_3.supportsPolygonSelection = true;
             c_3.supportsDownloadBundling = false;
             c_3.mapSelectionLayer = "raster-n250";
+            c_3.distributedBy = "Geonorge";
 
             V3.LinkType l1_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/projection" };
             V3.LinkType l2_3 = new V3.LinkType() { href = "http://download.dev.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b", rel = "http://rel.geonorge.no/download/format" };
