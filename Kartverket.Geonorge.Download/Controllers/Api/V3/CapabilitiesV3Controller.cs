@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.Web.Http;
@@ -54,6 +55,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         ///     Get Projections from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
+        [ResponseType(typeof(List<ProjectionType>))]
         [Route("codelists/projection/{metadataUuid}")]
         public IHttpActionResult GetProjections(string metadataUuid)
         {
@@ -73,6 +75,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("codelists/area/{metadataUuid}")]
+        [ResponseType(typeof(List<AreaType>))]
         public IHttpActionResult GetAreas(string metadataUuid)
         {
             try
@@ -91,6 +94,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [Route("codelists/format/{metadataUuid}")]
+        [ResponseType(typeof(List<FormatType>))]
         public IHttpActionResult GetFormats(string metadataUuid)
         {
             try
@@ -109,6 +113,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// </summary>
         [HttpPost]
         [Route("can-download")]
+        [ResponseType(typeof(CanDownloadResponseType))]
         public IHttpActionResult CanDownload(CanDownloadRequestType request)
         {
             try
