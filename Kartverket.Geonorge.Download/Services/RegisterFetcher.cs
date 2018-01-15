@@ -97,7 +97,11 @@ namespace Kartverket.Geonorge.Download.Services
                     else if (status == "Sendt inn")
                         label = label + " (ny)";
 
-                    AreaType omraade = new AreaType { code = codevalue, name = label, type = "utenfor fastlandsnorge" };
+                    AreaType omraade;
+                    if(codevalue.Length == 2)
+                        omraade = new AreaType { code = codevalue, name = label, type = "fylke" };
+                    else
+                        omraade = new AreaType { code = codevalue, name = label, type = "kommune" };
 
                     areas.Add(omraade);
                 }
