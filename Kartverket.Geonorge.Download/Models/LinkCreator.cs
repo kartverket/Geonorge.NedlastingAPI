@@ -173,7 +173,16 @@ namespace Kartverket.Geonorge.Download.Models
 
         private static string GetApiBaseUrl()
         {
-            return WebConfigurationManager.AppSettings["DownloadUrl"] + "api/";
+            return WebConfigurationManager.AppSettings["DownloadUrl"] + "api/" + GetVersion();
+        }
+
+        private static string GetVersion()
+        {
+            var currentUrl = HttpContext.Current.Request.Url.AbsoluteUri;
+            if (currentUrl.Contains("api/v2/"))
+                return "v2/";
+            else
+                return "";
         }
     }
 }
