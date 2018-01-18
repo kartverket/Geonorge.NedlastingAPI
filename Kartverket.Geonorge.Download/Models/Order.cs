@@ -98,9 +98,14 @@ namespace Kartverket.Geonorge.Download.Models
             return true;
         }
 
-        public bool BelongsToUser(string requestUsername)
+        private bool BelongsToUser(string requestUsername)
         {
             return string.Equals(username, requestUsername, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public bool BelongsToUser(AuthenticatedUser authenticatedUser)
+        {
+            return BelongsToUser(authenticatedUser.UsernameForStorage());
         }
 
         public bool ContainsRestrictedDatasets()

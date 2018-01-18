@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using Geonorge.NedlastingApi.V2;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
-using Kartverket.Geonorge.Utilities;
+using Kartverket.Geonorge.Download.Services.Auth;
 using log4net;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V2
@@ -22,10 +22,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IOrderService _orderService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public OrderV2Controller(IOrderService orderService)
+        public OrderV2Controller(IOrderService orderService, IAuthenticationService authenticationService)
         {
             _orderService = orderService;
+            _authenticationService = authenticationService;
         }
 
         /// <summary>
@@ -45,8 +47,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
         {
             try
             {
-                var username = SecurityClaim.GetUsername();
-                var savedOrder = _orderService.CreateOrder(new OrderMapper().ConvertToV3(order), username);
+                var savedOrder = _orderService.CreateOrder(new OrderMapper().ConvertToV3(order), GetAuthenticatedUser());
                 return Ok(ConvertToReceipt(savedOrder));
             }
             catch (AccessRestrictionException e)
@@ -113,10 +114,15 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V2
             if (order == null)
                 return NotFound();
 
-            if (!order.BelongsToUser(SecurityClaim.GetUsername()))
+            if (!order.BelongsToUser(GetAuthenticatedUser()))
                 return Unauthorized();
 
             return Ok(ConvertToReceipt(order));
+        }
+
+        private AuthenticatedUser GetAuthenticatedUser()
+        {
+            return _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
         }
     }
 }

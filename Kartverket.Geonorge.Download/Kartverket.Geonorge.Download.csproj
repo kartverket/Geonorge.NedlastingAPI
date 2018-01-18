@@ -126,6 +126,9 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ScottBrady91.AspNet.Identity.ConfigurablePasswordHasher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ScottBrady91.AspNet.Identity.ConfigurablePasswordHasher.1.0.0\lib\net45\ScottBrady91.AspNet.Identity.ConfigurablePasswordHasher.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -259,6 +262,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Api\Internal\DatasetController.cs" />
+    <Compile Include="Controllers\MachineAccountsController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RequireHttpsNonLocal.cs" />
     <Compile Include="Global.asax.cs">
@@ -313,10 +317,15 @@
     <Compile Include="Migrations\201712180931420_AddDownloadBundleNotificationSent.Designer.cs">
       <DependentUpon>201712180931420_AddDownloadBundleNotificationSent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801181918479_AddMachineAccount.cs" />
+    <Compile Include="Migrations\201801181918479_AddMachineAccount.Designer.cs">
+      <DependentUpon>201801181918479_AddMachineAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
     <Compile Include="Models\Api\Internal\UpdateOrderStatusRequest.cs" />
+    <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\LinkCreator.cs" />
     <Compile Include="Models\Dataset.cs" />
     <Compile Include="Models\DatasetAccessConstraint.cs" />
@@ -324,6 +333,7 @@
     <Compile Include="Models\DownloadUrlBuilder.cs" />
     <Compile Include="Models\Filliste.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Models\MachineAccount.cs" />
     <Compile Include="Models\NotFoundModel.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItemStatus.cs" />
@@ -342,6 +352,15 @@
       <DependentUpon>UI.en.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\AccessRestrictionException.cs" />
+    <Compile Include="Services\Auth\AuthenticationService.cs" />
+    <Compile Include="Services\Auth\BasicAuthenticationCredentialValidator.cs" />
+    <Compile Include="Services\Auth\BasicAuthenticationService.cs" />
+    <Compile Include="Services\Auth\Credentials.cs" />
+    <Compile Include="Services\Auth\IAuthenticationService.cs" />
+    <Compile Include="Services\Auth\IBasicAuthenticationCredentialValidator.cs" />
+    <Compile Include="Services\Auth\IBasicAuthenticationService.cs" />
+    <Compile Include="Services\Auth\IBaatAuthenticationService.cs" />
+    <Compile Include="Services\Auth\BaatAuthentication.cs" />
     <Compile Include="Services\ExternalRequestException.cs" />
     <Compile Include="Services\ExternalRequestService.cs" />
     <Compile Include="Services\IExternalRequestService.cs" />
@@ -659,6 +678,9 @@
     <EmbeddedResource Include="Migrations\201712180931420_AddDownloadBundleNotificationSent.resx">
       <DependentUpon>201712180931420_AddDownloadBundleNotificationSent.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801181918479_AddMachineAccount.resx">
+      <DependentUpon>201801181918479_AddMachineAccount.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UI.en.Designer.cs</LastGenOutput>
@@ -722,6 +744,21 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\README.md" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MachineAccounts\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MachineAccounts\Delete.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MachineAccounts\Details.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MachineAccounts\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MachineAccounts\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

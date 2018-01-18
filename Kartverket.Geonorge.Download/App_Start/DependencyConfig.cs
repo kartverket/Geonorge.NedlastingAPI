@@ -6,6 +6,7 @@ using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
+using Kartverket.Geonorge.Download.Services.Auth;
 
 namespace Kartverket.Geonorge.Download.App_Start
 {
@@ -35,6 +36,11 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<UpdateFileStatusService>().As<IUpdateFileStatusService>();
             builder.RegisterType<OrderBundleService>().As<IOrderBundleService>();
             builder.RegisterType<ExternalRequestService>().As<IExternalRequestService>();
+            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
+            builder.RegisterType<BasicAuthenticationCredentialValidator>()
+                .As<IBasicAuthenticationCredentialValidator>();
+            builder.RegisterType<BaatAuthentication>().As<IBaatAuthenticationService>();
+            builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)

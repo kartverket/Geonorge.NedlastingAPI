@@ -78,7 +78,8 @@ namespace Kartverket.Geonorge.Download.Services
                 foreach (var code in codeList)
                 {
                     var codevalue = code["label"].ToString();
-                    var label = code["description"].ToString();
+                    var label = code["description"]?.ToString();
+                    var status = code["status"]?.ToString();
 
                     AreaType omraade;
                     if(codevalue.Length == 2)

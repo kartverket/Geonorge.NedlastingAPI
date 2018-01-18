@@ -880,6 +880,19 @@
               Looks up a localized string similar to Søk etter.
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
+            <summary>
+                Gets username of the authenticated user. User can be authenticated with SAML or basic auth
+            </summary>
+            <returns>username of authenticated user or null if not authenticated</returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IBasicAuthenticationCredentialValidator.ValidCredentials(Kartverket.Geonorge.Download.Services.Auth.Credentials)">
+            <summary>
+            Validate credentials received from a http request with basic authentication header
+            </summary>
+            <param name="credentials"></param>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
             <summary>
             This service forward a bundle request to the FME bundling service. 

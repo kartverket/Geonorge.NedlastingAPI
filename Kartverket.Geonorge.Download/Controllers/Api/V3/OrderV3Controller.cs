@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using Geonorge.NedlastingApi.V3;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
-using Kartverket.Geonorge.Utilities;
+using Kartverket.Geonorge.Download.Services.Auth;
 using log4net;
 using Microsoft.Web.Http;
 
@@ -25,10 +25,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IOrderService _orderService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public OrderV3Controller(IOrderService orderService)
+        public OrderV3Controller(IOrderService orderService, IAuthenticationService authenticationService)
         {
             _orderService = orderService;
+            _authenticationService = authenticationService;
         }
 
 
@@ -49,8 +51,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         {
             try
             {
-                var username = SecurityClaim.GetUsername();
-                var savedOrder = _orderService.CreateOrder(order, username);
+                var savedOrder = _orderService.CreateOrder(order, GetAuthenticatedUser());
                 return Ok(ConvertToReceipt(savedOrder));
             }
             catch (AccessRestrictionException e)
@@ -81,7 +82,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            if (!order.BelongsToUser(SecurityClaim.GetUsername()))
+            if (!order.BelongsToUser(GetAuthenticatedUser()))
                 return Unauthorized();
 
             return Ok(ConvertToReceipt(order));
@@ -106,7 +107,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            if (!order.BelongsToUser(SecurityClaim.GetUsername()))
+            if (!order.BelongsToUser(GetAuthenticatedUser()))
                 return Unauthorized();
             try
             {
@@ -120,6 +121,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             
 
             return Ok(ConvertToReceipt(order));
+        }
+
+        private AuthenticatedUser GetAuthenticatedUser()
+        {
+            return _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
         }
 
         private OrderReceiptType ConvertToReceipt(Order order)

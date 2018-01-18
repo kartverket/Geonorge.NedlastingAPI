@@ -33,19 +33,19 @@ namespace Kartverket.Geonorge.Download.Services
             _notificationService = notificationService;
         }
 
-        public Order CreateOrder(OrderType incomingOrder, string username)
+        public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
         {
-            Log.Debug($"Creating order for email={incomingOrder.email}, username={username}");
+            Log.Debug($"Creating order for email={incomingOrder.email}, username={authenticatedUser.Username}");
             var order = new Order
             {
                 email = incomingOrder.email,
-                username = username
+                username = authenticatedUser.UsernameForStorage()
             };
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
             List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
             order.AddOrderItems(clippableOrderItems);
             
-            CheckAccessRestrictions(order, username);
+            CheckAccessRestrictions(order, authenticatedUser);
 
             SaveOrder(order);
 
@@ -55,11 +55,11 @@ namespace Kartverket.Geonorge.Download.Services
         }
 
         // ReSharper disable once UnusedParameter.Local
-        public void CheckAccessRestrictions(Order order, string username)
+        public void CheckAccessRestrictions(Order order, AuthenticatedUser authenticatedUser)
         {
             bool hasAnyRestrictedDatasets = GetAccessRestrictionsForOrder(order).Any();
 
-            if (hasAnyRestrictedDatasets && string.IsNullOrWhiteSpace(username))
+            if (hasAnyRestrictedDatasets && authenticatedUser == null)
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
         }
 

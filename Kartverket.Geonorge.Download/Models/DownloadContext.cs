@@ -15,6 +15,7 @@ namespace Kartverket.Geonorge.Download.Models
 
         public virtual DbSet<OrderItem> OrderItems { get; set; }
 
+        public virtual DbSet<MachineAccount> MachineAccounts { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -5,23 +5,26 @@ using System.Web;
 using System.Web.Http;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
-using Kartverket.Geonorge.Utilities;
+using Kartverket.Geonorge.Download.Services.Auth;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 {
     public class DownloadV3Controller : ApiController
     {
         private readonly IDownloadService _downloadService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IOrderService _orderService;
 
         public DownloadV3Controller
         (
             IOrderService orderService,
-            IDownloadService downloadService
+            IDownloadService downloadService,
+            IAuthenticationService authenticationService
         )
         {
             _orderService = orderService;
             _downloadService = downloadService;
+            _authenticationService = authenticationService;
         }
 
         /// <summary>
@@ -38,8 +41,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            var username = SecurityClaim.GetUsername();
-            var userIsLoggedIn = !string.IsNullOrWhiteSpace(username);
+            AuthenticatedUser authenticatedUser = GetAuthenticatedUser();            
+            var userIsLoggedIn = authenticatedUser != null;
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
             {
@@ -49,7 +52,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
             }
 
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(username))
+            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(authenticatedUser))
                 return Content(HttpStatusCode.Forbidden, "User not allowed to download order");
             
             if (string.IsNullOrEmpty(order.DownloadBundleUrl))
@@ -81,8 +84,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            var username = SecurityClaim.GetUsername();
-            var userIsLoggedIn = !string.IsNullOrWhiteSpace(username);
+            AuthenticatedUser authenticatedUser = GetAuthenticatedUser();
+
+            var userIsLoggedIn = authenticatedUser != null;
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
             {
@@ -93,7 +97,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
             }
 
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(username))
+            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(authenticatedUser))
                 return Content(HttpStatusCode.Forbidden, "User not allowed to download order");
 
             var item = order.GetItemWithFileId(fileId);
@@ -106,6 +110,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
+        }
+
+        private AuthenticatedUser GetAuthenticatedUser()
+        {
+            return _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
         }
 
         private bool IsValidUuid(string input)

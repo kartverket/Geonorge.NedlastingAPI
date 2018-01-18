@@ -6,13 +6,13 @@ namespace Kartverket.Geonorge.Download.Services
 {
     public interface IOrderService
     {
-        Order CreateOrder(OrderType incomingOrder, string username);
+        Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser);
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
         Order Find(string orderUuid);
 
-        void CheckAccessRestrictions(Order order, string username);
+        void CheckAccessRestrictions(Order order, AuthenticatedUser authenticatedUser);
 
         OrderItem FindOrderItem(string fileId);
 

@@ -145,6 +145,8 @@
     <Compile Include="Models\OrderTest.cs" />
     <Compile Include="MvcMockHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AuthenticationServiceTest.cs" />
+    <Compile Include="Services\BasicAuthenticationServiceTest.cs" />
     <Compile Include="Services\CapabilitiesServiceTest.cs" />
     <Compile Include="Services\OrderBundleServiceTest.cs" />
     <Compile Include="Services\OrderServiceTest.cs" />
