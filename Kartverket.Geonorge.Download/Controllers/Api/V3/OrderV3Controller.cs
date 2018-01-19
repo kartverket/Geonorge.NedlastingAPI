@@ -87,9 +87,19 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             return Ok(ConvertToReceipt(order));
         }
 
+        /// <summary>
+        ///     Updates order with info to send to bundling
+        /// </summary>
+        /// <param name="orderUuid">Uuid for order to update</param>
+        /// <param name="incomingOrder">
+        /// Currently only these fields are updated:
+        /// * email
+        /// * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
+        /// <returns>
+        ///    Http status code 200 if updated ok.
+        /// </returns>
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/order/{orderUuid}")]
-        [ResponseType(typeof(OrderReceiptType))]
         public IHttpActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
         {
             var order = _orderService.Find(orderUuid);
