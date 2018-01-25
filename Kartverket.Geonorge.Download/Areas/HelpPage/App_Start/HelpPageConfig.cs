@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Http;
 using Geonorge.NedlastingApi.V1;
+using Kartverket.Geonorge.Download.Models;
 using V2 = Geonorge.NedlastingApi.V2;
 using V3 = Geonorge.NedlastingApi.V3;
 
@@ -333,12 +334,12 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
 
             V3.OrderReceiptType or_3 = new V3.OrderReceiptType();
             or_3.referenceNumber = "O-123456789";
-            V3.FileType file_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
-            V3.FileType file2_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
-            V3.FileType file3_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
-            V3.FileType file4_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
-            V3.FileType file5_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.gml", downloadUrl = "nedlastbarURI", fileSize = "12345" };
-            V3.FileType file6_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.sos", downloadUrl = "nedlastbarURI", fileSize = "12345" };
+            V3.FileType file_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.gml", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
+            V3.FileType file2_3 = new V3.FileType() { name = "AdministrativeEnheter_02_32.sos", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
+            V3.FileType file3_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.gml", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
+            V3.FileType file4_3 = new V3.FileType() { name = "AdministrativeEnheter_02_33.sos", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
+            V3.FileType file5_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.gml", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
+            V3.FileType file6_3 = new V3.FileType() { name = "AdministrativeEnheter_02_35.sos", downloadUrl = "nedlastbarURI", fileSize = "12345", status = OrderItemStatus.ReadyForDownload.ToString() };
             List<V3.FileType> ftl_3 = new List<V3.FileType>();
             ftl_3.Add(file_3);
             ftl_3.Add(file2_3);
