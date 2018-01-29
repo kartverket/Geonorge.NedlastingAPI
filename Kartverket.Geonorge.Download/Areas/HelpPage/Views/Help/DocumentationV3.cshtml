@@ -16,11 +16,11 @@
     <section class="featured">
         <div class="content-wrapper">
             <p><br />Det er lagt til egenskapen distributedBy i capabilities-kallet for å gi info om etaten som har implementert løsningen. Her skriver man f.eks. NGU.</p>
-                <h3>Støtte for pakking av datasett</h3><p>Gjør det mulig å pakke filene som lastes ned i en zip-fil.<br>Benytt egenskapen supportsDownloadBundling, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-parameters="language=text" data-macro-id="46f09414-18c5-48ab-95c2-3050669b78f1" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
-                    <tbody>
-                        <tr>
-                            <td class="wysiwyg-macro-body">
-                                <pre>{
+            <h3>Støtte for pakking av datasett</h3><p>Gjør det mulig å pakke filene som lastes ned i en zip-fil.<br>Benytt egenskapen supportsDownloadBundling, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-parameters="language=text" data-macro-id="46f09414-18c5-48ab-95c2-3050669b78f1" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
+                <tbody>
+                    <tr>
+                        <td class="wysiwyg-macro-body">
+                            <pre>{
     "supportsProjectionSelection": true,
     "supportsFormatSelection": true,
     "supportsPolygonSelection": false,
@@ -61,14 +61,20 @@
         }
     ]
 }</pre>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><p class="auto-cursor-target"><br>Dersom supportsDownloadBundling er true kan man etter å ha lagt inn bestilling/order kalle på pakketjenesten med OrderUuid man fikk tilbake eks.&nbsp;&nbsp;<span style="color: rgb(80,80,80)">https://nedlasting.geonorge.no/</span>api/download/order/<span style="color: rgb(80,80,80)">d2ae29bd-0692-40de-a173-833afcddfe22</span>/bundle. Når pakken er ferdig produsert sendes det epost til brukeren med link for å laste ned.</p><h3>Tilgjengelige formater for en projeksjon</h3><p>Datamodellen er utvidet slik at man kan beskrive tilgjengelige formater under hver projeksjon, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/codelists/projection/d1422d17-6d95-4ef1-96ab-8af31744dd63">https://nedlasting.geonorge.no/api/codelists/projection/d1422d17-6d95-4ef1-96ab-8af31744dd63</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="1098fbe4-8356-4a76-9983-c91281ecc3d5" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
-                    <tbody>
-                        <tr>
-                            <td class="wysiwyg-macro-body">
-                                <pre>[
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="auto-cursor-target"><br>Dersom capabilities kallet returnerer supportsDownloadBundling lik true kan man etter å ha lagt inn bestilling/order kalle på&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/order/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/order/d2ae29bd-0692-40de-a173-833afcddfe22</a>&nbsp;</span><span style="color: rgb(80,80,80)">for å sende ordren til pakking. <br>Eksempel:&nbsp;</span></p>
+            <table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tbody><tr><td class="wysiwyg-macro-body"><pre>{ "downloadAsBundle": true,"email": "user@email.no" }</pre></td></tr></tbody></table>
+            <p class="auto-cursor-target"><p class="auto-cursor-target">Når pakken er ferdig produsert sendes det epost til brukeren med link for å laste ned. Eksempel på link er da&nbsp;<span style="color: rgb(80, 80, 80);">https://nedlasting.geonorge.no/</span>api/download/order/<span style="color: rgb(80, 80, 80);">d2ae29bd-0692-40de-a173-833afcddfe22</span>/bundle.&nbsp;<br></p>
+            <h3>Tilgjengelige formater for en projeksjon</h3>
+            <p>Datamodellen er utvidet slik at man kan beskrive tilgjengelige formater under hver projeksjon, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/codelists/projection/d1422d17-6d95-4ef1-96ab-8af31744dd63">https://nedlasting.geonorge.no/api/codelists/projection/d1422d17-6d95-4ef1-96ab-8af31744dd63</a></span></p>
+            <table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="1098fbe4-8356-4a76-9983-c91281ecc3d5" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                <tbody>
+                    <tr>
+                        <td class="wysiwyg-macro-body">
+                            <pre>[
     {
         "code": "25832",
         "name": "EUREF89 UTM sone 32, 2d",
@@ -104,14 +110,14 @@
             }
         ]
     }, ....</pre>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><h3>Tilgjengelige projeksjoner for et format</h3><p>Datamodellen er utvidet slik at man kan beskrive tilgjengelige projeksjoner under hvert format, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/codelists/format/d1422d17-6d95-4ef1-96ab-8af31744dd63">https://nedlasting.geonorge.no/api/codelists/format/d1422d17-6d95-4ef1-96ab-8af31744dd63</a></span></p><p class="auto-cursor-target"><br></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="c04383eb-4554-4de2-a886-dc9a79371bdb" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGV9&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
-                    <tbody>
-                        <tr>
-                            <td class="wysiwyg-macro-body">
-                                <pre>[
+                        </td>
+                    </tr>
+                </tbody>
+            </table><h3>Tilgjengelige projeksjoner for et format</h3><p>Datamodellen er utvidet slik at man kan beskrive tilgjengelige projeksjoner under hvert format, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/codelists/format/d1422d17-6d95-4ef1-96ab-8af31744dd63">https://nedlasting.geonorge.no/api/codelists/format/d1422d17-6d95-4ef1-96ab-8af31744dd63</a></span></p><p class="auto-cursor-target"><br></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="c04383eb-4554-4de2-a886-dc9a79371bdb" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGV9&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                <tbody>
+                    <tr>
+                        <td class="wysiwyg-macro-body">
+                            <pre>[
     {
         "name": "FGDB 10.0",
         "projections": [
@@ -162,14 +168,14 @@
             }
         ]
     }, ......</pre>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><h3>Tilgjengelige projeksjoner og format for et område</h3><p>Modellen vil da også vise hvilke projeksjoner og formater som er tilgjengelig for et område.</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="129c6a3e-1010-40ed-afd3-9cb8db6f6b40" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
-                    <tbody>
-                        <tr>
-                            <td class="wysiwyg-macro-body">
-                                <pre>    {
+                        </td>
+                    </tr>
+                </tbody>
+            </table><h3>Tilgjengelige projeksjoner og format for et område</h3><p>Modellen vil da også vise hvilke projeksjoner og formater som er tilgjengelig for et område.</p><table class="wysiwyg-macro" data-macro-name="code" data-macro-parameters="language=text" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-id="129c6a3e-1010-40ed-afd3-9cb8db6f6b40" style="background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2); background-repeat: no-repeat">
+                <tbody>
+                    <tr>
+                        <td class="wysiwyg-macro-body">
+                            <pre>    {
         "type": "landsdekkende",
         "name": "Hele landet",
         "code": "0000",
@@ -203,10 +209,10 @@
                     }
                 ]
             }, ...</pre>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table><p class="auto-cursor-target"><br></p><div contenteditable="false" data-mce-bogus="true" class="synchrony-container synchrony-exclude" style="user-select: none;"><div contenteditable="false" data-mce-bogus="true"></div></div>            
+                        </td>
+                    </tr>
+                </tbody>
+            </table><p class="auto-cursor-target"><br></p><div contenteditable="false" data-mce-bogus="true" class="synchrony-container synchrony-exclude" style="user-select: none;"><div contenteditable="false" data-mce-bogus="true"></div></div>
         </div>
     </section>
 </div>

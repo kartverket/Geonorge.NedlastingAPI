@@ -127,7 +127,6 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var data in areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code).Select(a => new { a.format }).Distinct())
                 {
-                    formats.Add(new FormatType { name = data.format });
                     {
                         var formatProjections = areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code && p.format == data.format).Select(a => new { a.projeksjon }).Distinct();
 
