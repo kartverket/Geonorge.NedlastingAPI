@@ -6,8 +6,10 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Formatting;
+using System.Security.Claims;
 using System.Threading;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -43,6 +45,8 @@ namespace Kartverket.Geonorge.Download
                         .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
             MvcHandler.DisableMvcResponseHeader = true;
+
+            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
         }
 
         protected void Application_Error(Object sender, EventArgs e)
