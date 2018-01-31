@@ -22,6 +22,12 @@ namespace Kartverket.Geonorge.Download.Controllers
             return View("NotFound", model);
         }
 
+        public ActionResult Unauthorized()
+        {
+            Response.StatusCode = 401;
+            return View("Unauthorized");
+        }
+
         protected override void HandleUnknownAction(string actionName)
         {
             var name = GetViewName(ControllerContext,

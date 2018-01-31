@@ -168,5 +168,14 @@ namespace Kartverket.Geonorge.Download.Resources {
                 return ResourceManager.GetString("SearchFor", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Du har ikke tilgang til denne ressursen (HTTP 401).
+        /// </summary>
+        public static string UnauthorizedText {
+            get {
+                return ResourceManager.GetString("UnauthorizedText", resourceCulture);
+            }
+        }
     }
 }

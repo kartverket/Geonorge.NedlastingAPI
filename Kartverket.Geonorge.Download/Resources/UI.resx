@@ -154,4 +154,7 @@
   <data name="SearchFor" xml:space="preserve">
     <value>Søk etter</value>
   </data>
+  <data name="UnauthorizedText" xml:space="preserve">
+    <value>Du har ikke tilgang til denne ressursen (HTTP 401)</value>
+  </data>
 </root>
