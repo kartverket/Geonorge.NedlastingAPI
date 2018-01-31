@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using Geonorge.NedlastingApi.V3;
+using log4net;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public class CapabilitiesService : ICapabilitiesService
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;
 
@@ -29,11 +33,19 @@ namespace Kartverket.Geonorge.Download.Services
                 supportsFormatSelection = dataset.supportsFormatSelection.GetValueOrDefault(),
                 supportsPolygonSelection = dataset.supportsPolygonSelection.GetValueOrDefault(),
                 supportsProjectionSelection = dataset.supportsProjectionSelection.GetValueOrDefault(),
-                supportsDownloadBundling = true,
+                supportsDownloadBundling = IsBundlingEnabled(),
                 mapSelectionLayer = dataset.mapSelectionLayer,
                 distributedBy = ConfigurationManager.AppSettings["DistributedBy"],
                 _links = new LinkCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
+        }
+
+        private bool IsBundlingEnabled()
+        {
+            string configValue = ConfigurationManager.AppSettings["BundlingEnabled"];
+            if (!bool.TryParse(configValue, out bool result))
+                Log.Warn("Invalid configuration variable [BundlingEnabled]. Unable to parse boolean from value ["+ configValue +"]");
+            return result;
         }
 
         public Dataset GetDataset(string metadataUuid)
