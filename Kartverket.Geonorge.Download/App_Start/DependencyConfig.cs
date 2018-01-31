@@ -54,6 +54,7 @@ namespace Kartverket.Geonorge.Download.App_Start
 
         private static void ConfigureInfrastructure(ContainerBuilder builder)
         {
+            builder.RegisterFilterProvider();
             builder.RegisterControllers(typeof(WebApiApplication).Assembly).PropertiesAutowired();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly()).PropertiesAutowired();
             builder.RegisterModule(new AutofacWebTypesModule());

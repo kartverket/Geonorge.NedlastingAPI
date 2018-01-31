@@ -35,6 +35,11 @@ namespace Kartverket.Geonorge.Download.Models
         {
             return _roles.Contains(role);
         }
+
+        public bool IsAuthorizedWith(AuthenticationMethod method)
+        {
+            return AuthenticationMethod == method;
+        }
     }
 
     public enum AuthenticationMethod

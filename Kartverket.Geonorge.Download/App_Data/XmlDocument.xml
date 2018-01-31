@@ -880,6 +880,11 @@
               Looks up a localized string similar to Søk etter.
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Resources.UI.UnauthorizedText">
+            <summary>
+              Looks up a localized string similar to Du har ikke tilgang til denne ressursen (HTTP 401).
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
             <summary>
                 Gets username of the authenticated user. User can be authenticated with SAML or basic auth
