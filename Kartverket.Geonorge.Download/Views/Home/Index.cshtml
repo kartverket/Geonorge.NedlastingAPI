@@ -17,5 +17,20 @@
 
     <p class="lead" style="font-size:18px">Se @Html.ActionLink("dokumentasjon for nedlasting API", "Index", "Help", new { area = "" }, null)</p>
 
-    
+<h2>Versjonshistorikk</h2>
+
+<ul>
+    <li>
+        <p>27.02.2018 - Nytt felt <strong>deliveryNotificationByEmail</strong> (bool) i responsen til /api/capabilities/{uuid}</p>
+        <p>Benyttes til å gi klienten beskjed om epost er påkrevd ved oppretting av ny ordre. Dersom filene som skal leveres allerede er ferdig generert tilbys det ofte en nedlastingslenke direkte. Men for noen datasett kan det hende at filene genereres på forespørsel. I disse tilfellene må brukeren oppgi epost slik at han/hun får beskjed om at bestillingen er klar. Feltet settes til <strong>true</strong> dersom epost må oppgis ved bestilling.</p>
+    </li>
+    <li>
+        <p>19.12.2017 - Versjon 3 av APIet utgitt:
+            <ul>
+                <li>Pakking av ordre</li>
+                <li>Format og projeksjoner har nå en liste med henholdsvis projeksjoner og formater som støttes.</li>
+            </ul>
+        </p>
+    </li>
+</ul>
 
