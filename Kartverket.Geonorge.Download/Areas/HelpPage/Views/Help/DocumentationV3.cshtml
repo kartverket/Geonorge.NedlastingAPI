@@ -15,7 +15,10 @@
 <div id="body" class="help-page">
     <section class="featured">
         <div class="content-wrapper">
-            <p><br />Det er lagt til egenskapen distributedBy i capabilities-kallet for å gi info om etaten som har implementert løsningen. Her skriver man f.eks. NGU.</p>
+            <p>
+                <br />Det er lagt til egenskapen distributedBy i capabilities-kallet for å gi info om etaten som har implementert løsningen. Her skriver man f.eks. NGU.<br />
+                Dersom det er påkrevd at brukeren må oppgi e-post for at datasettet skal kunne leveres settes deliveryNotificationByEmail = true i capabilities-kallet.
+            </p>
             <h3>Støtte for pakking av datasett</h3><p>Gjør det mulig å pakke filene som lastes ned i en zip-fil.<br>Benytt egenskapen supportsDownloadBundling, eks.&nbsp;<span style="color: rgb(80,80,80)"><a href="https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22">https://nedlasting.geonorge.no/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22</a></span></p><table class="wysiwyg-macro" data-macro-name="code" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT" data-macro-parameters="language=text" data-macro-id="46f09414-18c5-48ab-95c2-3050669b78f1" style="background-repeat: no-repeat; background-image: url(/wiki/plugins/servlet/confluence/placeholder/macro-heading?definition=e2NvZGU6bGFuZ3VhZ2U9dGV4dH0&amp;locale=no_NO&amp;version=2)">
                 <tbody>
                     <tr>
@@ -28,6 +31,7 @@
     "mapSelectionLayer": "raster-n250",
     "supportsDownloadBundling": true,
     "distributedBy": "Geonorge",
+    "deliveryNotificationByEmail": true,
     "_links": [
         {
             "href": "https://nedlasting.geonorge.no/api/codelists/projection/d2ae29bd-0692-40de-a173-833afcddfe22",
