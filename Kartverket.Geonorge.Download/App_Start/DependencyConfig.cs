@@ -41,6 +41,7 @@ namespace Kartverket.Geonorge.Download.App_Start
                 .As<IBasicAuthenticationCredentialValidator>();
             builder.RegisterType<BaatAuthentication>().As<IBaatAuthenticationService>();
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
+            builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)

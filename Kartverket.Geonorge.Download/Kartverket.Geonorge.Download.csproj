@@ -51,6 +51,12 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Arkitektum.GIS.Lib.MetadataCSW, Version=1.9.91.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Arkitektum.GIS.Lib.MetadataCSW.1.9.91.0\lib\net40\Arkitektum.GIS.Lib.MetadataCSW.dll</HintPath>
+    </Reference>
+    <Reference Include="Arkitektum.GIS.Lib.SerializeUtil, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Arkitektum.GIS.Lib.SerializeUtil.1.3.0.0\lib\net40\Arkitektum.GIS.Lib.SerializeUtil.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.2.0\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +76,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="GeoNorgeAPI, Version=3.0.42.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoNorgeAPI.3.0.42\lib\net40\GeoNorgeAPI.dll</HintPath>
     </Reference>
     <Reference Include="Kartverket.Geonorge.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.33\lib\net45\Kartverket.Geonorge.Utilities.dll</HintPath>
@@ -248,7 +257,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
+    <Compile Include="Models\UpdateMetadataInformation.cs" />
+    <Compile Include="Services\IUpdateMetadataService.cs" />
     <Compile Include="Controllers\Api\Internal\ManageOrderController.cs" />
+    <Compile Include="Controllers\Api\Internal\MetadataController.cs" />
     <Compile Include="Controllers\Api\V2\CapabilitiesV2Controller.cs" />
     <Compile Include="Controllers\Api\V2\DownloadController.cs" />
     <Compile Include="Controllers\Api\V2\OrderMapper.cs" />
@@ -322,6 +334,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessConstraint.cs" />
     <Compile Include="Models\Api\Internal\UpdateFileStatusRequest.cs" />
+    <Compile Include="Models\Api\Internal\UpdateMetadataRequest.cs" />
     <Compile Include="Models\Api\Internal\UpdateOrderStatusRequest.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\LinkCreator.cs" />
@@ -338,6 +351,7 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\Translations\Culture.cs" />
     <Compile Include="Models\UpdateFileStatusInformation.cs" />
+    <Compile Include="Services\UpdateMetadataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\UI.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -760,6 +774,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Error\Unauthorized.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Metadata\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="settings.default.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="settings.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

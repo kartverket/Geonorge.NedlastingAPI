@@ -488,6 +488,11 @@
             <param name="request">Updated information about a file.</param>
             <returns>HTTP status codes 200 if ok.</returns>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.MetadataController.UpdateMetadata(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest)">
+            <summary>
+                Update metadata
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
             <summary>
                 List datasets
@@ -652,29 +657,6 @@
                 Force HTTPS if request is not from local machine
             </summary>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
-            <summary>
-            Returns true if the language is a right-to-left language. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
-            <summary>
-            Returns true if current language is norwegian. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
-            <summary>
-            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
-            </summary>
-            <param name="name">Culture's name (e.g. en-US)</param>
-            <returns></returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
-            <summary>
-            Returns default culture name which is the first name decalared (e.g. en-US)
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
             <summary>
             Provides updated information about a file.
@@ -698,6 +680,61 @@
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest.Message">
             <summary>
             Optional message, should be provided for errors.
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.Uuid">
+            <summary>
+                The metadata uuid to update
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.Distributions">
+            <summary>
+                The list of distributions
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.Projections">
+            <summary>
+                The list of projections
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.URL">
+            <summary>
+                URL for getting dataset info, default currently https://nedlasting.geonorge.no/api/capabilities/
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.Protocol">
+            <summary>
+                Should be set to: GEONORGE:DOWNLOAD (default)
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.Organization">
+            <summary>
+                Organisation for distribution ex: Kartverket
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.UnitsOfDistribution">
+            <summary>
+                Possible values: fylkesvis, landsfiler, kartbladvis, kommunevis, regional inndeling
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.Formats">
+            <summary>
+                The list of formats
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Format.FormatName">
+            <summary>
+                Name of format ex. : SOSI
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Format.FormatVersion">
+            <summary>
+                Version of format ex. : 4.5
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Projection.EPSGCode">
+            <summary>
+                Projection EPSG code ex: 23032
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateOrderStatusRequest.OrderUuid">
@@ -803,6 +840,58 @@
             Contains message from processing service (currently FME)
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
+            <summary>
+                Gets username of the authenticated user. User can be authenticated with SAML or basic auth
+            </summary>
+            <returns>username of authenticated user or null if not authenticated</returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IBasicAuthenticationCredentialValidator.ValidCredentials(Kartverket.Geonorge.Download.Services.Auth.Credentials)">
+            <summary>
+            Validate credentials received from a http request with basic authentication header
+            </summary>
+            <param name="credentials"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
+            <summary>
+            This service forward a bundle request to the FME bundling service. 
+            All files in an order is bundled together in a zip file. 
+            See Jira #GEOPORTAL-2616 for details.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.OrderService.UpdateOrder(Kartverket.Geonorge.Download.Models.Order,Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+            Updates an order. Currently only these fields are updated:
+            * email
+            * downloadAsBundle
+            </summary>
+            <param name="order"></param>
+            <param name="incomingOrder"></param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
+            <summary>
+            Returns true if the language is a right-to-left language. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
+            <summary>
+            Returns true if current language is norwegian. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
+            <summary>
+            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
+            </summary>
+            <param name="name">Culture's name (e.g. en-US)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
+            <summary>
+            Returns default culture name which is the first name decalared (e.g. en-US)
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Resources.UI">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -884,35 +973,6 @@
             <summary>
               Looks up a localized string similar to Du har ikke tilgang til denne ressursen (HTTP 401).
             </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
-            <summary>
-                Gets username of the authenticated user. User can be authenticated with SAML or basic auth
-            </summary>
-            <returns>username of authenticated user or null if not authenticated</returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IBasicAuthenticationCredentialValidator.ValidCredentials(Kartverket.Geonorge.Download.Services.Auth.Credentials)">
-            <summary>
-            Validate credentials received from a http request with basic authentication header
-            </summary>
-            <param name="credentials"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
-            <summary>
-            This service forward a bundle request to the FME bundling service. 
-            All files in an order is bundled together in a zip file. 
-            See Jira #GEOPORTAL-2616 for details.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Services.OrderService.UpdateOrder(Kartverket.Geonorge.Download.Models.Order,Geonorge.NedlastingApi.V3.OrderType)">
-            <summary>
-            Updates an order. Currently only these fields are updated:
-            * email
-            * downloadAsBundle
-            </summary>
-            <param name="order"></param>
-            <param name="incomingOrder"></param>
         </member>
     </members>
 </doc>
