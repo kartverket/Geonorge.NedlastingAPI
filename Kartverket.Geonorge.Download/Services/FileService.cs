@@ -27,7 +27,8 @@ namespace Kartverket.Geonorge.Download.Services
 
         public Task<File> GetFileAsync(string fileUuid)
         {
-            return _context.FileList.FirstOrDefaultAsync(x => x.Id == Guid.Parse(fileUuid));
+            var fileGuid = Guid.Parse(fileUuid);
+            return _context.FileList.FirstOrDefaultAsync(x => x.Id == fileGuid);
         }
     }
 }
