@@ -71,7 +71,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 return BadRequest(ModelState);
             try
             {
-                if (dataset.Files.Count > 0)
+                if (dataset.filliste.Count > 0)
                 {
                     //Remove old files
                     var deleteSql =
@@ -80,7 +80,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     _dbContext.Database.ExecuteSqlCommand(deleteSql, uuid);
 
                     //Add new files
-                    foreach (var file in dataset.Files)
+                    foreach (var file in dataset.filliste)
                     {
                         Log.Info("Adding file " + file.Filename + " for uuid: " + uuid);
                         _dbContext.FileList.Add(file);
@@ -163,7 +163,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 foreach (var file in filelist)
                 {
                     file.Dataset = null;
-                    dataset.Files.Add(file);
+                    dataset.filliste.Add(file);
                     Log.Info("Adding file for " + uuid + ": " + file.Filename);
                 }
 

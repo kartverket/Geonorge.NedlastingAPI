@@ -42,11 +42,11 @@ namespace Kartverket.Geonorge.Download.Models
         [Column("maxArea")] 
         public int MaxArea { get; set; }
 
-        public virtual ICollection<File> Files { get; set; }
+        public virtual ICollection<File> filliste { get; set; }
 
         public Dataset()
         {
-            Files = new HashSet<File>();
+            filliste = new HashSet<File>();
         }
 
         public bool IsRestricted()
