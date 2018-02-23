@@ -117,7 +117,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             return _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
         }
 
-        private bool IsValidUuid(string input)
+        internal static bool IsValidUuid(string input)
         {
             Guid result;
             return Guid.TryParse(input, out result);
