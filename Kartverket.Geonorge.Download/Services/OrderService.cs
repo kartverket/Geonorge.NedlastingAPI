@@ -70,52 +70,52 @@ namespace Kartverket.Geonorge.Download.Services
             foreach (var orderLine in order.orderLines)
             {
                 var query = _dbContext.FileList.AsExpandable();
-                query = query.Where(f => f.Dataset1.metadataUuid == orderLine.metadataUuid);
+                query = query.Where(f => f.Dataset.metadataUuid == orderLine.metadataUuid);
 
                 if (orderLine.projections != null && orderLine.projections.Any())
                 {
                     var projections = orderLine.projections.Select(p => p.code).ToList();
-                    query = query.Where(p => projections.Contains(p.projeksjon));
+                    query = query.Where(p => projections.Contains(p.Projection));
                 }
 
                 if (orderLine.formats != null && orderLine.formats.Any())
                 {
                     var formats = orderLine.formats.Select(p => p.name).ToList();
-                    query = query.Where(f => formats.Contains(f.format));
+                    query = query.Where(f => formats.Contains(f.Format));
                 }
 
                 if (orderLine.areas != null && orderLine.areas.Any())
                 {
                     var areas = orderLine.areas.Select(a => new {a.code, a.type});
 
-                    var predicate = PredicateBuilder.False<filliste>();
+                    var predicate = PredicateBuilder.False<File>();
                     areas = areas.ToList();
 
                     foreach (var area in areas)
                     {
-                        predicate = predicate.Or(a => a.inndeling == area.type && a.inndelingsverdi == area.code);
+                        predicate = predicate.Or(a => a.Division == area.type && a.DivisionKey == area.code);
                     }
 
                     query = query.Where(predicate);
                 }
 
-                List<filliste> files = query.ToList();
+                List<File> files = query.ToList();
 
-                foreach (filliste item in files)
+                foreach (File item in files)
                 {
                     orderItems.Add(new OrderItem
                     {
-                        DownloadUrl = item.url,
-                        FileName = item.filnavn,
-                        FileUuid = item.id,
-                        Format = item.format,
-                        Area = item.inndelingsverdi,
-                        AreaName = _registerFetcher.GetArea(item.inndeling, item.inndelingsverdi).name,
-                        Projection = item.projeksjon,
-                        ProjectionName =  _registerFetcher.GetProjection(item.projeksjon).name,
+                        DownloadUrl = item.Url,
+                        FileName = item.Filename,
+                        FileUuid = item.Id,
+                        Format = item.Format,
+                        Area = item.DivisionKey,
+                        AreaName = _registerFetcher.GetArea(item.Division, item.DivisionKey).name,
+                        Projection = item.Projection,
+                        ProjectionName =  _registerFetcher.GetProjection(item.Projection).name,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
-                        MetadataName = item.Dataset1.Tittel
+                        MetadataName = item.Dataset.Tittel
                     });
                 }
             }

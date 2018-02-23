@@ -82,7 +82,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     //Add new files
                     foreach (var file in dataset.filliste)
                     {
-                        Log.Info("Adding file " + file.filnavn + " for uuid: " + uuid);
+                        Log.Info("Adding file " + file.Filename + " for uuid: " + uuid);
                         _dbContext.FileList.Add(file);
                     }
                     _dbContext.SaveChanges();
@@ -152,7 +152,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
         [Route("files/{uuid}")]
         [HttpPost]
-        public IHttpActionResult PostFiles(string uuid, HashSet<filliste> filelist)
+        public IHttpActionResult PostFiles(string uuid, HashSet<File> filelist)
         {
             try
             {
@@ -162,9 +162,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 
                 foreach (var file in filelist)
                 {
-                    file.Dataset1 = null;
+                    file.Dataset = null;
                     dataset.filliste.Add(file);
-                    Log.Info("Adding file for " + uuid + ": " + file.filnavn);
+                    Log.Info("Adding file for " + uuid + ": " + file.Filename);
                 }
 
                 _dbContext.SaveChanges();
@@ -222,12 +222,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         ///     Delete file
         /// </summary>
         // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
-        [ResponseType(typeof(filliste))]
+        [ResponseType(typeof(File))]
         [Route("file/{filnavn}")]
         [HttpDelete]
         public IHttpActionResult Deletefilliste(string filnavn)
         {
-            var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+            var fil = _dbContext.FileList.Where(d => d.Filename == filnavn).FirstOrDefault();
             if (fil == null)
                 return NotFound();
             try
@@ -264,7 +264,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             {
                 foreach (var filnavn in filliste)
                 {
-                    var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+                    var fil = _dbContext.FileList.Where(d => d.Filename == filnavn).FirstOrDefault();
                     if (fil == null)
                         return NotFound();
                     Log.Info("Deleting file: " + filnavn);

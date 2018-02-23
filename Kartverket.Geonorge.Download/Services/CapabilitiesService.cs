@@ -59,8 +59,8 @@ namespace Kartverket.Geonorge.Download.Services
         {
 
             var query = (from p in _dbContext.FileList
-                              where p.Dataset1.metadataUuid == metadataUuid
-                              select new { p.projeksjon, p.format }).Distinct().ToList();
+                              where p.Dataset.metadataUuid == metadataUuid
+                              select new { projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             var projectionsQuery = (from p in query
                                     select p.projeksjon).Distinct();
@@ -93,8 +93,8 @@ namespace Kartverket.Geonorge.Download.Services
         public List<AreaType> GetAreas(string metadataUuid)
         {
             var areasQuery = (from p in _dbContext.FileList
-                              where p.Dataset1.metadataUuid == metadataUuid
-                              select new { p.inndeling, p.inndelingsverdi, p.projeksjon, p.format }).Distinct().ToList() ;
+                              where p.Dataset.metadataUuid == metadataUuid
+                              select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList() ;
 
             List<AreaType> areas = new List<AreaType>();
 
@@ -166,8 +166,8 @@ namespace Kartverket.Geonorge.Download.Services
         {
 
             var query = (from p in _dbContext.FileList
-                         where p.Dataset1.metadataUuid == metadataUuid
-                         select new { p.projeksjon, p.format }).Distinct().ToList();
+                         where p.Dataset.metadataUuid == metadataUuid
+                         select new { projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             var formatsQuery = (from p in query
                               select p.format).Distinct();

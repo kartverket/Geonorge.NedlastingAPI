@@ -20,9 +20,9 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             var uuid = "d1422d17-6d95-4ef1-96ab-8af31744dd63";
             var capability = new List<Dataset>();
             var dataset = new Dataset { metadataUuid = uuid };
-            var filListe = new List<filliste>();
-            var file = new filliste { inndeling = "kommune", inndelingsverdi = "0919", projeksjon = "25833", format = "FGDB 10.0" };
-            file.Dataset1 = dataset;
+            var filListe = new List<File>();
+            var file = new File { Division = "kommune", DivisionKey = "0919", Projection = "25833", Format = "FGDB 10.0" };
+            file.Dataset = dataset;
             filListe.Add(file);
             dataset.filliste = filListe;
             capability.Add(dataset);
@@ -57,8 +57,8 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             Mock<DbSet<Dataset>> mockCapabilities = EntityFrameworkMoqHelper
                 .CreateMockForDbSet<Dataset>().SetupForQueryOn(dataset);
 
-            Mock<DbSet<filliste>> mockFileList= EntityFrameworkMoqHelper
-            .CreateMockForDbSet<filliste>().SetupForQueryOn(dataset[0].filliste.ToList());
+            Mock<DbSet<File>> mockFileList= EntityFrameworkMoqHelper
+            .CreateMockForDbSet<File>().SetupForQueryOn(dataset[0].filliste.ToList());
 
             Mock<DownloadContext> mockDbContext = EntityFrameworkMoqHelper
                 .CreateMockForDbContext<DownloadContext>();

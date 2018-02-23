@@ -259,6 +259,7 @@
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />
     <Compile Include="Controllers\Api\Internal\ManageOrderController.cs" />
     <Compile Include="Controllers\Api\Internal\MetadataController.cs" />
@@ -343,7 +344,7 @@
     <Compile Include="Models\DatasetAccessConstraint.cs" />
     <Compile Include="Models\DownloadContext.cs" />
     <Compile Include="Models\DownloadUrlBuilder.cs" />
-    <Compile Include="Models\Filliste.cs" />
+    <Compile Include="Models\File.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Models\MachineAccount.cs" />
     <Compile Include="Models\NotFoundModel.cs" />
