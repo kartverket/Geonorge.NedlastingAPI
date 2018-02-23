@@ -48,5 +48,10 @@ namespace Kartverket.Geonorge.Download.Models
         {
             Files = new HashSet<File>();
         }
+
+        public bool IsRestricted()
+        {
+            return !string.IsNullOrWhiteSpace(AccessConstraint);
+        }
     }
 }

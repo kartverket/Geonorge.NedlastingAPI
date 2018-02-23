@@ -1,25 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Data.Entity;
+using System.Threading.Tasks;
 using Kartverket.Geonorge.Download.Models;
 
 namespace Kartverket.Geonorge.Download.Services
 {
     public interface IFileService
     {
-        Dataset GetDataset(string id);
-        
+        Task<Dataset> GetDatasetAsync(string metadataUuid);
+        Task<File> GetFileAsync(string fileUuid);
     }
+
     public class FileService : IFileService
     {
+        private readonly DownloadContext _context;
 
-
-
-        public Dataset GetDataset(string id)
+        public FileService(DownloadContext context)
         {
-            return null;
+            _context = context;
         }
 
+        public Task<Dataset> GetDatasetAsync(string metadataUuid)
+        {
+            return _context.Capabilities.FirstOrDefaultAsync(x => x.MetadataUuid == metadataUuid);
+        }
+
+        public Task<File> GetFileAsync(string fileUuid)
+        {
+            return _context.FileList.FirstOrDefaultAsync(x => x.Id == Guid.Parse(fileUuid));
+        }
     }
 }

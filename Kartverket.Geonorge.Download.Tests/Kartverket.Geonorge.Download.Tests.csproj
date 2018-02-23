@@ -139,6 +139,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Controllers\Api\AuthenticationServiceMock.cs" />
     <Compile Include="Controllers\Api\Internal\OrderControllerTest.cs" />
     <Compile Include="Controllers\Api\V2\DownloadControllerTest.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadControllerTest.cs" />

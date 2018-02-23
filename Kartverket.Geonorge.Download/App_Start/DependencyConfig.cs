@@ -42,6 +42,7 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<BaatAuthentication>().As<IBaatAuthenticationService>();
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
             builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
+            builder.RegisterType<FileService>().As<IFileService>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)
