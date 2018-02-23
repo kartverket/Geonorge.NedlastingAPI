@@ -29,12 +29,12 @@ namespace Kartverket.Geonorge.Download.Services
 
             return new CapabilitiesType
             {
-                supportsAreaSelection = dataset.supportsAreaSelection.GetValueOrDefault(),
-                supportsFormatSelection = dataset.supportsFormatSelection.GetValueOrDefault(),
-                supportsPolygonSelection = dataset.supportsPolygonSelection.GetValueOrDefault(),
-                supportsProjectionSelection = dataset.supportsProjectionSelection.GetValueOrDefault(),
+                supportsAreaSelection = dataset.SupportsAreaSelection.GetValueOrDefault(),
+                supportsFormatSelection = dataset.SupportsFormatSelection.GetValueOrDefault(),
+                supportsPolygonSelection = dataset.SupportsPolygonSelection.GetValueOrDefault(),
+                supportsProjectionSelection = dataset.SupportsProjectionSelection.GetValueOrDefault(),
                 supportsDownloadBundling = IsBundlingEnabled(),
-                mapSelectionLayer = dataset.mapSelectionLayer,
+                mapSelectionLayer = dataset.MapSelectionLayer,
                 distributedBy = ConfigurationManager.AppSettings["DistributedBy"],
                 _links = new LinkCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
@@ -51,7 +51,7 @@ namespace Kartverket.Geonorge.Download.Services
         public Dataset GetDataset(string metadataUuid)
         {
             return (from c in _dbContext.Capabilities
-                where c.metadataUuid == metadataUuid
+                where c.MetadataUuid == metadataUuid
                 select c).FirstOrDefault();
         }
 
@@ -59,7 +59,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
 
             var query = (from p in _dbContext.FileList
-                              where p.Dataset.metadataUuid == metadataUuid
+                              where p.Dataset.MetadataUuid == metadataUuid
                               select new { projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             var projectionsQuery = (from p in query
@@ -93,7 +93,7 @@ namespace Kartverket.Geonorge.Download.Services
         public List<AreaType> GetAreas(string metadataUuid)
         {
             var areasQuery = (from p in _dbContext.FileList
-                              where p.Dataset.metadataUuid == metadataUuid
+                              where p.Dataset.MetadataUuid == metadataUuid
                               select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList() ;
 
             List<AreaType> areas = new List<AreaType>();
@@ -166,7 +166,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
 
             var query = (from p in _dbContext.FileList
-                         where p.Dataset.metadataUuid == metadataUuid
+                         where p.Dataset.MetadataUuid == metadataUuid
                          select new { projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             var formatsQuery = (from p in query

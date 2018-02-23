@@ -37,9 +37,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         {
             return _dbContext.Capabilities.Select(d => new DatasetViewModel
             {
-                ID = d.ID,
-                metadataUuid = d.metadataUuid,
-                Tittel = d.Tittel,
+                ID = d.Id,
+                metadataUuid = d.MetadataUuid,
+                Tittel = d.Title,
                 AccessConstraint = d.AccessConstraint
             }).ToList();
         }
@@ -52,7 +52,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [Route("{uuid:guid}")]
         public IHttpActionResult GetDataset(string uuid)
         {
-            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
                 return NotFound();
 
@@ -71,7 +71,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 return BadRequest(ModelState);
             try
             {
-                if (dataset.filliste.Count > 0)
+                if (dataset.Files.Count > 0)
                 {
                     //Remove old files
                     var deleteSql =
@@ -80,7 +80,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     _dbContext.Database.ExecuteSqlCommand(deleteSql, uuid);
 
                     //Add new files
-                    foreach (var file in dataset.filliste)
+                    foreach (var file in dataset.Files)
                     {
                         Log.Info("Adding file " + file.Filename + " for uuid: " + uuid);
                         _dbContext.FileList.Add(file);
@@ -94,7 +94,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DatasetExists(dataset.ID))
+                if (!DatasetExists(dataset.Id))
                     return NotFound();
                 throw;
             }
@@ -127,7 +127,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             try
             {
                 _dbContext.Capabilities.Add(dataset);
-                Log.Info("Adding new dataset with uuid: " + dataset.metadataUuid);
+                Log.Info("Adding new dataset with uuid: " + dataset.MetadataUuid);
                 _dbContext.SaveChanges();
             }
             catch (DbEntityValidationException ex)
@@ -156,14 +156,14 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         {
             try
             {
-                var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+                var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
                 if (dataset == null)
                     return NotFound();
 
                 foreach (var file in filelist)
                 {
                     file.Dataset = null;
-                    dataset.filliste.Add(file);
+                    dataset.Files.Add(file);
                     Log.Info("Adding file for " + uuid + ": " + file.Filename);
                 }
 
@@ -193,7 +193,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [HttpDelete]
         public IHttpActionResult DeleteDataset(string uuid)
         {
-            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
                 return NotFound();
             try
@@ -297,7 +297,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 
         private bool DatasetExists(int id)
         {
-            return _dbContext.Capabilities.Count(e => e.ID == id) > 0;
+            return _dbContext.Capabilities.Count(e => e.Id == id) > 0;
         }
     }
 

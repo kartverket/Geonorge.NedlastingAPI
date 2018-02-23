@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Hosting;
 using System.Web.Http.Results;
+using Castle.Core.Configuration;
 using FluentAssertions;
 using Kartverket.Geonorge.Download.Controllers.Api.V2;
 using Kartverket.Geonorge.Download.Models;
@@ -97,6 +98,8 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         [Fact]
         public void ShouldRedirectToLoginPageWhenUserIsAccessingRestrictedDatasetAndNotLoggedIn()
         {
+            ConfigurationManager.AppSettings["DownloadUrl"] = "https://nedlasting.geonorge.no";
+
             var orderServiceMock = CreateOrderServiceMock(AccessConstraint.NorgeDigitalRestricted).Object;
             var downloadController = CreateDownloadController(orderServiceMock, null, AuthenticatedUserIs(null));
             var result = downloadController.GetFile(OrderUuid, FileId) as RedirectResult;

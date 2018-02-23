@@ -70,7 +70,7 @@ namespace Kartverket.Geonorge.Download.Services
             foreach (var orderLine in order.orderLines)
             {
                 var query = _dbContext.FileList.AsExpandable();
-                query = query.Where(f => f.Dataset.metadataUuid == orderLine.metadataUuid);
+                query = query.Where(f => f.Dataset.MetadataUuid == orderLine.metadataUuid);
 
                 if (orderLine.projections != null && orderLine.projections.Any())
                 {
@@ -115,7 +115,7 @@ namespace Kartverket.Geonorge.Download.Services
                         ProjectionName =  _registerFetcher.GetProjection(item.Projection).name,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
-                        MetadataName = item.Dataset.Tittel
+                        MetadataName = item.Dataset.Title
                     });
                 }
             }
@@ -176,9 +176,9 @@ namespace Kartverket.Geonorge.Download.Services
             List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
 
             List<DatasetAccessConstraint> accessConstraints = _dbContext.Capabilities
-                .Where(d => distinctMetadataUuids.Contains(d.metadataUuid) && d.AccessConstraint != null)
+                .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && d.AccessConstraint != null)
                 .Select(d => new DatasetAccessConstraint() {
-                    MetadataUuid = d.metadataUuid,
+                    MetadataUuid = d.MetadataUuid,
                     AccessConstraint = new AccessConstraint() { Constraint = d.AccessConstraint}
                     })
                 .ToList();
