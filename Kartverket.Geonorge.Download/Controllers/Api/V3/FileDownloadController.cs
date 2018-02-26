@@ -24,6 +24,13 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             _downloadService = downloadService;
         }
 
+        /// <summary>
+        /// Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
+        /// Restricted files are secured with BAAT-authentication (SAML) and local machine accounts (Basic authentication)
+        /// </summary>
+        /// <param name="datasetUuid">metadata uuid of the dataset</param>
+        /// <param name="fileUuid">the file uuid</param>
+        /// <returns></returns>
         [Route("api/download/file/{datasetUuid}/{fileUuid}")]
         public async Task<IHttpActionResult> GetFile(string datasetUuid, string fileUuid)
         {
