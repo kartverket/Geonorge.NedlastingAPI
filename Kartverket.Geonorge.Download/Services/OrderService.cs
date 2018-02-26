@@ -35,12 +35,14 @@ namespace Kartverket.Geonorge.Download.Services
 
         public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
         {
-            Log.Debug($"Creating order for email={incomingOrder.email}, username={authenticatedUser.Username}");
             var order = new Order
             {
                 email = incomingOrder.email,
-                username = authenticatedUser.UsernameForStorage()
             };
+
+            if (authenticatedUser != null)
+                order.username = authenticatedUser.UsernameForStorage();
+
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
             List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
             order.AddOrderItems(clippableOrderItems);

@@ -16,12 +16,12 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
         public AuthenticatedUser GetAuthenticatedUsername(HttpRequestMessage requestMessage)
         {
-            string username = null;
             var credentials = GetCredentials(requestMessage);
-            if (credentials != null && Authenticate(credentials))
-                username = credentials.Username;
 
-            return new AuthenticatedUser(username, AuthenticationMethod.Basic);
+            if (credentials != null && Authenticate(credentials))
+                return new AuthenticatedUser(credentials.Username, AuthenticationMethod.Basic);
+
+            return null;
         }
 
         private bool Authenticate(Credentials credentials)

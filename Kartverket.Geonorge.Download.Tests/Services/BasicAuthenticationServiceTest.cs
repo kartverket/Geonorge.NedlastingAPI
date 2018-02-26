@@ -22,5 +22,12 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             AuthenticatedUser authenticatedUser = new BasicAuthenticationService(credentialValidatorMock.Object).GetAuthenticatedUsername(httpRequestMessage);
             authenticatedUser.Username.Should().Be("admin");
         }
+
+        [Fact]
+        public void ShouldReturnNullWhenUserIsNotAuthenticated()
+        {
+            AuthenticatedUser authenticatedUser = new BasicAuthenticationService(null).GetAuthenticatedUsername(new HttpRequestMessage());
+            authenticatedUser.Should().BeNull();
+        }
     }
 }
