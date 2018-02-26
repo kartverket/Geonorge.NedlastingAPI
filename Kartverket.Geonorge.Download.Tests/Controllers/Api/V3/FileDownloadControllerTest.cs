@@ -125,13 +125,13 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
         private void SetupFileServiceMockToDeliverRestrictedDatasetAndFile()
         {
             _fileServiceMock.Setup(f => f.GetDatasetAsync(_datasetUuid)).ReturnsAsync(CreateRestrictedDataset());
-            _fileServiceMock.Setup(f => f.GetFileAsync(_fileUuid)).ReturnsAsync(new File());
+            _fileServiceMock.Setup(f => f.GetFileAsync(_fileUuid, _datasetUuid)).ReturnsAsync(new File());
         }
 
         private void SetupFileServiceMockToDeliverOpenDatasetAndFile()
         {
             _fileServiceMock.Setup(f => f.GetDatasetAsync(_datasetUuid)).ReturnsAsync(new Dataset());
-            _fileServiceMock.Setup(f => f.GetFileAsync(_fileUuid)).ReturnsAsync(new File());
+            _fileServiceMock.Setup(f => f.GetFileAsync(_fileUuid, _datasetUuid)).ReturnsAsync(new File());
         }
 
         private static Dataset CreateRestrictedDataset()
