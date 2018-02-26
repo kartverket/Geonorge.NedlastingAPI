@@ -1,13 +1,17 @@
 ﻿@model IEnumerable<Kartverket.Geonorge.Download.Models.MachineAccount>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Konfigurasjon av lokale påloggingskontoer";
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    Kontoene som er registrert her kan benyttes til å laste ned datasett som er "Norge digitalt begrenset" ved hjelp av Basic Authentication. Alle API-metoder i Nedlastingsløsningen vil kunne benyttes ved hjelp av disse påloggingsdetaljene.
+    Vær oppmerksom på å benytte en sikker kommunikasjonskanal for å distribuere passord til brukeren.
+</p>
+<p>
+    @Html.ActionLink("Opprett ny konto", "Create")
 </p>
 <table class="table">
     <tr>
