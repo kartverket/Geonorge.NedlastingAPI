@@ -71,15 +71,24 @@ namespace Kartverket.Geonorge.Download.Services
 
             List<SimpleDistribution> distributionFormatsUpdated = new List<SimpleDistribution>();
 
-            foreach (var distribution in distributionFormats)
+            if (HasGeonorgeDownload(metadataInfo.Distributions))
             {
-                if (distribution.Protocol != "GEONORGE:DOWNLOAD")
+
+                foreach (var distribution in distributionFormats)
                 {
-                    distributionFormatsUpdated.Add(distribution);
+                    if (distribution.Protocol != "GEONORGE:DOWNLOAD")
+                    {
+                        distributionFormatsUpdated.Add(distribution);
+                    }
                 }
+
+            }
+            else
+            {
+                distributionFormatsUpdated = distributionFormats;
             }
 
-            distributionFormatsUpdated.AddRange(metadataInfo.Distributions);
+            distributionFormatsUpdated.InsertRange(0, metadataInfo.Distributions);
 
             simpleMetadata.DistributionsFormats = distributionFormatsUpdated;
             simpleMetadata.DistributionDetails = new SimpleDistributionDetails
@@ -94,6 +103,18 @@ namespace Kartverket.Geonorge.Download.Services
 
             api.MetadataUpdate(simpleMetadata.GetMetadata(), CreateAdditionalHeadersWithUsername(geonorgeUsername, "true"));
             Log.Info($"Metadata updated for uuid: {metadataInfo.Uuid}");
+        }
+
+        private bool HasGeonorgeDownload(List<SimpleDistribution> distributions)
+        {
+            for (int i = 0; i < distributions.Count; i++)
+            {
+                if (distributions[i].Protocol == "GEONORGE:DOWNLOAD")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void LogEventsDebug(string log)
