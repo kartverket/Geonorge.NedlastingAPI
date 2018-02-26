@@ -840,6 +840,33 @@
             Contains message from processing service (currently FME)
             </summary>
         </member>
+        <member name="T:Kartverket.Geonorge.Download.Services.FileService">
+            <summary>
+                Basic file services on dataset and file objects.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.FileService.GetDatasetAsync(System.String)">
+            <summary>
+                Retrieve a dataset based on metadata uuid.
+            </summary>
+            <param name="metadataUuid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.FileService.GetFileAsync(System.String)">
+            <summary>
+                Retreive a file based on uuid.
+            </summary>
+            <param name="fileUuid"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.FileService.GetFileAsync(System.String,System.String)">
+            <summary>
+                Retrieve a file based on uuid. Checks that the file belongs to the given dataset referenced by the metadata uuid.
+            </summary>
+            <param name="fileUuid"></param>
+            <param name="metadataUuid"></param>
+            <returns>Returns null if not found or if file does not belong to the given dataset</returns>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
             <summary>
                 Gets username of the authenticated user. User can be authenticated with SAML or basic auth

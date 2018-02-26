@@ -37,7 +37,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (dataset == null)
                 return NotFound();
 
-            File file = await _fileService.GetFileAsync(fileUuid);
+            File file = await _fileService.GetFileAsync(fileUuid, datasetUuid);
             if (file == null)
                 return NotFound();
 
