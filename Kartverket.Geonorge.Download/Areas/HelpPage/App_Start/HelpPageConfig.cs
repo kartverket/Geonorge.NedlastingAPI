@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Http;
 using Geonorge.NedlastingApi.V1;
 using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Models.Api.Internal;
 using V2 = Geonorge.NedlastingApi.V2;
 using V3 = Geonorge.NedlastingApi.V3;
 
@@ -355,6 +356,23 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             canDownloadRequestType_3.coordinateSystem = "32633";
 
 
+            UpdateMetadataRequest metadata = new UpdateMetadataRequest();
+            metadata.Uuid = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b";
+            metadata.Projections = new List<Projection> { new Projection { EPSGCode = "25833" }, new Projection { EPSGCode = "25832" } };
+            var distributions = new List<Distribution>();
+            var distribution = new Distribution();
+            distribution.URL = "https://nedlasting.geonorge.no/api/capabilities/";
+            distribution.Protocol = "GEONORGE:DOWNLOAD";
+            distribution.Organization = "Kartverket";
+            distribution.UnitsOfDistribution = "fylkesvis, landsfiler, kommunevis";
+            var formats = new List<Format>();
+            formats.Add(new Format { FormatName = "SOSI", FormatVersion = "4.5" });
+            formats.Add(new Format { FormatName = "GML", FormatVersion = "3.2.1" });
+            distribution.Formats = formats;
+            distributions.Add(distribution);
+            metadata.Distributions = distributions;
+
+
 
             config.SetSampleObjects(new Dictionary<Type, object>
             {
@@ -377,7 +395,8 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
                 {typeof(List<FormatType>),f },
                 {typeof(List<V2.FormatType>),f_2 },
                 {typeof(List<V3.FormatType>),f_3 },
-                {typeof(V3.CanDownloadRequestType),canDownloadRequestType_3 }
+                {typeof(V3.CanDownloadRequestType),canDownloadRequestType_3 },
+                {typeof(UpdateMetadataRequest),metadata }
             });
 
 

@@ -105,17 +105,17 @@ namespace Kartverket.Geonorge.Download.Services
 
         private string GetClipperServiceUrl(string metadataUuid)
         {
-            return GetDataset(metadataUuid)?.fmeklippeUrl;
+            return GetDataset(metadataUuid)?.FmeClippingUrl;
         }
 
         private string GetMetadataName(string metadataUuid)
         {
-            return GetDataset(metadataUuid)?.Tittel;
+            return GetDataset(metadataUuid)?.Title;
         }
 
         private Dataset GetDataset(string metadataUuid)
         {
-            return _dbContext.Capabilities.FirstOrDefault(d => d.metadataUuid == metadataUuid);
+            return _dbContext.Capabilities.FirstOrDefault(d => d.MetadataUuid == metadataUuid);
         }
     }
 }

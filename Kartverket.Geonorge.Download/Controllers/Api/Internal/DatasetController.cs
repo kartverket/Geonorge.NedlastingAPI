@@ -37,9 +37,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         {
             return _dbContext.Capabilities.Select(d => new DatasetViewModel
             {
-                ID = d.ID,
-                metadataUuid = d.metadataUuid,
-                Tittel = d.Tittel,
+                ID = d.Id,
+                metadataUuid = d.MetadataUuid,
+                Tittel = d.Title,
                 AccessConstraint = d.AccessConstraint
             }).ToList();
         }
@@ -52,7 +52,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [Route("{uuid:guid}")]
         public IHttpActionResult GetDataset(string uuid)
         {
-            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
                 return NotFound();
 
@@ -82,7 +82,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                     //Add new files
                     foreach (var file in dataset.filliste)
                     {
-                        Log.Info("Adding file " + file.filnavn + " for uuid: " + uuid);
+                        Log.Info("Adding file " + file.Filename + " for uuid: " + uuid);
                         _dbContext.FileList.Add(file);
                     }
                     _dbContext.SaveChanges();
@@ -94,7 +94,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DatasetExists(dataset.ID))
+                if (!DatasetExists(dataset.Id))
                     return NotFound();
                 throw;
             }
@@ -127,7 +127,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             try
             {
                 _dbContext.Capabilities.Add(dataset);
-                Log.Info("Adding new dataset with uuid: " + dataset.metadataUuid);
+                Log.Info("Adding new dataset with uuid: " + dataset.MetadataUuid);
                 _dbContext.SaveChanges();
             }
             catch (DbEntityValidationException ex)
@@ -152,19 +152,19 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
         [Route("files/{uuid}")]
         [HttpPost]
-        public IHttpActionResult PostFiles(string uuid, HashSet<filliste> filelist)
+        public IHttpActionResult PostFiles(string uuid, HashSet<File> filelist)
         {
             try
             {
-                var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+                var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
                 if (dataset == null)
                     return NotFound();
 
                 foreach (var file in filelist)
                 {
-                    file.Dataset1 = null;
+                    file.Dataset = null;
                     dataset.filliste.Add(file);
-                    Log.Info("Adding file for " + uuid + ": " + file.filnavn);
+                    Log.Info("Adding file for " + uuid + ": " + file.Filename);
                 }
 
                 _dbContext.SaveChanges();
@@ -193,7 +193,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         [HttpDelete]
         public IHttpActionResult DeleteDataset(string uuid)
         {
-            var dataset = _dbContext.Capabilities.Where(d => d.metadataUuid == uuid).FirstOrDefault();
+            var dataset = _dbContext.Capabilities.Where(d => d.MetadataUuid == uuid).FirstOrDefault();
             if (dataset == null)
                 return NotFound();
             try
@@ -222,12 +222,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         ///     Delete file
         /// </summary>
         // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
-        [ResponseType(typeof(filliste))]
+        [ResponseType(typeof(File))]
         [Route("file/{filnavn}")]
         [HttpDelete]
         public IHttpActionResult Deletefilliste(string filnavn)
         {
-            var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+            var fil = _dbContext.FileList.Where(d => d.Filename == filnavn).FirstOrDefault();
             if (fil == null)
                 return NotFound();
             try
@@ -264,7 +264,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             {
                 foreach (var filnavn in filliste)
                 {
-                    var fil = _dbContext.FileList.Where(d => d.filnavn == filnavn).FirstOrDefault();
+                    var fil = _dbContext.FileList.Where(d => d.Filename == filnavn).FirstOrDefault();
                     if (fil == null)
                         return NotFound();
                     Log.Info("Deleting file: " + filnavn);
@@ -297,7 +297,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 
         private bool DatasetExists(int id)
         {
-            return _dbContext.Capabilities.Count(e => e.ID == id) > 0;
+            return _dbContext.Capabilities.Count(e => e.Id == id) > 0;
         }
     }
 

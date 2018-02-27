@@ -64,20 +64,12 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
             return orderServiceMock;
         }
 
-        private IAuthenticationService AuthenticatedUserIs(string username)
-        {
-            var mock = new Mock<IAuthenticationService>();
-            if (!string.IsNullOrEmpty(username))
-                mock.Setup(m => m.GetAuthenticatedUser(It.IsAny<HttpRequestMessage>()))
-                    .Returns(new AuthenticatedUser(username, AuthenticationMethod.Baat));
-
-            return mock.Object;
-        }
-
         private static DownloadController CreateDownloadController(IOrderService orderServiceMock,
-            IDownloadService downloadServiceMock, IAuthenticationService authenticationMock)
+            IDownloadService downloadServiceMock, string authenticatedUsername = null)
         {
-            var downloadController = new DownloadController(orderServiceMock, downloadServiceMock, authenticationMock);
+            IAuthenticationService authenticationService = AuthenticationServiceMock.GetServiceWithAuthenticatedUser(authenticatedUsername);
+
+            var downloadController = new DownloadController(orderServiceMock, downloadServiceMock, authenticationService);
             // these lines are needed to use the Content-method inside the controller
             downloadController.Request = new HttpRequestMessage();
             downloadController.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
@@ -88,7 +80,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         public void ShouldRedirectToDownloadUrlWhenDatasetIsOpen()
         {
             var downloadController =
-                CreateDownloadController(CreateOrderServiceMock().Object, null, AuthenticatedUserIs(null));
+                CreateDownloadController(CreateOrderServiceMock().Object, null);
             var result = downloadController.GetFile(OrderUuid, FileId) as RedirectResult;
             result.Should().NotBeNull();
             result?.Location.ToString().Should().Be(DownloadUrl);
@@ -97,8 +89,10 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         [Fact]
         public void ShouldRedirectToLoginPageWhenUserIsAccessingRestrictedDatasetAndNotLoggedIn()
         {
+            ConfigurationManager.AppSettings["DownloadUrl"] = "https://nedlasting.geonorge.no";
+
             var orderServiceMock = CreateOrderServiceMock(AccessConstraint.NorgeDigitalRestricted).Object;
-            var downloadController = CreateDownloadController(orderServiceMock, null, AuthenticatedUserIs(null));
+            var downloadController = CreateDownloadController(orderServiceMock, null);
             var result = downloadController.GetFile(OrderUuid, FileId) as RedirectResult;
             result.Should().NotBeNull();
             result?.Location.ToString().Should()
@@ -110,7 +104,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         public void ShouldReturnBadRequestWhenFileIsNotAnUuid()
         {
             var downloadController =
-                CreateDownloadController(CreateOrderServiceMock().Object, null, AuthenticatedUserIs(null));
+                CreateDownloadController(CreateOrderServiceMock().Object, null);
             var result = downloadController.GetFile(OrderUuid, "") as BadRequestErrorMessageResult;
             result.Should().NotBeNull();
             result?.Message.Should().Contain("fileId");
@@ -120,7 +114,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         public void ShouldReturnBadRequestWhenOrderUuidIsNotAnUuid()
         {
             var downloadController =
-                CreateDownloadController(CreateOrderServiceMock().Object, null, AuthenticatedUserIs(null));
+                CreateDownloadController(CreateOrderServiceMock().Object, null);
             var result = downloadController.GetFile("", FileId) as BadRequestErrorMessageResult;
             result.Should().NotBeNull();
             result?.Message.Should().Contain("orderUuid");
@@ -131,7 +125,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         {
             var orderServiceMock = CreateOrderServiceMock(AccessConstraint.NorgeDigitalRestricted).Object;
             var downloadController =
-                CreateDownloadController(orderServiceMock, null, AuthenticatedUserIs("anotherUsername"));
+                CreateDownloadController(orderServiceMock, null, "anotherUsername");
             var result = downloadController.GetFile(OrderUuid, FileId);
 
             var response = result.ExecuteAsync(CancellationToken.None).Result;
@@ -141,8 +135,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         [Fact]
         public void ShouldReturnNotFoundWhenFileIdDoesNotExist()
         {
-            var downloadController = CreateDownloadController(CreateOrderServiceMock().Object, null,
-                AuthenticatedUserIs(OrderUsername));
+            var downloadController = CreateDownloadController(CreateOrderServiceMock().Object, null, OrderUsername);
             var result = downloadController.GetFile(OrderUuid, NonExistingFileId) as NotFoundResult;
             result.Should().NotBeNull();
         }
@@ -150,8 +143,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         [Fact]
         public void ShouldReturnNotFoundWhenOrderDoesNotExist()
         {
-            var downloadController =
-                new DownloadController(new Mock<IOrderService>().Object, null, AuthenticatedUserIs(null));
+            var downloadController = CreateDownloadController(new Mock<IOrderService>().Object, null);
             var result = downloadController.GetFile(NonExistingOrderUuid, NonExistingFileId) as NotFoundResult;
             result.Should().NotBeNull();
         }
@@ -160,7 +152,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
         public void ShouldReturnNotFoundWhenOrderItemIsNotReadyToBeDownloaded()
         {
             var orderService = CreateOrderServiceMock(orderItemStatus: OrderItemStatus.WaitingForProcessing).Object;
-            var downloadController = new DownloadController(orderService, null, AuthenticatedUserIs(OrderUsername));
+            var downloadController = CreateDownloadController(orderService, null, OrderUsername);
             var result = downloadController.GetFile(OrderUuid, FileId) as NotFoundResult;
             result.Should().NotBeNull();
         }
@@ -176,8 +168,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V2
             var httpResponse = new HttpResponse(stringWriter);
             downloadServiceMock.Setup(d => d.CreateResponseFromRemoteFile(It.IsAny<string>())).Returns(httpResponse);
 
-            var downloadController = CreateDownloadController(orderService, downloadServiceMock.Object,
-                AuthenticatedUserIs(OrderUsername));
+            var downloadController = CreateDownloadController(orderService, downloadServiceMock.Object, OrderUsername);
 
             var result = downloadController.GetFile(OrderUuid, FileId);
 

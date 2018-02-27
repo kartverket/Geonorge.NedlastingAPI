@@ -10,7 +10,7 @@ namespace Kartverket.Geonorge.Download.Models
         }
 
         public virtual DbSet<Dataset> Capabilities { get; set; }
-        public virtual DbSet<filliste> FileList { get; set; }
+        public virtual DbSet<File> FileList { get; set; }
         public virtual DbSet<Order> OrderDownloads { get; set; }
 
         public virtual DbSet<OrderItem> OrderItems { get; set; }
