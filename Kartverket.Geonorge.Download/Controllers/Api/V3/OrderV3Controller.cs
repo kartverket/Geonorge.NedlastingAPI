@@ -82,7 +82,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            if (!order.BelongsToUser(GetAuthenticatedUser()))
+            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(GetAuthenticatedUser()))
                 return Unauthorized();
 
             return Ok(ConvertToReceipt(order));
@@ -103,24 +103,24 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [System.Web.Http.Route("api/order/{orderUuid}")]
         public IHttpActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
         {
-            var order = _orderService.Find(orderUuid);
-            if (order == null)
-                return NotFound();
-
-            if (!order.BelongsToUser(GetAuthenticatedUser()))
-                return Unauthorized();
             try
             {
+                Order order = _orderService.Find(orderUuid);
+                if (order == null)
+                    return NotFound();
+
+                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(GetAuthenticatedUser()))
+                    return Unauthorized();
+            
                 _orderService.UpdateOrder(order, incomingOrder);
+
+                return Ok(ConvertToReceipt(order));
             }
             catch (Exception e)
             {
                 Log.Error("Error while updating order.", e);
                 return InternalServerError(e);
             }
-            
-
-            return Ok(ConvertToReceipt(order));
         }
 
         private AuthenticatedUser GetAuthenticatedUser()
