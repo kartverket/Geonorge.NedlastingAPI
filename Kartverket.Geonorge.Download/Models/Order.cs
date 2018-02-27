@@ -105,7 +105,7 @@ namespace Kartverket.Geonorge.Download.Models
 
         public bool BelongsToUser(AuthenticatedUser authenticatedUser)
         {
-            return BelongsToUser(authenticatedUser.UsernameForStorage());
+            return authenticatedUser != null && BelongsToUser(authenticatedUser.UsernameForStorage());
         }
 
         public bool ContainsRestrictedDatasets()
