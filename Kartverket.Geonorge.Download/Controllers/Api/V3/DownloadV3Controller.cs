@@ -123,7 +123,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             return Guid.TryParse(input, out result);
         }
 
-        private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
+        public static string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
         {
             var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
             var server = ConfigurationManager.AppSettings["DownloadUrl"];

@@ -1,7 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
+using System.Web.Mvc;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Download.Services.Auth;
@@ -31,7 +37,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         /// <param name="datasetUuid">metadata uuid of the dataset</param>
         /// <param name="fileUuid">the file uuid</param>
         /// <returns></returns>
-        [Route("api/download/file/{datasetUuid}/{fileUuid}")]
+        [System.Web.Http.Route("api/download/file/{datasetUuid}/{fileUuid}")]
         public async Task<IHttpActionResult> GetFile(string datasetUuid, string fileUuid)
         {
             if (!DownloadV3Controller.IsValidUuid(datasetUuid))
@@ -52,7 +58,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             var isRestrictedDataset = dataset.IsRestricted();
             if (isRestrictedDataset && !userIsLoggedIn)
             {
-                Log.Info($"Access denied to [file={file.Filename}], dataset is restricted and user must be logged in.");
+                Log.Info($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user must be logged in.");
+
+                if (Request.Headers.Accept.First().MediaType.Equals("text/html")) // be kind to browsers and redirect to login page
+                    return Redirect(DownloadV3Controller.UrlToAuthenticationPageWithRedirectToDownloadUrl("/api/download/file/" + datasetUuid + "/" + fileUuid));
+
                 return StatusCode(HttpStatusCode.Forbidden);
             }
 
