@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using EntityFramework.MoqHelper;
 using FluentAssertions;
@@ -19,13 +18,13 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         {
             var uuid = "d1422d17-6d95-4ef1-96ab-8af31744dd63";
             var capability = new List<Dataset>();
-            var dataset = new Dataset { metadataUuid = uuid };
-            var filListe = new List<filliste>();
-            var file = new filliste { inndeling = "kommune", inndelingsverdi = "0919", projeksjon = "25833", format = "FGDB 10.0" };
-            file.Dataset1 = dataset;
-            filListe.Add(file);
-            dataset.filliste = filListe;
+            var dataset = new Dataset { MetadataUuid = uuid }; 
+            var filListe = new List<File>(); 
+            var file = new File { Division = "kommune", DivisionKey = "0919", Projection = "25833", Format = "FGDB 10.0" }; 
+            file.Dataset = dataset;
+            filListe.Add(file); 
             capability.Add(dataset);
+            dataset.filliste = filListe; 
 
             var capabilitiesService = CreateCapabilitiesService(capability);
 
@@ -56,9 +55,6 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         {
             Mock<DbSet<Dataset>> mockCapabilities = EntityFrameworkMoqHelper
                 .CreateMockForDbSet<Dataset>().SetupForQueryOn(dataset);
-
-            Mock<DbSet<filliste>> mockFileList= EntityFrameworkMoqHelper
-            .CreateMockForDbSet<filliste>().SetupForQueryOn(dataset[0].filliste.ToList());
 
             Mock<DbSet<File>> mockFileList= EntityFrameworkMoqHelper
             .CreateMockForDbSet<File>().SetupForQueryOn(dataset[0].filliste.ToList());
