@@ -147,6 +147,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
             var controller = new FileDownloadController(_fileServiceMock.Object, _authenticationServiceMock.Object, _downloadServiceMock.Object);
             // these lines are needed to use the Context inside the controller
             controller.Request = new HttpRequestMessage();
+            controller.Request.Headers.Add("Accept", "text/plain");
             controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
             controller.Configuration = new HttpConfiguration();
             return controller;
