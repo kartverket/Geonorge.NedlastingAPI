@@ -61,7 +61,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var file = await GetFileAsync(fileUuid);
 
-            if (file.Dataset.MetadataUuid != metadataUuid)
+            if (file?.Dataset.MetadataUuid != metadataUuid)
             {
                 Log.Info(
                     $"Requested file does not belong to requested dataset. [fileUuid={fileUuid}] [metadataUuid={metadataUuid}]");
