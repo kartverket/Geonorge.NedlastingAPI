@@ -165,3 +165,6 @@ $RECYCLE.BIN/
 
 # .vs folder
 .vs
+
+# npm packages 
+node_modules/
