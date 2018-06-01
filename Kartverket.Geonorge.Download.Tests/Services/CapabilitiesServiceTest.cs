@@ -18,13 +18,13 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         {
             var uuid = "d1422d17-6d95-4ef1-96ab-8af31744dd63";
             var capability = new List<Dataset>();
-            var dataset = new Dataset { MetadataUuid = uuid }; 
-            var filListe = new List<File>(); 
-            var file = new File { Division = "kommune", DivisionKey = "0919", Projection = "25833", Format = "FGDB 10.0" }; 
+            var dataset = new Dataset { MetadataUuid = uuid };
+            var filListe = new List<File>();
+            var file = new File { Division = "kommune", DivisionKey = "0919", Projection = "25833", Format = "FGDB 10.0" };
             file.Dataset = dataset;
-            filListe.Add(file); 
+            filListe.Add(file);
             capability.Add(dataset);
-            dataset.filliste = filListe; 
+            dataset.filliste = filListe;
 
             var capabilitiesService = CreateCapabilitiesService(capability);
 
@@ -56,12 +56,12 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             Mock<DbSet<Dataset>> mockCapabilities = EntityFrameworkMoqHelper
                 .CreateMockForDbSet<Dataset>().SetupForQueryOn(dataset);
 
-            Mock<DbSet<File>> mockFileList= EntityFrameworkMoqHelper
+            Mock<DbSet<File>> mockFileList = EntityFrameworkMoqHelper
             .CreateMockForDbSet<File>().SetupForQueryOn(dataset[0].filliste.ToList());
 
             Mock<DownloadContext> mockDbContext = EntityFrameworkMoqHelper
                 .CreateMockForDbContext<DownloadContext>();
-   
+
 
             mockDbContext.Setup(m => m.Capabilities).Returns(mockCapabilities.Object);
             mockDbContext.Setup(m => m.FileList).Returns(mockFileList.Object);
