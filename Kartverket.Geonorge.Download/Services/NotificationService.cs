@@ -57,6 +57,8 @@ namespace Kartverket.Geonorge.Download.Services
             var downLoadApiUrl = new DownloadUrlBuilder().OrderId(order.Uuid).AsBundle();
             body.AppendLine(downLoadApiUrl);
 
+            AddPrivacyInfo(body);
+
             AddFooter(body);
 
             message.Body = body.ToString();
@@ -64,6 +66,11 @@ namespace Kartverket.Geonorge.Download.Services
             Log.Info($"Sending ReadyForDownload email notification to: {order.email}, orderUuid: {order.Uuid}");
 
             return message;
+        }
+
+        private void AddPrivacyInfo(StringBuilder body)
+        {
+            body.AppendLine().AppendLine("Linken for å laste ned, samt epost slettes etter 1 dag.");
         }
 
         private void AddFooter(StringBuilder body)
@@ -97,6 +104,7 @@ namespace Kartverket.Geonorge.Download.Services
                     var downLoadApiUrl = new DownloadUrlBuilder().OrderId(item.Order.Uuid).FileId(item.Uuid)
                         .Build();
                     body.AppendLine(downLoadApiUrl);
+                    AddPrivacyInfo(body);
                 }
                 else if (item.Status == OrderItemStatus.Error)
                 {

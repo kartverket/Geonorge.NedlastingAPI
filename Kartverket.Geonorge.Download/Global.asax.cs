@@ -58,6 +58,8 @@ namespace Kartverket.Geonorge.Download
 
         protected void Application_BeginRequest()
         {
+            DeleteOldPeronalData();
+
             var cookie = Context.Request.Cookies["_culture"];
             if (cookie == null)
             {
@@ -71,6 +73,13 @@ namespace Kartverket.Geonorge.Download
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
             }
+        }
+
+        protected void DeleteOldPeronalData()
+        {
+            //Remove personal info older than 1 day
+            var _context = DependencyResolver.Current.GetService<DownloadContext>();
+            _context.Database.ExecuteSqlCommandAsync("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -1, GETDATE())");
         }
     }
 }
