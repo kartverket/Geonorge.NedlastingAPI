@@ -71,7 +71,6 @@
     {
         @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
     }
-    @Scripts.Render("~/shared-partials")
     <script>
         var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
         var applicationEnvironment = '@Html.EnvironmentName()';
@@ -82,6 +81,7 @@
             currentCulture: '@CultureHelper.GetCurrentCulture()'
             };
     </script>
+    @Scripts.Render("~/shared-partials")
     <script>
         searchOption.loginUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/SignIn?ReturnUrl="))@Request.Url';
         searchOption.logoutUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/LogOut"))';
