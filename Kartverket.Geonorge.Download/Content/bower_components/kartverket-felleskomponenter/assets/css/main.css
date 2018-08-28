@@ -2226,7 +2226,8 @@ input[type="submit"].btn {
   width: 25px;
   height: 25px;
   display: inline-block;
-  vertical-align: middle; }
+  vertical-align: middle;
+  background-size: contain; }
   .custom-icon .custom-icon-overlay {
     background-color: #fe5000;
     border-radius: 50%;
@@ -2395,23 +2396,23 @@ input[type="submit"].btn {
 
 /* Handlekurv */
 .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud.svg"); }
 
 .added .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv-added.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud-added.svg"); }
 
 .btn .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv-white.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud-white.svg"); }
 
 .btn.added .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv-white-added.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud-white-added.svg"); }
 
 .disabled .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv-disabled.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud-disabled.svg"); }
 
 .disabled.added .custom-icon.custom-icon-handlekurv,
 .btn.disabled.added .custom-icon.custom-icon-handlekurv {
-  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/handlekurv-disabled-added.svg"); }
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/download-cloud-disabled-added.svg"); }
 
 /* Last ned */
 .custom-icon.custom-icon-lastned {
@@ -2511,6 +2512,18 @@ input[type="submit"].btn {
 
 .custom-icon.custom-icon-hengelaas-closed-yellow {
   background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/hengelaas-lukket-yellow.svg"); }
+
+.custom-icon.custom-icon-tjenestestatus {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/tjenestestatus.svg"); }
+
+.custom-icon.custom-icon-spatialdataservice {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/spatialdataservice.svg"); }
+
+.custom-icon.custom-icon-netverkstjeneste {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/netverkstjeneste.svg"); }
+
+.custom-icon.custom-icon-metadata-i-soketjeneste {
+  background-image: url("/Content/bower_components/kartverket-felleskomponenter/assets/images/svg/metadata-i-soketjeneste.svg"); }
 
 .btn .custom-icon.custom-icon-hengelaas-open-green,
 .btn .custom-icon.custom-icon-hengelaas-open-red,
@@ -2642,7 +2655,7 @@ input[type="submit"].btn {
 
 .custom-select-list .custom-select-list-dropdown-container.active .custom-select-list-dropdown {
   display: block;
-  z-index: 2;
+  z-index: 3;
   height: 0;
   position: relative;
   overflow: visible; }
