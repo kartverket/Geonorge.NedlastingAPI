@@ -22,7 +22,6 @@
         }
         Nedlasting
     </title>
-    <!-- Scripts -->
     <script>
         var applicationVersionNumber = '@Html.ApplicationVersionNumber()';
         var applicationEnvironment = '@Html.EnvironmentName()';
@@ -33,8 +32,6 @@
             currentCulture: '@CultureHelper.GetCurrentCulture()'
             };
     </script>
-
-
 </head>
 
 <body class="geonorge-container prototype  geonorge">
@@ -42,6 +39,7 @@
     <div id="loading-animation" class="loading-animation" style="display: none;"></div>
 
     @Html.Raw(File.ReadAllText(Server.MapPath("~/dist/partials/Header.html")))
+    @Styles.Render("~/shared-partials-styles")
     @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
 
     <div class="body-content">
@@ -84,7 +82,7 @@
     {
         @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
     }
-
+    @Scripts.Render("~/shared-partials-scripts")
     <script>
         searchOption.loginUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/SignIn?ReturnUrl="))@Request.Url';
         searchOption.logoutUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/LogOut"))';
