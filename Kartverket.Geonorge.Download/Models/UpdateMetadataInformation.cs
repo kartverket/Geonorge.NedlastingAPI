@@ -11,6 +11,7 @@ namespace Kartverket.Geonorge.Download.Models
         public string Uuid { get; set; }
         public List<SimpleDistribution> Distributions { get; set; }
         public List<SimpleReferenceSystem> Projections { get; set; }
+        public string CoverageLayer { get; set; }
 
     }
 }

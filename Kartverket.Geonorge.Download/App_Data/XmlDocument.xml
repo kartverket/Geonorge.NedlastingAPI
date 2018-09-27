@@ -706,6 +706,11 @@
                 The list of projections
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.CoverageLayer">
+            <summary>
+                The coverage layer to display coverage in map
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.URL">
             <summary>
                 URL for getting dataset info, default currently https://nedlasting.geonorge.no/api/capabilities/
