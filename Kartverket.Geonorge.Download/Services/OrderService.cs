@@ -221,5 +221,10 @@ namespace Kartverket.Geonorge.Download.Services
             order.DownloadBundleNotificationSent = DateTime.Now;
             _dbContext.SaveChanges();
         }
+
+        public void AddOrderUsage(OrderUsage usage)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
