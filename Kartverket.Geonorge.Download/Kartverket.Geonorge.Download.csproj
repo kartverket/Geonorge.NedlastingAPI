@@ -258,7 +258,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
-    <Compile Include="Models\OrderUsage.cs" />
+    <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />

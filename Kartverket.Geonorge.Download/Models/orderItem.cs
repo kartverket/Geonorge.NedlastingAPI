@@ -73,6 +73,9 @@ namespace Kartverket.Geonorge.Download.Models
         [NotMapped]
         public Guid MetadataUuidAsGuid => Guid.Parse(MetadataUuid);
 
+        [NotMapped]
+        public string UsagePurpose { get; set; }
+        
         public bool IsReadyForDownload()
         {
             return Status == OrderItemStatus.ReadyForDownload;
@@ -81,6 +84,11 @@ namespace Kartverket.Geonorge.Download.Models
         public string CollectIdForBundling()
         {
             return FileUuid?.ToString() ?? Uuid.ToString();
+        }
+
+        public DownloadUsageEntry GetDownloadUsageEntry(string usageGroup)
+        {
+            return new DownloadUsageEntry(MetadataUuid, usageGroup, UsagePurpose);
         }
     }
 }

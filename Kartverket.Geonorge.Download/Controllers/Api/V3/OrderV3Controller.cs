@@ -47,12 +47,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [System.Web.Http.Route("api/order")]
         [System.Web.Http.HttpPost]
         [ResponseType(typeof(OrderReceiptType))]
-        public IHttpActionResult PostOrder([FromBody] OrderType order, string useGroup, List<string> usePurposes)
+        public IHttpActionResult PostOrder([FromBody] OrderType order)
         {
             try
             {
                 var savedOrder = _orderService.CreateOrder(order, GetAuthenticatedUser());
-                _orderService.AddOrderUsage(ConvertToOrderUsage(savedOrder, useGroup, usePurposes));
+                _orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder));
             }
             catch (AccessRestrictionException e)
@@ -66,25 +66,10 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return InternalServerError(ex);
             }
         }
-
-        private OrderUsage ConvertToOrderUsage(Order savedOrder, string useGroup, List<string> usePurposes)
-        {
-            OrderUsage usage = new OrderUsage();
-            usage.Uuids = new List<string>();
-            usage.Purposes = usePurposes;
-            usage.Group = useGroup;
-
-            foreach (var orderItem in savedOrder.orderItem)
-            {
-                usage.Uuids.Add(orderItem.MetadataUuid);
-            }
-
-            return usage;
-        }
-
+        
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/order-usage")]
-        public IHttpActionResult OrderUsage([FromBody] OrderUsage usage)
+        public IHttpActionResult OrderUsage([FromBody] DownloadUsage usage)
         {
             _orderService.AddOrderUsage(usage);
             return Ok();

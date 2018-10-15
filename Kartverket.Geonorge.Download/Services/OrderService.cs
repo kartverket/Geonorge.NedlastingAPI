@@ -222,7 +222,7 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext.SaveChanges();
         }
 
-        public void AddOrderUsage(OrderUsage usage)
+        public void AddOrderUsage(DownloadUsage usage)
         {
             throw new NotImplementedException();
         }
