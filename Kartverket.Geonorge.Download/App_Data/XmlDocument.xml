@@ -481,80 +481,12 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.FileDownloadController.GetFile(System.String,System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DownloadUsageController.DownloadUsage(Geonorge.NedlastingApi.V3.DownloadUsageRequestType)">
             <summary>
-            Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
-            Restricted files are secured with BAAT-authentication (SAML) and local machine accounts (Basic authentication)
+            Register download usage for statistical purposes. 
             </summary>
-            <param name="datasetUuid">metadata uuid of the dataset</param>
-            <param name="fileUuid">the file uuid</param>
+            <param name="request"></param>
             <returns></returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetProjections(System.String)">
-            <summary>
-                Get Projections from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String)">
-            <summary>
-                Get Areas from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetFormats(System.String)">
-            <summary>
-                Get Format from download service
-            </summary>
-            <param name="metadataUuid">The metadata identifier</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
-            <summary>
-                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetBundleFile(System.String)">
-            <summary>
-                Get file to download for order
-            </summary>
-            <param name="orderUuid">The reference number returned from the order</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetFile(System.String,System.String)">
-            <summary>
-                Get file to download for order
-            </summary>
-            <param name="orderUuid">The reference number returned from the order</param>
-            <param name="fileId">The fileId to download from order</param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.PostOrder(Geonorge.NedlastingApi.V3.OrderType,System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-                Creates new order for data to download
-            </summary>
-            <param name="order">OrderType model</param>
-            <returns>
-                OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
-                the files are delivered via email
-            </returns>
-            <response code="400">Bad request</response>
-            <response code="500">Internal Server Error</response>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.GetOrder(System.String)">
-            <summary>
-                Get info about files in order
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.UpdateOrder(System.String,Geonorge.NedlastingApi.V3.OrderType)">
-            <summary>
-                Updates order with info to send to bundling
-            </summary>
-            <param name="orderUuid">Uuid for order to update</param>
-            <param name="incomingOrder">
-            Currently only these fields are updated:
-            * email
-            * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
-            <returns>
-               Http status code 200 if updated ok.
-            </returns>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
             <summary>
@@ -607,6 +539,81 @@
             <summary>
                 Delete filename list
             </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.FileDownloadController.GetFile(System.String,System.String)">
+            <summary>
+            Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
+            Restricted files are secured with BAAT-authentication (SAML) and local machine accounts (Basic authentication)
+            </summary>
+            <param name="datasetUuid">metadata uuid of the dataset</param>
+            <param name="fileUuid">the file uuid</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetProjections(System.String)">
+            <summary>
+                Get Projections from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String)">
+            <summary>
+                Get Areas from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetFormats(System.String)">
+            <summary>
+                Get Format from download service
+            </summary>
+            <param name="metadataUuid">The metadata identifier</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.CanDownload(Geonorge.NedlastingApi.V3.CanDownloadRequestType)">
+            <summary>
+                If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetBundleFile(System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetFile(System.String,System.String)">
+            <summary>
+                Get file to download for order
+            </summary>
+            <param name="orderUuid">The reference number returned from the order</param>
+            <param name="fileId">The fileId to download from order</param>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.PostOrder(Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+                Creates new order for data to download
+            </summary>
+            <param name="order">OrderType model</param>
+            <returns>
+                OrderReceiptType model with orderreference and a list of files to download if they are prepopulated, otherwise
+                the files are delivered via email
+            </returns>
+            <response code="400">Bad request</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.GetOrder(System.String)">
+            <summary>
+                Get info about files in order
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.OrderV3Controller.UpdateOrder(System.String,Geonorge.NedlastingApi.V3.OrderType)">
+            <summary>
+                Updates order with info to send to bundling
+            </summary>
+            <param name="orderUuid">Uuid for order to update</param>
+            <param name="incomingOrder">
+            Currently only these fields are updated:
+            * email
+            * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
+            <returns>
+               Http status code 200 if updated ok.
+            </returns>
         </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
             <summary>
@@ -664,6 +671,50 @@
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
                 Force HTTPS if request is not from local machine
+            </summary>
+        </member>
+        <member name="T:Kartverket.Geonorge.Download.Helpers.NonPublicColumnAttributeConvention">
+            <summary>
+            Convention to support binding private or protected properties to EF columns.
+            https://stackoverflow.com/a/21686896/725492
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
+            <summary>
+            Returns true if the language is a right-to-left language. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
+            <summary>
+            Returns true if current language is norwegian. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
+            <summary>
+            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
+            </summary>
+            <param name="name">Culture's name (e.g. en-US)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
+            <summary>
+            Returns default culture name which is the first name decalared (e.g. en-US)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Uuid">
+            <summary>
+            Metadata uuid
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Group">
+            <summary>
+            http://register.dev.geonorge.no/metadata-kodelister/brukergrupper
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Purpose">
+            <summary>
+            http://register.dev.geonorge.no/metadata-kodelister/formal
             </summary>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
@@ -909,29 +960,6 @@
             </summary>
             <param name="order"></param>
             <param name="incomingOrder"></param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
-            <summary>
-            Returns true if the language is a right-to-left language. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
-            <summary>
-            Returns true if current language is norwegian. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
-            <summary>
-            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
-            </summary>
-            <param name="name">Culture's name (e.g. en-US)</param>
-            <returns></returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
-            <summary>
-            Returns default culture name which is the first name decalared (e.g. en-US)
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Resources.UI">
             <summary>

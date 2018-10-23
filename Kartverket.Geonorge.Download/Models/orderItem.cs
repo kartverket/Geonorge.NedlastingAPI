@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -74,7 +75,7 @@ namespace Kartverket.Geonorge.Download.Models
         public Guid MetadataUuidAsGuid => Guid.Parse(MetadataUuid);
 
         [NotMapped]
-        public string UsagePurpose { get; set; }
+        public IEnumerable<string> UsagePurpose { get; set; }
         
         public bool IsReadyForDownload()
         {

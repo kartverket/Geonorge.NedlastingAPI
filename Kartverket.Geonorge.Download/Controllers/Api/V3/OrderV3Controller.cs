@@ -67,14 +67,6 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             }
         }
         
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/order-usage")]
-        public IHttpActionResult OrderUsage([FromBody] DownloadUsage usage)
-        {
-            _orderService.AddOrderUsage(usage);
-            return Ok();
-        }
-
         /// <summary>
         ///     Get info about files in order
         /// </summary>

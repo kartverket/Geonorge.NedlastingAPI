@@ -224,7 +224,8 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void AddOrderUsage(DownloadUsage usage)
         {
-            throw new NotImplementedException();
+            _dbContext.DownloadUsages.AddRange(usage.Entries);
+            _dbContext.SaveChanges();
         }
     }
 }
