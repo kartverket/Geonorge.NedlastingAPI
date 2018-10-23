@@ -231,36 +231,19 @@ namespace Geonorge.NedlastingApi.V3 {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0")]
-    [System.Xml.Serialization.XmlRootAttribute("DownloadUsageEntry", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
-    public partial class DownloadUsageEntryType {
-        
-        /// <remarks/>
-        public string metadataUuid;
+    [System.Xml.Serialization.XmlRootAttribute("DownloadUsageRequest", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
+    public partial class DownloadUsageRequestType {
         
         /// <remarks/>
         public string userGroup;
         
         /// <remarks/>
-        public string purpose;
+        [System.Xml.Serialization.XmlElementAttribute("purpose")]
+        public string[] purpose;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
-        public LinkType[] _links;
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0")]
-    [System.Xml.Serialization.XmlRootAttribute("DownloadUsageRequest", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
-    public partial class DownloadUsageRequestType {
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("downloadusageentry", IsNullable=false)]
-        public DownloadUsageEntryType[] usageEntries;
+        [System.Xml.Serialization.XmlElementAttribute("metadataUuids")]
+        public string[] metadataUuids;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
@@ -409,8 +392,8 @@ namespace Geonorge.NedlastingApi.V3 {
         public string coordinatesystem;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
-        public string usagePurpose;
+        [System.Xml.Serialization.XmlElementAttribute("usagePurpose", IsNullable=true)]
+        public string[] usagePurpose;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
