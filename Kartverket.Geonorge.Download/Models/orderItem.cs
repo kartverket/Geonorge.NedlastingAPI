@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Kartverket.Geonorge.Download.Models
 {
@@ -75,7 +76,7 @@ namespace Kartverket.Geonorge.Download.Models
         public Guid MetadataUuidAsGuid => Guid.Parse(MetadataUuid);
 
         [NotMapped]
-        public IEnumerable<string> UsagePurpose { get; set; }
+        public IEnumerable<string> UsagePurpose { get; set; } = new List<string>();
         
         public bool IsReadyForDownload()
         {
@@ -87,9 +88,17 @@ namespace Kartverket.Geonorge.Download.Models
             return FileUuid?.ToString() ?? Uuid.ToString();
         }
 
-        public DownloadUsageEntry GetDownloadUsageEntry(string usageGroup)
+        /// <summary>
+        /// Returns DownloadUsageEntry if purpose is specified. Returns null otherwise. 
+        /// </summary>
+        /// <param name="usageGroup"></param>
+        /// <param name="softwareClient"></param>
+        /// <param name="softwareClientVersion"></param>
+        /// <returns></returns>
+        public DownloadUsageEntry GetDownloadUsageEntry(string usageGroup, string softwareClient, string softwareClientVersion)
         {
-            return new DownloadUsageEntry(MetadataUuid, usageGroup, UsagePurpose);
+            return UsagePurpose != null && UsagePurpose.Any() ? new DownloadUsageEntry(MetadataUuid, usageGroup, UsagePurpose, softwareClient, softwareClientVersion) : null;
         }
+
     }
 }

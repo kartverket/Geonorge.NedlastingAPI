@@ -46,6 +46,12 @@ namespace Kartverket.Geonorge.Download.Models
 
         [NotMapped]
         public string UsageGroup { get; set; }
+
+        [NotMapped]
+        public string SoftwareClient { get; set; }
+        
+        [NotMapped]
+        public string SoftwareClientVersion { get; set; }
         
         /// <summary>
         /// Set to true if the client has requested that the order items should be bundled together.
@@ -139,8 +145,12 @@ namespace Kartverket.Geonorge.Download.Models
         public DownloadUsage GetDownloadUsage()
         {
             var usage = new DownloadUsage();
-            foreach(var item in orderItem) 
-                usage.AddEntry(item.GetDownloadUsageEntry(UsageGroup));
+            foreach (var item in orderItem)
+            {
+                DownloadUsageEntry entry = item.GetDownloadUsageEntry(UsageGroup, SoftwareClient, SoftwareClientVersion);
+                if (entry != null)
+                    usage.AddEntry(entry);
+            }
             
             return usage;
         }

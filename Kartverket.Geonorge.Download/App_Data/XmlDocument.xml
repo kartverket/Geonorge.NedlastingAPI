@@ -905,6 +905,15 @@
             Contains message from processing service (currently FME)
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Models.OrderItem.GetDownloadUsageEntry(System.String,System.String,System.String)">
+            <summary>
+            Returns DownloadUsageEntry if purpose is specified. Returns null otherwise. 
+            </summary>
+            <param name="usageGroup"></param>
+            <param name="softwareClient"></param>
+            <param name="softwareClientVersion"></param>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Services.FileService">
             <summary>
                 Basic file services on dataset and file objects.

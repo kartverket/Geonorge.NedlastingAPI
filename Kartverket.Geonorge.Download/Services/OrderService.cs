@@ -38,6 +38,9 @@ namespace Kartverket.Geonorge.Download.Services
             var order = new Order
             {
                 email = incomingOrder.email,
+                UsageGroup = incomingOrder.usageGroup,
+                SoftwareClient = incomingOrder.softwareClient,
+                SoftwareClientVersion = incomingOrder.softwareClientVersion
             };
 
             if (authenticatedUser != null)
@@ -117,7 +120,8 @@ namespace Kartverket.Geonorge.Download.Services
                         ProjectionName =  _registerFetcher.GetProjection(item.Projection).name,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
-                        MetadataName = item.Dataset.Title
+                        MetadataName = item.Dataset.Title,
+                        UsagePurpose = orderLine.usagePurpose
                     });
                 }
             }

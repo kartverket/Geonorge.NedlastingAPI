@@ -56,7 +56,7 @@ namespace Kartverket.Geonorge.Download.Models
             Timestamp = DateTime.Now;
         }
 
-        public DownloadUsageEntry(string metadataUuid, string userGroup, string[] purpose, string softwareClient,
+        public DownloadUsageEntry(string metadataUuid, string userGroup, IEnumerable<string> purpose, string softwareClient,
             string softwareClientVersion) : this(metadataUuid, userGroup, purpose)
         {
             SoftwareClient = softwareClient;
