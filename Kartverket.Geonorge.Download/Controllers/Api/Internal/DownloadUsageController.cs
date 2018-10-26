@@ -36,12 +36,22 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         private DownloadUsage ConvertToDownloadUsage(DownloadUsageRequestType request)
         {
             var downloadUsage = new DownloadUsage();
-            if (request.metadataUuids != null)
+            if (request.entries != null)
             {
-                foreach (var metadataUuid in request.metadataUuids)
+                foreach (var entry in request.entries)
                 {
-                    downloadUsage.AddEntry(new DownloadUsageEntry(metadataUuid, request.userGroup, request.purpose,
-                        request.softwareClient, request.softwareClientVersion));
+                    downloadUsage.AddEntry(new DownloadUsageEntry
+                    {
+                        Uuid = entry.metadataUuid,
+                        AreaCode = entry.areaCode,
+                        AreaName = entry.areaName,
+                        Format = entry.format,
+                        Projection = entry.projection,
+                        Group = request.@group,
+                        Purpose = request.purpose,
+                        SoftwareClient = request.softwareClient,
+                        SoftwareClientVersion = request.softwareClientVersion
+                    });
                 }
             }
             return downloadUsage;

@@ -8,9 +8,19 @@ namespace Kartverket.Geonorge.Download.Models
 {
     public class DownloadUsage
     {
+        public Guid RequestId { get;set;}
+
+        public DownloadUsage()
+        {
+            RequestId = Guid.NewGuid();
+        }
+
         public List<DownloadUsageEntry> Entries { get; } = new List<DownloadUsageEntry>();
 
-        public void AddEntry(DownloadUsageEntry entry) => Entries.Add(entry);
+        public void AddEntry(DownloadUsageEntry entry) {
+            entry.RequestId = RequestId;
+            Entries.Add(entry);
+        }
     }
 
     [Table("DownloadUsage")]
@@ -19,6 +29,8 @@ namespace Kartverket.Geonorge.Download.Models
         [Key]
         public int Id { get; set; } 
         
+        public Guid RequestId { get;set;}
+
         public DateTime Timestamp { get; set; }
         
         /// <summary>
@@ -26,6 +38,14 @@ namespace Kartverket.Geonorge.Download.Models
         /// </summary>
         public string Uuid { get; set; }
 
+        public string AreaCode { get; set; }
+        
+        public string AreaName { get; set; }
+        
+        public string Format { get; set; }
+        
+        public string Projection { get; set; }
+        
         /// <summary>
         /// http://register.dev.geonorge.no/metadata-kodelister/brukergrupper
         /// </summary>
@@ -40,27 +60,17 @@ namespace Kartverket.Geonorge.Download.Models
         /// </summary>
         public IEnumerable<string> Purpose
         {
-            get => PurposeAsStrings != null ? PurposeAsStrings.Split(',').ToList() : new List<string>();
-            set => PurposeAsStrings = string.Join(",", value);
+            get => PurposeAsStrings != null ? PurposeAsStrings.Split(';').ToList() : new List<string>();
+            set => PurposeAsStrings = value != null ? string.Join(";", value) : null;
         }
 
         public string SoftwareClientVersion { get; set; }
 
         public string SoftwareClient { get; set; }
 
-        public DownloadUsageEntry(string uuid, string group, IEnumerable<string> purpose)
+        public DownloadUsageEntry()
         {
-            Uuid = uuid;
-            Group = group;
-            Purpose = purpose;
             Timestamp = DateTime.Now;
-        }
-
-        public DownloadUsageEntry(string metadataUuid, string userGroup, IEnumerable<string> purpose, string softwareClient,
-            string softwareClientVersion) : this(metadataUuid, userGroup, purpose)
-        {
-            SoftwareClient = softwareClient;
-            SoftwareClientVersion = softwareClientVersion;
         }
     }
 }

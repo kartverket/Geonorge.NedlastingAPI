@@ -88,16 +88,17 @@ namespace Kartverket.Geonorge.Download.Models
             return FileUuid?.ToString() ?? Uuid.ToString();
         }
 
-        /// <summary>
-        /// Returns DownloadUsageEntry if purpose is specified. Returns null otherwise. 
-        /// </summary>
-        /// <param name="usageGroup"></param>
-        /// <param name="softwareClient"></param>
-        /// <param name="softwareClientVersion"></param>
-        /// <returns></returns>
-        public DownloadUsageEntry GetDownloadUsageEntry(string usageGroup, string softwareClient, string softwareClientVersion)
+        public DownloadUsageEntry GetDownloadUsageEntry()
         {
-            return UsagePurpose != null && UsagePurpose.Any() ? new DownloadUsageEntry(MetadataUuid, usageGroup, UsagePurpose, softwareClient, softwareClientVersion) : null;
+            return new DownloadUsageEntry()
+            {
+                Uuid = MetadataUuid,
+                AreaCode = Area,
+                AreaName = AreaName,
+                Projection = Projection,
+                Format = Format,
+                Purpose = UsagePurpose
+            };
         }
 
     }

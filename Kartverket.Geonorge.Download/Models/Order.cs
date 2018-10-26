@@ -147,11 +147,12 @@ namespace Kartverket.Geonorge.Download.Models
             var usage = new DownloadUsage();
             foreach (var item in orderItem)
             {
-                DownloadUsageEntry entry = item.GetDownloadUsageEntry(UsageGroup, SoftwareClient, SoftwareClientVersion);
-                if (entry != null)
-                    usage.AddEntry(entry);
+                DownloadUsageEntry entry = item.GetDownloadUsageEntry();
+                entry.Group = UsageGroup;
+                entry.SoftwareClient = SoftwareClient;
+                entry.SoftwareClientVersion = SoftwareClientVersion;
+                usage.AddEntry(entry);
             }
-            
             return usage;
         }
     }
