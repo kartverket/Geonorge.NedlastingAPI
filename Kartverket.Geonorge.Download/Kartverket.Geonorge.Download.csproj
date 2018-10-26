@@ -259,6 +259,7 @@
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\Internal\DownloadUsageController.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
+    <Compile Include="Controllers\ExternalClientTokenAuthAttribute.cs" />
     <Compile Include="Helpers\NonPublicColumnAttributeConvention.cs" />
     <Compile Include="Migrations\201810220856029_AddDownloadUsage.cs" />
     <Compile Include="Migrations\201810220856029_AddDownloadUsage.Designer.cs">

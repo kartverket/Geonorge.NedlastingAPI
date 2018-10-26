@@ -11,6 +11,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
     [ApiVersion("3.0")]
     [EnableCors("*", "*", "*", SupportsCredentials = true)]
     [HandleError]
+    [ExternalClientTokenAuthAttribute]
     public class DownloadUsageController : ApiController
     {
         private IOrderService _orderService;
