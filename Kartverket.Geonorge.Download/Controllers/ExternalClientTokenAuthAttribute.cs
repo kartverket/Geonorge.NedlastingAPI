@@ -18,11 +18,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api
 
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
+            Log.Info("Checking ClientTokenAuth");
+            Log.Info("Request:" + context.Request);
+
             AuthenticationHeaderValue authorization = context.Request.Headers.Authorization;
             
             var externalClientToken = WebConfigurationManager.AppSettings["ExternalClientToken"];
-
-            Log.Info("Request:" + context.Request);
 
             if (authorization == null || authorization.Scheme != "Bearer" || authorization.Parameter != externalClientToken)
             {
