@@ -22,6 +22,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api
             
             var externalClientToken = WebConfigurationManager.AppSettings["ExternalClientToken"];
 
+            Log.Info("Request:" + context.Request);
+
             if (authorization == null || authorization.Scheme != "Bearer" || authorization.Parameter != externalClientToken)
             {
                 Log.Info("Authorization failed for client: invalid credentials for request:" + context.Request);
