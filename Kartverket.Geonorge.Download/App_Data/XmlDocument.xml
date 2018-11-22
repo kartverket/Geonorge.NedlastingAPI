@@ -481,6 +481,65 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DownloadUsageController.DownloadUsage(Geonorge.NedlastingApi.V3.DownloadUsageRequestType)">
+            <summary>
+            Register download usage for statistical purposes. 
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
+            <summary>
+                Update status on a given file that has been processed.
+            </summary>
+            <param name="request">Updated information about a file.</param>
+            <returns>HTTP status codes 200 if ok.</returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.MetadataController.UpdateMetadata(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest)">
+            <summary>
+                Update metadata
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
+            <summary>
+                List datasets
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
+            <summary>
+                Get info dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
+            <summary>
+                Update dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
+            <summary>
+                Create new dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.File})">
+            <summary>
+                Add file(s) to dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
+            <summary>
+                Delete dataset
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
+            <summary>
+                Delete file
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
+            <summary>
+                Delete filename list
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.FileDownloadController.GetFile(System.String,System.String)">
             <summary>
             Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
@@ -556,58 +615,6 @@
                Http status code 200 if updated ok.
             </returns>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.UpdateFileStatus(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest)">
-            <summary>
-                Update status on a given file that has been processed.
-            </summary>
-            <param name="request">Updated information about a file.</param>
-            <returns>HTTP status codes 200 if ok.</returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.MetadataController.UpdateMetadata(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest)">
-            <summary>
-                Update metadata
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetCapabilities">
-            <summary>
-                List datasets
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.GetDataset(System.String)">
-            <summary>
-                Get info dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PutDataset(System.String,Kartverket.Geonorge.Download.Models.Dataset)">
-            <summary>
-                Update dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostDataset(Kartverket.Geonorge.Download.Models.Dataset)">
-            <summary>
-                Create new dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.PostFiles(System.String,System.Collections.Generic.HashSet{Kartverket.Geonorge.Download.Models.File})">
-            <summary>
-                Add file(s) to dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteDataset(System.String)">
-            <summary>
-                Delete dataset
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.Deletefilliste(System.String)">
-            <summary>
-                Delete file
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.DatasetController.DeleteFiles(System.Collections.Generic.List{System.String})">
-            <summary>
-                Delete filename list
-            </summary>
-        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V2.CapabilitiesV2Controller.GetProjections(System.String)">
             <summary>
                 Get Projections from download service
@@ -666,6 +673,50 @@
                 Force HTTPS if request is not from local machine
             </summary>
         </member>
+        <member name="T:Kartverket.Geonorge.Download.Helpers.NonPublicColumnAttributeConvention">
+            <summary>
+            Convention to support binding private or protected properties to EF columns.
+            https://stackoverflow.com/a/21686896/725492
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
+            <summary>
+            Returns true if the language is a right-to-left language. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
+            <summary>
+            Returns true if current language is norwegian. Otherwise, false.
+            </summary>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
+            <summary>
+            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
+            </summary>
+            <param name="name">Culture's name (e.g. en-US)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
+            <summary>
+            Returns default culture name which is the first name decalared (e.g. en-US)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Uuid">
+            <summary>
+            Metadata uuid
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Group">
+            <summary>
+            http://register.dev.geonorge.no/metadata-kodelister/brukergrupper
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.DownloadUsageEntry.Purpose">
+            <summary>
+            http://register.dev.geonorge.no/metadata-kodelister/formal
+            </summary>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateFileStatusRequest">
             <summary>
             Provides updated information about a file.
@@ -704,6 +755,11 @@
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.Projections">
             <summary>
                 The list of projections
+            </summary>
+        </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.CoverageLayer">
+            <summary>
+                The coverage layer to display coverage in map
             </summary>
         </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.URL">
@@ -904,29 +960,6 @@
             </summary>
             <param name="order"></param>
             <param name="incomingOrder"></param>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsRighToLeft">
-            <summary>
-            Returns true if the language is a right-to-left language. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.IsNorwegian">
-            <summary>
-            Returns true if current language is norwegian. Otherwise, false.
-            </summary>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetImplementedCulture(System.String)">
-            <summary>
-            Returns a valid culture name based on "name" parameter. If "name" is not valid, it returns the default culture "en-US"
-            </summary>
-            <param name="name">Culture's name (e.g. en-US)</param>
-            <returns></returns>
-        </member>
-        <member name="M:Kartverket.Geonorge.Download.Helpers.CultureHelper.GetDefaultCulture">
-            <summary>
-            Returns default culture name which is the first name decalared (e.g. en-US)
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Resources.UI">
             <summary>

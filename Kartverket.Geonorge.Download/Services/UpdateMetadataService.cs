@@ -19,6 +19,7 @@ namespace Kartverket.Geonorge.Download.Services
             information.Uuid = metadata.Uuid;
             information.Distributions = new List<SimpleDistribution>();
             information.Projections = new List<SimpleReferenceSystem>();
+            information.CoverageLayer = metadata.CoverageLayer;
 
             foreach(var distribution in metadata.Distributions)
             {
@@ -99,6 +100,10 @@ namespace Kartverket.Geonorge.Download.Services
             };
 
             simpleMetadata.ReferenceSystems = metadataInfo.Projections;
+
+            if(!string.IsNullOrEmpty(metadataInfo.CoverageLayer))
+                simpleMetadata.CoverageUrl = "TYPE:GEONORGE-WMS@PATH:https://wms.geonorge.no/wms?@LAYER:" + metadataInfo.CoverageLayer;
+
             simpleMetadata.DateMetadataUpdated = DateTime.Now;
 
             api.MetadataUpdate(simpleMetadata.GetMetadata(), CreateAdditionalHeadersWithUsername(geonorgeUsername, "true"));

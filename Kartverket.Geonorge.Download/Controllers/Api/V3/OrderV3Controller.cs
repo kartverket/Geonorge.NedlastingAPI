@@ -52,6 +52,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             try
             {
                 var savedOrder = _orderService.CreateOrder(order, GetAuthenticatedUser());
+                _orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder));
             }
             catch (AccessRestrictionException e)
@@ -65,7 +66,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return InternalServerError(ex);
             }
         }
-
+        
         /// <summary>
         ///     Get info about files in order
         /// </summary>

@@ -19,6 +19,10 @@ namespace Kartverket.Geonorge.Download.Models.Api.Internal
         ///     The list of projections
         /// </summary>
         public List<Projection> Projections { get; set; }
+        /// <summary>
+        ///     The coverage layer to display coverage in map
+        /// </summary>
+        public string CoverageLayer { get; set; }
     }
 
     public class Distribution

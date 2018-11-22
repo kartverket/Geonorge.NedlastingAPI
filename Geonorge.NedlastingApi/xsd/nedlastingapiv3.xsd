@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:app="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0" xmlns:rest="http://www.kxml.no/rest/1.0" elementFormDefault="qualified">
   <xs:import namespace="http://www.kxml.no/rest/1.0" schemaLocation="rest.xsd"/>
-  <!-- Generert av MetaTrans(1.1.0.0) - 19.02.2018 07:22:27-->
+  <!-- Generert av MetaTrans(1.1.0.0) - 26.10.2018 11:10:51-->
   <xs:element name="Area" type="app:AreaType" />
   <xs:complexType name="AreaListe">
     <xs:sequence>
@@ -64,6 +64,38 @@
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>
+  <xs:element name="DownloadUsageEntry" type="app:DownloadUsageEntryType" />
+  <xs:complexType name="DownloadUsageEntryListe">
+    <xs:sequence>
+      <xs:element name="downloadusageentry" type="app:DownloadUsageEntryType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DownloadUsageEntryType">
+    <xs:sequence>
+      <xs:element name="metadataUuid" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="areaCode" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="areaName" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="format" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="projection" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DownloadUsageRequest" type="app:DownloadUsageRequestType" />
+  <xs:complexType name="DownloadUsageRequestListe">
+    <xs:sequence>
+      <xs:element name="downloadusagerequest" type="app:DownloadUsageRequestType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DownloadUsageRequestType">
+    <xs:sequence>
+      <xs:element name="group" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="purpose" minOccurs="1" maxOccurs="unbounded" type="xs:string" />
+      <xs:element name="softwareClient" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="softwareClientVersion" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="entries" minOccurs="1" maxOccurs="1" type="app:DownloadUsageEntryListe" />
+      <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
+    </xs:sequence>
+  </xs:complexType>
   <xs:element name="File" type="app:FileType" />
   <xs:complexType name="FileListe">
     <xs:sequence>
@@ -114,6 +146,9 @@
       <xs:element name="email" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="downloadBundleUrl" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="orderLines" minOccurs="1" maxOccurs="1" type="app:OrderLineListe" />
+      <xs:element name="usageGroup" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
+      <xs:element name="softwareClient" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
+      <xs:element name="softwareClientVersion" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>
@@ -145,6 +180,7 @@
       <xs:element name="projections" minOccurs="0" maxOccurs="1" nillable="true" type="app:ProjectionListe" />
       <xs:element name="coordinates" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="coordinatesystem" minOccurs="1" maxOccurs="1" type="xs:string" />
+      <xs:element name="usagePurpose" minOccurs="0" maxOccurs="unbounded" nillable="true" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>

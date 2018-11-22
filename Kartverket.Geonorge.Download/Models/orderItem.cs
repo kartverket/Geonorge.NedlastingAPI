@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Kartverket.Geonorge.Download.Models
 {
@@ -73,6 +75,9 @@ namespace Kartverket.Geonorge.Download.Models
         [NotMapped]
         public Guid MetadataUuidAsGuid => Guid.Parse(MetadataUuid);
 
+        [NotMapped]
+        public IEnumerable<string> UsagePurpose { get; set; } = new List<string>();
+        
         public bool IsReadyForDownload()
         {
             return Status == OrderItemStatus.ReadyForDownload;
@@ -82,5 +87,19 @@ namespace Kartverket.Geonorge.Download.Models
         {
             return FileUuid?.ToString() ?? Uuid.ToString();
         }
+
+        public DownloadUsageEntry GetDownloadUsageEntry()
+        {
+            return new DownloadUsageEntry()
+            {
+                Uuid = MetadataUuid,
+                AreaCode = Area,
+                AreaName = AreaName,
+                Projection = Projection,
+                Format = Format,
+                Purpose = UsagePurpose
+            };
+        }
+
     }
 }

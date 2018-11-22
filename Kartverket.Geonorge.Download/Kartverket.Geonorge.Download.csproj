@@ -69,19 +69,19 @@
       <HintPath>..\packages\Autofac.WebApi2.4.0.1\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GeoNorgeAPI, Version=3.0.54.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoNorgeAPI.3.0.54\lib\net40\GeoNorgeAPI.dll</HintPath>
     </Reference>
     <Reference Include="Kartverket.Geonorge.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.33\lib\net45\Kartverket.Geonorge.Utilities.dll</HintPath>
+      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.43\lib\net45\Kartverket.Geonorge.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="Kentor.AuthServices, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kentor.AuthServices.0.19.0\lib\net45\Kentor.AuthServices.dll</HintPath>
@@ -127,7 +127,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.33\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.43\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -142,7 +142,7 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.33\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.43\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Security" />
@@ -257,7 +257,23 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
+    <Compile Include="Controllers\Api\Internal\DownloadUsageController.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
+    <Compile Include="Controllers\ExternalClientTokenAuthAttribute.cs" />
+    <Compile Include="Helpers\NonPublicColumnAttributeConvention.cs" />
+    <Compile Include="Migrations\201810220856029_AddDownloadUsage.cs" />
+    <Compile Include="Migrations\201810220856029_AddDownloadUsage.Designer.cs">
+      <DependentUpon>201810220856029_AddDownloadUsage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810260916074_AddMoreFieldsToDownloadUsage.cs" />
+    <Compile Include="Migrations\201810260916074_AddMoreFieldsToDownloadUsage.Designer.cs">
+      <DependentUpon>201810260916074_AddMoreFieldsToDownloadUsage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810260928254_AddRequestIdToDownloadUsageEntry.cs" />
+    <Compile Include="Migrations\201810260928254_AddRequestIdToDownloadUsageEntry.Designer.cs">
+      <DependentUpon>201810260928254_AddRequestIdToDownloadUsageEntry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />
@@ -703,6 +719,15 @@
     <EmbeddedResource Include="Migrations\201801181918479_AddMachineAccount.resx">
       <DependentUpon>201801181918479_AddMachineAccount.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810220856029_AddDownloadUsage.resx">
+      <DependentUpon>201810220856029_AddDownloadUsage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810260916074_AddMoreFieldsToDownloadUsage.resx">
+      <DependentUpon>201810260916074_AddMoreFieldsToDownloadUsage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810260928254_AddRequestIdToDownloadUsageEntry.resx">
+      <DependentUpon>201810260928254_AddRequestIdToDownloadUsageEntry.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UI.en.Designer.cs</LastGenOutput>
@@ -806,6 +831,9 @@
     <Content Include="dist\maps\main.js.map" />
     <Content Include="dist\maps\vendor.css.map" />
     <Content Include="dist\maps\vendor.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

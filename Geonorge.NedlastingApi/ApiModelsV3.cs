@@ -231,6 +231,68 @@ namespace Geonorge.NedlastingApi.V3 {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0")]
+    [System.Xml.Serialization.XmlRootAttribute("DownloadUsageEntry", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
+    public partial class DownloadUsageEntryType {
+        
+        /// <remarks/>
+        public string metadataUuid;
+        
+        /// <remarks/>
+        public string areaCode;
+        
+        /// <remarks/>
+        public string areaName;
+        
+        /// <remarks/>
+        public string format;
+        
+        /// <remarks/>
+        public string projection;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
+        public LinkType[] _links;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0")]
+    [System.Xml.Serialization.XmlRootAttribute("DownloadUsageRequest", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
+    public partial class DownloadUsageRequestType {
+        
+        /// <remarks/>
+        public string group;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("purpose")]
+        public string[] purpose;
+        
+        /// <remarks/>
+        public string softwareClient;
+        
+        /// <remarks/>
+        public string softwareClientVersion;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayItemAttribute("downloadusageentry", IsNullable=false)]
+        public DownloadUsageEntryType[] entries;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
+        public LinkType[] _links;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.33440")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0")]
     [System.Xml.Serialization.XmlRootAttribute("File", Namespace="http://skjema.geonorge.no/SOSI/tjenestespesifikasjon/nedlastingapi/3.0", IsNullable=false)]
     public partial class FileType {
         
@@ -315,6 +377,18 @@ namespace Geonorge.NedlastingApi.V3 {
         public OrderLineType[] orderLines;
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string usageGroup;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string softwareClient;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public string softwareClientVersion;
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]
         [System.Xml.Serialization.XmlArrayItemAttribute("_links", Namespace="http://www.kxml.no/rest/1.0", IsNullable=false)]
         public LinkType[] _links;
@@ -352,6 +426,10 @@ namespace Geonorge.NedlastingApi.V3 {
         
         /// <remarks/>
         public string coordinatesystem;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("usagePurpose", IsNullable=true)]
+        public string[] usagePurpose;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(IsNullable=true)]

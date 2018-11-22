@@ -371,6 +371,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             distribution.Formats = formats;
             distributions.Add(distribution);
             metadata.Distributions = distributions;
+            metadata.CoverageLayer = "dsb_brannstasjon";
 
 
 

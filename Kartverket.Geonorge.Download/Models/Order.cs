@@ -44,6 +44,15 @@ namespace Kartverket.Geonorge.Download.Models
 
         public virtual List<OrderItem> orderItem { get; set; }
 
+        [NotMapped]
+        public string UsageGroup { get; set; }
+
+        [NotMapped]
+        public string SoftwareClient { get; set; }
+        
+        [NotMapped]
+        public string SoftwareClientVersion { get; set; }
+        
         /// <summary>
         /// Set to true if the client has requested that the order items should be bundled together.
         /// </summary>
@@ -131,6 +140,20 @@ namespace Kartverket.Geonorge.Download.Models
         public bool IsReadyForBundleDownload()
         {
             return DownloadAsBundle && orderItem.All(item => item.IsReadyForDownload());
+        }
+
+        public DownloadUsage GetDownloadUsage()
+        {
+            var usage = new DownloadUsage();
+            foreach (var item in orderItem)
+            {
+                DownloadUsageEntry entry = item.GetDownloadUsageEntry();
+                entry.Group = UsageGroup;
+                entry.SoftwareClient = SoftwareClient;
+                entry.SoftwareClientVersion = SoftwareClientVersion;
+                usage.AddEntry(entry);
+            }
+            return usage;
         }
     }
 }
