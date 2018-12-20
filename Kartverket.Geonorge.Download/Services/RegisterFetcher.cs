@@ -45,6 +45,11 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var codevalue = code["label"].ToString();
                     var label = code["description"].ToString();
+                    var status = code["status"]?.ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn" || status == "Utkast")
+                        label = label + " (ny)";
 
                     AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
 
@@ -62,6 +67,11 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var codevalue = code["label"].ToString();
                     var label = code["description"].ToString();
+                    var status = code["status"]?.ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn" || status == "Utkast")
+                        label = label + " (ny)";
 
                     AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
 
@@ -80,6 +90,10 @@ namespace Kartverket.Geonorge.Download.Services
                     var codevalue = code["label"].ToString();
                     var label = code["description"]?.ToString();
                     var status = code["status"]?.ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn" || status == "Utkast")
+                        label = label + " (ny)";
 
                     AreaType omraade;
                     if(codevalue.Length == 2)
@@ -103,6 +117,11 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var codevalue = code["codevalue"].ToString();
                     var label = code["label"].ToString();
+                    var status = code["status"]?.ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn" || status == "Utkast")
+                        label = label + " (ny)";
 
                     AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
                     var areaExists = areas.Where(a => a.code == codevalue && a.type == "fylke").FirstOrDefault();
@@ -121,6 +140,11 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var codevalue = code["codevalue"].ToString();
                     var label = code["label"].ToString();
+                    var status = code["status"]?.ToString();
+                    if (status == "Utgått")
+                        label = label + " (utgått)";
+                    else if (status == "Sendt inn" || status == "Utkast")
+                        label = label + " (ny)";
 
                     AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
                     var areaExists = areas.Where(a => a.code == codevalue && a.type == "kommune").FirstOrDefault();
