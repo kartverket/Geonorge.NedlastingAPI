@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Geonorge.FeedReader" Version="1.0.0" />
+      <PackageReference Include="log4net" Version="2.0.8" />
+      <PackageReference Include="NEST" Version="6.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Geonorge.Nedlasting.Core\Geonorge.Nedlasting.Core.csproj" />
+    </ItemGroup>
+
+</Project>

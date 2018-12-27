@@ -1,0 +1,18 @@
+
+@{
+    ViewBag.Title = "S�kemotoradministrasjon";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("StartIndexing", "SearchIndex")) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Start indeksering" class="btn btn-default" />
+        </div>
+    </div>
+}

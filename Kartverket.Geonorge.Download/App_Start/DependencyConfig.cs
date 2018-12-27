@@ -1,9 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using Geonorge.Nedlasting.Core;
+using Geonorge.Nedlasting.Core.Search;
+using Geonorge.Nedlasting.Infrastructure.Search;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Download.Services.Auth;
@@ -43,6 +47,10 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
             builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
             builder.RegisterType<FileService>().As<IFileService>();
+
+            // search engine
+            builder.RegisterType<AtomFeedIndexer>().As<IFeedIndexer>();
+            builder.RegisterType<ElasticDocumentIndexer>().As<IDocumentIndexer>();
         }
 
         private static void SetupAspMvcDependencyResolver(IContainer container)
@@ -60,6 +68,12 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterControllers(typeof(WebApiApplication).Assembly).PropertiesAutowired();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly()).PropertiesAutowired();
             builder.RegisterModule(new AutofacWebTypesModule());
+
+            builder.Register(ctx => new AppSettings
+            {
+                ElasticSearchHostname = ConfigurationManager.AppSettings["ElasticSearchHostname"],
+                ElasticSearchIndexName = ConfigurationManager.AppSettings["ElasticSearchIndexName"],
+            }).AsSelf().SingleInstance();
         }
     }
 }

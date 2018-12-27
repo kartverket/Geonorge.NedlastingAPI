@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -71,6 +71,14 @@
       <HintPath>..\packages\Autofac.WebApi2.4.2.0\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CodeHollow.FeedReader, Version=1.1.5.0, Culture=neutral, PublicKeyToken=66d870f2b3d70f48">
+      <HintPath>..\packages\CodeHollow.FeedReader.1.1.5\lib\net452\CodeHollow.FeedReader.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+      <HintPath>..\packages\Elasticsearch.Net.6.4.1\lib\net461\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -79,8 +87,16 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Geonorge.FeedReader, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Geonorge.FeedReader.1.0.0\lib\netstandard2.0\Geonorge.FeedReader.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="GeoNorgeAPI, Version=3.0.72.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\GeoNorgeAPI.3.0.72\lib\net40\GeoNorgeAPI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.5.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
+      <HintPath>..\packages\HtmlAgilityPack.1.5.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Kartverket.Geonorge.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -117,6 +133,10 @@
     </Reference>
     <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.0\lib\net451\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d">
+      <HintPath>..\packages\NEST.6.4.1\lib\net461\Nest.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
@@ -269,6 +289,7 @@
     <Compile Include="Controllers\Api\Internal\DownloadUsageController.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
     <Compile Include="Controllers\ExternalClientTokenAuthAttribute.cs" />
+    <Compile Include="Controllers\SearchIndexController.cs" />
     <Compile Include="Helpers\NonPublicColumnAttributeConvention.cs" />
     <Compile Include="Migrations\201810220856029_AddDownloadUsage.cs" />
     <Compile Include="Migrations\201810220856029_AddDownloadUsage.Designer.cs">
@@ -602,6 +623,7 @@
     <Content Include="Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Index.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="Views\SearchIndex\Index.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -756,6 +778,14 @@
     <Content Include="authentication.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Geonorge.Nedlasting.Core\Geonorge.Nedlasting.Core.csproj">
+      <Project>{071934ab-86cf-4523-9005-8421f0bc9838}</Project>
+      <Name>Geonorge.Nedlasting.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Geonorge.Nedlasting.Infrastructure\Geonorge.Nedlasting.Infrastructure.csproj">
+      <Project>{e289314c-4488-4066-b2a4-a8e9329dd748}</Project>
+      <Name>Geonorge.Nedlasting.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj">
       <Project>{28cebea0-9bc6-478c-898f-4b618f87036b}</Project>
       <Name>Geonorge.NedlastingApi</Name>
@@ -793,6 +823,7 @@
   <ItemGroup>
     <Content Include="settings.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -840,9 +871,6 @@
     <Content Include="dist\maps\main.js.map" />
     <Content Include="dist\maps\vendor.css.map" />
     <Content Include="dist\maps\vendor.js.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
