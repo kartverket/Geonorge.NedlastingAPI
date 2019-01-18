@@ -30,6 +30,22 @@ namespace Kartverket.Geonorge.Download.Models
                 .HasForeignKey(item => item.ReferenceNumber)
                 .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<Dataset>()
+            .HasIndex(d => d.MetadataUuid);
+
+            modelBuilder.Entity<File>()
+            .HasIndex(f => f.Division);
+
+            modelBuilder.Entity<File>()
+            .HasIndex(f => f.DivisionKey);
+
+            modelBuilder.Entity<File>()
+            .HasIndex(f => f.Projection);
+
+            modelBuilder.Entity<File>()
+            .HasIndex(f => f.Format);
+
+
             modelBuilder.Conventions.Add(new NonPublicColumnAttributeConvention());
         }
     }
