@@ -28,7 +28,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             _capabilitiesService = capabilitiesService;
             _downloadService = downloadService;
         }
-        [CacheOutputUntilToday(23, 55)]
+        [CacheOutputUntilThisYear(12, 31)]
         [Route("capabilities/{metadataUuid}")]
         [ResponseType(typeof(CapabilitiesType))]
         public IHttpActionResult GetCapabilities(string metadataUuid)
@@ -56,7 +56,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         ///     Get Projections from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        [CacheOutputUntilToday(23, 55)]
+        [CacheOutputUntilThisYear(12, 31)]
         [ResponseType(typeof(List<ProjectionType>))]
         [Route("codelists/projection/{metadataUuid}")]
         public IHttpActionResult GetProjections(string metadataUuid)
@@ -76,7 +76,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         ///     Get Areas from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        [CacheOutputUntilToday(23, 55)]
+        [CacheOutputUntilThisYear(12, 31)]
         [Route("codelists/area/{metadataUuid}")]
         [ResponseType(typeof(List<AreaType>))]
         public IHttpActionResult GetAreas(string metadataUuid)
@@ -96,7 +96,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         ///     Get Format from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        [CacheOutputUntilToday(23, 55)]
+        [CacheOutputUntilThisYear(12, 31)]
         [Route("codelists/format/{metadataUuid}")]
         [ResponseType(typeof(List<FormatType>))]
         public IHttpActionResult GetFormats(string metadataUuid)
