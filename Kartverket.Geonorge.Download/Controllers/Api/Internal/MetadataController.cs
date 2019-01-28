@@ -1,4 +1,5 @@
-﻿using Kartverket.Geonorge.Download.Models;
+﻿using Kartverket.Geonorge.Download.Controllers.Api.V3;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Models.Api.Internal;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
@@ -9,6 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
+using WebApi.OutputCache.V2;
 
 namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
 {
@@ -38,6 +40,15 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
                 UpdateMetadataInformation metadataInformation = _updateMetadataService.Convert(metadata);
 
                 _updateMetadataService.UpdateMetadata(metadataInformation);
+
+                var cache = Configuration.CacheOutputConfiguration().GetCacheOutputProvider(Request);
+
+                // invalidate cache of "CapabilitiesV3Controller"
+                cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetCapabilities(metadata.Uuid)));
+                cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetAreas(metadata.Uuid)));
+                cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetProjections(metadata.Uuid)));
+                cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetFormats(metadata.Uuid)));
+
             }
             catch (Exception e)
             {
