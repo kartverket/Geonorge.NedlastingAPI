@@ -1,4 +1,4 @@
-﻿using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
