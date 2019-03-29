@@ -286,6 +286,7 @@
     <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\GeonorgeCacheOutputAttribute.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />
     <Compile Include="Controllers\Api\Internal\ManageOrderController.cs" />
     <Compile Include="Controllers\Api\Internal\MetadataController.cs" />
