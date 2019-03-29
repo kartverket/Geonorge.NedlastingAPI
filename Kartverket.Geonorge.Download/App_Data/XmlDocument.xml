@@ -762,6 +762,11 @@
                 The coverage layer to display coverage in map
             </summary>
         </member>
+        <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest.DatasetDateUpdated">
+            <summary>
+                The date when the dataset was updated
+            </summary>
+        </member>
         <member name="P:Kartverket.Geonorge.Download.Models.Api.Internal.Distribution.URL">
             <summary>
                 URL for getting dataset info, default currently https://nedlasting.geonorge.no/api/capabilities/
