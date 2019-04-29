@@ -12,6 +12,7 @@ namespace Kartverket.Geonorge.Download.Models
         public List<SimpleDistribution> Distributions { get; set; }
         public List<SimpleReferenceSystem> Projections { get; set; }
         public string CoverageLayer { get; set; }
+        public DateTime? DatasetDateUpdated { get; set; }
 
     }
 }

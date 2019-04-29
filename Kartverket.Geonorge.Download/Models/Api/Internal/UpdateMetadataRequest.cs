@@ -23,6 +23,10 @@ namespace Kartverket.Geonorge.Download.Models.Api.Internal
         ///     The coverage layer to display coverage in map
         /// </summary>
         public string CoverageLayer { get; set; }
+        /// <summary>
+        ///     The date when the dataset was updated
+        /// </summary>
+        public DateTime? DatasetDateUpdated { get; set; }
     }
 
     public class Distribution
