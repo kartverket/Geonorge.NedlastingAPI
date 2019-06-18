@@ -12,7 +12,7 @@ namespace Kartverket.Geonorge.Download.App_Start
 {
     public static class DependencyConfig
     {
-        public static void Configure(ContainerBuilder builder)
+        public static IContainer Configure(ContainerBuilder builder)
         {
             ConfigureInfrastructure(builder);
 
@@ -21,6 +21,8 @@ namespace Kartverket.Geonorge.Download.App_Start
             var container = builder.Build();
 
             SetupAspMvcDependencyResolver(container);
+
+            return container;
         }
 
         private static void ConfigureApplicationDependencies(ContainerBuilder builder)

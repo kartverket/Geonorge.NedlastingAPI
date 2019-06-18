@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Autofac;
+using Geonorge.AuthLib.NetFull;
+using Kartverket.Geonorge.Download.App_Start;
 using Microsoft.Owin;
 using Owin;
 
@@ -12,7 +12,12 @@ namespace Kartverket.Geonorge.Download
     {
         public void Configuration(IAppBuilder app)
         {
-        
+            // Use Autofac as an Owin middleware
+            var container = DependencyConfig.Configure(new ContainerBuilder());
+            app.UseAutofacMiddleware(container);
+            app.UseAutofacMvc();  // requires Autofac.Mvc5.Owin nuget package installed
+            
+            app.UseGeonorgeAuthentication();
         }
     }
 }
