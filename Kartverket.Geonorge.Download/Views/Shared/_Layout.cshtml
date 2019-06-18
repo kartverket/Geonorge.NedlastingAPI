@@ -1,3 +1,5 @@
+﻿@using System.Security.Claims
+@using Geonorge.AuthLib.Common
 @using Kartverket.Geonorge.Download.Helpers
 @using Kartverket.Geonorge.Download.Resources
 
@@ -97,5 +99,23 @@
 
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
     @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
+
+@if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
+{
+    <!-- user claims: -->
+    var cp = (ClaimsPrincipal)User;
+    foreach (var claim in cp.Claims)
+    {
+        <!-- @claim.Type = @claim.Value -->
+    }
+
+    <!-- roles: -->
+    var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
+    foreach (var role in roles)
+    {
+        <!-- @role.Value-->
+    }
+}
+
 </body>
 </html>
