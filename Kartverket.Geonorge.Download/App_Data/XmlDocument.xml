@@ -668,6 +668,12 @@
                 Get info about files in order
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.HomeController.SignOutCallback">
+            <summary>
+            This is the action responding to /signout-callback-oidc route after logout at the identity provider
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
                 Force HTTPS if request is not from local machine

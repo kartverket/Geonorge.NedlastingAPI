@@ -1,4 +1,4 @@
-﻿@using Kartverket.Geonorge.Download.Helpers
+@using Kartverket.Geonorge.Download.Helpers
 @using Kartverket.Geonorge.Download.Resources
 
 <!DOCTYPE html>
@@ -84,8 +84,8 @@
     }
     @Scripts.Render("~/shared-partials-scripts")
     <script>
-        searchOption.loginUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/SignIn?ReturnUrl="))@Request.Url';
-        searchOption.logoutUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/LogOut"))';
+        searchOption.loginUrl = '@Html.Raw(Url.Action("SignIn", "Home"))';
+        searchOption.logoutUrl = '@Html.Raw(Url.Action("SignOut", "Home"))';
         searchOption.loggedIn = @Request.IsAuthenticated.ToString().ToLower();
         searchOption.epiBaseUrl = '@Html.GeonorgeUrl()';
         var orderItems = Cookies.get('orderitems');
