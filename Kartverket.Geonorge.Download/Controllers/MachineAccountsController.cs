@@ -3,13 +3,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Geonorge.AuthLib.Common;
 using Kartverket.Geonorge.Download.Models;
-using Kartverket.Geonorge.Utilities;
 using ScottBrady91.AspNet.Identity.ConfigurablePasswordHasher;
 
 namespace Kartverket.Geonorge.Download.Controllers
 {
-    [BaatAuthorization(Role = SecurityClaim.Role.MetadataAdmin)]
+    [GeoIdAuthorization(Role = GeonorgeRoles.MetadataAdmin)]
     public class MachineAccountsController : Controller
     {
         private readonly DownloadContext _dbContext;

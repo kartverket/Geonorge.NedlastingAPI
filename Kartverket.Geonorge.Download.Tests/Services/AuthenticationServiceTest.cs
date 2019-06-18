@@ -12,9 +12,9 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         [Fact]
         public void ShouldFetchAuthenticatedUserFromBasicAuthIfNoSamlAuthIsPresent()
         {
-            var exampleUser = new AuthenticatedUser("exampleUser", AuthenticationMethod.Baat);
+            var exampleUser = new AuthenticatedUser("exampleUser", AuthenticationMethod.GeoId);
 
-            var samlAuthMock = new Mock<IBaatAuthenticationService>();
+            var samlAuthMock = new Mock<IGeoIdAuthenticationService>();
             var basicAuthMock = new Mock<IBasicAuthenticationService>();
             var httpRequestMessage = new HttpRequestMessage();
             basicAuthMock.Setup(b => b.GetAuthenticatedUsername(httpRequestMessage)).Returns(exampleUser);
@@ -30,8 +30,8 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         [Fact]
         public void ShouldFetchAuthenticatedUserFromSamlIfPresent()
         {
-            var exampleUser = new AuthenticatedUser("exampleUser", AuthenticationMethod.Baat);
-            var samlAuthMock = new Mock<IBaatAuthenticationService>();
+            var exampleUser = new AuthenticatedUser("exampleUser", AuthenticationMethod.GeoId);
+            var samlAuthMock = new Mock<IGeoIdAuthenticationService>();
             samlAuthMock.Setup(s => s.GetAuthenticatedUser()).Returns(exampleUser);
             var basicAuthMock = new Mock<IBasicAuthenticationService>();
 

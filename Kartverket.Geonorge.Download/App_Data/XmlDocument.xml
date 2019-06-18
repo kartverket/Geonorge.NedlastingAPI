@@ -945,7 +945,7 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
             <summary>
-                Gets username of the authenticated user. User can be authenticated with SAML or basic auth
+                Gets username of the authenticated user. User can be authenticated with GeoID or basic auth
             </summary>
             <returns>username of authenticated user or null if not authenticated</returns>
         </member>

@@ -2,7 +2,7 @@
 
 namespace Kartverket.Geonorge.Download.Services.Auth
 {
-    public interface IBaatAuthenticationService
+    public interface IGeoIdAuthenticationService
     {
         AuthenticatedUser GetAuthenticatedUser();
     }

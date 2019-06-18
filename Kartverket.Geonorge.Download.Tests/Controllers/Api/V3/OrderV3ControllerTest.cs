@@ -83,7 +83,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
             _orderServiceMock.Setup(o => o.Find(orderUuid)).Returns(CreateOpenDataOrder());
 
             _authenticationServiceMock.Setup(a => a.GetAuthenticatedUser(It.IsAny<HttpRequestMessage>()))
-                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.Baat));
+                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.GeoId));
 
             var updatedOrder = new OrderType {downloadAsBundle = true, email = "dummy@example.com"};
 
@@ -119,7 +119,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
             _orderServiceMock.Setup(o => o.Find(orderUuid)).Returns(CreateRestrictedOrder(loggedInUsername));
 
             _authenticationServiceMock.Setup(a => a.GetAuthenticatedUser(It.IsAny<HttpRequestMessage>()))
-                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.Baat));
+                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.GeoId));
 
             var updatedOrder = new OrderType {downloadAsBundle = true, email = "dummy@example.com"};
 
@@ -153,7 +153,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
             _orderServiceMock.Setup(o => o.Find(orderUuid)).Returns(CreateRestrictedOrder("anotherUsername"));
 
             _authenticationServiceMock.Setup(a => a.GetAuthenticatedUser(It.IsAny<HttpRequestMessage>()))
-                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.Baat));
+                .Returns(new AuthenticatedUser(loggedInUsername, AuthenticationMethod.GeoId));
 
             var updatedOrder = new OrderType {downloadAsBundle = true, email = "dummy@example.com"};
 

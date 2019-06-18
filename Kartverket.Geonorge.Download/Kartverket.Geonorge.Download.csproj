@@ -470,8 +470,8 @@
     <Compile Include="Services\Auth\IAuthenticationService.cs" />
     <Compile Include="Services\Auth\IBasicAuthenticationCredentialValidator.cs" />
     <Compile Include="Services\Auth\IBasicAuthenticationService.cs" />
-    <Compile Include="Services\Auth\IBaatAuthenticationService.cs" />
-    <Compile Include="Services\Auth\BaatAuthentication.cs" />
+    <Compile Include="Services\Auth\IGeoIdAuthenticationService.cs" />
+    <Compile Include="Services\Auth\GeoIdAuthentication.cs" />
     <Compile Include="Services\ExternalRequestException.cs" />
     <Compile Include="Services\ExternalRequestService.cs" />
     <Compile Include="Services\IExternalRequestService.cs" />

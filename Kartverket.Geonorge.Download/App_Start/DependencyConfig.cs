@@ -42,7 +42,7 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
             builder.RegisterType<BasicAuthenticationCredentialValidator>()
                 .As<IBasicAuthenticationCredentialValidator>();
-            builder.RegisterType<BaatAuthentication>().As<IBaatAuthenticationService>();
+            builder.RegisterType<GeoIdAuthentication>().As<IGeoIdAuthenticationService>();
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
             builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
             builder.RegisterType<FileService>().As<IFileService>();
