@@ -83,14 +83,6 @@
     <Reference Include="Kartverket.Geonorge.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.45\lib\net45\Kartverket.Geonorge.Utilities.dll</HintPath>
     </Reference>
-    <Reference Include="Kentor.AuthServices, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kentor.AuthServices.0.19.0\lib\net45\Kentor.AuthServices.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Kentor.AuthServices.HttpModule, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Kentor.AuthServices.HttpModule.0.19.0\lib\net45\Kentor.AuthServices.HttpModule.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Kentor.AuthServices.Mvc, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kentor.AuthServices.Mvc.0.19.0\lib\net45\Kentor.AuthServices.Mvc.dll</HintPath>
       <Private>True</Private>
