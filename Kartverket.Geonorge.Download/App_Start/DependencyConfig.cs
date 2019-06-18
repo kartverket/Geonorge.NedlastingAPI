@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using Geonorge.AuthLib.NetFull;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Download.Services.Auth;
@@ -62,6 +63,7 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterControllers(typeof(WebApiApplication).Assembly).PropertiesAutowired();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly()).PropertiesAutowired();
             builder.RegisterModule(new AutofacWebTypesModule());
+            builder.RegisterModule<GeonorgeAuthenticationModule>();
         }
     }
 }
