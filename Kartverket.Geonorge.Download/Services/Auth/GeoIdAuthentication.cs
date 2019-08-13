@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading;
+using System.Web.Configuration;
 using Geonorge.AuthLib.Common;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
@@ -45,16 +46,16 @@ namespace Kartverket.Geonorge.Download.Services.Auth
             string accessToken = GetAccessTokenFromHeader(requestMessage);
             if (accessToken != null)
             {
-                var geoIdIntrospectUrl = "https://test.geoid.no/oauth2/introspect";
-                var requestUrl = $"{geoIdIntrospectUrl}?token={accessToken}";
+                var geoIdIntrospectionUrl = WebConfigurationManager.AppSettings["GeoID:IntrospectionUrl"];
+                var geoIdIntrospectionCredentials = WebConfigurationManager.AppSettings["GeoID:IntrospectionCredentials"];
                 
-                Log.Debug("Token validation - requestUrl: " + requestUrl);
+                Log.Debug("Token validation - requestUrl: " + geoIdIntrospectionUrl);
                 
-                var byteArray = Encoding.ASCII.GetBytes("username:password"); // INSERT USERNAME/PASSWORD HERE!
+                var byteArray = Encoding.ASCII.GetBytes(geoIdIntrospectionCredentials);
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
                 var formUrlEncodedContent = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("token", accessToken) });
-                HttpResponseMessage result = _httpClient.PostAsync(requestUrl, formUrlEncodedContent).Result;
+                HttpResponseMessage result = _httpClient.PostAsync(geoIdIntrospectionUrl, formUrlEncodedContent).Result;
 
                 Log.Debug("Token validation status code: " + result.StatusCode);
 
@@ -70,6 +71,21 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                         var isActiveToken = jsonResponse["active"].Value<bool>();
 
                         Log.Info($"Token [{accessToken}] is active: " + isActiveToken);
+
+                        if (isActiveToken)
+                        {
+                            if (jsonResponse.ContainsKey("username"))
+                            {
+                                var username = jsonResponse["username"].Value<string>();
+                                if (!string.IsNullOrWhiteSpace(username))
+                                {
+                                    // TODO - check domain name @carbon.super in username...
+
+                                    return new AuthenticatedUser(username, AuthenticationMethod.GeoId);
+                                }
+                            }
+                               
+                        }
                     }
                     else
                     {
@@ -79,7 +95,7 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                 }
                 else
                 {
-                    Log.Error("Error while validating user access token at url=" + geoIdIntrospectUrl);
+                    Log.Error("Error while validating user access token at url=" + geoIdIntrospectionUrl);
                 }
             }
             return null;
