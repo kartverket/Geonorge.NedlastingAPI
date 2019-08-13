@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Geonorge.AuthLib.NetFull;
 using Kartverket.Geonorge.Download.App_Start;
 using MB.Owin.Logging.Log4Net;
 using Microsoft.Owin;
@@ -19,7 +20,7 @@ namespace Kartverket.Geonorge.Download
             app.UseAutofacMiddleware(container);
             app.UseAutofacMvc();  // requires Autofac.Mvc5.Owin nuget package installed
             
-            //app.UseGeonorgeAuthentication();
+            app.UseGeonorgeAuthentication();
            
         }
     }
