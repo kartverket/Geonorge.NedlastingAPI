@@ -956,6 +956,19 @@
             <param name="credentials"></param>
             <returns></returns>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IGeoIdAuthenticationService.GetAuthenticatedUser">
+            <summary>
+            Get current logged in user. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IGeoIdAuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Get current logged in user from bearer access token
+            </summary>
+            <param name="requestMessage"></param>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
             <summary>
             This service forward a bundle request to the FME bundling service. 
