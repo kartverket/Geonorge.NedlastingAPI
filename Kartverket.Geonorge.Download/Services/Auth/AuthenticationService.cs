@@ -21,7 +21,7 @@ namespace Kartverket.Geonorge.Download.Services.Auth
         /// <returns>username of authenticated user or null if not authenticated</returns>
         public AuthenticatedUser GetAuthenticatedUser(HttpRequestMessage requestMessage)
         {
-            AuthenticatedUser authenticatedUser = _geoIdAuthenticationService.GetAuthenticatedUser();
+            AuthenticatedUser authenticatedUser = _geoIdAuthenticationService.GetAuthenticatedUser(requestMessage);
 
             if (authenticatedUser == null)
                 authenticatedUser = _basicAuthenticationService.GetAuthenticatedUsername(requestMessage);

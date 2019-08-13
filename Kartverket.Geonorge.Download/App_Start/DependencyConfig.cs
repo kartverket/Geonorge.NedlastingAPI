@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
 using Autofac;
@@ -42,7 +43,10 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
             builder.RegisterType<BasicAuthenticationCredentialValidator>()
                 .As<IBasicAuthenticationCredentialValidator>();
-            builder.RegisterType<GeoIdAuthentication>().As<IGeoIdAuthenticationService>();
+
+            builder.Register(ctx => new HttpClient()).Named<HttpClient>("tokenValidation").SingleInstance();
+            builder.Register(ctx => new GeoIdAuthentication(ctx.ResolveNamed<HttpClient>("tokenValidation"))).As<IGeoIdAuthenticationService>();
+
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
             builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
             builder.RegisterType<FileService>().As<IFileService>();
