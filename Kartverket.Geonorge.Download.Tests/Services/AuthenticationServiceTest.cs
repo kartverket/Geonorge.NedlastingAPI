@@ -31,13 +31,16 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         public void ShouldFetchAuthenticatedUserFromSamlIfPresent()
         {
             var exampleUser = new AuthenticatedUser("exampleUser", AuthenticationMethod.GeoId);
-            var samlAuthMock = new Mock<IGeoIdAuthenticationService>();
-            samlAuthMock.Setup(s => s.GetAuthenticatedUser()).Returns(exampleUser);
+            var httpRequestMessage = new HttpRequestMessage();
+
+            
+            var geoidMock = new Mock<IGeoIdAuthenticationService>();
+            geoidMock.Setup(s => s.GetAuthenticatedUser(httpRequestMessage)).Returns(exampleUser);
             var basicAuthMock = new Mock<IBasicAuthenticationService>();
 
             var authenticatedUser =
-                new AuthenticationService(samlAuthMock.Object, basicAuthMock.Object).GetAuthenticatedUser(
-                    new HttpRequestMessage());
+                new AuthenticationService(geoidMock.Object, basicAuthMock.Object).GetAuthenticatedUser(
+                    httpRequestMessage);
 
             authenticatedUser.Should().Be(exampleUser);
         }
