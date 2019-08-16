@@ -127,7 +127,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         {
             var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
             var server = ConfigurationManager.AppSettings["DownloadUrl"];
-            return $"{server}/AuthServices/SignIn?ReturnUrl={encodedReturnUrl}";
+            return $"{server}/Home/SignIn?ReturnUrl={encodedReturnUrl}";
         }
     }
 }
