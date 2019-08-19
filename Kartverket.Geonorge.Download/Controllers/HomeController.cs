@@ -25,7 +25,7 @@ namespace Kartverket.Geonorge.Download.Controllers
 
         public void SignIn()
         {
-            var redirectUrl = Url.Action(nameof(HomeController.Index), "Home");
+            var redirectUrl = "/";
             if(Request.QueryString["ReturnUrl"] != null)
                 redirectUrl = Request.QueryString["ReturnUrl"];
             HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl },
