@@ -11,7 +11,7 @@ using Kartverket.Geonorge.Download.Services.Auth;
 namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 {
     [EnableCors(
-        "http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no",
+        "http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no,https://kartkatalog-frontend.dev.geonorge.no,http://kartkatalog-frontend.dev.geonorge.no",
         "*", "*", SupportsCredentials = true)]
     public class DownloadV3Controller : ApiController
     {
