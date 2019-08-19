@@ -18,23 +18,27 @@ namespace Kartverket.Geonorge.Download.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.Title = "Download";
+            if (Session["ReturnUrl"] != null)
+            {
+                var redirectUrl = Session["ReturnUrl"].ToString();
+                Session["ReturnUrl"] = null;
+                Response.Redirect(redirectUrl);
+            }
+                ViewBag.Title = "Download";
 
             return View();
         }
 
         public void SignIn()
         {
-            if(Response != null) { 
-                var location = Response.Headers.Get("Location");
-                if (!string.IsNullOrEmpty(location))
-                    Response.Redirect(location);
-            }
             var redirectUrl = "/";
-            if(Request.QueryString["ReturnUrl"] != null)
+            if (Request.QueryString["ReturnUrl"] != null) { 
                 redirectUrl = Request.QueryString["ReturnUrl"];
+                Session["ReturnUrl"] = redirectUrl;
+            }
+
             HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl },
-                OpenIdConnectAuthenticationDefaults.AuthenticationType);
+                    OpenIdConnectAuthenticationDefaults.AuthenticationType);
         }
 
         public void SignOut()
