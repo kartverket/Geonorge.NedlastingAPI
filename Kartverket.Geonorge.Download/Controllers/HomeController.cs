@@ -25,6 +25,11 @@ namespace Kartverket.Geonorge.Download.Controllers
 
         public void SignIn()
         {
+            if(Response != null) { 
+                var location = Response.Headers.Get("Location");
+                if (!string.IsNullOrEmpty(location))
+                    Response.Redirect(location);
+            }
             var redirectUrl = "/";
             if(Request.QueryString["ReturnUrl"] != null)
                 redirectUrl = Request.QueryString["ReturnUrl"];
