@@ -43,6 +43,14 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
         public AuthenticatedUser GetAuthenticatedUser(HttpRequestMessage requestMessage)
         {
+            string userName = "";
+            if(ClaimsPrincipal.Current != null)
+                userName = ClaimsPrincipal.Current.GetUsername();
+
+            if(!string.IsNullOrEmpty(userName))
+                return new AuthenticatedUser(userName, AuthenticationMethod.GeoId);
+
+
             string accessToken = GetAccessTokenFromHeader(requestMessage);
             if (accessToken != null)
             {
