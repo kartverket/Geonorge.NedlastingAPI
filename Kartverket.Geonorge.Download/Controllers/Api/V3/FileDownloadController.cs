@@ -73,6 +73,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
         private bool UserIsLoggedIn()
         {
+            if (User != null && User.Identity.IsAuthenticated)
+                return true;
+
             AuthenticatedUser authenticatedUser = _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
             return authenticatedUser != null;
         }
