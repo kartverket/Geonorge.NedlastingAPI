@@ -73,13 +73,7 @@ namespace Kartverket.Geonorge.Download
         }
         protected void Application_PreSendRequestHeaders()
         {
-            var allowOrigin = Response.Headers.Get("Access-Control-Allow-Origin");
-            if (allowOrigin != null && allowOrigin.Contains(","))
-            {
-                Response.Headers.Remove("Access-Control-Allow-Origin");
-                Response.Headers.Add("Access-Control-Allow-Origin", allowOrigin.Split(',').First());
-            }
-
+             Response.Headers.Remove("Access-Control-Allow-Origin");
         }
 
         protected void DeleteOldPeronalData()
