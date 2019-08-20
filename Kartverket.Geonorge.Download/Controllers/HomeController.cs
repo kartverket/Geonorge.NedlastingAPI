@@ -38,9 +38,9 @@ namespace Kartverket.Geonorge.Download.Controllers
                 Session["ReturnUrl"] = redirectUrl;
                 Log.Info("Setting session ReturnUrl:" + Session["ReturnUrl"]);
             }
-            
 
-            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl },
+            var redirectUri = Url.Action(nameof(HomeController.Index), "Home");
+            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUri },
                     OpenIdConnectAuthenticationDefaults.AuthenticationType);
         }
 
