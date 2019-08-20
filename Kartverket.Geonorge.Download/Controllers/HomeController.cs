@@ -32,14 +32,11 @@ namespace Kartverket.Geonorge.Download.Controllers
         public void SignIn()
         {
             var redirectUrl = "/";
-            if (Request.UrlReferrer != null)
-            {
-                redirectUrl = Request.UrlReferrer.ToString();
-                Session["ReturnUrl"] = redirectUrl;
-            }
-            else if (Request.QueryString["ReturnUrl"] != null) { 
+
+            if (Request.QueryString["ReturnUrl"] != null) { 
                 redirectUrl = Request.QueryString["ReturnUrl"];
                 Session["ReturnUrl"] = redirectUrl;
+                Log.Info("Setting session ReturnUrl:" + Session["ReturnUrl"]);
             }
             
 
