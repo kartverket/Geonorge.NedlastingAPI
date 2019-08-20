@@ -22,7 +22,7 @@ namespace Kartverket.Geonorge.Download.Controllers
             {
                 var redirectUrl = Session["ReturnUrl"].ToString();
                 Session["ReturnUrl"] = null;
-                Log.Info("Redirect to ReturnUrl:" + Session["ReturnUrl"]);
+                Log.Info("Redirect to ReturnUrl:" + redirectUrl);
                 //Response.Redirect(redirectUrl);
             }
                 ViewBag.Title = "Download";
