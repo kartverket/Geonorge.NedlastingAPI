@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -73,7 +74,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
         private bool UserIsLoggedIn()
         {
-            if (User != null && User.Identity.IsAuthenticated)
+            if(ClaimsPrincipal.Current != null && ClaimsPrincipal.Current.Identity.IsAuthenticated)
                 return true;
 
             AuthenticatedUser authenticatedUser = _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
