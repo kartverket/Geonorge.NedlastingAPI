@@ -71,7 +71,7 @@ namespace Kartverket.Geonorge.Download
                 Thread.CurrentThread.CurrentUICulture = culture;
             }
         }
-        protected void Application_EndRequest()
+        protected void Application_PreSendRequestHeaders()
         {
             var allowOrigin = Response.Headers.Get("Access-Control-Allow-Origin");
             if (allowOrigin != null && allowOrigin.Contains(","))
