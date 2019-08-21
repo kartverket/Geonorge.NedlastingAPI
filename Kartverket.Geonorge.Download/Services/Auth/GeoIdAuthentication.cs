@@ -87,7 +87,8 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                                 var username = jsonResponse["username"].Value<string>();
                                 if (!string.IsNullOrWhiteSpace(username))
                                 {
-                                    // TODO - check domain name @carbon.super in username...
+                                    if(username.Contains('@'))
+                                        username = username.Split('@')[0];
 
                                     return new AuthenticatedUser(username, AuthenticationMethod.GeoId);
                                 }
