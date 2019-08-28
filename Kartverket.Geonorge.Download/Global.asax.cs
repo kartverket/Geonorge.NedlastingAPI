@@ -35,9 +35,6 @@ namespace Kartverket.Geonorge.Download
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("json", "true", "application/json"));
             log4net.Config.XmlConfigurator.Configure();
 
-            DependencyConfig.Configure(new ContainerBuilder());
-
-
             HttpConfiguration config = GlobalConfiguration.Configuration;
 
             config.Formatters.JsonFormatter
@@ -73,6 +70,10 @@ namespace Kartverket.Geonorge.Download
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
             }
+        }
+        protected void Application_PreSendRequestHeaders()
+        {
+             Response.Headers.Remove("Access-Control-Allow-Origin");
         }
 
         protected void DeleteOldPeronalData()

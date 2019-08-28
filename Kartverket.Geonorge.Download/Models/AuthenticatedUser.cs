@@ -44,6 +44,6 @@ namespace Kartverket.Geonorge.Download.Models
 
     public enum AuthenticationMethod
     {
-        Baat, Basic
+        GeoId, Basic
     }
 }

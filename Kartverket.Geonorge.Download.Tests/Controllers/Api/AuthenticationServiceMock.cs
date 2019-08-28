@@ -18,7 +18,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api
         {
             if (!string.IsNullOrEmpty(username))
                 mock.Setup(m => m.GetAuthenticatedUser(It.IsAny<HttpRequestMessage>()))
-                    .Returns(new AuthenticatedUser(username, AuthenticationMethod.Baat));
+                    .Returns(new AuthenticatedUser(username, AuthenticationMethod.GeoId));
 
             return mock;
         }

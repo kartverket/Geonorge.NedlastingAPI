@@ -1,9 +1,11 @@
-﻿using System.Reflection;
+﻿using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using Geonorge.AuthLib.NetFull;
 using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using Kartverket.Geonorge.Download.Services.Auth;
@@ -12,7 +14,7 @@ namespace Kartverket.Geonorge.Download.App_Start
 {
     public static class DependencyConfig
     {
-        public static void Configure(ContainerBuilder builder)
+        public static IContainer Configure(ContainerBuilder builder)
         {
             ConfigureInfrastructure(builder);
 
@@ -21,6 +23,8 @@ namespace Kartverket.Geonorge.Download.App_Start
             var container = builder.Build();
 
             SetupAspMvcDependencyResolver(container);
+
+            return container;
         }
 
         private static void ConfigureApplicationDependencies(ContainerBuilder builder)
@@ -39,7 +43,10 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
             builder.RegisterType<BasicAuthenticationCredentialValidator>()
                 .As<IBasicAuthenticationCredentialValidator>();
-            builder.RegisterType<BaatAuthentication>().As<IBaatAuthenticationService>();
+
+            builder.Register(ctx => new HttpClient()).Named<HttpClient>("tokenValidation").SingleInstance();
+            builder.Register(ctx => new GeoIdAuthentication(ctx.ResolveNamed<HttpClient>("tokenValidation"))).As<IGeoIdAuthenticationService>();
+
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
             builder.RegisterType<UpdateMetadataService>().As<IUpdateMetadataService>();
             builder.RegisterType<FileService>().As<IFileService>();
@@ -60,6 +67,7 @@ namespace Kartverket.Geonorge.Download.App_Start
             builder.RegisterControllers(typeof(WebApiApplication).Assembly).PropertiesAutowired();
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly()).PropertiesAutowired();
             builder.RegisterModule(new AutofacWebTypesModule());
+            builder.RegisterModule<GeonorgeAuthenticationModule>();
         }
     }
 }

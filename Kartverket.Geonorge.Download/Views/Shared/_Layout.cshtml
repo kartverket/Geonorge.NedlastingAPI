@@ -1,4 +1,6 @@
-﻿@using Kartverket.Geonorge.Download.Helpers
+﻿@using System.Security.Claims
+@using Geonorge.AuthLib.Common
+@using Kartverket.Geonorge.Download.Helpers
 @using Kartverket.Geonorge.Download.Resources
 
 <!DOCTYPE html>
@@ -84,8 +86,8 @@
     }
     @Scripts.Render("~/shared-partials-scripts")
     <script>
-        searchOption.loginUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/SignIn?ReturnUrl="))@Request.Url';
-        searchOption.logoutUrl = '@Html.Raw(VirtualPathUtility.ToAbsolute("~/AuthServices/LogOut"))';
+        searchOption.loginUrl = '@Html.Raw(Url.Action("SignIn", "Home"))';
+        searchOption.logoutUrl = '@Html.Raw(Url.Action("SignOut", "Home"))';
         searchOption.loggedIn = @Request.IsAuthenticated.ToString().ToLower();
         searchOption.epiBaseUrl = '@Html.GeonorgeUrl()';
         var orderItems = Cookies.get('orderitems');
@@ -97,5 +99,23 @@
 
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
     @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
+
+@if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
+{
+    <!-- user claims: -->
+    var cp = (ClaimsPrincipal)User;
+    foreach (var claim in cp.Claims)
+    {
+        <!-- @claim.Type = @claim.Value -->
+    }
+
+    <!-- roles: -->
+    var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
+    foreach (var role in roles)
+    {
+        <!-- @role.Value-->
+    }
+}
+
 </body>
 </html>

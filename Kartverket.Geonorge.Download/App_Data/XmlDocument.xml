@@ -668,6 +668,12 @@
                 Get info about files in order
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.HomeController.SignOutCallback">
+            <summary>
+            This is the action responding to /signout-callback-oidc route after logout at the identity provider
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Kartverket.Geonorge.Download.Controllers.RequireHttpsNonLocal">
             <summary>
                 Force HTTPS if request is not from local machine
@@ -939,7 +945,7 @@
         </member>
         <member name="M:Kartverket.Geonorge.Download.Services.Auth.AuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
             <summary>
-                Gets username of the authenticated user. User can be authenticated with SAML or basic auth
+                Gets username of the authenticated user. User can be authenticated with GeoID or basic auth
             </summary>
             <returns>username of authenticated user or null if not authenticated</returns>
         </member>
@@ -948,6 +954,19 @@
             Validate credentials received from a http request with basic authentication header
             </summary>
             <param name="credentials"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IGeoIdAuthenticationService.GetAuthenticatedUser">
+            <summary>
+            Get current logged in user. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Services.Auth.IGeoIdAuthenticationService.GetAuthenticatedUser(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            Get current logged in user from bearer access token
+            </summary>
+            <param name="requestMessage"></param>
             <returns></returns>
         </member>
         <member name="T:Kartverket.Geonorge.Download.Services.OrderBundleService">
