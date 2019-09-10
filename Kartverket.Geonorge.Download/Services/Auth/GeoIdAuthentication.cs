@@ -43,13 +43,6 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
         public AuthenticatedUser GetAuthenticatedUser(HttpRequestMessage requestMessage)
         {
-            string userName = "";
-            if(ClaimsPrincipal.Current != null)
-                userName = ClaimsPrincipal.Current.GetUsername();
-
-            if(!string.IsNullOrEmpty(userName))
-                return new AuthenticatedUser(userName, AuthenticationMethod.GeoId);
-
 
             string accessToken = GetAccessTokenFromHeader(requestMessage);
             if (accessToken != null)
@@ -107,6 +100,14 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                     Log.Error("Error while validating user access token at url=" + geoIdIntrospectionUrl);
                 }
             }
+
+            string userName = "";
+            if (ClaimsPrincipal.Current != null)
+                userName = ClaimsPrincipal.Current.GetUsername();
+
+            if (!string.IsNullOrEmpty(userName))
+                return new AuthenticatedUser(userName, AuthenticationMethod.GeoId);
+
             return null;
         }
 
