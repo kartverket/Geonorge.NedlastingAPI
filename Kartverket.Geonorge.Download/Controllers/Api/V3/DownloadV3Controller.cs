@@ -109,8 +109,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return NotFound();
 
             // Download open data directly from it's location:
-            if (item.AccessConstraint.IsOpen())
-                return Redirect(item.DownloadUrl);
+            //if (item.AccessConstraint.IsOpen())
+            //    return Redirect(item.DownloadUrl);
 
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
