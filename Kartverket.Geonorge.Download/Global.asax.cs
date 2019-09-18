@@ -53,6 +53,8 @@ namespace Kartverket.Geonorge.Download
             log.Error("App_Error", ex);
         }
 
+        protected void Session_Start() { }
+
         protected void Application_BeginRequest()
         {
             DeleteOldPeronalData();
