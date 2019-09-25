@@ -122,6 +122,12 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                 }
             }
 
+            var queryStrings = requestMessage.GetQueryNameValuePairs();
+            var accessToken = queryStrings.Where(queryString => queryString.Key == "access_token")
+                .Select(query => new { query.Key, query.Value }).FirstOrDefault();
+            if (accessToken != null)
+                return accessToken.Value;
+
             return null;
         }
     }
