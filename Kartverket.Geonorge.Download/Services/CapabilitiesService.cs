@@ -35,6 +35,7 @@ namespace Kartverket.Geonorge.Download.Services
                 supportsProjectionSelection = dataset.SupportsProjectionSelection.GetValueOrDefault(),
                 supportsDownloadBundling = IsBundlingEnabled(),
                 mapSelectionLayer = dataset.MapSelectionLayer,
+                accessConstraintRequiredRole = dataset.AccessConstraintRequiredRole,
                 distributedBy = ConfigurationManager.AppSettings["DistributedBy"],
                 _links = new LinkCreator().CreateCapabilityLinks(metadataUuid).ToArray()
             };
