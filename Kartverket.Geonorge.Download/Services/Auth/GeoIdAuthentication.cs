@@ -83,7 +83,9 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                                     if(username.Contains('@'))
                                         username = username.Split('@')[0];
 
-                                    return new AuthenticatedUser(username, AuthenticationMethod.GeoId);
+                                    var roles = GetRolesForUser(username, accessToken);
+
+                                    return new AuthenticatedUser(username, AuthenticationMethod.GeoId, roles);
                                 }
                             }
                                
@@ -107,6 +109,37 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
             if (!string.IsNullOrEmpty(userName))
                 return new AuthenticatedUser(userName, AuthenticationMethod.GeoId);
+
+            return null;
+        }
+
+        private List<string> GetRolesForUser(string username, string accessToken)
+        {
+            var geoIdUserInfoUrl = WebConfigurationManager.AppSettings["GeoID:BaatAuthzApiUrl"] + "info/" + username;
+
+            Log.Debug("User role info - requestUrl: " + geoIdUserInfoUrl);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            HttpResponseMessage result = _httpClient.GetAsync(geoIdUserInfoUrl).Result;
+            Log.Debug("User role info status code: " + result.StatusCode);
+
+            if (result.IsSuccessStatusCode)
+            {
+                var rawResponse = result.Content.ReadAsStringAsync().Result;
+
+                Log.Debug("Response from baat info api: " + rawResponse);
+
+                var jsonResponse = JObject.Parse(rawResponse);
+                if (jsonResponse.ContainsKey("baat_services"))
+                {
+                    return jsonResponse["baat_services"].ToObject<List<string>>();
+                }
+                else
+                {
+                    Log.Info("Response from baat info api: " + rawResponse);
+                }
+            }
 
             return null;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +8,7 @@ using Kartverket.Geonorge.Download.Models.Api.Internal;
 using log4net;
 using LinqKit;
 using System.Data.Entity;
+using Geonorge.AuthLib.Common;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -71,7 +72,7 @@ namespace Kartverket.Geonorge.Download.Services
             var accessRestrictionsRequiredRole = accessRestrictions.
                 Where(a => !string.IsNullOrEmpty(a.AccessConstraint.RequiredRole));
 
-            if (!authenticatedUser.HasRole("nd.metadata_admin") && accessRestrictionsRequiredRole.Any())
+            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole.Any())
             {
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
