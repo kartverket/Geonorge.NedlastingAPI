@@ -70,7 +70,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         private void AddPrivacyInfo(StringBuilder body)
         {
-            body.AppendLine().AppendLine("Linken for å laste ned, samt epost slettes etter 1 dag.");
+            body.AppendLine().AppendLine("Linken for å laste ned, samt epost slettes etter 7 dager.");
         }
 
         private void AddFooter(StringBuilder body)
