@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +8,7 @@ using Kartverket.Geonorge.Download.Models.Api.Internal;
 using log4net;
 using LinqKit;
 using System.Data.Entity;
+using Geonorge.AuthLib.Common;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -62,10 +63,23 @@ namespace Kartverket.Geonorge.Download.Services
         // ReSharper disable once UnusedParameter.Local
         public void CheckAccessRestrictions(Order order, AuthenticatedUser authenticatedUser)
         {
-            bool hasAnyRestrictedDatasets = GetAccessRestrictionsForOrder(order).Any();
+            var accessRestrictions = GetAccessRestrictionsForOrder(order);
+            bool hasAnyRestrictedDatasets = accessRestrictions.Any();
 
             if (hasAnyRestrictedDatasets && authenticatedUser == null)
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
+
+            var accessRestrictionsRequiredRole = accessRestrictions.
+                Where(a => !string.IsNullOrEmpty(a.AccessConstraint.RequiredRole));
+
+            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole.Any())
+            {
+                foreach(var dataset in accessRestrictionsRequiredRole)
+                {
+                    if (!authenticatedUser.HasRole(dataset.AccessConstraint.RequiredRole))
+                        throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
+                }
+            }
         }
 
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
@@ -185,7 +199,7 @@ namespace Kartverket.Geonorge.Download.Services
                 .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && d.AccessConstraint != null)
                 .Select(d => new DatasetAccessConstraint() {
                     MetadataUuid = d.MetadataUuid,
-                    AccessConstraint = new AccessConstraint() { Constraint = d.AccessConstraint}
+                    AccessConstraint = new AccessConstraint() { Constraint = d.AccessConstraint, RequiredRole = d.AccessConstraintRequiredRole}
                     })
                 .ToList();
 

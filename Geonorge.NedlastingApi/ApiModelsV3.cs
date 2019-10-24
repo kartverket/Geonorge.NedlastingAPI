@@ -208,7 +208,10 @@ namespace Geonorge.NedlastingApi.V3 {
         
         /// <remarks/>
         public string mapSelectionLayer;
-        
+
+        /// <remarks/>
+        public string accessConstraintRequiredRole;
+
         /// <remarks/>
         public bool supportsDownloadBundling;
         

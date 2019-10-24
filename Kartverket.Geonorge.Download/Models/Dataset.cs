@@ -39,6 +39,9 @@ namespace Kartverket.Geonorge.Download.Models
         [Column("AccessConstraint")] 
         public string AccessConstraint { get; set; }
 
+        [Column("AccessConstraintRequiredRole")]
+        public string AccessConstraintRequiredRole { get; set; }
+
         [Column("maxArea")] 
         public int MaxArea { get; set; }
 
