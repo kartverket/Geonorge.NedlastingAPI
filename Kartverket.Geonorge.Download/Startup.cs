@@ -20,7 +20,7 @@ namespace Kartverket.Geonorge.Download
             app.UseAutofacMiddleware(container);
             app.UseAutofacMvc();  // requires Autofac.Mvc5.Owin nuget package installed
             
-            //app.UseGeonorgeAuthentication();
+            app.UseGeonorgeAuthentication();
            
         }
     }
