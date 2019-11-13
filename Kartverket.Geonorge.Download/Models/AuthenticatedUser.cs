@@ -14,7 +14,8 @@ namespace Kartverket.Geonorge.Download.Models
         {
             Username = username;
             AuthenticationMethod = method;
-            _roles.AddRange(roles);
+            if(roles != null && roles.Count > 0)
+                _roles.AddRange(roles);
         }
 
         public string Username { get; }
