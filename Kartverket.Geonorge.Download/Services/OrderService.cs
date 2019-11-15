@@ -70,13 +70,14 @@ namespace Kartverket.Geonorge.Download.Services
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
 
             var accessRestrictionsRequiredRole = accessRestrictions.
-                Where(a => !string.IsNullOrEmpty(a.AccessConstraint.RequiredRole));
+                Where(a => a.AccessConstraint.RequiredRoles.Any());
 
             if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole.Any())
             {
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
-                    if (!authenticatedUser.HasRole(dataset.AccessConstraint.RequiredRole))
+                    foreach(var requiredRole in dataset.AccessConstraint.RequiredRoles)
+                    if (!authenticatedUser.HasRole(requiredRole))
                         throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
                 }
             }
@@ -199,9 +200,32 @@ namespace Kartverket.Geonorge.Download.Services
                 .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && d.AccessConstraint != null)
                 .Select(d => new DatasetAccessConstraint() {
                     MetadataUuid = d.MetadataUuid,
-                    AccessConstraint = new AccessConstraint() { Constraint = d.AccessConstraint, RequiredRole = d.AccessConstraintRequiredRole}
+                    AccessConstraint = new AccessConstraint()
+                    {
+                        Constraint = d.AccessConstraint,
+                        RequiredRole = d.AccessConstraintRequiredRole
+                    }
                     })
                 .ToList();
+
+            if(accessConstraints!= null && accessConstraints.Count > 0)
+                accessConstraints = SetMultipleAccessConstraintRequiredRole(accessConstraints);
+
+            return accessConstraints;
+        }
+
+        private List<DatasetAccessConstraint> SetMultipleAccessConstraintRequiredRole(List<DatasetAccessConstraint> accessConstraints)
+        {
+            for (int j = 0; j < accessConstraints.Count;j++)
+            {
+                var accessConstraint = accessConstraints[j];
+
+                if (!string.IsNullOrEmpty(accessConstraint?.AccessConstraint?.RequiredRole))
+                {
+                    var requiredRoles = accessConstraint.AccessConstraint.RequiredRole.Split(',').Select(r => r.Trim()).ToList();
+                    accessConstraints[j].AccessConstraint.RequiredRoles = requiredRoles;
+                }
+            }
 
             return accessConstraints;
         }

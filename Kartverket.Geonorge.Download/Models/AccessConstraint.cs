@@ -1,4 +1,7 @@
-﻿namespace Kartverket.Geonorge.Download.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Kartverket.Geonorge.Download.Models
 {
     public class AccessConstraint
     {
@@ -7,6 +10,7 @@
 
         public string Constraint { get; set; }
         public string RequiredRole { get; set; }
+        public List<string> RequiredRoles { get; set; }
 
         public bool IsOpen() => string.IsNullOrWhiteSpace(Constraint);
 
@@ -14,10 +18,11 @@
 
         public AccessConstraint() { }
 
-        public AccessConstraint(string constraint, string requiredRole = null)
+        public AccessConstraint(string constraint, List<string> requiredRoles = null)
         {
             Constraint = constraint;
-            RequiredRole = requiredRole;
+            RequiredRole = requiredRoles.FirstOrDefault();
+            RequiredRoles = requiredRoles;
         }
     }
 }
