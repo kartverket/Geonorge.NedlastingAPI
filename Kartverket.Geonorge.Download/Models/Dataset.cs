@@ -27,6 +27,9 @@ namespace Kartverket.Geonorge.Download.Models
         [Column("supportsPolygonSelection")] 
         public bool? SupportsPolygonSelection { get; set; }
 
+        [Column("supportsPolygonSelectionRequiredRole")]
+        public string SupportsPolygonSelectionRequiredRole { get; set; }
+
         [Column("supportsProjectionSelection")]
         public bool? SupportsProjectionSelection { get; set; }
 

@@ -82,6 +82,20 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
+            var accessRestrictionsRequiredRolePolygonSelection = accessRestrictions.
+                    Where(a => a.AccessConstraint.RequiredRolePolygonSelection != null);
+
+            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRolePolygonSelection != null && accessRestrictionsRequiredRolePolygonSelection.Any())
+            {
+                foreach (var dataset in accessRestrictionsRequiredRolePolygonSelection)
+                {
+                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRolesPolygonSelection)
+                        if (!authenticatedUser.HasRole(requiredRole))
+                            throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
+                }
+            }
+
+
             var accessRestrictionsRequiredRoleFiles = accessRestrictions.
                 Where(a => a.FileAccessConstraints != null);
 
@@ -218,7 +232,8 @@ namespace Kartverket.Geonorge.Download.Services
                     AccessConstraint = new AccessConstraint()
                     {
                         Constraint = d.AccessConstraint,
-                        RequiredRole = d.AccessConstraintRequiredRole
+                        RequiredRole = d.AccessConstraintRequiredRole,
+                        RequiredRolePolygonSelection = d.SupportsPolygonSelectionRequiredRole
                     }
                     })
                 .ToList();
@@ -263,6 +278,11 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     var requiredRoles = accessConstraint.AccessConstraint.RequiredRole.Split(',').Select(r => r.Trim()).ToList();
                     accessConstraints[j].AccessConstraint.RequiredRoles = requiredRoles;
+                }
+                if (!string.IsNullOrEmpty(accessConstraint?.AccessConstraint?.RequiredRolePolygonSelection))
+                {
+                    var requiredRoles = accessConstraint.AccessConstraint.RequiredRolePolygonSelection.Split(',').Select(r => r.Trim()).ToList();
+                    accessConstraints[j].AccessConstraint.RequiredRolesPolygonSelection = requiredRoles;
                 }
             }
 
