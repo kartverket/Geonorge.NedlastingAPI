@@ -70,9 +70,9 @@ namespace Kartverket.Geonorge.Download.Services
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
 
             var accessRestrictionsRequiredRole = accessRestrictions.
-                Where(a => a.AccessConstraint.RequiredRoles.Any());
+                Where(a => a.AccessConstraint.RequiredRoles != null);
 
-            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole.Any())
+            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole != null && accessRestrictionsRequiredRole.Any())
             {
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
@@ -81,6 +81,21 @@ namespace Kartverket.Geonorge.Download.Services
                         throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
                 }
             }
+
+            var accessRestrictionsRequiredRoleFiles = accessRestrictions.
+                Where(a => a.FileAccessConstraints != null);
+
+            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRoleFiles != null && accessRestrictionsRequiredRoleFiles.Any())
+            {
+                foreach (var dataset in accessRestrictionsRequiredRoleFiles)
+                {
+                    foreach (var file in dataset.FileAccessConstraints)
+                        foreach(var role in file.Roles)
+                            if (!authenticatedUser.HasRole(role))
+                                throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
+                }
+            }
+
         }
 
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
@@ -210,6 +225,30 @@ namespace Kartverket.Geonorge.Download.Services
 
             if(accessConstraints!= null && accessConstraints.Count > 0)
                 accessConstraints = SetMultipleAccessConstraintRequiredRole(accessConstraints);
+
+            List<string> distinctFileNames = order.orderItem.Select(o => o.FileName).Distinct().ToList();
+            List<FileAccessConstraint> accessConstraintsFiles = null;
+            if(distinctFileNames != null && distinctFileNames.Count > 0)
+            accessConstraintsFiles = _dbContext.FileList.Where(f => distinctFileNames.Contains(f.Filename) && f.AccessConstraintRequiredRole != null)
+                .Select(a => new FileAccessConstraint
+                { MetadataUuid = a.Dataset.MetadataUuid, File = a.Filename, Role = a.AccessConstraintRequiredRole})
+                .ToList();
+
+            if(accessConstraintsFiles != null && accessConstraints != null)
+            { 
+                for (int a = 0; a < accessConstraints.Count; a++)
+                {
+                    var accessConstraintFilesForUuid = accessConstraintsFiles.Where(f => f.MetadataUuid == accessConstraints[a].MetadataUuid).ToList();
+                    if(accessConstraintFilesForUuid != null)
+                    {
+                        accessConstraints[a].FileAccessConstraints = accessConstraintFilesForUuid;
+                        for (int b = 0; b < accessConstraints[a].FileAccessConstraints.Count; b++)
+                        {
+                            accessConstraints[a].FileAccessConstraints[b].Roles = accessConstraints[a].FileAccessConstraints[b].Role.Split(',').Select(r => r.Trim()).ToList();
+                        }
+                    }
+                }
+            }
 
             return accessConstraints;
         }

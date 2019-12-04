@@ -369,7 +369,12 @@
     <Compile Include="Migrations\201910171450034_AccessConstraintRequiredRole.Designer.cs">
       <DependentUpon>201910171450034_AccessConstraintRequiredRole.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912022034314_AddFileAccessConstraintRequiredRole.cs" />
+    <Compile Include="Migrations\201912022034314_AddFileAccessConstraintRequiredRole.designer.cs">
+      <DependentUpon>201912022034314_AddFileAccessConstraintRequiredRole.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\DownloadUsage.cs" />
+    <Compile Include="Models\FileAccessConstraint.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GeonorgeCacheOutputAttribute.cs" />
@@ -782,6 +787,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910171450034_AccessConstraintRequiredRole.resx">
       <DependentUpon>201910171450034_AccessConstraintRequiredRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912022034314_AddFileAccessConstraintRequiredRole.resx">
+      <DependentUpon>201912022034314_AddFileAccessConstraintRequiredRole.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
