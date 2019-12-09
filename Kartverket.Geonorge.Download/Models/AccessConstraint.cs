@@ -21,7 +21,7 @@ namespace Kartverket.Geonorge.Download.Models
         public AccessConstraint(string constraint, List<string> requiredRoles = null)
         {
             Constraint = constraint;
-            RequiredRole = requiredRoles.FirstOrDefault();
+            RequiredRole = requiredRoles?.FirstOrDefault();
             RequiredRoles = requiredRoles;
         }
     }
