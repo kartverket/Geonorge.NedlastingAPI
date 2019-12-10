@@ -6,7 +6,7 @@
     "gulp": "^4.0.2"
   },
   "dependencies": {
-    "geonorge-shared-partials": "https://github.com/kartverket/Geonorge.SharedPartials.git#bower_away",
-    "geonorge-base": "https://github.com/kartverket/felleskomponenter.git#bower_away"
+    "geonorge-shared-partials": "https://github.com/kartverket/Geonorge.SharedPartials.git",
+    "geonorge-base": "https://github.com/kartverket/felleskomponenter.git"
   }
 }
