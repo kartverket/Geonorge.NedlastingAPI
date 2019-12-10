@@ -46,5 +46,8 @@ namespace Kartverket.Geonorge.Download.Models
 
         [ForeignKey("DatasetId")] 
         public virtual Dataset Dataset { get; set; }
+
+        [Column("AccessConstraintRequiredRole")]
+        public string AccessConstraintRequiredRole { get; set; }
     }
 }

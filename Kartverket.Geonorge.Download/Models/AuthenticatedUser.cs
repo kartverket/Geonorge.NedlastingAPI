@@ -34,7 +34,10 @@ namespace Kartverket.Geonorge.Download.Models
 
         public bool HasRole(string role)
         {
-            return _roles.Contains(role);
+            if (_roles != null && _roles.Count > 0)
+                return _roles.Contains(role);
+            else
+                return false;
         }
 
         public bool IsAuthorizedWith(AuthenticationMethod method)
