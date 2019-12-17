@@ -76,9 +76,13 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
-                    foreach(var requiredRole in dataset.AccessConstraint.RequiredRoles)
-                    if (!authenticatedUser.HasRole(requiredRole))
-                        throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
+                    bool access = false;
+                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles)
+                        if (authenticatedUser.HasRole(requiredRole))
+                            access = true;
+
+                    if(!access)
+                        throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for " + dataset.MetadataUuid);
                 }
             }
 
@@ -89,10 +93,17 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 foreach (var dataset in accessRestrictionsRequiredRoleFiles)
                 {
-                    foreach (var file in dataset.FileAccessConstraints)
-                        foreach(var role in file.Roles)
-                            if (!authenticatedUser.HasRole(role))
-                                throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role");
+                    bool access = false;
+                    FileAccessConstraint fileAccessConstraint = new FileAccessConstraint();
+
+                    foreach (var file in dataset.FileAccessConstraints) { 
+                        fileAccessConstraint = file;
+                        foreach (var role in file.Roles)
+                            if (authenticatedUser.HasRole(role))
+                                access = true;
+                    }
+                    if (!access)
+                        throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for " + fileAccessConstraint.File);
                 }
             }
 

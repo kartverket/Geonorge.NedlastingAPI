@@ -58,7 +58,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             catch (AccessRestrictionException e)
             {
                 Log.Info(e.Message, e);
-                return Unauthorized();
+                //return Unauthorized();
+                return InternalServerError(e);
             }
             catch (Exception ex)
             {
