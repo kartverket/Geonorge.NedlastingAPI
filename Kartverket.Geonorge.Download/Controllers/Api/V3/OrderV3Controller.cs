@@ -59,7 +59,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 Log.Info(e.Message, e);
                 //return Unauthorized();
-                return InternalServerError(e);
+                return Content(System.Net.HttpStatusCode.InternalServerError, e.Message);
             }
             catch (Exception ex)
             {
