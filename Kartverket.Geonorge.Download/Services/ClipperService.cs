@@ -12,7 +12,7 @@ namespace Kartverket.Geonorge.Download.Services
 {
     public class ClipperService : IClipperService
     {
-        private const string DefaultEpsgCode = "32633";
+        private const string DefaultEpsgCode = "25833";
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;

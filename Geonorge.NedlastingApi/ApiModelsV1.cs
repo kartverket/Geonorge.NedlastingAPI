@@ -551,7 +551,7 @@ namespace Geonorge.NedlastingApi.V1
         }
 
         /// <summary>
-        /// If polygon is selected this includes coordinate system. Default epsg code is 32633
+        /// If polygon is selected this includes coordinate system. Default epsg code is 25833
         /// </summary>
         [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]
         public string coordinatesystem
