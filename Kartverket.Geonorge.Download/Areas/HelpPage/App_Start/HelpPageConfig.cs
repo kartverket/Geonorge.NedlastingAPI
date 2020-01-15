@@ -238,7 +238,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             V2.CanDownloadRequestType canDownloadRequestType_2 = new V2.CanDownloadRequestType();
             canDownloadRequestType_2.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
             canDownloadRequestType_2.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
-            canDownloadRequestType_2.coordinateSystem = "32633";
+            canDownloadRequestType_2.coordinateSystem = "25833";
 
 
             //V3
@@ -353,7 +353,7 @@ namespace Kartverket.Geonorge.Download.Areas.HelpPage
             V3.CanDownloadRequestType canDownloadRequestType_3 = new V3.CanDownloadRequestType();
             canDownloadRequestType_3.metadataUuid = "73f863ba-628f-48af-b7fa-30d3ab331b8d";
             canDownloadRequestType_3.coordinates = "344754 7272921 404330 7187619 304134 7156477 344754 7272921";
-            canDownloadRequestType_3.coordinateSystem = "32633";
+            canDownloadRequestType_3.coordinateSystem = "25833";
 
 
             UpdateMetadataRequest metadata = new UpdateMetadataRequest();
