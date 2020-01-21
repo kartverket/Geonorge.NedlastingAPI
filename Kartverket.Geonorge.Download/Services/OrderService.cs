@@ -96,6 +96,9 @@ namespace Kartverket.Geonorge.Download.Services
                     bool access = false;
                     FileAccessConstraint fileAccessConstraint = new FileAccessConstraint();
 
+                    if(dataset.FileAccessConstraints != null && dataset.FileAccessConstraints.Count == 0)
+                        access = true;
+
                     foreach (var file in dataset.FileAccessConstraints) { 
                         fileAccessConstraint = file;
                         foreach (var role in file.Roles)
