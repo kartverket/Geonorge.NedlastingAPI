@@ -81,8 +81,8 @@ namespace Kartverket.Geonorge.Download.Services
                         if (authenticatedUser.HasRole(requiredRole))
                             access = true;
 
-                    if(!access)
-                        throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for " + dataset.MetadataUuid);
+                    //if(!access)
+                        //throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for " + dataset.MetadataUuid);
                 }
             }
 
