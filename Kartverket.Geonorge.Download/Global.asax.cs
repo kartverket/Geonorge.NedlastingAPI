@@ -82,7 +82,7 @@ namespace Kartverket.Geonorge.Download
         {
             //Remove personal info older than 1 day
             var _context = DependencyResolver.Current.GetService<DownloadContext>();
-            _context.Database.ExecuteSqlCommand("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -7, GETDATE())");
+            _context.Database.ExecuteSqlCommandAsync("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -7, GETDATE())");
         }
     }
 }
