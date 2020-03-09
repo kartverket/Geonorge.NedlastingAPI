@@ -115,40 +115,118 @@ namespace Kartverket.Geonorge.Download.Services
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
         {
             var orderItems = new List<OrderItem>();
+            IEnumerable<File> files = new List<File>();
 
             foreach (var orderLine in order.orderLines)
             {
-                var query = _dbContext.FileList.AsExpandable();
-                query = query.Where(f => f.Dataset.MetadataUuid == orderLine.metadataUuid);
+                var sqlDataset = "select Tittel from Dataset where metadataUuid = @p0";
+                var datasetTitle = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+
+                int initialCount = 0;
+                int count = 0;
+
+                var sql = "select filliste.[id] as Id, filliste.[filnavn] as Filename ,filliste.[url] as Url,filliste.[kategori] as Category ,filliste.[underkategori] as SubCategory, filliste.[inndeling] as Division,filliste.[inndelingsverdi] as DivisionKey ,filliste.[projeksjon] as Projection ,filliste.[format] as Format ,filliste.[dataset] as DatasetId ,filliste.[AccessConstraintRequiredRole] as AccessConstraintRequiredRole from filliste, Dataset where filliste.dataset = Dataset.id and dataset.metadataUuid = @p" + initialCount++;
+                List<string> parameters = new List<string>();
+                parameters.Add(orderLine.metadataUuid);
 
                 if (orderLine.projections != null && orderLine.projections.Any())
                 {
                     var projections = orderLine.projections.Select(p => p.code).ToList();
-                    query = query.Where(p => projections.Contains(p.Projection));
+                    if (projections.Any())
+                        sql = sql + " AND (";
+
+                    var initial = true;
+
+                    foreach (var projection in projections)
+                    {
+                        if (initial)
+                            initial = false;
+                        else
+                            sql = sql + " OR ";
+
+                        sql = sql + "(projeksjon = @p" + initialCount++ + " )";
+                        parameters.Add(projection);
+
+                    }
+
+                    if (projections.Any())
+                        sql = sql + " )";
+
                 }
 
                 if (orderLine.formats != null && orderLine.formats.Any())
                 {
                     var formats = orderLine.formats.Select(p => p.name).ToList();
-                    query = query.Where(f => formats.Contains(f.Format));
+
+                    if (formats.Any())
+                        sql = sql + " AND (";
+
+                    var initial = true;
+
+                    foreach (var format in formats)
+                    {
+                        if (initial)
+                            initial = false;
+                        else
+                            sql = sql + " OR ";
+
+                        sql = sql + "(format =  @p" + initialCount++ + " )";
+                        parameters.Add(format);
+                    }
+
+                    if (formats.Any())
+                        sql = sql + " )";
+
                 }
+                List<string> parametersArea = new List<string>();
 
                 if (orderLine.areas != null && orderLine.areas.Any())
                 {
-                    var areas = orderLine.areas.Select(a => new {a.code, a.type});
+                    count = initialCount;
+                    var areas = orderLine.areas.Select(a => new { a.code, a.type });
 
-                    var predicate = PredicateBuilder.False<File>();
                     areas = areas.ToList();
+                    string sqlArea = "";
+
+                    if (areas.Any())
+                        sqlArea = sqlArea + " AND (";
+
+                    var initial = true;
 
                     foreach (var area in areas)
                     {
-                        predicate = predicate.Or(a => a.Division == area.type && a.DivisionKey == area.code);
-                    }
 
-                    query = query.Where(predicate);
+                        if (initial)
+                            initial = false;
+                        else
+                            sqlArea = sqlArea + " OR ";
+
+                        sqlArea = sqlArea + "(inndeling = @p" + count++ + " AND inndelingsverdi = @p" + count++ + " )" ;
+                        parametersArea.Add(area.type);
+                        parametersArea.Add(area.code);
+
+                        if (count > 2000)
+                        {
+                            List<string> param2 = parameters;
+                            param2 = param2.Concat(parametersArea).ToList();
+                            var sqlStatement = sql + sqlArea + ") ";
+                            files = files.Concat(_dbContext.Database.SqlQuery<File>(sqlStatement, param2.ToArray()).ToList());
+                            sqlArea = "";
+                            count = initialCount;
+                            parametersArea = new List<string>();
+                            initial = true;
+                        }
+                    }
+                    if(!sqlArea.StartsWith(" AND"))
+                        sql = sql + " AND (" + sqlArea + ") ";
+                    else
+                        sql = sql + " " + sqlArea + " ) ";
                 }
 
-                List<File> files = query.ToList();
+                object[] param = parameters.ToArray();
+                param = param.Concat(parametersArea).ToList().ToArray();
+
+                files = files.Concat(_dbContext.Database.SqlQuery<File>(sql, param).ToList());
 
                 foreach (File item in files)
                 {
@@ -164,7 +242,7 @@ namespace Kartverket.Geonorge.Download.Services
                         ProjectionName =  _registerFetcher.GetProjection(item.Projection).name,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
-                        MetadataName = item.Dataset.Title,
+                        MetadataName = datasetTitle,
                         UsagePurpose = orderLine.usagePurpose
                     });
                 }
