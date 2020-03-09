@@ -719,13 +719,7 @@
     <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".bowerrc" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="bower.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="authentication.default.config" />
