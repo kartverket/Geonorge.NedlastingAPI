@@ -125,7 +125,7 @@ namespace Kartverket.Geonorge.Download.Services
                 int initialCount = 0;
                 int count = 0;
 
-                var sql = "select distinct filliste.[id] as Id, filliste.[filnavn] as Filename ,filliste.[url] as Url,filliste.[kategori] as Category ,filliste.[underkategori] as SubCategory, filliste.[inndeling] as Division,filliste.[inndelingsverdi] as DivisionKey ,filliste.[projeksjon] as Projection ,filliste.[format] as Format ,filliste.[dataset] as DatasetId ,filliste.[AccessConstraintRequiredRole] as AccessConstraintRequiredRole from filliste, Dataset where filliste.dataset = Dataset.id and dataset.metadataUuid = @p" + initialCount++;
+                var sql = "select filliste.[id] as Id, filliste.[filnavn] as Filename ,filliste.[url] as Url,filliste.[kategori] as Category ,filliste.[underkategori] as SubCategory, filliste.[inndeling] as Division,filliste.[inndelingsverdi] as DivisionKey ,filliste.[projeksjon] as Projection ,filliste.[format] as Format ,filliste.[dataset] as DatasetId ,filliste.[AccessConstraintRequiredRole] as AccessConstraintRequiredRole from filliste, Dataset where filliste.dataset = Dataset.id and dataset.metadataUuid = @p" + initialCount++;
                 List<string> parameters = new List<string>();
                 parameters.Add(orderLine.metadataUuid);
 
@@ -226,7 +226,7 @@ namespace Kartverket.Geonorge.Download.Services
                 object[] param = parameters.ToArray();
                 param = param.Concat(parametersArea).ToList().ToArray();
 
-                files = files.Concat(_dbContext.Database.SqlQuery<File>(sql, param).ToList());
+                files = files.Concat(_dbContext.Database.SqlQuery<File>(sql, param).Distinct().ToList());
 
                 foreach (File item in files)
                 {
