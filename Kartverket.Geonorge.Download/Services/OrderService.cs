@@ -115,10 +115,11 @@ namespace Kartverket.Geonorge.Download.Services
         private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
         {
             var orderItems = new List<OrderItem>();
-            IEnumerable<File> files = new List<File>();
 
             foreach (var orderLine in order.orderLines)
             {
+                IEnumerable<File> files = new List<File>();
+
                 var sqlDataset = "select Tittel from Dataset where metadataUuid = @p0";
                 var datasetTitle = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
 
