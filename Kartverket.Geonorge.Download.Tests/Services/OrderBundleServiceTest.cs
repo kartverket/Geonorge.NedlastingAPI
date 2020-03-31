@@ -18,7 +18,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         private const string FileId3 = "8d33e1aa-6293-494b-95e8-5e20702f126e";
 
         private readonly string _expectedUrl =
-            "http://example.com/api?UUIDS="+FileId1+" "+FileId2+" "+FileId3+"&ORDERID="+OrderUuid+"&opt_servicemode=async";
+            "http://example.com/api?UUIDFILE=api%2forder%2fuuidfile%2f"+ OrderUuid + "&ORDERID="+OrderUuid+"&opt_servicemode=async";
 
         private readonly Order _order = new Order
         {

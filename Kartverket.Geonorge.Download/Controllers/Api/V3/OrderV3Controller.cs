@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -122,6 +124,37 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 Log.Error("Error while updating order.", e);
                 return InternalServerError(e);
+            }
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        /// <summary>
+        ///     Get fileIds for order
+        /// </summary>
+        /// <returns>
+        ///    Http status code 200.
+        /// </returns>
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/order/uuidfile/{orderUuid}")]
+        public HttpResponseMessage GetUuidFile(string orderUuid)
+        {
+            try
+            {
+                Order order = _orderService.Find(orderUuid);
+                if (order == null)
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
+
+                var fileIds = string.Join(",", order.CollectFileIdsForBundling());
+
+                var response = new HttpResponseMessage();
+                response.Content = new StringContent(fileIds);
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+                return response;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error while getting order uuid file.", e);
+                return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
             }
         }
 

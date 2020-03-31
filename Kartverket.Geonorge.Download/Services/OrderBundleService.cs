@@ -56,8 +56,10 @@ namespace Kartverket.Geonorge.Download.Services
             string orderBundleServiceUrl = ConfigurationManager.AppSettings["OrderBundleServiceUrl"];
             var urlBuilder = new StringBuilder(orderBundleServiceUrl);
             urlBuilder.Append("?");
-            var fileIds = string.Join(" ", order.CollectFileIdsForBundling());
-            urlBuilder.Append("UUIDS=").Append(fileIds);
+            //var fileIds = string.Join(" ", order.CollectFileIdsForBundling());
+            //urlBuilder.Append("UUIDS=").Append(fileIds);
+            string server = ConfigurationManager.AppSettings["DownloadUrl"];
+            urlBuilder.Append("UUIDFILE=").Append(System.Web.HttpUtility.UrlEncode($"{server}api/order/uuidfile/{order.Uuid}"));
             urlBuilder.Append("&ORDERID=").Append(order.Uuid);
             urlBuilder.Append("&opt_servicemode=async");
             var bundleRequestUrl = urlBuilder.ToString();
