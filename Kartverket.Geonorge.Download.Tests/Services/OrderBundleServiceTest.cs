@@ -53,6 +53,17 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         }
 
         [Fact]
+        public void ShouldSendBundleRequest()
+        {
+            var externalRequestServiceMock = CreateMock(HttpStatusCode.NoContent, "");
+            var orderBundleService = new OrderBundleService(externalRequestServiceMock.Object);
+
+            orderBundleService.SendToBundling(_order);
+
+            externalRequestServiceMock.Verify(s => s.RunRequestAsync(_expectedUrl));
+        }
+
+        [Fact]
         public void SendBundleRequestShouldThrowExceptionWhenErrorCodeReturnedFromService()
         {
             var orderBundleService =
@@ -70,17 +81,6 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             var orderBundleService = new OrderBundleService(externalRequestServiceMock.Object);
 
             Assert.Throws<ExternalRequestException>(() => orderBundleService.SendToBundling(_order));
-        }
-
-        [Fact]
-        public void ShouldSendBundleRequest()
-        {
-            var externalRequestServiceMock = CreateMock(HttpStatusCode.NoContent, "");
-            var orderBundleService = new OrderBundleService(externalRequestServiceMock.Object);
-
-            orderBundleService.SendToBundling(_order);
-
-            externalRequestServiceMock.Verify(s => s.RunRequestAsync(_expectedUrl));
         }
     }
 }
