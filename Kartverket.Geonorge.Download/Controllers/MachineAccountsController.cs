@@ -69,6 +69,7 @@ namespace Kartverket.Geonorge.Download.Controllers
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var machineAccount = _dbContext.MachineAccounts.Find(id);
             if (machineAccount == null) return HttpNotFound();
+            machineAccount.Passsword = "";
             return View(machineAccount);
         }
 
@@ -77,12 +78,17 @@ namespace Kartverket.Geonorge.Download.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Username,Passsword,Company,ContactPerson,ContactEmail,Created")]
-            MachineAccount machineAccount)
+        public ActionResult Edit(MachineAccount machineAccount)
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Entry(machineAccount).State = EntityState.Modified;
+                var machineAccountUpdated = _dbContext.MachineAccounts.Find(machineAccount.Username);
+                machineAccountUpdated.Company = machineAccount.Company;
+                machineAccountUpdated.ContactEmail = machineAccount.ContactEmail;
+                machineAccountUpdated.ContactPerson = machineAccount.ContactPerson;
+                if(!string.IsNullOrEmpty(machineAccount.Passsword))
+                    machineAccountUpdated.Passsword = new ConfigurablePasswordHasher().HashPassword(machineAccount.Passsword);
+                _dbContext.Entry(machineAccountUpdated).State = EntityState.Modified;
                 _dbContext.SaveChanges();
                 return RedirectToAction("Index");
             }
