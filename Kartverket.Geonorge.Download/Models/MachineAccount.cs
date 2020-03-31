@@ -16,5 +16,7 @@ namespace Kartverket.Geonorge.Download.Models
         public string ContactEmail { get; set; }
 
         public DateTime Created { get; set; }
+
+        public string Roles { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -37,7 +38,23 @@ namespace Kartverket.Geonorge.Download.Controllers
         // GET: MachineAccounts/Create
         public ActionResult Create()
         {
+            ViewBag.Roles = new MultiSelectList(GetAvailableRoles());
             return View();
+        }
+
+        private List<string> GetAvailableRoles()
+        {
+            List<string> roles = new List<string>();
+            System.Collections.Specialized.NameValueCollection settings = System.Web.Configuration.WebConfigurationManager.AppSettings;
+            string rolesCSV = settings["BasicAuthRoles"];
+            if (!string.IsNullOrEmpty(rolesCSV))
+            {
+                var rolesArray = rolesCSV.Split(',');
+                foreach (var role in rolesArray)
+                    roles.Add(role);
+            }
+
+            return roles;
         }
 
         // POST: MachineAccounts/Create
@@ -45,16 +62,18 @@ namespace Kartverket.Geonorge.Download.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Username,Passsword,Company,ContactPerson,ContactEmail,Created")]
-            MachineAccount machineAccount)
+        public ActionResult Create(MachineAccount machineAccount, string[] roles)
         {
+            ViewBag.Roles = new MultiSelectList(GetAvailableRoles());
+
             if (ModelState.IsValid)
             {
                 // https://www.scottbrady91.com/ASPNET-Identity/ASPNET-Identity-2-Configurable-Password-Hasher
                 machineAccount.Passsword = new ConfigurablePasswordHasher().HashPassword(machineAccount.Passsword);
                 
                 machineAccount.Created = DateTime.Now;
-                
+                if (roles != null)
+                    machineAccount.Roles = string.Join(",", roles);
                 _dbContext.MachineAccounts.Add(machineAccount);
                 _dbContext.SaveChanges();
                 return RedirectToAction("Index");
@@ -66,9 +85,22 @@ namespace Kartverket.Geonorge.Download.Controllers
         // GET: MachineAccounts/Edit/5
         public ActionResult Edit(string id)
         {
+
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var machineAccount = _dbContext.MachineAccounts.Find(id);
             if (machineAccount == null) return HttpNotFound();
+
+            var rolesSelected = machineAccount.Roles != null ? machineAccount.Roles.Split(',').ToArray() : null;
+            var rolesAvailable = GetAvailableRoles();
+            var rolesData = rolesAvailable.AsEnumerable()
+                .Select(c => new SelectListItem
+                {
+                    Value = c.ToString(),
+                    Text = c.ToString(),
+                }).ToList();
+
+            ViewBag.RolesData = new MultiSelectList(rolesData, "Value", "Text", rolesSelected);
+
             machineAccount.Passsword = "";
             return View(machineAccount);
         }
@@ -78,7 +110,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(MachineAccount machineAccount)
+        public ActionResult Edit(MachineAccount machineAccount, string[] RolesSelected)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +118,21 @@ namespace Kartverket.Geonorge.Download.Controllers
                 machineAccountUpdated.Company = machineAccount.Company;
                 machineAccountUpdated.ContactEmail = machineAccount.ContactEmail;
                 machineAccountUpdated.ContactPerson = machineAccount.ContactPerson;
-                if(!string.IsNullOrEmpty(machineAccount.Passsword))
+
+                var rolesSelected = RolesSelected;
+                var rolesAvailable = GetAvailableRoles();
+                var rolesData = rolesAvailable.AsEnumerable()
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.ToString(),
+                        Text = c.ToString(),
+                    }).ToList();
+
+                ViewBag.RolesData = new MultiSelectList(rolesData, "Value", "Text", rolesSelected);
+
+                machineAccountUpdated.Roles = rolesSelected != null ? string.Join(",",rolesSelected) : null;
+
+                if (!string.IsNullOrEmpty(machineAccount.Passsword))
                     machineAccountUpdated.Passsword = new ConfigurablePasswordHasher().HashPassword(machineAccount.Passsword);
                 _dbContext.Entry(machineAccountUpdated).State = EntityState.Modified;
                 _dbContext.SaveChanges();
