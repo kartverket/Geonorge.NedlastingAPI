@@ -373,6 +373,10 @@
     <Compile Include="Migrations\201912022034314_AddFileAccessConstraintRequiredRole.designer.cs">
       <DependentUpon>201912022034314_AddFileAccessConstraintRequiredRole.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003310835553_RolesForMachineAccount.cs" />
+    <Compile Include="Migrations\202003310835553_RolesForMachineAccount.designer.cs">
+      <DependentUpon>202003310835553_RolesForMachineAccount.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\FileAccessConstraint.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
@@ -784,6 +788,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912022034314_AddFileAccessConstraintRequiredRole.resx">
       <DependentUpon>201912022034314_AddFileAccessConstraintRequiredRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003310835553_RolesForMachineAccount.resx">
+      <DependentUpon>202003310835553_RolesForMachineAccount.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

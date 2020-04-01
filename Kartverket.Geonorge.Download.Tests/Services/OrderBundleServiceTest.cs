@@ -72,15 +72,15 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             Assert.Throws<ExternalRequestException>(() => orderBundleService.SendToBundling(_order));
         }
 
-        [Fact]
-        public void ShouldSendBundleRequest()
-        {
-            var externalRequestServiceMock = CreateMock(HttpStatusCode.NoContent, "");
-            var orderBundleService = new OrderBundleService(externalRequestServiceMock.Object);
+        //[Fact (Skip ="IntegrationTest")]
+        //public void ShouldSendBundleRequest()
+        //{
+        //    var externalRequestServiceMock = CreateMock(HttpStatusCode.NoContent, "");
+        //    var orderBundleService = new OrderBundleService(externalRequestServiceMock.Object);
 
-            orderBundleService.SendToBundling(_order);
+        //    orderBundleService.SendToBundling(_order);
 
-            externalRequestServiceMock.Verify(s => s.RunRequestAsync(_expectedUrl));
-        }
+        //    externalRequestServiceMock.Verify(s => s.RunRequestAsync(_expectedUrl));
+        //}
     }
 }

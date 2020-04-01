@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Kartverket.Geonorge.Download.Models;
@@ -8,20 +10,41 @@ namespace Kartverket.Geonorge.Download.Services.Auth
     public class BasicAuthenticationService : IBasicAuthenticationService
     {
         private readonly IBasicAuthenticationCredentialValidator _credentialValidator;
+        private readonly DownloadContext _dbContext;
 
-        public BasicAuthenticationService(IBasicAuthenticationCredentialValidator credentialValidator)
+        public BasicAuthenticationService(IBasicAuthenticationCredentialValidator credentialValidator, DownloadContext dbContext)
         {
             _credentialValidator = credentialValidator;
+            _dbContext = dbContext;
         }
 
         public AuthenticatedUser GetAuthenticatedUsername(HttpRequestMessage requestMessage)
         {
             var credentials = GetCredentials(requestMessage);
 
-            if (credentials != null && Authenticate(credentials))
-                return new AuthenticatedUser(credentials.Username, AuthenticationMethod.Basic);
+            if (credentials != null && Authenticate(credentials)) {
+                List<string> roles = GetRolesForUser(credentials.Username);
+                return new AuthenticatedUser(credentials.Username, AuthenticationMethod.Basic, roles);
+            }
 
             return null;
+        }
+
+        private List<string> GetRolesForUser(string userName)
+        {
+            var account = _dbContext.MachineAccounts.Find(userName);
+
+            if (account != null)
+            {
+                var roles = account.Roles;
+                if (!string.IsNullOrEmpty(roles))
+                {
+                    var rolesForUser = roles.Split(',').ToList();
+                    return rolesForUser;
+                }
+            }
+
+            return new List<string>();
         }
 
         private bool Authenticate(Credentials credentials)
