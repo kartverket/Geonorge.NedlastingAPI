@@ -126,6 +126,7 @@ namespace Kartverket.Geonorge.Download.Tests.Controllers.Api.V3
         {
             _fileServiceMock.Setup(f => f.GetDatasetAsync(_datasetUuid)).ReturnsAsync(CreateRestrictedDataset());
             _fileServiceMock.Setup(f => f.GetFileAsync(_fileUuid, _datasetUuid)).ReturnsAsync(new File());
+            _fileServiceMock.Setup(f => f.HasAccess(It.IsAny<File>(), It.IsAny<AuthenticatedUser>())).Returns(true);
         }
 
         private void SetupFileServiceMockToDeliverOpenDatasetAndFile()

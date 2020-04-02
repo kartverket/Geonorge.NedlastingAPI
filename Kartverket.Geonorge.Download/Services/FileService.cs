@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Geonorge.AuthLib.Common;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
 
@@ -12,6 +15,7 @@ namespace Kartverket.Geonorge.Download.Services
         Task<Dataset> GetDatasetAsync(string metadataUuid);
         Task<File> GetFileAsync(string fileUuid);
         Task<File> GetFileAsync(string fileUuid, string metadataUuid);
+        bool HasAccess(File file, AuthenticatedUser authenticatedUser);
     }
 
     /// <summary>
@@ -69,6 +73,54 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             return file;
+        }
+
+        public bool HasAccess(File file, AuthenticatedUser authenticatedUser)
+        {
+            var datasetAccessConstraintRequiredRole = file.Dataset.AccessConstraintRequiredRole;
+            var fileAccessConstraintRequiredRole = file.AccessConstraintRequiredRole;
+
+            if (!authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin))
+            {
+                if (!string.IsNullOrEmpty(datasetAccessConstraintRequiredRole) || !string.IsNullOrEmpty(fileAccessConstraintRequiredRole))
+                {
+                    bool access = false;
+
+                    List<string> datasetAccessConstraintRequiredRoles = ParseRoles(datasetAccessConstraintRequiredRole);
+
+                    foreach (var requiredRole in datasetAccessConstraintRequiredRoles)
+                        if (authenticatedUser.HasRole(requiredRole))
+                            access = true;
+
+                    if (!string.IsNullOrEmpty(fileAccessConstraintRequiredRole))
+                    {
+                        access = false;
+                        List<string> fileAccessConstraintRequiredRoles = ParseRoles(fileAccessConstraintRequiredRole);
+                        foreach (var requiredRole in fileAccessConstraintRequiredRoles)
+                            if (authenticatedUser.HasRole(requiredRole))
+                                access = true;
+                    }
+
+                    return access;
+                }
+            }
+
+            return true;
+        }
+
+        private List<string> ParseRoles(string requiredRoles)
+        {
+            List<string> roles = new List<string>();
+
+            if (!string.IsNullOrEmpty(requiredRoles))
+            {
+                var rolesRequired = requiredRoles.Split(',').Select(r => r.Trim()).ToList();
+                foreach (var role in rolesRequired)
+                    roles.Add(role);
+            }
+
+
+            return roles;
         }
     }
 }
