@@ -67,6 +67,17 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return StatusCode(HttpStatusCode.Forbidden);
             }
 
+            if (isRestrictedDataset && userIsLoggedIn)
+            {
+                var authenticatedUser = _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
+                var userHasAccess = _fileService.HasAccess(file, authenticatedUser);
+                if (!userHasAccess)
+                {
+                    Log.Info($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user does not have required access/role.");
+                    return StatusCode(HttpStatusCode.Forbidden);
+                }
+            }
+
             Log.Info($"Serving [file={file.Filename}] [dataset={dataset.Title}] [datasetUuid={dataset.MetadataUuid}] [isRestrictedDataset={isRestrictedDataset}]");
 
             return Ok(_downloadService.CreateResponseFromRemoteFile(file.Url));
