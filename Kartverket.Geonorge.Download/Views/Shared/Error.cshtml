@@ -6,8 +6,4 @@
 }
 
 <h1 class="text-danger"><p>@UI.ErrorInfo</p></h1>
-@if (HttpContext.Current.IsCustomErrorEnabled)
-{
-    <p>@UI.Error: @Model.Exception.Message</p>
-}
 @Html.Raw(UI.ErrorReport)
