@@ -44,7 +44,7 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 information.Projections.Add( new SimpleReferenceSystem
                 {
-                    Namespace = "EPSG", CoordinateSystem = "http://www.opengis.net/def/crs/EPSG/0/" + projection.EPSGCode  }
+                     CoordinateSystemLink = "http://www.opengis.net/def/crs/EPSG/0/" + projection.EPSGCode,  CoordinateSystem = "EPSG:" + projection.EPSGCode  }
                 );
 
             }
