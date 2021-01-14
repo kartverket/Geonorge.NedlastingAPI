@@ -37,8 +37,10 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
             IEnumerable<Claim> roles = ClaimsPrincipal.Current.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
             var rolesAsList = roles.Select(r => r.Value).ToList();
+            UserInfo userInfo = new UserInfo();
+            userInfo._roles = rolesAsList;
 
-            return new AuthenticatedUser(username, AuthenticationMethod.GeoId, rolesAsList);
+            return new AuthenticatedUser(username, AuthenticationMethod.GeoId, userInfo);
         }
 
         public AuthenticatedUser GetAuthenticatedUser(HttpRequestMessage requestMessage)
@@ -113,8 +115,10 @@ namespace Kartverket.Geonorge.Download.Services.Auth
             return null;
         }
 
-        private List<string> GetRolesForUser(string username, string accessToken)
+        private UserInfo GetRolesForUser(string username, string accessToken)
         {
+            UserInfo userInfo = new UserInfo();
+
             var geoIdUserInfoUrl = WebConfigurationManager.AppSettings["GeoID:BaatAuthzApiUrl"] + "info/" + username;
 
             Log.Debug("User role info - requestUrl: " + geoIdUserInfoUrl);
@@ -131,14 +135,22 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                 Log.Debug("Response from baat info api: " + rawResponse);
 
                 var jsonResponse = JObject.Parse(rawResponse);
-                if (jsonResponse.ContainsKey("baat_services"))
+                if (jsonResponse.ContainsKey("baat_services") && jsonResponse.ContainsKey("baat_organization"))
                 {
-                    return jsonResponse["baat_services"].ToObject<List<string>>();
+                    var organizationInfo = jsonResponse["baat_organization"];
+                    var orgnr = organizationInfo["orgnr"];
+                    if (orgnr != null)
+                        userInfo.OrganizationNumber = orgnr.ToString();
+
+                    userInfo._roles = jsonResponse["baat_services"].ToObject<List<string>>();
+
+                    return userInfo;
                 }
                 else
                 {
                     Log.Info("Response from baat info api: " + rawResponse);
                 }
+
             }
 
             return null;

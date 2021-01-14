@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using Geonorge.NedlastingApi.V3;
 using log4net;
+using System.Net.Http;
+using Kartverket.Geonorge.Download.Services.Auth;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -15,10 +17,13 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;
 
-        public CapabilitiesService(DownloadContext dbContextContext, IRegisterFetcher registerFetcherFetcher)
+        private readonly IAuthenticationService _authenticationService;
+
+        public CapabilitiesService(DownloadContext dbContextContext, IRegisterFetcher registerFetcherFetcher, IAuthenticationService authenticationService)
         {
             _dbContext = dbContextContext;
             _registerFetcher = registerFetcherFetcher;
+            _authenticationService = authenticationService;
         }
 
         public CapabilitiesType GetCapabilities(string metadataUuid) 
@@ -91,8 +96,28 @@ namespace Kartverket.Geonorge.Download.Services
         }
 
 
-        public List<AreaType> GetAreas(string metadataUuid)
+        public List<AreaType> GetAreas(string metadataUuid, HttpRequestMessage request = null)
         {
+
+            var queryStrings = request?.GetQueryNameValuePairs();
+            var accessToken = queryStrings != null ? queryStrings.Where(queryString => queryString.Key == "access_token")
+                .Select(query => new { query.Key, query.Value }).FirstOrDefault() : null;
+
+            if (accessToken != null && !string.IsNullOrEmpty(accessToken.Value))
+            {
+                var user = _authenticationService.GetAuthenticatedUser(request);
+
+                if (user.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
+                {
+                    //todo get kommunenr user.OrganizationNumber
+                }
+                else if (user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                {
+                    //todo
+                }
+
+            }
+
             var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
                               select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList() ;

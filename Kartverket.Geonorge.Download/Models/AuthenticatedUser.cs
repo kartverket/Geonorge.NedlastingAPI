@@ -10,15 +10,18 @@ namespace Kartverket.Geonorge.Download.Models
             AuthenticationMethod = method;
         }
 
-        public AuthenticatedUser(string username, AuthenticationMethod method, List<string> roles)
+        public AuthenticatedUser(string username, AuthenticationMethod method, UserInfo userInfo)
         {
             Username = username;
             AuthenticationMethod = method;
-            if(roles != null && roles.Count > 0)
-                _roles.AddRange(roles);
+            if(userInfo._roles != null && userInfo._roles.Count > 0)
+                _roles.AddRange(userInfo._roles);
+            OrganizationNumber = userInfo.OrganizationNumber;
         }
 
         public string Username { get; }
+
+        public string OrganizationNumber { get; }
 
         private AuthenticationMethod AuthenticationMethod { get; }
 

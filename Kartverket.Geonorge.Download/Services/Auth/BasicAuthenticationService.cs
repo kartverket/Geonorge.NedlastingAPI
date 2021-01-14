@@ -24,7 +24,9 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
             if (credentials != null && Authenticate(credentials)) {
                 List<string> roles = GetRolesForUser(credentials.Username);
-                return new AuthenticatedUser(credentials.Username, AuthenticationMethod.Basic, roles);
+                UserInfo userInfo = new UserInfo();
+                userInfo._roles = roles;
+                return new AuthenticatedUser(credentials.Username, AuthenticationMethod.Basic, userInfo);
             }
 
             return null;

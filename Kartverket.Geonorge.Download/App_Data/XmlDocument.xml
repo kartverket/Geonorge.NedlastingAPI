@@ -555,7 +555,7 @@
             </summary>
             <param name="metadataUuid">The metadata identifier</param>
         </member>
-        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String)">
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.GetAreas(System.String,System.String)">
             <summary>
                 Get Areas from download service
             </summary>

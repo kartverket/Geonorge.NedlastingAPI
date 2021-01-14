@@ -80,11 +80,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
         [Route("codelists/area/{metadataUuid}")]
         [ResponseType(typeof(List<AreaType>))]
-        public IHttpActionResult GetAreas(string metadataUuid)
+        public IHttpActionResult GetAreas(string metadataUuid, string access_token = null)
         {
             try
             {
-                return Ok(_capabilitiesService.GetAreas(metadataUuid));
+                return Ok(_capabilitiesService.GetAreas(metadataUuid, ControllerContext.Request));
             }
             catch (Exception ex)
             {
