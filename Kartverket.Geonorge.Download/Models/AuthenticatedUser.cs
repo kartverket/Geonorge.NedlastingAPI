@@ -17,11 +17,13 @@ namespace Kartverket.Geonorge.Download.Models
             if(userInfo._roles != null && userInfo._roles.Count > 0)
                 _roles.AddRange(userInfo._roles);
             OrganizationNumber = userInfo.OrganizationNumber;
+            MunicipalityCode = userInfo.MunicipalityCode;
         }
 
         public string Username { get; }
 
         public string OrganizationNumber { get; }
+        public string MunicipalityCode { get; }
 
         private AuthenticationMethod AuthenticationMethod { get; }
 

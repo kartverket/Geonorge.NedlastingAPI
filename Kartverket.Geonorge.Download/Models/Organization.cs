@@ -5,10 +5,11 @@ using System.Web;
 
 namespace Kartverket.Geonorge.Download.Models
 {
-    public class UserInfo
+    public class Organization
     {
-        public string OrganizationNumber { get; set; }
-        public List<string> _roles { get; set; }
+        public string Number { get; set; }
+        public string Name { get; set; }
         public string MunicipalityCode { get; set; }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -22,10 +23,12 @@ namespace Kartverket.Geonorge.Download.Services.Auth
     {
         private readonly HttpClient _httpClient;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IRegisterFetcher _registerFetcher;
 
-        public GeoIdAuthentication(HttpClient httpClient)
+        public GeoIdAuthentication(HttpClient httpClient, IRegisterFetcher registerFetcher)
         {
             _httpClient = httpClient;
+            _registerFetcher = registerFetcher;
         }
 
         public AuthenticatedUser GetAuthenticatedUser()
@@ -143,6 +146,17 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                         userInfo.OrganizationNumber = orgnr.ToString();
 
                     userInfo._roles = jsonResponse["baat_services"].ToObject<List<string>>();
+
+                    if(!string.IsNullOrEmpty(userInfo.OrganizationNumber))
+                        userInfo.MunicipalityCode = _registerFetcher.GetOrganization(userInfo.OrganizationNumber).MunicipalityCode;
+
+                    if (Debugger.IsAttached) { 
+                        //testing todo remove
+                        if (string.IsNullOrEmpty(userInfo.MunicipalityCode))
+                            userInfo.MunicipalityCode = "0301";
+                        userInfo._roles.Add(AuthConfig.DatasetOnlyOwnMunicipalityRole);
+                        userInfo._roles.Add(AuthConfig.DatasetAgriculturalPartyRole);
+                    }
 
                     return userInfo;
                 }

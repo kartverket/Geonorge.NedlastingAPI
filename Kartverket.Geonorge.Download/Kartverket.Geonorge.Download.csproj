@@ -379,6 +379,7 @@
     </Compile>
     <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\FileAccessConstraint.cs" />
+    <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Services\FileService.cs" />

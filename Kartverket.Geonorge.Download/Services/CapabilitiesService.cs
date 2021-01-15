@@ -98,29 +98,62 @@ namespace Kartverket.Geonorge.Download.Services
 
         public List<AreaType> GetAreas(string metadataUuid, HttpRequestMessage request = null)
         {
-
-            var queryStrings = request?.GetQueryNameValuePairs();
-            var accessToken = queryStrings != null ? queryStrings.Where(queryString => queryString.Key == "access_token")
-                .Select(query => new { query.Key, query.Value }).FirstOrDefault() : null;
-
-            if (accessToken != null && !string.IsNullOrEmpty(accessToken.Value))
-            {
-                var user = _authenticationService.GetAuthenticatedUser(request);
-
-                if (user.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
-                {
-                    //todo get kommunenr user.OrganizationNumber
-                }
-                else if (user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
-                {
-                    //todo
-                }
-
-            }
+            string limitMunicipalityCode = "";
 
             var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
-                              select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList() ;
+                              select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
+
+            var dataset = (from d in _dbContext.FileList
+                                where d.Dataset.MetadataUuid == metadataUuid
+                                select d.Dataset).FirstOrDefault();
+
+            if(dataset != null && !string.IsNullOrEmpty(dataset.AccessConstraintRequiredRole)
+                &&(dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole)
+                || dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
+                )
+            {
+                var user = _authenticationService.GetAuthenticatedUser(request);
+
+                if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole) &&
+                    user.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
+                {
+                    limitMunicipalityCode = user.MunicipalityCode;
+                    if (!string.IsNullOrEmpty(limitMunicipalityCode))
+                    {
+                            areasQuery = (from p in _dbContext.FileList
+                                          where p.Dataset.MetadataUuid == metadataUuid
+                                          && p.Division == "kommune" && p.DivisionKey == limitMunicipalityCode
+                                          select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
+                    }
+                        
+                }
+                else if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) && 
+                    user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                {
+                    //GEOPORTAL-4598
+                    //todo return only eiendom for user should be sendt to clipping service 
+                    //Request:
+                    //GET tilgangskontroll_ws/ property_list / BAAT - ID
+                    //HEADER Authorization TOKEN
+                    //Response(json):
+                    //[
+                    //{
+                    //"kommnr": 3021,
+                    //"gnr": 1,
+                    //"bnr": 1,
+                    //"fnr": 0
+                    //},
+                    //{
+                    //"kommnr": 3021,
+                    //"gnr": 20,
+                    //"bnr": 1,
+                    //"fnr": 0
+                    //}
+                    //]
+
+                }
+            }
 
             List<AreaType> areas = new List<AreaType>();
 

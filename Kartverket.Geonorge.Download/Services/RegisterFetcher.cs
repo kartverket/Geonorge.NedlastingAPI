@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Geonorge.NedlastingApi.V1;
+using Kartverket.Geonorge.Download.Models;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -11,6 +12,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         List<AreaType> Areas = new List<AreaType>();
         List<ProjectionType> Projections = new List<ProjectionType>();
+        List<Organization> Organizations = new List<Organization>();
 
         MemoryCacher memCacher = new MemoryCacher();
 
@@ -18,6 +20,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             Areas = GetAreas();
             Projections = GetProjections();
+            Organizations = GetOrganizations();
         }
 
         public List<AreaType> GetAreas()
@@ -221,6 +224,50 @@ namespace Kartverket.Geonorge.Download.Services
                 projection = new ProjectionType { code = code, name = code };
 
             return projection;
+        }
+
+        public List<Organization> GetOrganizations()
+        {
+            var cache = memCacher.GetValue("organizations");
+
+            List<Organization> organizations = new List<Organization>();
+
+            if (cache != null)
+            {
+                organizations = cache as List<Organization>;
+            }
+            else
+            {
+
+                string url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/organisasjoner";
+                System.Net.WebClient c = new System.Net.WebClient();
+                c.Encoding = System.Text.Encoding.UTF8;
+                var data = c.DownloadString(url);
+                var response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                var codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var name = code["label"]?.ToString();
+                    var number = code["number"]?.ToString();
+                    var municipalityCode = code["MunicipalityCode"]?.ToString();
+
+                    Organization organization = new Organization { Name = name, Number = number, MunicipalityCode = municipalityCode };
+
+                    organizations.Add(organization);
+                }
+
+                memCacher.Add("organizations", organizations, new DateTimeOffset(DateTime.Now.AddHours(1)));
+            }
+
+            return organizations;
+        }
+
+        public Organization GetOrganization(string organizationNumber)
+        {
+            Organization organization = Organizations.Where(o => o.Number == organizationNumber).FirstOrDefault();
+            return organization;
         }
 
     }
