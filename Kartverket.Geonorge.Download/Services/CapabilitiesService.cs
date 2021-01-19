@@ -1,4 +1,4 @@
-﻿using Kartverket.Geonorge.Download.Models;
+using Kartverket.Geonorge.Download.Models;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -7,6 +7,7 @@ using Geonorge.NedlastingApi.V3;
 using log4net;
 using System.Net.Http;
 using Kartverket.Geonorge.Download.Services.Auth;
+using System;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -115,7 +116,37 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 var user = _authenticationService.GetAuthenticatedUser(request);
 
-                if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole) &&
+              if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) &&
+                    user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                {
+                    //GEOPORTAL-4598
+
+                    List<Eiendom> eiendoms = new List<Eiendom>();
+
+                    using (var client = new HttpClient())
+                    {
+                        var url = "https://localhost:44350/api/tilgangskontrollmatrikkeleiendomtest/" + user.Username;
+                        client.DefaultRequestHeaders.Clear();
+                        client.DefaultRequestHeaders.Add("Authorization", "TOKEN1");
+
+                        using (var response = client.GetAsync(url))
+                        {
+                            using (var result = response.Result)
+                            {
+                                eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
+
+                                Log.Debug($"Result from api: {result.Content}");
+                            }
+                        }
+                    }
+
+
+                    return GetAreasEiendoms(eiendoms, metadataUuid);
+
+                    
+                   
+                }
+                else if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole) &&
                     user.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
                 {
                     limitMunicipalityCode = user.MunicipalityCode;
@@ -127,31 +158,6 @@ namespace Kartverket.Geonorge.Download.Services
                                           select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
                     }
                         
-                }
-                else if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) && 
-                    user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
-                {
-                    //GEOPORTAL-4598
-                    //todo return only eiendom for user should be sendt to clipping service 
-                    //Request:
-                    //GET tilgangskontroll_ws/ property_list / BAAT - ID
-                    //HEADER Authorization TOKEN
-                    //Response(json):
-                    //[
-                    //{
-                    //"kommnr": 3021,
-                    //"gnr": 1,
-                    //"bnr": 1,
-                    //"fnr": 0
-                    //},
-                    //{
-                    //"kommnr": 3021,
-                    //"gnr": 20,
-                    //"bnr": 1,
-                    //"fnr": 0
-                    //}
-                    //]
-
                 }
             }
 
@@ -220,7 +226,6 @@ namespace Kartverket.Geonorge.Download.Services
             return areas;
         }
 
-
         public List<FormatType> GetFormats(string metadataUuid)
         {
 
@@ -257,8 +262,94 @@ namespace Kartverket.Geonorge.Download.Services
 
             return formats;
         }
-        
 
+        private List<AreaType> GetAreasEiendoms(List<Eiendom> eiendoms, string metadataUuid)
+        {
+            var municipalities = eiendoms.Select(e => e.kommnr).Distinct().ToArray();
+            var areasQuery = (from p in _dbContext.FileList
+                              where p.Dataset.MetadataUuid == metadataUuid
+                              && p.Division == "kommune" && municipalities.Contains(p.DivisionKey)
+                              select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
+
+            List<AreaType> areas = new List<AreaType>();
+
+            foreach (var area in areasQuery.Select(a => new { a.inndeling, a.inndelingsverdi }).Distinct())
+            {
+                AreaType a1 = new AreaType();
+                a1.type = area.inndeling;
+                a1.code = area.inndelingsverdi;
+                a1.name = _registerFetcher.GetArea(area.inndeling, area.inndelingsverdi).name;
+                areas.Add(a1);
+            }
+
+            areas = areas.OrderBy(o => o.type).ThenBy(n => n.name).ToList();
+
+            for (int i = 0; i < areas.Count(); i++)
+            {
+                string type = areas[i].type;
+                string code = areas[i].code;
+
+                List<ProjectionType> projections = new List<ProjectionType>();
+
+                foreach (var data in areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code).Select(a => new { a.projeksjon }).Distinct())
+                {
+                    var projectionFormats = areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code && p.projeksjon == data.projeksjon).Select(a => new { a.format }).Distinct();
+
+                    List<FormatType> formatList = new List<FormatType>();
+                    foreach (var format in projectionFormats)
+                        formatList.Add(new FormatType { name = format.format });
+
+                    projections.Add(new ProjectionType
+                    {
+                        code = data.projeksjon,
+                        codespace = _registerFetcher.GetProjection(data.projeksjon).codespace,
+                        name = _registerFetcher.GetProjection(data.projeksjon).name,
+                        formats = formatList.ToArray()
+                    });
+                }
+
+                areas[i].projections = projections.ToArray();
+
+                List<FormatType> formats = new List<FormatType>();
+
+                foreach (var data in areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code).Select(a => new { a.format }).Distinct())
+                {
+                    {
+                        var formatProjections = areasQuery.Where(p => p.inndeling == type && p.inndelingsverdi == code && p.format == data.format).Select(a => new { a.projeksjon }).Distinct();
+
+                        List<ProjectionType> projectionList = new List<ProjectionType>();
+                        foreach (var projection in formatProjections)
+                            projectionList.Add(new ProjectionType
+                            {
+                                code = projection.projeksjon,
+                                codespace = _registerFetcher.GetProjection(projection.projeksjon).codespace,
+                                name = _registerFetcher.GetProjection(projection.projeksjon).name,
+                            });
+
+                        formats.Add(new FormatType { name = data.format, projections = projectionList.ToArray() });
+                    }
+
+                    areas[i].formats = formats.ToArray();
+                }
+            }
+
+            List<AreaType> areaEiendoms = new List<AreaType>();
+
+            foreach (var eiendom in eiendoms)
+            {
+                var area = areas.Where(a => a.code == eiendom.kommnr).FirstOrDefault();
+
+                AreaType a1 = new AreaType();
+                a1.type = "matrikkel_eiendom";
+                a1.code = $"{eiendom.kommnr}-{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
+                a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommnr).name}-{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
+                a1.projections = area.projections;
+                a1.formats = area.formats;
+                areaEiendoms.Add(a1);
+            }
+
+            return areaEiendoms;
+        }
 
 
     }

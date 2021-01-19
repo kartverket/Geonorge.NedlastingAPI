@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V3;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
 using Microsoft.Web.Http;
@@ -129,13 +130,28 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     canDownload = _downloadService.AreaIsWithinDownloadLimits(request.coordinates,
                         request.coordinateSystem, request.metadataUuid);
 
-                return Ok(new CanDownloadResponseType {canDownload = canDownload});
+                return Ok(new CanDownloadResponseType { canDownload = canDownload });
             }
             catch (Exception ex)
             {
                 Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
                 return InternalServerError();
             }
+        }
+
+
+        [Route("tilgangskontrollmatrikkeleiendomtest/{baatid}")]
+        [ResponseType(typeof(List<Eiendom>))]
+        public List<Eiendom> GetEiendomTest(string baatid)
+        {
+            var request = ControllerContext.Request;
+            var auth = request.Headers.Authorization;
+
+            List<Eiendom> eiendoms = new List<Eiendom>();
+            eiendoms.Add(new Eiendom { kommnr = "3021", gnr="1",bnr="1",fnr="0" });
+            eiendoms.Add(new Eiendom { kommnr = "3021", gnr = "20", bnr = "1", fnr = "0" });
+
+            return eiendoms;
         }
     }
 }
