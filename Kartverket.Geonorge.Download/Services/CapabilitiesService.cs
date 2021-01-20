@@ -125,9 +125,9 @@ namespace Kartverket.Geonorge.Download.Services
 
                     using (var client = new HttpClient())
                     {
-                        var url = "https://localhost:44350/api/tilgangskontrollmatrikkeleiendomtest/" + user.Username;
+                        var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username;
                         client.DefaultRequestHeaders.Clear();
-                        client.DefaultRequestHeaders.Add("Authorization", "TOKEN1");
+                        client.DefaultRequestHeaders.Add("Authorization", ConfigurationManager.AppSettings["MatrikkelEiendomEndpointToken"]);
 
                         using (var response = client.GetAsync(url))
                         {
