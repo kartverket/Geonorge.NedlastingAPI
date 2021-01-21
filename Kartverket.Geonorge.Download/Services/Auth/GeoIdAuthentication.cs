@@ -150,13 +150,13 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                     if(!string.IsNullOrEmpty(userInfo.OrganizationNumber))
                         userInfo.MunicipalityCode = _registerFetcher.GetOrganization(userInfo.OrganizationNumber).MunicipalityCode;
 
-                    if (Debugger.IsAttached) { 
-                        //testing todo remove
+                    //if (Debugger.IsAttached || HttpContext.Current.IsDebuggingEnabled) { 
+                        //testing todo remove only test
                         if (string.IsNullOrEmpty(userInfo.MunicipalityCode))
                             userInfo.MunicipalityCode = "0301";
                         userInfo._roles.Add(AuthConfig.DatasetOnlyOwnMunicipalityRole);
                         userInfo._roles.Add(AuthConfig.DatasetAgriculturalPartyRole);
-                    }
+                    //}
 
                     return userInfo;
                 }
