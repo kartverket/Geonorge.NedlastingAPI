@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -52,6 +53,33 @@ namespace Kartverket.Geonorge.Download.Services
                         }
                     }
                 }
+
+                if (string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
+                {
+                    var matrikkelEiendomAreas = orderLine.areas.Where(a => a.type == Constants.MatrikkelEiendomAreaType).ToList();
+
+                    if(matrikkelEiendomAreas.Any())
+                    {
+                        foreach (var projection in orderLine.projections)
+                        {
+                            foreach (var format in orderLine.formats)
+                            {
+                                var orderItem = new OrderItem
+                                {
+                                    Area = String.Join(" ", matrikkelEiendomAreas.Select(s => s.code)), 
+                                    AreaName = String.Join(" ", matrikkelEiendomAreas.Select(s => s.name)),
+                                    Format = format.name,
+                                    Projection = projection.code,
+                                    ProjectionName = _registerFetcher.GetProjection(projection.code).name,
+                                    MetadataUuid = orderLine.metadataUuid,
+                                    MetadataName = GetMetadataName(orderLine.metadataUuid)
+                                };
+
+                                orderItems.Add(orderItem);
+                            }
+                        }
+                    }
+                }
             }
             return orderItems;
         }
@@ -77,8 +105,15 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             var urlBuilder = new StringBuilder(clipperUrl);
-            urlBuilder.Append("CLIPPERCOORDS=").Append(orderItem.Coordinates);
-            urlBuilder.Append("&CLIPPER_EPSG_CODE=").Append(orderItem.CoordinateSystem);
+            if (string.IsNullOrEmpty(orderItem.Coordinates))
+            {
+                urlBuilder.Append("PARCELIDS=").Append(orderItem.Area);
+            }
+            else
+            { 
+                urlBuilder.Append("CLIPPERCOORDS=").Append(orderItem.Coordinates);
+                urlBuilder.Append("&CLIPPER_EPSG_CODE=").Append(orderItem.CoordinateSystem);
+            }
             urlBuilder.Append("&OUTPUT_EPSG_CODE=").Append(orderItem.Projection);
             urlBuilder.Append("&opt_servicemode=async");
             urlBuilder.Append("&FORMAT=").Append(orderItem.Format);

@@ -377,6 +377,7 @@
     <Compile Include="Migrations\202003310835553_RolesForMachineAccount.designer.cs">
       <DependentUpon>202003310835553_RolesForMachineAccount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DownloadUsage.cs" />
     <Compile Include="Models\Eiendom.cs" />
     <Compile Include="Models\FileAccessConstraint.cs" />

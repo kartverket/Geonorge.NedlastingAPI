@@ -47,13 +47,11 @@ namespace Kartverket.Geonorge.Download.Services
             if (authenticatedUser != null)
                 order.username = authenticatedUser.UsernameForStorage();
 
-            //Todo:GEOPORTAL-4598
-            //PARCELIDS = "3021/1/1/0 3021/20/1/0" til klippetjenesten
-
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
             List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
             order.AddOrderItems(clippableOrderItems);
             
+            //todo check access for eiendom
             CheckAccessRestrictions(order, authenticatedUser);
 
             SaveOrder(order);

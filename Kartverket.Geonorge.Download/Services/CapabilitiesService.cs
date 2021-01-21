@@ -340,8 +340,8 @@ namespace Kartverket.Geonorge.Download.Services
                 var area = areas.Where(a => a.code == eiendom.kommnr).FirstOrDefault();
 
                 AreaType a1 = new AreaType();
-                a1.type = "matrikkel_eiendom";
-                a1.code = $"{eiendom.kommnr}-{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
+                a1.type = Constants.MatrikkelEiendomAreaType;
+                a1.code = $"{eiendom.kommnr}/{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
                 a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommnr).name}-{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
                 a1.projections = area.projections;
                 a1.formats = area.formats;
