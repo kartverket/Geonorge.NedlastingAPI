@@ -107,7 +107,7 @@ namespace Kartverket.Geonorge.Download.Services
             var urlBuilder = new StringBuilder(clipperUrl);
             if (string.IsNullOrEmpty(orderItem.Coordinates))
             {
-                urlBuilder.Append("PARCELIDS=").Append(orderItem.Area);
+                urlBuilder.Append("PARCELIDS=").Append(System.Web.HttpUtility.UrlEncode(orderItem.Area));
             }
             else
             { 
