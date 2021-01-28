@@ -268,7 +268,7 @@ namespace Kartverket.Geonorge.Download.Services
             var municipalities = eiendoms.Select(e => e.kommnr).Distinct().ToArray();
             var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
-                              && p.Division == "kommune" && municipalities.Contains(p.DivisionKey)
+                              && (p.Division == "kommune" && municipalities.Contains(p.DivisionKey) || p.Division == "landsdekkende")
                               select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             List<AreaType> areas = new List<AreaType>();
@@ -333,22 +333,21 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
-            List<AreaType> areaEiendoms = new List<AreaType>();
+            List<AreaType> areasForEiendoms = new List<AreaType>();
 
-            foreach (var eiendom in eiendoms)
+            foreach (var area in areas)
             {
-                var area = areas.Where(a => a.code == eiendom.kommnr).FirstOrDefault();
 
                 AreaType a1 = new AreaType();
                 a1.type = Constants.MatrikkelEiendomAreaType;
-                a1.code = $"{eiendom.kommnr}/{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
-                a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommnr).name}-{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}";
+                a1.code = area.code;
+                a1.name = _registerFetcher.GetArea(area.type, area.code).name;
                 a1.projections = area.projections;
                 a1.formats = area.formats;
-                areaEiendoms.Add(a1);
+                areasForEiendoms.Add(a1);
             }
 
-            return areaEiendoms;
+            return areasForEiendoms;
         }
 
 

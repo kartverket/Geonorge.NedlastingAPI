@@ -9,6 +9,8 @@ using log4net;
 using LinqKit;
 using System.Data.Entity;
 using Geonorge.AuthLib.Common;
+using System.Net.Http;
+using System.Configuration;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -47,11 +49,15 @@ namespace Kartverket.Geonorge.Download.Services
             if (authenticatedUser != null)
                 order.username = authenticatedUser.UsernameForStorage();
 
+            List<Eiendom> eiendoms = null;
+
+            if (authenticatedUser != null)
+                eiendoms = GetEiendomsForUser(authenticatedUser);
+
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
-            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
+            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder, eiendoms);
             order.AddOrderItems(clippableOrderItems);
             
-            //todo check access for eiendom
             CheckAccessRestrictions(order, authenticatedUser);
 
             SaveOrder(order);
@@ -59,6 +65,30 @@ namespace Kartverket.Geonorge.Download.Services
             _clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
             return order;
+        }
+
+        private List<Eiendom> GetEiendomsForUser(AuthenticatedUser user)
+        {
+            List<Eiendom> eiendoms = null;
+
+            using (var client = new HttpClient())
+            {
+                var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username;
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", ConfigurationManager.AppSettings["MatrikkelEiendomEndpointToken"]);
+
+                using (var response = client.GetAsync(url))
+                {
+                    using (var result = response.Result)
+                    {
+                        eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
+
+                        Log.Debug($"Result from api: {result.Content}");
+                    }
+                }
+            }
+
+            return eiendoms;
         }
 
         // ReSharper disable once UnusedParameter.Local

@@ -23,8 +23,8 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext = dbContext;
             _registerFetcher = registerFetcherFetcher;
         }
-
-        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder)
+         
+        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, List<Eiendom> eiendoms = null)
         {
             var orderItems = new List<OrderItem>();
 
@@ -54,20 +54,28 @@ namespace Kartverket.Geonorge.Download.Services
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
+                if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
                 {
                     var matrikkelEiendomAreas = orderLine.areas.Where(a => a.type == Constants.MatrikkelEiendomAreaType).ToList();
 
                     if(matrikkelEiendomAreas.Any())
                     {
+                        var areaCodes = matrikkelEiendomAreas.Select(e => e.code).Distinct().ToArray();
+
+                        if (!matrikkelEiendomAreas.Where(l => l.code == "0000").Any())
+                        {
+                            var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommnr));
+                            eiendoms = eiendomsQuery.ToList();
+                        }
+
                         foreach (var projection in orderLine.projections)
                         {
                             foreach (var format in orderLine.formats)
                             {
                                 var orderItem = new OrderItem
                                 {
-                                    Area = String.Join(" ", matrikkelEiendomAreas.Select(s => s.code)), 
-                                    AreaName = String.Join(" ", matrikkelEiendomAreas.Select(s => s.name)),
+                                    Area = String.Join(" ", eiendoms.Select(eiendom => $"{eiendom.kommnr}/{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}")),
+                                    AreaName = String.Join(", ", matrikkelEiendomAreas.Select(s => s.name)),
                                     Format = format.name,
                                     Projection = projection.code,
                                     ProjectionName = _registerFetcher.GetProjection(projection.code).name,
