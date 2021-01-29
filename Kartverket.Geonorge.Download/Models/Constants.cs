@@ -7,6 +7,6 @@ namespace Kartverket.Geonorge.Download.Models
 {
     public static class Constants
     {
-        public const string MatrikkelEiendomAreaType = "matrikkel_eiendom";
+        public const string MatrikkelEiendomAreaType = "kommuner";
     }
 }

@@ -268,7 +268,7 @@ namespace Kartverket.Geonorge.Download.Services
             var municipalities = eiendoms.Select(e => e.kommnr).Distinct().ToArray();
             var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
-                              && (p.Division == "kommune" && municipalities.Contains(p.DivisionKey) || p.Division == "landsdekkende")
+                              && p.Division == "kommune" && municipalities.Contains(p.DivisionKey)
                               select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
 
             List<AreaType> areas = new List<AreaType>();
@@ -334,6 +334,16 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             List<AreaType> areasForEiendoms = new List<AreaType>();
+
+            if(areas.Count > 3) { 
+            AreaType national = new AreaType();
+            national.type = Constants.MatrikkelEiendomAreaType;
+            national.code = "0000";
+            national.name = "Alle mine kommuner";
+            national.projections = areas.FirstOrDefault().projections;
+            national.formats = areas.FirstOrDefault().formats;
+            areasForEiendoms.Add(national);
+            }
 
             foreach (var area in areas)
             {
