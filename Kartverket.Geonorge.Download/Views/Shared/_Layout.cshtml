@@ -40,7 +40,14 @@
 
     <div id="loading-animation" class="loading-animation" style="display: none;"></div>
 
-    @Html.Raw(File.ReadAllText(Server.MapPath("~/dist/partials/Header.html")))
+    <main-navigation environment="@Html.EnvironmentName()"
+                     signinurl="@Html.Raw(Url.Action("SignIn", "Home"))"
+                     signouturl="@Html.Raw(Url.Action("SignOut", "Home"))"
+                     isLoggedIn="@Request.IsAuthenticated.ToString().ToLower()"
+                     norwegianurl="@Html.Raw(VirtualPathUtility.ToAbsolute("~/Home/SetCulture?culture="))@Kartverket.Geonorge.Download.Models.Translations.Culture.NorwegianCode&ReturnUrl=@Request.Url"
+                     englishurl="@Html.Raw(VirtualPathUtility.ToAbsolute("~/Home/SetCulture?culture="))@Kartverket.Geonorge.Download.Models.Translations.Culture.EnglishCode&ReturnUrl=@Request.Url"
+                     language="@CultureHelper.GetCurrentCulture()"></main-navigation>
+
     @Styles.Render("~/shared-partials-styles")
     @Styles.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/css/styles")
 
@@ -100,22 +107,22 @@
     @Scripts.Render("~/Content/bower_components/kartverket-felleskomponenter/assets/js/scripts")
     @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
 
-@if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
-{
-    <!-- user claims: -->
-    var cp = (ClaimsPrincipal)User;
-    foreach (var claim in cp.Claims)
+    @if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
     {
-        <!-- @claim.Type = @claim.Value -->
-    }
+        <!-- user claims: -->
+        var cp = (ClaimsPrincipal)User;
+        foreach (var claim in cp.Claims)
+        {
+            <!-- @claim.Type = @claim.Value -->
+        }
 
-    <!-- roles: -->
-    var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
-    foreach (var role in roles)
-    {
-        <!-- @role.Value-->
+        <!-- roles: -->
+        var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
+        foreach (var role in roles)
+        {
+            <!-- @role.Value-->
+        }
     }
-}
-
+    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.33/MainNavigation.js")"></script>
 </body>
 </html>
