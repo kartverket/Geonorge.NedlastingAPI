@@ -59,8 +59,8 @@ namespace Kartverket.Geonorge.Download.Services
                     var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
                     var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
 
-                    if ( !(authenticatedUser != null && authenticatedUser.HasRole("nd.landbrukspart") &&
-                        !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains("nd.landbrukspart")))
+                    if ( !(authenticatedUser != null && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole) &&
+                        !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole)))
                         continue;
 
                     var matrikkelEiendomAreas = orderLine.areas.ToList();
