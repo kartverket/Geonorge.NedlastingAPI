@@ -24,7 +24,7 @@ namespace Kartverket.Geonorge.Download.Services
             _registerFetcher = registerFetcherFetcher;
         }
          
-        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, List<Eiendom> eiendoms = null)
+        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, AuthenticatedUser authenticatedUser = null, List<Eiendom> eiendoms = null)
         {
             var orderItems = new List<OrderItem>();
 
@@ -56,7 +56,14 @@ namespace Kartverket.Geonorge.Download.Services
 
                 if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
                 {
-                    var matrikkelEiendomAreas = orderLine.areas.Where(a => a.type == Constants.MatrikkelEiendomAreaType).ToList();
+                    var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
+                    var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+
+                    if ( !(authenticatedUser != null && authenticatedUser.HasRole("nd.landbrukspart") &&
+                        !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains("nd.landbrukspart")))
+                        continue;
+
+                    var matrikkelEiendomAreas = orderLine.areas.ToList();
 
                     if(matrikkelEiendomAreas.Any())
                     {

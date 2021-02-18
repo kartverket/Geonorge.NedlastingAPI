@@ -337,7 +337,7 @@ namespace Kartverket.Geonorge.Download.Services
 
             if(areas.Count > 3) { 
             AreaType national = new AreaType();
-            national.type = Constants.MatrikkelEiendomAreaType;
+            national.type = "landsdekkende";
             national.code = "0000";
             national.name = "Alle mine kommuner";
             national.projections = areas.FirstOrDefault().projections;
@@ -349,7 +349,7 @@ namespace Kartverket.Geonorge.Download.Services
             {
 
                 AreaType a1 = new AreaType();
-                a1.type = Constants.MatrikkelEiendomAreaType;
+                a1.type = area.type;
                 a1.code = area.code;
                 a1.name = _registerFetcher.GetArea(area.type, area.code).name;
                 a1.projections = area.projections;

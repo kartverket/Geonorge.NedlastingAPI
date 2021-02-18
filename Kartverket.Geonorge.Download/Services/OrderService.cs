@@ -54,8 +54,8 @@ namespace Kartverket.Geonorge.Download.Services
             if (authenticatedUser != null)
                 eiendoms = GetEiendomsForUser(authenticatedUser);
 
-            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
-            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder, eiendoms);
+            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, authenticatedUser));
+            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder, authenticatedUser, eiendoms);
             order.AddOrderItems(clippableOrderItems);
             
             CheckAccessRestrictions(order, authenticatedUser);
@@ -150,7 +150,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         }
 
-        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
+        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, AuthenticatedUser authenticatedUser)
         {
             var orderItems = new List<OrderItem>();
 
@@ -160,6 +160,12 @@ namespace Kartverket.Geonorge.Download.Services
 
                 var sqlDataset = "select Tittel from Dataset where metadataUuid = @p0";
                 var datasetTitle = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+                sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
+                var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+
+                if (authenticatedUser != null && authenticatedUser.HasRole("nd.landbrukspart") &&
+                    !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains("nd.landbrukspart"))
+                    continue;
 
                 int initialCount = 0;
                 int count = 0;
