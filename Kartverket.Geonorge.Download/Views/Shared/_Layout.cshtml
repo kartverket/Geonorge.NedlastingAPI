@@ -14,8 +14,25 @@
         <meta name="description" content="@ViewBag.MetaDescription" />
     }
     <link rel="shortcut icon" type="image/x-icon" href="@Html.KartkatalogenUrl()Content/img/favicon.ico" />
-    <link rel="stylesheet" href="/Content/site.css" />
+    <style>
+        .fixed-menu-margin {
+            margin-top: 140px;
+        }
+        @media (min-width: 360px) {
+            .fixed-menu-margin {
+                margin-top: 103px;
+            }
+        }
+        @media (min-width: 600px) {
+            .fixed-menu-margin {
+                margin-top: 62px;
+            }
+        }
 
+        .container-breadcrumbs {
+            display: block!important;
+        }
+    </style>
 
     <title>
         @ViewBag.Title
