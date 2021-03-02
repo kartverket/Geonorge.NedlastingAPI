@@ -81,7 +81,7 @@ namespace Kartverket.Geonorge.Download.Services
                             {
                                 var orderItem = new OrderItem
                                 {
-                                    Area = String.Join(" ", eiendoms.Select(eiendom => $"{eiendom.kommnr}/{eiendom.gnr}/{eiendom.bnr}/{eiendom.fnr}")),
+                                    Area = String.Join(" ", eiendoms.Select(eiendom => $"{eiendom.kommnr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}")),
                                     AreaName = String.Join(", ", matrikkelEiendomAreas.Select(s => s.name)),
                                     Format = format.name,
                                     Projection = projection.code,
