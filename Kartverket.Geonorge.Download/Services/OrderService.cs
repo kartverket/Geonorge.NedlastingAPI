@@ -22,18 +22,20 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly IRegisterFetcher _registerFetcher;
         private readonly IOrderBundleService _orderBundleService;
         private readonly INotificationService _notificationService;
+        private readonly IEiendomService _eiendomService;
 
         public OrderService(DownloadContext dbContext, 
             IClipperService clipperService, 
             IRegisterFetcher registerFetcherFetcher, 
             IOrderBundleService orderBundleService,
-            INotificationService notificationService)
+            INotificationService notificationService, IEiendomService eiendomService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
             _registerFetcher = registerFetcherFetcher;
             _orderBundleService = orderBundleService;
             _notificationService = notificationService;
+            _eiendomService = eiendomService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
@@ -71,22 +73,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             List<Eiendom> eiendoms = null;
 
-            using (var client = new HttpClient())
-            {
-                var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username;
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add("Authorization", ConfigurationManager.AppSettings["MatrikkelEiendomEndpointToken"]);
-
-                using (var response = client.GetAsync(url))
-                {
-                    using (var result = response.Result)
-                    {
-                        eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
-
-                        Log.Debug($"Result from api: {result.Content}");
-                    }
-                }
-            }
+            eiendoms = _eiendomService.GetEiendoms(user);
 
             return eiendoms;
         }

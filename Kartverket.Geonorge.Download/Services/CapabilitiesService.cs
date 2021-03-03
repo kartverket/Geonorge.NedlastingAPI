@@ -17,14 +17,15 @@ namespace Kartverket.Geonorge.Download.Services
 
         private readonly DownloadContext _dbContext;
         private readonly IRegisterFetcher _registerFetcher;
-
+        private readonly IEiendomService _eiendomService;
         private readonly IAuthenticationService _authenticationService;
 
-        public CapabilitiesService(DownloadContext dbContextContext, IRegisterFetcher registerFetcherFetcher, IAuthenticationService authenticationService)
+        public CapabilitiesService(DownloadContext dbContextContext, IRegisterFetcher registerFetcherFetcher, IAuthenticationService authenticationService, IEiendomService eiendomService)
         {
             _dbContext = dbContextContext;
             _registerFetcher = registerFetcherFetcher;
             _authenticationService = authenticationService;
+            _eiendomService = eiendomService;
         }
 
         public CapabilitiesType GetCapabilities(string metadataUuid) 
@@ -119,27 +120,11 @@ namespace Kartverket.Geonorge.Download.Services
               if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) &&
                     user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
                 {
-                    //GEOPORTAL-4598
 
-                    List<Eiendom> eiendoms = new List<Eiendom>();
+                    List<Eiendom> eiendoms = _eiendomService.GetEiendoms(user);
 
-                    using (var client = new HttpClient())
-                    {
-                        var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username;
-                        client.DefaultRequestHeaders.Clear();
-                        client.DefaultRequestHeaders.Add("Authorization", ConfigurationManager.AppSettings["MatrikkelEiendomEndpointToken"]);
-
-                        using (var response = client.GetAsync(url))
-                        {
-                            using (var result = response.Result)
-                            {
-                                eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
-
-                                Log.Debug($"Result from api: {result.Content}");
-                            }
-                        }
-                    }
-
+                    if (eiendoms == null)
+                        eiendoms = new List<Eiendom>();
 
                     return GetAreasEiendoms(eiendoms, metadataUuid);
 

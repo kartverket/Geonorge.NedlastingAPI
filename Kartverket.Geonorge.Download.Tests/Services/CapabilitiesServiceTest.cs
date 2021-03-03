@@ -37,7 +37,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
             var dbContext = CreateDbContextMock(dataset);
             Mock<IRegisterFetcher> registerMock = CreateRegisterFetcherMock();
 
-            return new CapabilitiesService(dbContext, registerMock.Object, null);
+            return new CapabilitiesService(dbContext, registerMock.Object, null, null);
         }
 
         private static Mock<IRegisterFetcher> CreateRegisterFetcherMock()

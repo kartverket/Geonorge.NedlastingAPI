@@ -46,6 +46,8 @@ namespace Kartverket.Geonorge.Download.App_Start
 
             builder.Register(ctx => new HttpClient()).Named<HttpClient>("tokenValidation").SingleInstance();
             builder.Register(ctx => new RegisterFetcher()).Named<RegisterFetcher>("registerFetcher").SingleInstance();
+            builder.Register(ctx => new EiendomService(ctx.ResolveNamed<HttpClient>("tokenValidation"))).As<IEiendomService>();
+
             builder.Register(ctx => new GeoIdAuthentication(ctx.ResolveNamed<HttpClient>("tokenValidation"), ctx.ResolveNamed<RegisterFetcher>("registerFetcher"))).As<IGeoIdAuthenticationService>();
 
             builder.RegisterType<BasicAuthenticationService>().As<IBasicAuthenticationService>();
