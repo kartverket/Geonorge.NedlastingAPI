@@ -250,7 +250,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         private List<AreaType> GetAreasEiendoms(List<Eiendom> eiendoms, string metadataUuid)
         {
-            var municipalities = eiendoms.Select(e => e.kommnr).Distinct().ToArray();
+            var municipalities = eiendoms.Select(e => e.kommunenr).Distinct().ToArray();
             var areasQuery = (from p in _dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
                               && p.Division == "kommune" && municipalities.Contains(p.DivisionKey)

@@ -7,7 +7,7 @@ namespace Kartverket.Geonorge.Download.Models
 {
     public class Eiendom
     {
-        public string kommnr { get; set; }
+        public string kommunenr { get; set; }
         public string gaardsnr { get; set; }
         public string bruksnr { get; set; }
         public string festenr { get; set; }

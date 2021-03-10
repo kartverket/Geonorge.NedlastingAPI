@@ -148,9 +148,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             var auth = request.Headers.Authorization;
 
             List<Eiendom> eiendoms = new List<Eiendom>();
-            eiendoms.Add(new Eiendom { kommnr = "3021", gaardsnr="1",bruksnr="1",festenr="0" });
-            eiendoms.Add(new Eiendom { kommnr = "3021", gaardsnr = "20", bruksnr = "1", festenr = "0" });
-            eiendoms.Add(new Eiendom { kommnr = "3817", gaardsnr = "1", bruksnr = "1", festenr = "0" });
+            eiendoms.Add(new Eiendom { kommunenr = "3021", gaardsnr="1",bruksnr="1",festenr="0" });
+            eiendoms.Add(new Eiendom { kommunenr = "3021", gaardsnr = "20", bruksnr = "1", festenr = "0" });
+            eiendoms.Add(new Eiendom { kommunenr = "3817", gaardsnr = "1", bruksnr = "1", festenr = "0" });
 
             return eiendoms;
         }
