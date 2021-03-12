@@ -32,15 +32,14 @@ namespace Kartverket.Geonorge.Download.Controllers
 
         public void SignIn()
         {
-            var redirectUrl = "/";
+            var redirectUri = Url.Action(nameof(HomeController.Index), "Home");
 
-            if (Request.QueryString["ReturnUrl"] != null) { 
-                redirectUrl = Request.QueryString["ReturnUrl"];
-                Session["ReturnUrl"] = redirectUrl;
+            if (Request.QueryString["ReturnUrl"] != null) {
+                redirectUri = Request.QueryString["ReturnUrl"];
+                Session["ReturnUrl"] = redirectUri;
                 Log.Info("Setting session ReturnUrl:" + Session["ReturnUrl"]);
             }
 
-            var redirectUri = Url.Action(nameof(HomeController.Index), "Home");
             HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUri },
                     OpenIdConnectAuthenticationDefaults.AuthenticationType);
         }
