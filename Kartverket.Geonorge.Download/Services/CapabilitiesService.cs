@@ -320,16 +320,6 @@ namespace Kartverket.Geonorge.Download.Services
 
             List<AreaType> areasForEiendoms = new List<AreaType>();
 
-            if(areas.Count > 3) { 
-            AreaType national = new AreaType();
-            national.type = "landsdekkende";
-            national.code = "0000";
-            national.name = "Alle mine kommuner";
-            national.projections = areas.FirstOrDefault().projections;
-            national.formats = areas.FirstOrDefault().formats;
-            areasForEiendoms.Add(national);
-            }
-
             foreach (var area in areas)
             {
 
