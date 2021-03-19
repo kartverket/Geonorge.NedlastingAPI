@@ -53,8 +53,10 @@ namespace Kartverket.Geonorge.Download.Services
 
             List<Eiendom> eiendoms = null;
 
-            if (authenticatedUser != null)
-                eiendoms = GetEiendomsForUser(authenticatedUser);
+            if (authenticatedUser != null) { 
+                if(authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                    eiendoms = GetEiendomsForUser(authenticatedUser);
+            }
 
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, authenticatedUser));
             List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder, authenticatedUser, eiendoms);
