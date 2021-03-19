@@ -147,8 +147,11 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
                     userInfo._roles = jsonResponse["baat_services"].ToObject<List<string>>();
 
-                    if(!string.IsNullOrEmpty(userInfo.OrganizationNumber))
-                        userInfo.MunicipalityCode = _registerFetcher.GetOrganization(userInfo.OrganizationNumber).MunicipalityCode;
+                    if (!string.IsNullOrEmpty(userInfo.OrganizationNumber)) {
+                        var organization = _registerFetcher.GetOrganization(userInfo.OrganizationNumber);
+                        if(organization != null)
+                            userInfo.MunicipalityCode = organization.MunicipalityCode;
+                    }
 
                     return userInfo;
                 }
