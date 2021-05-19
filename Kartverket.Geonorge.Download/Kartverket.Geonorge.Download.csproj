@@ -95,8 +95,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\LinqKit.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MB.Owin.Logging.Log4Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MB.Owin.Logging.Log4Net.1.0.2\lib\net45\MB.Owin.Logging.Log4Net.dll</HintPath>
@@ -378,8 +378,12 @@
       <DependentUpon>202003310835553_RolesForMachineAccount.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DownloadUsage.cs" />
+    <Compile Include="Models\Eiendom.cs" />
+    <Compile Include="Models\EiendomService.cs" />
     <Compile Include="Models\FileAccessConstraint.cs" />
+    <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
+    <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GeonorgeCacheOutputAttribute.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />

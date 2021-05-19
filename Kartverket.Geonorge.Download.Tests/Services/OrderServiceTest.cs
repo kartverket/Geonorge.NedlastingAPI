@@ -32,7 +32,7 @@ namespace Kartverket.Geonorge.Download.Tests.Services
         {
             var dbContext = CreateDbContextMock(listOfOrders);
             var notificationServiceMock = new Mock<INotificationService>();
-            return new OrderService(dbContext, null, null, _orderBundlingServiceMock.Object, notificationServiceMock.Object);
+            return new OrderService(dbContext, null, null, _orderBundlingServiceMock.Object, notificationServiceMock.Object, null);
         }
 
         private DownloadContext CreateDbContextMock(List<Order> listOfOrders)

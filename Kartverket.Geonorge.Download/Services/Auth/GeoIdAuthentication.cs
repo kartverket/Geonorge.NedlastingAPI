@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
@@ -22,10 +23,12 @@ namespace Kartverket.Geonorge.Download.Services.Auth
     {
         private readonly HttpClient _httpClient;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IRegisterFetcher _registerFetcher;
 
-        public GeoIdAuthentication(HttpClient httpClient)
+        public GeoIdAuthentication(HttpClient httpClient, IRegisterFetcher registerFetcher)
         {
             _httpClient = httpClient;
+            _registerFetcher = registerFetcher;
         }
 
         public AuthenticatedUser GetAuthenticatedUser()
@@ -37,8 +40,10 @@ namespace Kartverket.Geonorge.Download.Services.Auth
 
             IEnumerable<Claim> roles = ClaimsPrincipal.Current.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
             var rolesAsList = roles.Select(r => r.Value).ToList();
+            UserInfo userInfo = new UserInfo();
+            userInfo._roles = rolesAsList;
 
-            return new AuthenticatedUser(username, AuthenticationMethod.GeoId, rolesAsList);
+            return new AuthenticatedUser(username, AuthenticationMethod.GeoId, userInfo);
         }
 
         public AuthenticatedUser GetAuthenticatedUser(HttpRequestMessage requestMessage)
@@ -113,8 +118,10 @@ namespace Kartverket.Geonorge.Download.Services.Auth
             return null;
         }
 
-        private List<string> GetRolesForUser(string username, string accessToken)
+        private UserInfo GetRolesForUser(string username, string accessToken)
         {
+            UserInfo userInfo = new UserInfo();
+
             var geoIdUserInfoUrl = WebConfigurationManager.AppSettings["GeoID:BaatAuthzApiUrl"] + "info/" + username;
 
             Log.Debug("User role info - requestUrl: " + geoIdUserInfoUrl);
@@ -131,14 +138,28 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                 Log.Debug("Response from baat info api: " + rawResponse);
 
                 var jsonResponse = JObject.Parse(rawResponse);
-                if (jsonResponse.ContainsKey("baat_services"))
+                if (jsonResponse.ContainsKey("baat_services") && jsonResponse.ContainsKey("baat_organization"))
                 {
-                    return jsonResponse["baat_services"].ToObject<List<string>>();
+                    var organizationInfo = jsonResponse["baat_organization"];
+                    var orgnr = organizationInfo["orgnr"];
+                    if (orgnr != null)
+                        userInfo.OrganizationNumber = orgnr.ToString();
+
+                    userInfo._roles = jsonResponse["baat_services"].ToObject<List<string>>();
+
+                    if (!string.IsNullOrEmpty(userInfo.OrganizationNumber)) {
+                        var organization = _registerFetcher.GetOrganization(userInfo.OrganizationNumber);
+                        if(organization != null)
+                            userInfo.MunicipalityCode = organization.MunicipalityCode;
+                    }
+
+                    return userInfo;
                 }
                 else
                 {
                     Log.Info("Response from baat info api: " + rawResponse);
                 }
+
             }
 
             return null;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -22,8 +23,8 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext = dbContext;
             _registerFetcher = registerFetcherFetcher;
         }
-
-        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder)
+         
+        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, AuthenticatedUser authenticatedUser = null, List<Eiendom> eiendoms = null)
         {
             var orderItems = new List<OrderItem>();
 
@@ -52,6 +53,48 @@ namespace Kartverket.Geonorge.Download.Services
                         }
                     }
                 }
+
+                if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
+                {
+                    var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
+                    var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+
+                    if ( !(authenticatedUser != null && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole) &&
+                        !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole)))
+                        continue;
+
+                    var matrikkelEiendomAreas = orderLine.areas.ToList();
+
+                    if(matrikkelEiendomAreas.Any())
+                    {
+                        var areaCodes = matrikkelEiendomAreas.Select(e => e.code).Distinct().ToArray();
+
+                        if (!matrikkelEiendomAreas.Where(l => l.code == "0000").Any())
+                        {
+                            var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr));
+                            eiendoms = eiendomsQuery.ToList();
+                        }
+
+                        foreach (var projection in orderLine.projections)
+                        {
+                            foreach (var format in orderLine.formats)
+                            {
+                                var orderItem = new OrderItem
+                                {
+                                    Area = String.Join(" ", eiendoms.Select(eiendom => $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}")),
+                                    AreaName = String.Join(", ", matrikkelEiendomAreas.Select(s => s.name)),
+                                    Format = format.name,
+                                    Projection = projection.code,
+                                    ProjectionName = _registerFetcher.GetProjection(projection.code).name,
+                                    MetadataUuid = orderLine.metadataUuid,
+                                    MetadataName = GetMetadataName(orderLine.metadataUuid)
+                                };
+
+                                orderItems.Add(orderItem);
+                            }
+                        }
+                    }
+                }
             }
             return orderItems;
         }
@@ -77,8 +120,15 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             var urlBuilder = new StringBuilder(clipperUrl);
-            urlBuilder.Append("CLIPPERCOORDS=").Append(orderItem.Coordinates);
-            urlBuilder.Append("&CLIPPER_EPSG_CODE=").Append(orderItem.CoordinateSystem);
+            if (string.IsNullOrEmpty(orderItem.Coordinates))
+            {
+                urlBuilder.Append("PARCELIDS=").Append(System.Web.HttpUtility.UrlEncode(orderItem.Area));
+            }
+            else
+            { 
+                urlBuilder.Append("CLIPPERCOORDS=").Append(orderItem.Coordinates);
+                urlBuilder.Append("&CLIPPER_EPSG_CODE=").Append(orderItem.CoordinateSystem);
+            }
             urlBuilder.Append("&OUTPUT_EPSG_CODE=").Append(orderItem.Projection);
             urlBuilder.Append("&opt_servicemode=async");
             urlBuilder.Append("&FORMAT=").Append(orderItem.Format);

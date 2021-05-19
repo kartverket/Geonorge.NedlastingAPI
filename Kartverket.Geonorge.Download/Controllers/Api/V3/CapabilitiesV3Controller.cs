@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using Geonorge.NedlastingApi.V3;
+using Kartverket.Geonorge.Download.Models;
 using Kartverket.Geonorge.Download.Services;
 using log4net;
 using Microsoft.Web.Http;
@@ -80,11 +81,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
         [GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
         [Route("codelists/area/{metadataUuid}")]
         [ResponseType(typeof(List<AreaType>))]
-        public IHttpActionResult GetAreas(string metadataUuid)
+        public IHttpActionResult GetAreas(string metadataUuid, string access_token = null)
         {
             try
             {
-                return Ok(_capabilitiesService.GetAreas(metadataUuid));
+                return Ok(_capabilitiesService.GetAreas(metadataUuid, ControllerContext.Request));
             }
             catch (Exception ex)
             {
@@ -129,13 +130,29 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     canDownload = _downloadService.AreaIsWithinDownloadLimits(request.coordinates,
                         request.coordinateSystem, request.metadataUuid);
 
-                return Ok(new CanDownloadResponseType {canDownload = canDownload});
+                return Ok(new CanDownloadResponseType { canDownload = canDownload });
             }
             catch (Exception ex)
             {
                 Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
                 return InternalServerError();
             }
+        }
+
+
+        [Route("tilgangskontrollmatrikkeleiendomtest/{baatid}")]
+        [ResponseType(typeof(List<Eiendom>))]
+        public List<Eiendom> GetEiendomTest(string baatid)
+        {
+            var request = ControllerContext.Request;
+            var auth = request.Headers.Authorization;
+
+            List<Eiendom> eiendoms = new List<Eiendom>();
+            eiendoms.Add(new Eiendom { kommunenr = "3021", gaardsnr="1",bruksnr="1",festenr="0" });
+            eiendoms.Add(new Eiendom { kommunenr = "3021", gaardsnr = "20", bruksnr = "1", festenr = "0" });
+            eiendoms.Add(new Eiendom { kommunenr = "3817", gaardsnr = "1", bruksnr = "1", festenr = "0" });
+
+            return eiendoms;
         }
     }
 }

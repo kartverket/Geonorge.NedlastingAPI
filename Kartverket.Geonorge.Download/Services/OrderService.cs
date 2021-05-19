@@ -9,6 +9,8 @@ using log4net;
 using LinqKit;
 using System.Data.Entity;
 using Geonorge.AuthLib.Common;
+using System.Net.Http;
+using System.Configuration;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -20,18 +22,20 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly IRegisterFetcher _registerFetcher;
         private readonly IOrderBundleService _orderBundleService;
         private readonly INotificationService _notificationService;
+        private readonly IEiendomService _eiendomService;
 
         public OrderService(DownloadContext dbContext, 
             IClipperService clipperService, 
             IRegisterFetcher registerFetcherFetcher, 
             IOrderBundleService orderBundleService,
-            INotificationService notificationService)
+            INotificationService notificationService, IEiendomService eiendomService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
             _registerFetcher = registerFetcherFetcher;
             _orderBundleService = orderBundleService;
             _notificationService = notificationService;
+            _eiendomService = eiendomService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
@@ -47,8 +51,15 @@ namespace Kartverket.Geonorge.Download.Services
             if (authenticatedUser != null)
                 order.username = authenticatedUser.UsernameForStorage();
 
-            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder));
-            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder);
+            List<Eiendom> eiendoms = null;
+
+            if (authenticatedUser != null) { 
+                if(authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                    eiendoms = GetEiendomsForUser(authenticatedUser);
+            }
+
+            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, authenticatedUser));
+            List<OrderItem> clippableOrderItems = _clipperService.GetClippableOrderItems(incomingOrder, authenticatedUser, eiendoms);
             order.AddOrderItems(clippableOrderItems);
             
             CheckAccessRestrictions(order, authenticatedUser);
@@ -58,6 +69,15 @@ namespace Kartverket.Geonorge.Download.Services
             _clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
             return order;
+        }
+
+        private List<Eiendom> GetEiendomsForUser(AuthenticatedUser user)
+        {
+            List<Eiendom> eiendoms = null;
+
+            eiendoms = _eiendomService.GetEiendoms(user);
+
+            return eiendoms;
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -77,11 +97,18 @@ namespace Kartverket.Geonorge.Download.Services
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
                     bool access = false;
-                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles)
+                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles) {
+                        if(requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole)
+                        {
+                            if(order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != authenticatedUser.MunicipalityCode).Any())
+                                throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for area for " + dataset.MetadataUuid);
+ 
+                        }
                         if (authenticatedUser.HasRole(requiredRole))
                             access = true;
+                    }
 
-                    if(!access)
+                    if (!access)
                         throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for " + dataset.MetadataUuid);
                 }
             }
@@ -112,7 +139,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         }
 
-        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order)
+        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, AuthenticatedUser authenticatedUser)
         {
             var orderItems = new List<OrderItem>();
 
@@ -122,6 +149,12 @@ namespace Kartverket.Geonorge.Download.Services
 
                 var sqlDataset = "select Tittel from Dataset where metadataUuid = @p0";
                 var datasetTitle = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+                sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
+                var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+
+                if (authenticatedUser != null && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole) &&
+                    !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
+                    continue;
 
                 int initialCount = 0;
                 int count = 0;
