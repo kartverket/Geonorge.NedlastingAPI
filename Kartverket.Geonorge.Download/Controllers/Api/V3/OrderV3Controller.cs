@@ -19,7 +19,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 {
     [ApiVersion("3.0")]
     [EnableCors(
-        "http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no,https://localhost:44355",
+        "http://kartkatalog.dev.geonorge.no,https://kartkatalog.dev.geonorge.no,https://kartkatalog.test.geonorge.no,https://kartkatalog.geonorge.no,https://localhost:44355,http://localhost:50081",
         "*", "*", SupportsCredentials = true)]
     [HandleError]
     public class OrderV3Controller : ApiController
