@@ -84,14 +84,7 @@
         </div>
 
     </div>
-    @if (CultureHelper.IsNorwegian())
-    {
-        @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer.min.cshtml");
-    }
-    else
-    {
-        @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Footer_eng.min.cshtml");
-    }
+    <geonorge-footer language="@CultureHelper.GetCurrentCulture()" version="@Html.ApplicationVersionNumber()" environment="@Html.EnvironmentName()" />
     @Scripts.Render("~/shared-partials-scripts")
     <script>
         searchOption.loginUrl = '@Html.Raw(Url.Action("SignIn", "Home"))';
@@ -124,6 +117,7 @@
             <!-- @role.Value-->
         }
     }
-    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.41/MainNavigation.js")"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.53/MainNavigation.js")"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@("@kartverket/geonorge-web-components@0.1.53/GeonorgeFooter.js")"></script>
 </body>
 </html>
