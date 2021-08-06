@@ -117,6 +117,9 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 var user = _authenticationService.GetAuthenticatedUser(request);
 
+                if (user == null)
+                    throw new UnauthorizedAccessException("Bruker har ikke tilgang");
+
               if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) &&
                     user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
                 {
@@ -318,21 +321,23 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
-            List<AreaType> areasForEiendoms = new List<AreaType>();
+            List<AreaType> areaEiendoms = new List<AreaType>();
 
-            foreach (var area in areas)
+            foreach (var eiendom in eiendoms)
             {
 
+                var area = areas.Where(a => a.code == eiendom.kommunenr).FirstOrDefault();
+
                 AreaType a1 = new AreaType();
-                a1.type = area.type;
-                a1.code = area.code;
-                a1.name = _registerFetcher.GetArea(area.type, area.code).name;
+                a1.type = "Eiendommer";
+                a1.code = $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
+                a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommunenr).name}-{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
                 a1.projections = area.projections;
                 a1.formats = area.formats;
-                areasForEiendoms.Add(a1);
+                areaEiendoms.Add(a1);
             }
 
-            return areasForEiendoms;
+            return areaEiendoms;
         }
 
 

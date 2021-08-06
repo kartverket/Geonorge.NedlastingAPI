@@ -87,6 +87,11 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 return Ok(_capabilitiesService.GetAreas(metadataUuid, ControllerContext.Request));
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                Log.Error("UnauthorizedAccessException: " + metadataUuid, ex);
+                return Unauthorized();
+            }
             catch (Exception ex)
             {
                 Log.Error("Error getting areas for uuid: " + metadataUuid, ex);
