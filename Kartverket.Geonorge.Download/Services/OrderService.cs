@@ -98,7 +98,8 @@ namespace Kartverket.Geonorge.Download.Services
                 {
                     bool access = false;
                     foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles) {
-                        if(requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole)
+                        if(requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole 
+                            && authenticatedUser.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
                         {
                             if(order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != authenticatedUser.MunicipalityCode).Any())
                                 throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for area for " + dataset.MetadataUuid);
