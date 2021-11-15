@@ -119,6 +119,13 @@ namespace Kartverket.Geonorge.Download.Services
                 return;
             }
 
+            if (string.IsNullOrEmpty(orderItem.Coordinates) && string.IsNullOrEmpty(orderItem.Area))
+            {
+                Log.Error("Coordinates or Area for metadata uuid: " + orderItem.MetadataUuid +
+                          ". Cannot process clipping request for orderItem: " + orderItem.Uuid);
+                return;
+            }
+
             var urlBuilder = new StringBuilder(clipperUrl);
             if (string.IsNullOrEmpty(orderItem.Coordinates))
             {
