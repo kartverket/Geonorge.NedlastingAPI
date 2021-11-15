@@ -71,7 +71,7 @@ namespace Kartverket.Geonorge.Download.Services
 
                         if (!matrikkelEiendomAreas.Where(l => l.code == "0000").Any())
                         {
-                            var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr));
+                            var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr + "/" + e.gaardsnr + "/" + e.bruksnr + "/" + e.festenr));
                             eiendoms = eiendomsQuery.ToList();
                         }
 
@@ -115,6 +115,13 @@ namespace Kartverket.Geonorge.Download.Services
             if (string.IsNullOrWhiteSpace(clipperUrl))
             {
                 Log.Error("ClipperUrl is not defined for metadata uuid: " + orderItem.MetadataUuid +
+                          ". Cannot process clipping request for orderItem: " + orderItem.Uuid);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(orderItem.Coordinates) && string.IsNullOrEmpty(orderItem.Area))
+            {
+                Log.Error("Coordinates or Area for metadata uuid: " + orderItem.MetadataUuid +
                           ". Cannot process clipping request for orderItem: " + orderItem.Uuid);
                 return;
             }
