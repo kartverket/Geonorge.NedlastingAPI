@@ -26,7 +26,7 @@ namespace Kartverket.Geonorge.Download.Models
             {
                 using (var client = new HttpClient())
                 {
-                    var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username;
+                    var url = ConfigurationManager.AppSettings["MatrikkelEiendomEndpoint"] + "/" + user.Username.ToUpper();
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Add("x-api-key", ConfigurationManager.AppSettings["MatrikkelEiendomEndpointToken"]);
 
