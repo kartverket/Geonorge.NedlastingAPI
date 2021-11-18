@@ -328,13 +328,20 @@ namespace Kartverket.Geonorge.Download.Services
 
                 var area = areas.Where(a => a.code == eiendom.kommunenr).FirstOrDefault();
 
-                AreaType a1 = new AreaType();
-                a1.type = "Eiendommer";
-                a1.code = $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
-                a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommunenr).name}-{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
-                a1.projections = area.projections;
-                a1.formats = area.formats;
-                areaEiendoms.Add(a1);
+                if(area != null)
+                { 
+                    AreaType a1 = new AreaType();
+                    a1.type = "Eiendommer";
+                    a1.code = $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
+                    a1.name = $"{_registerFetcher.GetArea("kommune", eiendom.kommunenr).name}-{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}";
+                    a1.projections = area?.projections;
+                    a1.formats = area?.formats;
+                    areaEiendoms.Add(a1);
+                }
+                else
+                {
+                    Log.Warn("Municipality: " + eiendom.kommunenr +  " not found in dataset area for nibio eiendoms");
+                }
             }
 
             return areaEiendoms;
