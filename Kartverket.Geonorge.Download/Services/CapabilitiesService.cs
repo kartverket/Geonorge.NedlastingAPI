@@ -344,7 +344,7 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
-            return areaEiendoms;
+            return areaEiendoms.OrderBy(o => o.name).ToList();
         }
 
 
