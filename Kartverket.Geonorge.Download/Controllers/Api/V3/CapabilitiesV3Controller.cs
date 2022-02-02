@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
@@ -141,6 +144,51 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
                 return InternalServerError();
+            }
+        }
+
+
+        /// <summary>
+        ///     If clipper file is selected, checks if file is valid
+        /// </summary>
+        [HttpPost]
+        [Route("validate-clipperfile")]
+        [ResponseType(typeof(ClipperFileResponseType))]
+        public HttpResponseMessage ValidateClipperFile(string metadataUuid)
+        {
+            try
+            {
+                HttpResponseMessage result = null;
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count > 0)
+                {
+                    Guid id = Guid.NewGuid();
+                    var postedFile = httpRequest.Files[0];
+                    string fileName = id.ToString() + "." + System.IO.Path.GetExtension(postedFile.FileName);
+                    var filePath = HttpContext.Current.Server.MapPath("~/clipperfiles/" + fileName);
+                    postedFile.SaveAs(filePath);
+
+                    var clipperFileResponse = _downloadService.CallClipperFileChecker("https://testnedlasting2.geonorge.no/fmedatastreaming/Orders/ClipperFileValidator.fmw?CLIPPER_FILE=http://testnedlasting.geonorge.no/geonorge/Basisdata/Kommuner/SOSI/Basisdata_1151_Utsira_25832_Kommuner_SOSI.zip&UUID=8b4304ea-4fb0-479c-a24d-fa225e2c6e97&token=0b93a6f450aed592da2fad4b5029f7fce7bae7b8"); 
+                    ClipperFileResponseType clipperFileResponseType = new ClipperFileResponseType();
+                    clipperFileResponseType.valid = clipperFileResponse.Value<bool>("valid");
+                    clipperFileResponseType.message = clipperFileResponse.Value<string>("message");
+                    clipperFileResponseType.url = "todo()";
+                    
+                    //Todo save result to db for deleting files?
+
+                    result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                }
+                else
+                {
+                    result = Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error validate-clipperfile for uuid: " + metadataUuid, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
             }
         }
 
