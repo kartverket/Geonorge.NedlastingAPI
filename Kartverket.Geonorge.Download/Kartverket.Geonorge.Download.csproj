@@ -346,6 +346,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\Internal\DownloadUsageController.cs" />
+    <Compile Include="Models\ClipperFileResponseType.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
     <Compile Include="Controllers\ExternalClientTokenAuthAttribute.cs" />
     <Compile Include="Helpers\NonPublicColumnAttributeConvention.cs" />
