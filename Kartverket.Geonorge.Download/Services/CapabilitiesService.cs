@@ -347,6 +347,17 @@ namespace Kartverket.Geonorge.Download.Services
             return areaEiendoms.OrderBy(o => o.name).ToList();
         }
 
+        public void SaveClipperFile(Guid id, string url, bool valid, string message)
+        {
+            ClipperFile clipperFile = new ClipperFile();
+            clipperFile.Id = id;
+            clipperFile.DateUploaded = DateTime.Now;
+            clipperFile.File = url;
+            clipperFile.Valid = valid;
+            clipperFile.Message = message;
 
+            _dbContext.ClipperFiles.Add(clipperFile);
+            _dbContext.SaveChanges();
+        }
     }
 }

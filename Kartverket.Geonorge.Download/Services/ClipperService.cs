@@ -154,13 +154,13 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             var urlBuilder = new StringBuilder(clipperUrl);
-            if (string.IsNullOrEmpty(orderItem.Coordinates))
-            {
-                urlBuilder.Append("PARCELIDS=").Append(System.Web.HttpUtility.UrlEncode(orderItem.Area));
-            }
-            else if (string.IsNullOrEmpty(orderItem.ClipperFile))
+            if (!string.IsNullOrEmpty(orderItem.ClipperFile))
             {
                 urlBuilder.Append("CLIPPER_FILE=").Append(System.Web.HttpUtility.UrlEncode(orderItem.ClipperFile));
+            }
+            else if (string.IsNullOrEmpty(orderItem.Coordinates))
+            {
+                urlBuilder.Append("PARCELIDS=").Append(System.Web.HttpUtility.UrlEncode(orderItem.Area));
             }
             else
             { 

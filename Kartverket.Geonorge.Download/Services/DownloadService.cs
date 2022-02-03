@@ -151,7 +151,7 @@ namespace Kartverket.Geonorge.Download.Services
             return JObject.Parse(jsonResult);
         }
 
-        public static JObject CallClipperFileChecker(string url)
+        public JObject CallClipperFileChecker(string url)
         {
             string jsonResult;
 

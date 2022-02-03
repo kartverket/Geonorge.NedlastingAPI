@@ -346,6 +346,10 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Api\ApiDescriptionController.cs" />
     <Compile Include="Controllers\Api\Internal\DownloadUsageController.cs" />
+    <Compile Include="Migrations\202202030742406_AddClipperFile.cs" />
+    <Compile Include="Migrations\202202030742406_AddClipperFile.designer.cs">
+      <DependentUpon>202202030742406_AddClipperFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ClipperFileResponseType.cs" />
     <Compile Include="Controllers\Api\V3\FileDownloadController.cs" />
     <Compile Include="Controllers\ExternalClientTokenAuthAttribute.cs" />
@@ -798,6 +802,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003310835553_RolesForMachineAccount.resx">
       <DependentUpon>202003310835553_RolesForMachineAccount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202030742406_AddClipperFile.resx">
+      <DependentUpon>202202030742406_AddClipperFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\UI.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

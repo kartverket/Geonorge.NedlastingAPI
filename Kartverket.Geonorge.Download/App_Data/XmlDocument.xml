@@ -572,6 +572,11 @@
                 If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
             </summary>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.CapabilitiesV3Controller.ValidateClipperFile(System.String)">
+            <summary>
+                If clipper file is selected, checks if file is valid
+            </summary>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.V3.DownloadV3Controller.GetBundleFile(System.String)">
             <summary>
                 Get file to download for order
