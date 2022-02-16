@@ -19,6 +19,7 @@ namespace Kartverket.Geonorge.Download.Models
         public virtual DbSet<MachineAccount> MachineAccounts { get; set; }
         
         public virtual DbSet<DownloadUsageEntry> DownloadUsages { get; set; }
+        public virtual DbSet<ClipperFile> ClipperFiles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

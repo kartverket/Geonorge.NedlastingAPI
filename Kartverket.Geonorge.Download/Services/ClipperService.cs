@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -95,6 +96,33 @@ namespace Kartverket.Geonorge.Download.Services
                         }
                     }
                 }
+
+
+                if (!string.IsNullOrWhiteSpace(orderLine.clipperFile) && incomingOrder.email != null && orderLine.projections != null)
+                {
+
+                    foreach (var projection in orderLine.projections)
+                    {
+                        foreach (var format in orderLine.formats)
+                        {
+                            var orderItem = new OrderItem
+                            {
+                                Area = "Klippe-fil",
+                                AreaName = "Klippe-fil",
+                                ClipperFile = orderLine.clipperFile,
+                                Format = format.name,
+                                Projection = projection.code,
+                                ProjectionName = _registerFetcher.GetProjection(projection.code).name,
+                                MetadataUuid = orderLine.metadataUuid,
+                                MetadataName = GetMetadataName(orderLine.metadataUuid)
+                            };
+
+                            orderItems.Add(orderItem);
+                        }
+                    }
+                }
+
+
             }
             return orderItems;
         }
@@ -126,8 +154,14 @@ namespace Kartverket.Geonorge.Download.Services
                 return;
             }
 
+            var fmeToken = ConfigurationManager.AppSettings["FmeToken"];
+
             var urlBuilder = new StringBuilder(clipperUrl);
-            if (string.IsNullOrEmpty(orderItem.Coordinates))
+            if (!string.IsNullOrEmpty(orderItem.ClipperFile))
+            {
+                urlBuilder.Append("CLIPPER_FILE=").Append(System.Web.HttpUtility.UrlEncode(orderItem.ClipperFile));
+            }
+            else if (string.IsNullOrEmpty(orderItem.Coordinates))
             {
                 urlBuilder.Append("PARCELIDS=").Append(System.Web.HttpUtility.UrlEncode(orderItem.Area));
             }
@@ -141,6 +175,9 @@ namespace Kartverket.Geonorge.Download.Services
             urlBuilder.Append("&FORMAT=").Append(orderItem.Format);
             urlBuilder.Append("&FILEID=").Append(orderItem.Uuid);
             urlBuilder.Append("&UUID=").Append(orderItem.MetadataUuid);
+
+            if(!string.IsNullOrEmpty(fmeToken))
+                urlBuilder.Append("&token=").Append(fmeToken);
 
             // TODO - remove this when FME has implemented callback method
             urlBuilder.Append("&EPOST=").Append(email);
