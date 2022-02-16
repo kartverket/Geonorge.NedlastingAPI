@@ -429,7 +429,10 @@ namespace Geonorge.NedlastingApi.V3 {
         
         /// <remarks/>
         public string coordinatesystem;
-        
+
+        /// <remarks/>
+        public string clipperFile;
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("usagePurpose", IsNullable=true)]
         public string[] usagePurpose;

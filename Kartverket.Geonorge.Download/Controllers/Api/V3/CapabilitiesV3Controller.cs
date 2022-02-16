@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
@@ -141,6 +144,59 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 Log.Error("Error returning canDownload for uuid: " + request.metadataUuid, ex);
                 return InternalServerError();
+            }
+        }
+
+
+        /// <summary>
+        ///     If clipper file is selected, checks if file is valid
+        /// </summary>
+        [HttpPost]
+        [Route("validate-clipperfile/{metadataUuid}")]
+        [ResponseType(typeof(ClipperFileResponseType))]
+        public HttpResponseMessage ValidateClipperFile(string metadataUuid)
+        {
+            try
+            {
+                HttpResponseMessage result = null;
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count > 0)
+                {
+                    Guid id = Guid.NewGuid();
+                    var postedFile = httpRequest.Files[0];
+                    string fileName = id.ToString() + System.IO.Path.GetExtension(postedFile.FileName);
+                    var filePath = HttpContext.Current.Server.MapPath("~/clipperfiles/" + fileName);
+                    postedFile.SaveAs(filePath);
+
+                    var clipperFile = "https://" + httpRequest.Url.Host + "/clipperfiles/" + fileName;
+                    if (clipperFile.Contains("localhost"))
+                        clipperFile = "http://testnedlasting.geonorge.no/geonorge/Basisdata/Kommuner/SOSI/Basisdata_1151_Utsira_25832_Kommuner_SOSI.zip";
+
+                    var clipperFileValidator = ConfigurationManager.AppSettings["ClipperFileValidator"];
+                    var clipperFileValidatorToken = ConfigurationManager.AppSettings["ClipperFileValidatorToken"];
+
+                    var clipperFileResponse = 
+                        _downloadService.CallClipperFileChecker(clipperFileValidator + "?CLIPPER_FILE=" + clipperFile + "&UUID=" +metadataUuid + "&token=" + clipperFileValidatorToken); 
+                    ClipperFileResponseType clipperFileResponseType = new ClipperFileResponseType();
+                    clipperFileResponseType.valid = clipperFileResponse.Value<bool>("valid");
+                    clipperFileResponseType.message = clipperFileResponse.Value<string>("message");
+                    clipperFileResponseType.url = clipperFile;
+
+                    _capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
+
+                    result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                }
+                else
+                {
+                    result = Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error validate-clipperfile for uuid: " + metadataUuid, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
             }
         }
 

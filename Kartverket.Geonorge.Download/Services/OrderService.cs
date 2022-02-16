@@ -424,9 +424,9 @@ namespace Kartverket.Geonorge.Download.Services
             if (orderStatus.Status == "ReadyForDownload" && !order.DownloadBundleNotificationSent.HasValue)
             {
                 _notificationService.SendReadyForDownloadBundleNotification(order);
+                order.DownloadBundleNotificationSent = DateTime.Now;
             }
 
-            order.DownloadBundleNotificationSent = DateTime.Now;
             _dbContext.SaveChanges();
         }
 

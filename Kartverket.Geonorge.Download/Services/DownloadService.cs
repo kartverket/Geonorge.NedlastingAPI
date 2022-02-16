@@ -150,5 +150,39 @@ namespace Kartverket.Geonorge.Download.Services
 
             return JObject.Parse(jsonResult);
         }
+
+        public JObject CallClipperFileChecker(string url)
+        {
+            string jsonResult;
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            Log.Info("Clipper file checker request: " + url);
+            try
+            {
+                var response = request.GetResponse();
+                using (var responseStream = response.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.UTF8);
+                    jsonResult = reader.ReadToEnd();
+                }
+                Log.Info("Clipper file checker response: " + ((HttpWebResponse)response).StatusCode + " Body: " + jsonResult);
+            }
+            catch (WebException exception)
+            {
+                var errorResponse = exception.Response;
+
+                using (var responseStream = errorResponse.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                    var errorText = reader.ReadToEnd();
+                    Log.Error(errorText, exception);
+                }
+                throw;
+            }
+
+            jsonResult = jsonResult.Trim('[', ']'); // [{"allowed":true}] -> {"allowed":true}
+
+            return JObject.Parse(jsonResult);
+        }
     }
 }
