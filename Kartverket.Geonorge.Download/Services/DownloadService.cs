@@ -107,12 +107,14 @@ namespace Kartverket.Geonorge.Download.Services
         private static string MakeAreaCheckerApiUrl(string coordinates, string coordinateSystem, string metadataUuid)
         {
             var areaCheckerUrl = ConfigurationManager.AppSettings["FmeAreaChecker"];
+            var areaCheckerToken = ConfigurationManager.AppSettings["FmeAreaCheckerToken"];
 
             var urlBuilder = new StringBuilder(areaCheckerUrl);
 
             urlBuilder.Append("CLIPPERCOORDS=").Append(coordinates);
             urlBuilder.Append("&CLIPPERCOORDSYS=").Append(coordinateSystem);
             urlBuilder.Append("&UUID=").Append(metadataUuid);
+            urlBuilder.Append("&token=").Append(areaCheckerToken);
 
             return urlBuilder.ToString();
         }
