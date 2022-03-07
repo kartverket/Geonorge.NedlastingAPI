@@ -54,6 +54,7 @@ namespace Kartverket.Geonorge.Download.Services
         private static string CreateBundleRequestUrl(Order order)
         {
             string orderBundleServiceUrl = ConfigurationManager.AppSettings["OrderBundleServiceUrl"];
+            string orderBundleServiceUrlToken = ConfigurationManager.AppSettings["OrderBundleServiceUrlToken"];
             var urlBuilder = new StringBuilder(orderBundleServiceUrl);
             urlBuilder.Append("?");
             //var fileIds = string.Join(" ", order.CollectFileIdsForBundling());
@@ -62,6 +63,7 @@ namespace Kartverket.Geonorge.Download.Services
             urlBuilder.Append("UUIDFILE=").Append(System.Web.HttpUtility.UrlEncode($"{server}api/order/uuidfile/{order.Uuid}"));
             urlBuilder.Append("&ORDERID=").Append(order.Uuid);
             urlBuilder.Append("&opt_servicemode=async");
+            urlBuilder.Append("&token=").Append(orderBundleServiceUrlToken);
             var bundleRequestUrl = urlBuilder.ToString();
             return bundleRequestUrl;
         }
