@@ -73,7 +73,8 @@ namespace Kartverket.Geonorge.Download.Services
                         if (!matrikkelEiendomAreas.Where(l => l.code == "0000").Any())
                         {
                             var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr + "/" + e.gaardsnr + "/" + e.bruksnr + "/" + e.festenr));
-                            eiendoms = eiendomsQuery.ToList();
+                            var municipalityQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr));
+                            eiendoms = eiendomsQuery.Concat(municipalityQuery).ToList();
                         }
 
                         var parcels = eiendoms.Select(eiendom => eiendom).ToArray();

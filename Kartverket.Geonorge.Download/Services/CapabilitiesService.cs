@@ -352,7 +352,7 @@ namespace Kartverket.Geonorge.Download.Services
                 if (area != null)
                 {
                     AreaType a1 = new AreaType();
-                    a1.type = "kommune";
+                    a1.type = "Kommuner";
                     a1.code = municipality;
                     a1.name = $"{_registerFetcher.GetArea("kommune", municipality).name}";
                     a1.projections = area?.projections;
@@ -366,9 +366,11 @@ namespace Kartverket.Geonorge.Download.Services
             }
 
             AreaType aNational = new AreaType();
-            aNational.type = "landsdekkende";
+            aNational.type = "Nasjonalt";
             aNational.code = "0000";
             aNational.name = "Alle eiendommer";
+            aNational.projections = areas.FirstOrDefault().projections;
+            aNational.formats = areas.FirstOrDefault().formats;
             areaEiendoms.Add(aNational);
 
             return areaEiendoms.OrderBy(o => o.name).ToList();
