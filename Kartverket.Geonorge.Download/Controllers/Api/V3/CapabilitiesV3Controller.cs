@@ -164,6 +164,9 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 {
                     Guid id = Guid.NewGuid();
                     var postedFile = httpRequest.Files[0];
+                    if (!CheckFileType(postedFile.FileName))
+                        return Request.CreateResponse(HttpStatusCode.BadRequest);
+
                     string fileName = id.ToString() + System.IO.Path.GetExtension(postedFile.FileName);
                     var filePath = HttpContext.Current.Server.MapPath("~/clipperfiles/" + fileName);
                     postedFile.SaveAs(filePath);
@@ -197,6 +200,30 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             {
                 Log.Error("Error validate-clipperfile for uuid: " + metadataUuid, ex);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError);
+            }
+        }
+
+        bool CheckFileType(string fileName)
+        {
+            string ext = System.IO.Path.GetExtension(fileName);
+            switch (ext.ToLower())
+            {
+                case ".sos":
+                    return true;
+                case ".zip":
+                    return true;
+                case ".7z":
+                    return true;
+                case ".tar":
+                    return true;
+                case ".gdb":
+                    return true;
+                case ".gml":
+                    return true;
+                case ".geojson":
+                    return true;
+                default:
+                    return false;
             }
         }
 
