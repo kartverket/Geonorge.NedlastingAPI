@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -73,25 +73,35 @@ namespace Kartverket.Geonorge.Download.Services
                         if (!matrikkelEiendomAreas.Where(l => l.code == "0000").Any())
                         {
                             var eiendomsQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr + "/" + e.gaardsnr + "/" + e.bruksnr + "/" + e.festenr));
-                            eiendoms = eiendomsQuery.ToList();
+                            var municipalityQuery = eiendoms.Where(e => areaCodes.Contains(e.kommunenr));
+                            eiendoms = eiendomsQuery.Concat(municipalityQuery).ToList();
                         }
 
-                        foreach (var projection in orderLine.projections)
+                        var parcels = eiendoms.Select(eiendom => eiendom).ToArray();
+                        int itemsPerBatch = 100;
+                        for (int i = 0; i < parcels.Length; i += itemsPerBatch)
                         {
-                            foreach (var format in orderLine.formats)
-                            {
-                                var orderItem = new OrderItem
-                                {
-                                    Area = String.Join(" ", eiendoms.Select(eiendom => $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}")),
-                                    AreaName = String.Join(", ", matrikkelEiendomAreas.Select(s => s.name)),
-                                    Format = format.name,
-                                    Projection = projection.code,
-                                    ProjectionName = _registerFetcher.GetProjection(projection.code).name,
-                                    MetadataUuid = orderLine.metadataUuid,
-                                    MetadataName = GetMetadataName(orderLine.metadataUuid)
-                                };
+                            var parcelsBatched = parcels.Skip(i).Take(itemsPerBatch);
 
-                                orderItems.Add(orderItem);
+                            var areaNamesBatched = parcelsBatched.Select(e => _registerFetcher.GetArea("kommune", e.kommunenr).name).Distinct().ToArray();
+
+                            foreach (var projection in orderLine.projections)
+                            {
+                                foreach (var format in orderLine.formats)
+                                {
+                                    var orderItem = new OrderItem
+                                    {
+                                        Area = String.Join(" ", parcelsBatched.Select(eiendom => $"{eiendom.kommunenr}/{eiendom.gaardsnr}/{eiendom.bruksnr}/{eiendom.festenr}")),
+                                        AreaName = String.Join(", ", areaNamesBatched.Select(s => s)),
+                                        Format = format.name,
+                                        Projection = projection.code,
+                                        ProjectionName = _registerFetcher.GetProjection(projection.code).name,
+                                        MetadataUuid = orderLine.metadataUuid,
+                                        MetadataName = GetMetadataName(orderLine.metadataUuid)
+                                    };
+
+                                    orderItems.Add(orderItem);
+                                }
                             }
                         }
                     }
@@ -132,8 +142,8 @@ namespace Kartverket.Geonorge.Download.Services
         {
             foreach (var orderItem in orderItems)
             {
-                var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
-                Task.Run(() => { SendClippingRequestAsync(orderItem, email, clipperUrl); });
+                        var clipperUrl = GetClipperServiceUrl(orderItem.MetadataUuid);
+                        Task.Run(() => { SendClippingRequestAsync(orderItem, email, clipperUrl); });
             }
         }
 

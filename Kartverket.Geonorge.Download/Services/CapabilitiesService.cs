@@ -344,6 +344,35 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
+            foreach (var municipality in eiendoms.Select(k => k.kommunenr).Distinct())
+            {
+
+                var area = areas.Where(a => a.code == municipality).FirstOrDefault();
+
+                if (area != null)
+                {
+                    AreaType a1 = new AreaType();
+                    a1.type = "Kommuner";
+                    a1.code = municipality;
+                    a1.name = $"{_registerFetcher.GetArea("kommune", municipality).name}";
+                    a1.projections = area?.projections;
+                    a1.formats = area?.formats;
+                    areaEiendoms.Add(a1);
+                }
+                else
+                {
+                    Log.Warn("Municipality: " + municipality + " not found in dataset area for nibio eiendoms");
+                }
+            }
+
+            AreaType aNational = new AreaType();
+            aNational.type = "Nasjonalt";
+            aNational.code = "0000";
+            aNational.name = "Alle eiendommer";
+            aNational.projections = areas.FirstOrDefault().projections;
+            aNational.formats = areas.FirstOrDefault().formats;
+            areaEiendoms.Add(aNational);
+
             return areaEiendoms.OrderBy(o => o.name).ToList();
         }
 
