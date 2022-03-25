@@ -34,7 +34,14 @@ namespace Kartverket.Geonorge.Download.Models
                     {
                         using (var result = response.Result)
                         {
-                            eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
+                            try
+                            {
+                                eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
+                            }
+                            catch(Exception e) 
+                            {
+                                Log.Error($"Error nibio api: {e}, content: {result.Content.ReadAsStringAsync().Result}");
+                            }
                         }
                     }
                 }
