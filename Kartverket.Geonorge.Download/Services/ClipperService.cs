@@ -150,6 +150,13 @@ namespace Kartverket.Geonorge.Download.Services
 
         private async void SendClippingRequestAsync(OrderItem orderItem, string email, string clipperUrl)
         {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrEmpty(email))
+            {
+                Log.Error("Email is not defined for metadata uuid: " + orderItem.MetadataUuid +
+                          ". Cannot process clipping request for orderItem: " + orderItem.Uuid);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(clipperUrl))
             {
                 Log.Error("ClipperUrl is not defined for metadata uuid: " + orderItem.MetadataUuid +
