@@ -21,10 +21,12 @@ namespace Kartverket.Geonorge.Download.Services
             MediaTypeHeaderValue responseMediaType = null;
             if (actionContext.Request.Headers.Accept != null)
             {
-                responseMediaType = actionContext.Request.Headers.Accept.FirstOrDefault();
-                if (responseMediaType != null && config.Formatters.Any(x => x.SupportedMediaTypes.Any(value => value.MediaType == responseMediaType.MediaType)))
-                {
-                    return new MediaTypeHeaderValue(responseMediaType.MediaType);
+                foreach(var header in actionContext.Request.Headers.Accept) { 
+                responseMediaType = header;
+                    if (responseMediaType != null && config.Formatters.Any(x => x.SupportedMediaTypes.Any(value => value.MediaType == responseMediaType.MediaType)))
+                    {
+                        return new MediaTypeHeaderValue(responseMediaType.MediaType);
+                    }
                 }
             }
 
