@@ -10,6 +10,12 @@
 
     // Group APIs by controller
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
+
+    foreach (var group in apiGroups)
+    {
+        //Fix controller version/unique id
+        group.Key.ControllerName = group.Key.ControllerType.Name.Replace("Controller", "");
+    }
 }
 @section breadcrumb {
     <li class="active">@UI.ApiHelp</li>
@@ -30,31 +36,31 @@
                 Capabilities will announce the rest of the resources with links (href) and relation (rel).<br />
                 For more info implementing api please also see <a href="~/help/documentation">documentation</a>
             </p>
-                <table class="help-page-table">
-                    <thead>
-                        <tr><th>Relation (rel)</th><th>Description</th></tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>http://rel.geonorge.no/download/projection</td>
-                                <td>Announce where(href) to get a list of supported projections for a dataset</td>
-                            </tr>
-                        <tr>
-                            <td>http://rel.geonorge.no/download/format</td>
-                            <td>Announce where(href) to get a list of supported formats for a dataset</td>
-                        </tr>
-                        <tr>
-                            <td>http://rel.geonorge.no/download/area</td>
-                            <td>Announce where(href) to get a list of supported areas for a dataset</td>
-                        </tr>
-                        <tr>
-                            <td>http://rel.geonorge.no/download/order</td>
-                            <td>Announce where(href) to post the order for a dataset</td>
-                        </tr>
-                        </tbody>
-                        </table>
-            
+            <table class="help-page-table">
+                <thead>
+                    <tr><th>Relation (rel)</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>http://rel.geonorge.no/download/projection</td>
+                        <td>Announce where(href) to get a list of supported projections for a dataset</td>
+                    </tr>
+                    <tr>
+                        <td>http://rel.geonorge.no/download/format</td>
+                        <td>Announce where(href) to get a list of supported formats for a dataset</td>
+                    </tr>
+                    <tr>
+                        <td>http://rel.geonorge.no/download/area</td>
+                        <td>Announce where(href) to get a list of supported areas for a dataset</td>
+                    </tr>
+                    <tr>
+                        <td>http://rel.geonorge.no/download/order</td>
+                        <td>Announce where(href) to post the order for a dataset</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
