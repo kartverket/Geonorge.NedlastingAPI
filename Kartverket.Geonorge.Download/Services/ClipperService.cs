@@ -31,7 +31,7 @@ namespace Kartverket.Geonorge.Download.Services
 
             foreach (var orderLine in incomingOrder.orderLines)
             {
-                if (!string.IsNullOrWhiteSpace(orderLine.coordinates) && incomingOrder.email != null && orderLine.projections != null)
+                if (!string.IsNullOrWhiteSpace(orderLine.coordinates) && !string.IsNullOrWhiteSpace(incomingOrder.email) && orderLine.projections != null)
                 {
                     var epsgCode = !string.IsNullOrEmpty(orderLine.coordinatesystem) ? orderLine.coordinatesystem : DefaultEpsgCode;
 
@@ -55,7 +55,7 @@ namespace Kartverket.Geonorge.Download.Services
                     }
                 }
 
-                if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && incomingOrder.email != null)
+                if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && !string.IsNullOrWhiteSpace(incomingOrder.email))
                 {
                     var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
                     var accessConstraintRequiredRole = _dbContext.Database.SqlQuery<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
@@ -108,7 +108,7 @@ namespace Kartverket.Geonorge.Download.Services
                 }
 
 
-                if (!string.IsNullOrWhiteSpace(orderLine.clipperFile) && incomingOrder.email != null && orderLine.projections != null)
+                if (!string.IsNullOrWhiteSpace(orderLine.clipperFile) && !string.IsNullOrWhiteSpace(incomingOrder.email) && orderLine.projections != null)
                 {
 
                     foreach (var projection in orderLine.projections)
