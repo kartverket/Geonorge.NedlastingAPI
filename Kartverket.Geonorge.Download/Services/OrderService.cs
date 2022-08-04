@@ -68,6 +68,9 @@ namespace Kartverket.Geonorge.Download.Services
 
             _clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
+            if(clippableOrderItems.Count > 0)
+                _notificationService.SendOrderInfoNotification(order, clippableOrderItems);
+
             return order;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.Collections.Generic;
+using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Web.Configuration;
@@ -131,6 +132,44 @@ namespace Kartverket.Geonorge.Download.Services
         public void SendEmailNotification(MailMessage message)
         {
             _emailService.Send(message);
+        }
+
+        public void SendOrderInfoNotification(Order order, List<OrderItem> clippableOrderItems)
+        {
+            var message = CreateOrderInfoEmailMessage(order, clippableOrderItems);
+
+            SendEmailNotification(message);
+        }
+
+        private MailMessage CreateOrderInfoEmailMessage(Order order, List<OrderItem> clippableOrderItems)
+        {
+            var email = order.email;
+            var message = CreateEmail(email);
+            var body = new StringBuilder();
+
+            body.AppendLine(
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} er under behandling.\n");
+
+            body.AppendLine(
+                $"NB! Noen klippejobber kan ta lang tid.\n");
+
+            body.AppendLine(
+                $"Datasett som skal klippes:\n");
+
+            foreach (var item in clippableOrderItems)
+            {
+                body.AppendLine($"Datasett: {item.MetadataName} {item.AreaName}\n");
+
+                body.AppendLine("\n");
+            }
+
+            AddFooter(body);
+
+            message.Body = body.ToString();
+
+            Log.Info($"Sending info clippable objects email notification to: {email}, referenceNumber: {order.referenceNumber}");
+
+            return message;
         }
     }
 }
