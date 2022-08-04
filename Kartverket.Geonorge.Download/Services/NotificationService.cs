@@ -153,7 +153,7 @@ namespace Kartverket.Geonorge.Download.Services
                 $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} er under behandling.\n");
 
             body.AppendLine(
-                $"NB! Noen klippejobber kan ta lang tid.\n");
+                $"NB! Noen klippejobber kan ta lang tid. Hvis de tar flere dager vil du få en daglig epost med status på jobben og lenker til filer som er ferdigprodusert.\n");
 
             body.AppendLine(
                 $"Datasett som skal klippes:");
