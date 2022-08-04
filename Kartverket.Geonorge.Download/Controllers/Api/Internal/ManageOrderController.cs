@@ -77,5 +77,51 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
             }
             return Ok();
         }
+
+
+        /// <summary>
+        ///     Inform user about file clipping status
+        /// </summary>
+        /// <returns>HTTP status codes 200 if ok.</returns>
+        [Route("status-notification")]
+        [HttpPost]
+        public IHttpActionResult StatusNotification()
+        {
+            try
+            {
+                Log.Info($"StatusNotification invoked");
+
+                _orderService.SendStatusNotification();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message, e);
+                return InternalServerError(e);
+            }
+            return Ok();
+        }
+
+        /// <summary>
+        ///     Inform user about file clipping jobs that will not be delivered
+        /// </summary>
+        /// <returns>HTTP status codes 200 if ok.</returns>
+        [Route("status-notification-not-deliverable")]
+        [HttpPost]
+        public IHttpActionResult StatusNotificationNotDeliverable()
+        {
+            try
+            {
+                Log.Info($"StatusNotificationNotDeliverable invoked");
+                _orderService.SendStatusNotificationNotDeliverable();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message, e);
+                return InternalServerError(e);
+            }
+            return Ok();
+        }
+
+
     }
 }

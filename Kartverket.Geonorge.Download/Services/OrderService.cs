@@ -438,5 +438,35 @@ namespace Kartverket.Geonorge.Download.Services
             _dbContext.DownloadUsages.AddRange(usage.Entries);
             _dbContext.SaveChanges();
         }
+
+        public void SendStatusNotification()
+        {
+            var orders = _dbContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !string.IsNullOrWhiteSpace(s.Order.email)).Select(o => o.Order).ToList();
+
+            foreach(var order in orders) 
+            {
+                _notificationService.SendOrderStatusNotification(order);
+            }
+        }
+
+        public void SendStatusNotificationNotDeliverable()
+        {
+            var sevenDaysAgo = DateTime.Now.AddDays(-7);
+            var orders = _dbContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !string.IsNullOrWhiteSpace(s.Order.email) && s.Order.orderDate <= sevenDaysAgo).Select(o => o.Order).ToList();
+
+            foreach (var order in orders)
+            {
+                _notificationService.SendOrderStatusNotificationNotDeliverable(order);
+            }
+
+            DeleteOldPeronalData();
+
+        }
+
+        protected void DeleteOldPeronalData()
+        {
+            //Remove personal info older than 7 days
+            _dbContext.Database.ExecuteSqlCommandAsync("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -7, GETDATE())");
+        }
     }
 }

@@ -57,8 +57,6 @@ namespace Kartverket.Geonorge.Download
 
         protected void Application_BeginRequest()
         {
-            DeleteOldPeronalData();
-
             var cookie = Context.Request.Cookies["_culture"];
             if (cookie == null)
             {
@@ -76,13 +74,6 @@ namespace Kartverket.Geonorge.Download
         protected void Application_PreSendRequestHeaders()
         {
              Response.Headers.Remove("Access-Control-Allow-Origin");
-        }
-
-        protected void DeleteOldPeronalData()
-        {
-            //Remove personal info older than 1 day
-            var _context = DependencyResolver.Current.GetService<DownloadContext>();
-            _context.Database.ExecuteSqlCommandAsync("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -7, GETDATE())");
         }
     }
 }

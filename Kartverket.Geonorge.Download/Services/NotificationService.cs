@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Web.Configuration;
 using Kartverket.Geonorge.Download.Models;
 using log4net;
+using System.Linq;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -166,6 +168,98 @@ namespace Kartverket.Geonorge.Download.Services
             message.Body = body.ToString();
 
             Log.Info($"Sending info clippable objects email notification to: {email}, referenceNumber: {order.referenceNumber}");
+
+            return message;
+        }
+
+        public void SendOrderStatusNotification(Order order)
+        {
+            var message = CreateOrderStatusEmailMessage(order);
+
+            SendEmailNotification(message);
+        }
+
+        private MailMessage CreateOrderStatusEmailMessage(Order order)
+        {
+            var email = order.email;
+            var message = CreateEmail(email);
+            message.Subject = message.Subject + " - statusoppdatering";
+            var body = new StringBuilder();
+
+            body.AppendLine(
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} er fortsatt under behandling.\n");
+
+            body.AppendLine(
+                $"Følgende datasett venter fortsatt på å bli behandlet:");
+
+            foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
+            {
+                body.AppendLine($"{item.MetadataName} {item.AreaName}");
+            }
+
+
+            var readyForDownload = order.orderItem.Where(i => i.Status == OrderItemStatus.ReadyForDownload).ToList();
+
+            if (readyForDownload.Any()) { 
+                body.AppendLine(
+                $"Følgende datasett er klare til nedlasting:");
+
+                foreach (var item in readyForDownload)
+                {
+                    body.AppendLine($"Datasett: {item.MetadataName}\n");
+
+                    if (!string.IsNullOrEmpty(item.DownloadUrl))
+                    {
+                        body.AppendLine("Klikk her for å laste ned resultatet: ");
+                        var downLoadApiUrl = new DownloadUrlBuilder().OrderId(item.Order.Uuid).FileId(item.Uuid)
+                            .Build();
+                        body.AppendLine(downLoadApiUrl);
+                    }
+                }
+
+            }
+
+            AddPrivacyInfo(body);
+
+            AddFooter(body);
+
+            message.Body = body.ToString();
+
+            Log.Info($"Sending OrderStatusEmailMessage to: {email}, referenceNumber: {order.referenceNumber}");
+
+            return message;
+        }
+
+        public void SendOrderStatusNotificationNotDeliverable(Order order)
+        {
+            var message = CreateOrderStatusNotDeliverableEmailMessage(order);
+
+            SendEmailNotification(message);
+        }
+
+        private MailMessage CreateOrderStatusNotDeliverableEmailMessage(Order order)
+        {
+            var email = order.email;
+            var message = CreateEmail(email);
+            message.Bcc.Add(new MailAddress("post@norgedigitalt.no"));
+            message.Subject = message.Subject + " - produksjonen av datasett feilet";
+            var body = new StringBuilder();
+
+            body.AppendLine(
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} feilet for følgende datasett.\n");
+
+            foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
+            {
+                body.AppendLine($"{item.MetadataName} {item.AreaName}");
+            }
+
+            AddPrivacyInfo(body);
+
+            AddFooter(body);
+
+            message.Body = body.ToString();
+
+            Log.Info($"Sending CreateOrderStatusNotDeliverableEmailMessage to: {email}, referenceNumber: {order.referenceNumber}");
 
             return message;
         }

@@ -495,6 +495,18 @@
             <param name="request">Updated information about a file.</param>
             <returns>HTTP status codes 200 if ok.</returns>
         </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.StatusNotification">
+            <summary>
+                Inform user about file clipping status
+            </summary>
+            <returns>HTTP status codes 200 if ok.</returns>
+        </member>
+        <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.ManageOrderController.StatusNotificationNotDeliverable">
+            <summary>
+                Inform user about file clipping jobs that will not be delivered
+            </summary>
+            <returns>HTTP status codes 200 if ok.</returns>
+        </member>
         <member name="M:Kartverket.Geonorge.Download.Controllers.Api.Internal.MetadataController.UpdateMetadata(Kartverket.Geonorge.Download.Models.Api.Internal.UpdateMetadataRequest)">
             <summary>
                 Update metadata
