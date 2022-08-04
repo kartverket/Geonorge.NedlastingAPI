@@ -154,13 +154,11 @@ namespace Kartverket.Geonorge.Download.Services
                 $"NB! Noen klippejobber kan ta lang tid.\n");
 
             body.AppendLine(
-                $"Datasett som skal klippes:\n");
+                $"Datasett som skal klippes:");
 
             foreach (var item in clippableOrderItems)
             {
-                body.AppendLine($"Datasett: {item.MetadataName} {item.AreaName}\n");
-
-                body.AppendLine("\n");
+                body.AppendLine($"{item.MetadataName} {item.AreaName}");
             }
 
             AddFooter(body);
