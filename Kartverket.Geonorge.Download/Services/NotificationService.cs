@@ -197,8 +197,9 @@ namespace Kartverket.Geonorge.Download.Services
                 body.AppendLine($"{item.MetadataName} {item.AreaName}");
             }
 
+            body.AppendLine();
 
-            var readyForDownload = order.orderItem.Where(i => i.Status == OrderItemStatus.ReadyForDownload).ToList();
+            var readyForDownload = order.orderItem.Where(i => i.Status == OrderItemStatus.ReadyForDownload && !(i.DownloadUrl == null || i.DownloadUrl.Trim() == string.Empty)).ToList();
 
             if (readyForDownload.Any()) { 
                 body.AppendLine(
@@ -206,15 +207,12 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var item in readyForDownload)
                 {
-                    body.AppendLine($"Datasett: {item.MetadataName}\n");
+                    body.AppendLine($"Datasett: {item.MetadataName}");
 
-                    if (!string.IsNullOrEmpty(item.DownloadUrl))
-                    {
-                        body.AppendLine("Klikk her for å laste ned resultatet: ");
-                        var downLoadApiUrl = new DownloadUrlBuilder().OrderId(item.Order.Uuid).FileId(item.Uuid)
-                            .Build();
-                        body.AppendLine(downLoadApiUrl);
-                    }
+                    body.AppendLine("Klikk her for å laste ned resultatet: ");
+                    var downLoadApiUrl = new DownloadUrlBuilder().OrderId(item.Order.Uuid).FileId(item.Uuid)
+                        .Build();
+                    body.AppendLine(downLoadApiUrl);
                 }
 
             }
