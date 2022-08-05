@@ -84,7 +84,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
         [Route("status-notification")]
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult StatusNotification()
         {
             try
@@ -106,7 +106,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.Internal
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
         [Route("status-notification-not-deliverable")]
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult StatusNotificationNotDeliverable()
         {
             try
