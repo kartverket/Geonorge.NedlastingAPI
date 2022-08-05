@@ -466,7 +466,7 @@ namespace Kartverket.Geonorge.Download.Services
         protected void DeleteOldPeronalData()
         {
             //Remove personal info older than 7 days
-            _dbContext.Database.ExecuteSqlCommandAsync("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where orderDate < DATEADD(day, -7, GETDATE())");
+            _dbContext.Database.ExecuteSqlCommand("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where email<>'' AND orderDate < DATEADD(day, -7, GETDATE())");
         }
     }
 }
