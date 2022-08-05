@@ -241,7 +241,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             var email = order.email;
             var message = CreateEmail(email);
-            message.Bcc.Add(new MailAddress("post@norgedigitalt.no"));
+            message.Bcc.Add(new MailAddress(WebConfigurationManager.AppSettings["SupportEmail"]));
             message.Subject = message.Subject + " - produksjonen av datasett feilet";
             var body = new StringBuilder();
 
