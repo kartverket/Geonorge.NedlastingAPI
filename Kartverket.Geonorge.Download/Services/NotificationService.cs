@@ -219,7 +219,8 @@ namespace Kartverket.Geonorge.Download.Services
 
             }
 
-            AddPrivacyInfo(body);
+            if (readyForDownload.Any())
+                AddPrivacyInfo(body);
 
             AddFooter(body);
 
@@ -252,8 +253,6 @@ namespace Kartverket.Geonorge.Download.Services
             {
                 body.AppendLine($"{item.MetadataName} {item.AreaName}");
             }
-
-            AddPrivacyInfo(body);
 
             AddFooter(body);
 
