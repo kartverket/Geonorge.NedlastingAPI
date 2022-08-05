@@ -247,7 +247,7 @@ namespace Kartverket.Geonorge.Download.Services
             var body = new StringBuilder();
 
             body.AppendLine(
-                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} feilet for følgende datasett.\n");
+                $"Din bestilling fra Geonorges kartkatalog med bestillingsnummer {order.referenceNumber} feilet for følgende datasett:");
 
             foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
             {
