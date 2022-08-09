@@ -8,5 +8,7 @@ namespace Kartverket.Geonorge.Download.Services
         void SendReadyForDownloadNotification(OrderItem orderItem);
         void SendReadyForDownloadBundleNotification(Order order);
         void SendOrderInfoNotification(Order order, List<OrderItem> clippableOrderItems);
+        void SendOrderStatusNotification(Order order);
+        void SendOrderStatusNotificationNotDeliverable(Order order);
     }
 }
