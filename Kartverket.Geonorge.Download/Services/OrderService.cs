@@ -441,7 +441,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void SendStatusNotification()
         {
-            var orders = _dbContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty)).Select(o => o.Order).ToList();
+            var orders = _dbContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty)).Select(o => o.Order).Distinct().ToList();
 
             foreach(var order in orders) 
             {
