@@ -19,5 +19,7 @@ namespace Kartverket.Geonorge.Download.Services
         void UpdateOrder(Order order, OrderType incomingOrder);
         void UpdateOrderStatus(UpdateOrderStatusRequest orderStatus);
         void AddOrderUsage(DownloadUsage usage);
+        void SendStatusNotification();
+        void SendStatusNotificationNotDeliverable();
     }
 }

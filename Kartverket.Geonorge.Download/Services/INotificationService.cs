@@ -1,4 +1,5 @@
 ﻿using Kartverket.Geonorge.Download.Models;
+using System.Collections.Generic;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -6,5 +7,8 @@ namespace Kartverket.Geonorge.Download.Services
     {
         void SendReadyForDownloadNotification(OrderItem orderItem);
         void SendReadyForDownloadBundleNotification(Order order);
+        void SendOrderInfoNotification(Order order, List<OrderItem> clippableOrderItems);
+        void SendOrderStatusNotification(Order order);
+        void SendOrderStatusNotificationNotDeliverable(Order order);
     }
 }
