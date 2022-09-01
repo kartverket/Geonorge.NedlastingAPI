@@ -13,6 +13,11 @@ namespace Kartverket.Geonorge.Download
     {
         public void Configuration(IAppBuilder app)
         {
+            app.Use((context, next) => {
+                context.Request.Scheme = "https";
+                return next();
+            });
+
             app.UseLog4Net();
 
             // Use Autofac as an Owin middleware
