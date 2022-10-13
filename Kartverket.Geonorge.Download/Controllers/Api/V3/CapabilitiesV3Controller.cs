@@ -167,7 +167,13 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     if (!CheckFileType(postedFile.FileName))
                         return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-                    string fileName = id.ToString() + System.IO.Path.GetExtension(postedFile.FileName);
+                    string fileName = id.ToString();
+                    string extension = System.IO.Path.GetExtension(postedFile.FileName);
+                    if (extension == ".json")
+                        extension = ".geojson";
+
+                    fileName = fileName + extension;
+
                     var filePath = HttpContext.Current.Server.MapPath("~/clipperfiles/" + fileName);
                     postedFile.SaveAs(filePath);
 
