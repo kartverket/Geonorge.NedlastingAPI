@@ -115,10 +115,17 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
                 if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(GetAuthenticatedUser()))
                     return Unauthorized();
-            
+
+                _orderService.CheckPackageSize(order);
+
                 _orderService.UpdateOrder(order, incomingOrder);
 
                 return Ok(ConvertToReceipt(order));
+            }
+            catch (FileSizeException ex)
+            {
+                Log.Info(ex.Message, ex);
+                return Content(System.Net.HttpStatusCode.InternalServerError, ex.Message);
             }
             catch (Exception e)
             {

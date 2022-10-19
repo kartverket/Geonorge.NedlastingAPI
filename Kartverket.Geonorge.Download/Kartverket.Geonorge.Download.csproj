@@ -390,6 +390,7 @@
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\UpdateMetadataInformation.cs" />
     <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Services\FileSizeException.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GeonorgeCacheOutputAttribute.cs" />
     <Compile Include="Services\IUpdateMetadataService.cs" />

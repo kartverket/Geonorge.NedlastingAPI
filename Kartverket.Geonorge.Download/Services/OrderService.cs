@@ -11,6 +11,9 @@ using System.Data.Entity;
 using Geonorge.AuthLib.Common;
 using System.Net.Http;
 using System.Configuration;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Kartverket.Geonorge.Download.Services
 {
@@ -467,6 +470,60 @@ namespace Kartverket.Geonorge.Download.Services
         {
             //Remove personal info older than 7 days
             _dbContext.Database.ExecuteSqlCommand("UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where email<>'' AND orderDate < DATEADD(day, -7, GETDATE())");
+        }
+
+        public void CheckPackageSize(Order order)
+        {
+            string url = CreatePackageCheckSizeUrl(order);
+
+            string jsonResult;
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            Log.Info("Check package size request: " + url);
+            try
+            {
+                var response = request.GetResponse();
+                using (var responseStream = response.GetResponseStream())
+                {
+                    var reader = new System.IO.StreamReader(responseStream, Encoding.UTF8);
+                    jsonResult = reader.ReadToEnd();
+                }
+                Log.Info("Check package size: " + ((HttpWebResponse)response).StatusCode + " Body: " + jsonResult);
+            }
+            catch (WebException exception)
+            {
+                var errorResponse = exception.Response;
+
+                using (var responseStream = errorResponse.GetResponseStream())
+                {
+                    var reader = new System.IO.StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                    var errorText = reader.ReadToEnd();
+                    Log.Error(errorText, exception);
+                }
+                throw;
+            }
+
+            jsonResult = jsonResult.Trim('[', ']'); // [{"allowed":true}] -> {"allowed":true}
+
+            var result = JObject.Parse(jsonResult);
+
+            bool allowed = result.Value<bool>("allowed");
+
+            if(!allowed)
+                throw new FileSizeException("Filene er for store å pakke");
+        }
+
+        private static string CreatePackageCheckSizeUrl(Order order)
+        {
+            string orderPackageCheckUrl = ConfigurationManager.AppSettings["FmeCheckPackageSizeUrl"];
+            string orderPackageCheckToken = ConfigurationManager.AppSettings["FmeCheckPackageSizeToken"];
+            var urlBuilder = new StringBuilder(orderPackageCheckUrl);
+            urlBuilder.Append("?");
+            string server = ConfigurationManager.AppSettings["DownloadUrl"];
+            urlBuilder.Append("UUIDFILE=").Append(System.Web.HttpUtility.UrlEncode($"{server}api/order/uuidfile/{order.Uuid}"));
+            urlBuilder.Append("&token=").Append(orderPackageCheckToken);
+            var packageCheckRequestUrl = urlBuilder.ToString();
+            return packageCheckRequestUrl;
         }
     }
 }

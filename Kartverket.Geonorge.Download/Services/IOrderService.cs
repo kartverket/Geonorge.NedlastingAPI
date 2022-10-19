@@ -21,5 +21,6 @@ namespace Kartverket.Geonorge.Download.Services
         void AddOrderUsage(DownloadUsage usage);
         void SendStatusNotification();
         void SendStatusNotificationNotDeliverable();
+        void CheckPackageSize(Order order);
     }
 }
