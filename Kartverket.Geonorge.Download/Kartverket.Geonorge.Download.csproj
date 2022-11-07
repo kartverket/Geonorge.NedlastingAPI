@@ -1039,35 +1039,6 @@
     <Content Include="node_modules\.yarn-integrity" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\apiHelpers.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\body-text.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\breadcrumb-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\content-container.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\cookieHelpers.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\download-items.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\downloadItemHelpers.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\geonorge-footer.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\gn-input.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\gn-select.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\gn-table.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\guiHelpers.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\heading-text.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\index.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\init.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\main-menu.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\main-navigation.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\main-search-field.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\map-items.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\mapItemHelpers.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\navigation-tab-content.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\navigation-tab-heading.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\navigation-tabs.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\search-type-selector.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\search.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\standard-button.d.ts" />
-    <TypeScriptCompile Include="node_modules\%40kartverket\geonorge-web-components\urlHelpers.d.ts" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <PropertyGroup>
