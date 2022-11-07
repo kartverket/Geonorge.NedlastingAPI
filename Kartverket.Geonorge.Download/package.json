@@ -2,11 +2,6 @@
   "version": "1.0.0",
   "name": "asp.net",
   "private": true,
-  "scripts": {
-    "dev": "cross-env ASPNETCORE_ENVIRONMENT=Development NODE_ENV=development dotnet run",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "install": "webpack --config webpack.config.vendor.js"
-  },
   "devDependencies": {
     "gulp": "^4.0.2"
   },
