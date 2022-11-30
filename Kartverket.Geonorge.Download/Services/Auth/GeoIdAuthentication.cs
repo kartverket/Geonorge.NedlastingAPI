@@ -54,13 +54,21 @@ namespace Kartverket.Geonorge.Download.Services.Auth
             {
                 var geoIdIntrospectionUrl = WebConfigurationManager.AppSettings["GeoID:IntrospectionUrl"];
                 var geoIdIntrospectionCredentials = WebConfigurationManager.AppSettings["GeoID:IntrospectionCredentials"];
-                
+
+                var clientId = WebConfigurationManager.AppSettings["GeoID:ClientId"];
+                var clientSecret = WebConfigurationManager.AppSettings["GeoID:ClientSecret"];
+
                 Log.Debug("Token validation - requestUrl: " + geoIdIntrospectionUrl);
                 
                 var byteArray = Encoding.ASCII.GetBytes(geoIdIntrospectionCredentials);
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-                var formUrlEncodedContent = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("token", accessToken) });
+                var formUrlEncodedContent = new FormUrlEncodedContent(new[] 
+                {
+                    new KeyValuePair<string, string>("token", accessToken),
+                    new KeyValuePair<string, string>("client_id", clientId),
+                    new KeyValuePair<string, string>("client_secret", clientSecret)
+                });
                 HttpResponseMessage result = _httpClient.PostAsync(geoIdIntrospectionUrl, formUrlEncodedContent).Result;
 
                 Log.Debug("Token validation status code: " + result.StatusCode);
