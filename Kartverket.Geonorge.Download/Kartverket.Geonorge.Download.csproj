@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kartverket.Geonorge.Download</RootNamespace>
     <AssemblyName>Kartverket.Geonorge.Download</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44350</IISExpressSSLPort>
@@ -52,8 +52,8 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Arkitektum.GIS.Lib.MetadataCSW, Version=1.9.103.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Arkitektum.GIS.Lib.MetadataCSW.1.9.103\lib\net40\Arkitektum.GIS.Lib.MetadataCSW.dll</HintPath>
+    <Reference Include="Arkitektum.GIS.Lib.MetadataCSW, Version=1.9.110.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Arkitektum.GIS.Lib.MetadataCSW.1.9.110\lib\net48\Arkitektum.GIS.Lib.MetadataCSW.dll</HintPath>
     </Reference>
     <Reference Include="Arkitektum.GIS.Lib.SerializeUtil, Version=1.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Arkitektum.GIS.Lib.SerializeUtil.1.3.1\lib\net40\Arkitektum.GIS.Lib.SerializeUtil.dll</HintPath>
@@ -85,8 +85,8 @@
     <Reference Include="Geonorge.AuthLib.NetFull, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Geonorge.AuthLib.NetFull.1.0.60\lib\net472\Geonorge.AuthLib.NetFull.dll</HintPath>
     </Reference>
-    <Reference Include="GeoNorgeAPI, Version=3.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GeoNorgeAPI.3.2.9\lib\net461\GeoNorgeAPI.dll</HintPath>
+    <Reference Include="GeoNorgeAPI, Version=3.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoNorgeAPI.3.5.2\lib\net48\GeoNorgeAPI.dll</HintPath>
     </Reference>
     <Reference Include="Kartverket.Geonorge.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kartverket.Geonorge.Utilities.1.0.49\lib\net45\Kartverket.Geonorge.Utilities.dll</HintPath>
@@ -243,9 +243,9 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
@@ -679,10 +679,6 @@
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\warning.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\svg\wfs.svg" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\images\unlock.png" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\main.js" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\main.min.js" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\vendor.js" />
-    <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\js\vendor.min.js" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.min.html" />
     <Content Include="Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.html" />
@@ -695,12 +691,10 @@
     <Content Include="dist\images\geonorge_logo_350px_test.svg" />
     <Content Include="dist\images\search_icon-01.svg" />
     <Content Include="dist\main.css" />
-    <Content Include="dist\main.js" />
     <Content Include="dist\partials\Footer.html" />
     <Content Include="dist\partials\Header.html" />
     <Content Include="dist\partials\_autoCompleteRow.html" />
     <Content Include="dist\vendor.css" />
-    <Content Include="dist\vendor.js" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="gulpfile.js" />
@@ -879,6 +873,7 @@
     <Content Include="Views\Error\Unauthorized.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\bower_components\kartverket-felleskomponenter\assets\js\" />
     <Folder Include="Views\Metadata\" />
   </ItemGroup>
   <ItemGroup>
@@ -1037,6 +1032,7 @@
     <Content Include="node_modules\%40kartverket\geonorge-web-components\SearchTypeSelector.js.map" />
     <Content Include="node_modules\%40kartverket\geonorge-web-components\StandardButton.js.map" />
     <Content Include="node_modules\.yarn-integrity" />
+    <Content Include="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
