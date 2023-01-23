@@ -134,7 +134,7 @@ namespace Kartverket.Geonorge.Download.Services
 
 
             }
-            return orderItems;
+            return orderItems.Where(m => !string.IsNullOrEmpty(m.MetadataName)).ToList();
         }
 
 
