@@ -479,6 +479,7 @@ namespace Kartverket.Geonorge.Download.Services
             string jsonResult;
 
             var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 240000;
             Log.Info("Check package size request: " + url);
             try
             {
