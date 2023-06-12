@@ -94,7 +94,7 @@ namespace Kartverket.Geonorge.Download.Services
                 projections.Add(p1);
             }
 
-            if(projections.Count == 0)
+            if(projections.Count == 0 && metadataUuid == "b49478fd-038e-4c2c-ae28-dda1958a8048")
             {
                 //Todo get default projections
                 projections = GetProjections("595e47d9-d201-479c-a77d-cbc1f573a76b");
@@ -217,7 +217,7 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
-            if(areas.Count == 0) 
+            if(areas.Count == 0 && metadataUuid == "b49478fd-038e-4c2c-ae28-dda1958a8048") 
             {
                 //Todo handle only clipping
                 areas = new List<AreaType> { new AreaType { code = "", name= "" } };
@@ -259,7 +259,7 @@ namespace Kartverket.Geonorge.Download.Services
                 formats.Add(f1);
             }
 
-            if(formats.Count == 0) 
+            if(formats.Count == 0 && metadataUuid == "b49478fd-038e-4c2c-ae28-dda1958a8048") 
             {
                 //Todo get default formats
                 formats = GetFormats("595e47d9-d201-479c-a77d-cbc1f573a76b");
