@@ -94,6 +94,12 @@ namespace Kartverket.Geonorge.Download.Services
                 projections.Add(p1);
             }
 
+            if(projections.Count == 0)
+            {
+                //Todo get default projections
+                projections = GetProjections("595e47d9-d201-479c-a77d-cbc1f573a76b");
+            }
+
             return projections;
         }
 
@@ -211,6 +217,12 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
+            if(areas.Count == 0) 
+            {
+                //Todo handle only clipping
+                areas = new List<AreaType> { new AreaType { code = "", name= "" } };
+            }
+
             return areas;
         }
 
@@ -247,6 +259,11 @@ namespace Kartverket.Geonorge.Download.Services
                 formats.Add(f1);
             }
 
+            if(formats.Count == 0) 
+            {
+                //Todo get default formats
+                formats = GetFormats("595e47d9-d201-479c-a77d-cbc1f573a76b");
+            }
 
             return formats;
         }
