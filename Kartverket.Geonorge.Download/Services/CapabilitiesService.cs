@@ -217,6 +217,12 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
+            if(areas.Count == 0) 
+            {
+                //Todo handle only clipping
+                areas = new List<AreaType> { new AreaType { code = "", name= "" } };
+            }
+
             return areas;
         }
 
