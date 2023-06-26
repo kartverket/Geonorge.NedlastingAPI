@@ -217,11 +217,11 @@ namespace Kartverket.Geonorge.Download.Services
                 }
             }
 
-            //if(areas.Count == 0 && metadataUuid == "b49478fd-038e-4c2c-ae28-dda1958a8048") 
-            //{
-            //    //Todo handle only clipping
-            //    areas = new List<AreaType> { new AreaType { code = "", name= "" } };
-            //}
+            if(areas.Count == 0 && metadataUuid == "b49478fd-038e-4c2c-ae28-dda1958a8048") 
+            {
+                //Todo handle only clipping
+                areas = new List<AreaType> { new AreaType { code = "", name= "" } };
+            }
 
             return areas;
         }
