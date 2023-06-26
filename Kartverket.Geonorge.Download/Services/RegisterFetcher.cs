@@ -155,6 +155,55 @@ namespace Kartverket.Geonorge.Download.Services
                         areas.Add(kommune);
                 }
 
+                //fylke new
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/sosi-kodelister/inndelinger/inndelingsbase/fylkesnummer";
+                c = new System.Net.WebClient();
+                c.Encoding = System.Text.Encoding.UTF8;
+                data = c.DownloadString(url);
+                response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
+                    var status = code["status"]?.ToString();
+                    if (status == "Utkast") 
+                    { 
+                        label = label + " (ny)";
+
+                        AreaType fylke = new AreaType { code = codevalue, name = label, type = "fylke" };
+                        var areaExists = areas.Where(a => a.code == codevalue && a.type == "fylke").FirstOrDefault();
+                        if (areaExists == null)
+                            areas.Add(fylke);
+                    }
+                }
+
+                //kommune new
+                url = System.Web.Configuration.WebConfigurationManager.AppSettings["RegistryUrl"] + "api/sosi-kodelister/inndelinger/inndelingsbase/kommunenummer";
+                data = c.DownloadString(url);
+                response = Newtonsoft.Json.Linq.JObject.Parse(data);
+
+                codeList = response["containeditems"];
+
+                foreach (var code in codeList)
+                {
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
+                    var status = code["status"]?.ToString();
+                    if ( status == "Utkast") 
+                    { 
+                        label = label + " (ny)";
+
+                        AreaType kommune = new AreaType { code = codevalue, name = label, type = "kommune" };
+                        var areaExists = areas.Where(a => a.code == codevalue && a.type == "kommune").FirstOrDefault();
+                        if (areaExists == null)
+                            areas.Add(kommune);
+                    }
+                }
+
+
 
                 memCacher.Add("areas", areas, new DateTimeOffset(DateTime.Now.AddHours(1)));
             }
