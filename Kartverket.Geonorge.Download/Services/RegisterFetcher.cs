@@ -74,8 +74,8 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var code in codeList)
                 {
-                    var codevalue = code["label"].ToString();
-                    var label = code["description"].ToString();
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
                     var status = code["status"]?.ToString();
                     if (status == "Utgått")
                         label = label + " (utgått)";
@@ -96,8 +96,8 @@ namespace Kartverket.Geonorge.Download.Services
 
                 foreach (var code in codeList)
                 {
-                    var codevalue = code["label"].ToString();
-                    var label = code["description"].ToString();
+                    var codevalue = code["codevalue"].ToString();
+                    var label = code["label"].ToString();
                     var status = code["status"]?.ToString();
                     if (status == "Utgått")
                         label = label + " (utgått)";
