@@ -35,6 +35,33 @@
             currentCulture: '@CultureHelper.GetCurrentCulture()'
             };
     </script>
+    <script>var environmentIsProduction = @(Html.EnvironmentName() == "" ? "true" : "false");</script>
+    <script>
+        if (environmentIsProduction) {
+            /* Matomo */
+            var _paq = window._paq = window._paq || [];
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function () {
+                var u = "https://analyse.kartverket.no/analyse/";
+                _paq.push(['setTrackerUrl', u + 'matomo.php']);
+                _paq.push(['setSiteId', '16']);
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+            })();
+
+
+            /* Google Tag Manager */
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || []; w[l].push({
+                    'gtm.start':
+                        new Date().getTime(), event: 'gtm.js'
+                }); var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                        '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-MR2X5P');
+        }</script>
 </head>
 
 <body class="geonorge-container prototype geonorge fixed-menu-margin">
@@ -86,9 +113,6 @@
     </div>
     <geonorge-footer language="@CultureHelper.GetCurrentCulture()" version="@Html.ApplicationVersionNumber()" environment="@Html.EnvironmentName()" />
 
-    <script>var environmentIsProduction = @(Html.EnvironmentName() == "" ? "true" : "false");</script>
-    @RenderPage("~/Content/bower_components/kartverket-felleskomponenter/assets/partials/_Analytics.min.cshtml")
-
     @if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
     {
         <!-- user claims: -->
@@ -106,5 +130,9 @@
         }
     }
     @Scripts.Render("~/node-modules/scripts")
+    @if (Html.EnvironmentName() == "")
+    {
+        <noscript><p><img src="https://analyse.kartverket.no/analyse/matomo.php?idsite=16&rec=1" style="border:0" alt="" /></p></noscript>
+    }
 </body>
 </html>
