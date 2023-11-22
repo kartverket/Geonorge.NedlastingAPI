@@ -26,12 +26,15 @@ namespace Kartverket.Geonorge.Download.Services
         private readonly IOrderBundleService _orderBundleService;
         private readonly INotificationService _notificationService;
         private readonly IEiendomService _eiendomService;
+        private readonly IDownloadService _downloadService;
+
 
         public OrderService(DownloadContext dbContext, 
             IClipperService clipperService, 
             IRegisterFetcher registerFetcherFetcher, 
             IOrderBundleService orderBundleService,
-            INotificationService notificationService, IEiendomService eiendomService)
+            INotificationService notificationService, IEiendomService eiendomService
+            ,IDownloadService downloadService)
         {
             _dbContext = dbContext;
             _clipperService = clipperService;
@@ -39,6 +42,7 @@ namespace Kartverket.Geonorge.Download.Services
             _orderBundleService = orderBundleService;
             _notificationService = notificationService;
             _eiendomService = eiendomService;
+            _downloadService = downloadService;
         }
 
         public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
@@ -67,6 +71,8 @@ namespace Kartverket.Geonorge.Download.Services
             
             CheckAccessRestrictions(order, authenticatedUser);
 
+            CheckRestrictions(clippableOrderItems);
+
             SaveOrder(order);
 
             _clipperService.SendClippingRequests(clippableOrderItems, order.email);
@@ -75,6 +81,39 @@ namespace Kartverket.Geonorge.Download.Services
                 _notificationService.SendOrderInfoNotification(order, clippableOrderItems);
 
             return order;
+        }
+
+        private void CheckRestrictions(List<OrderItem> clippableOrderItems)
+        {
+            if(clippableOrderItems.Count > 0) 
+            {
+                foreach(OrderItem item in clippableOrderItems) 
+                {
+                    var capabilities = _dbContext.Capabilities.Where(c => c.MetadataUuid == item.MetadataUuid).FirstOrDefault();
+                    if(capabilities != null) 
+                    {
+                        if (capabilities.SupportsPolygonSelection.HasValue && capabilities.SupportsPolygonSelection.Value == false) 
+                        {
+                            Log.Warn($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
+                            throw new Exception($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
+                        }
+                    }
+
+                    var canDownload = true;
+
+                    if (ConfigurationManager.AppSettings["FmeAreaCheckerEnabled"].Equals("true"))
+                        canDownload = _downloadService.AreaIsWithinDownloadLimits(item.Coordinates,
+                            item.CoordinateSystem, item.MetadataUuid);
+
+                    if (!canDownload) {
+                        Log.Warn($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
+                        throw new Exception($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
+                    }
+
+                }
+            }
+
+            
         }
 
         private List<Eiendom> GetEiendomsForUser(AuthenticatedUser user)
