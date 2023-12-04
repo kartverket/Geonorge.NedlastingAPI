@@ -95,7 +95,7 @@ namespace Kartverket.Geonorge.Download.Services
                         if (capabilities.SupportsPolygonSelection.HasValue && capabilities.SupportsPolygonSelection.Value == false) 
                         {
                             Log.Warn($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
-                            throw new Exception($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
+                            throw new AccessRestrictionException($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
                         }
                     }
 
@@ -107,7 +107,7 @@ namespace Kartverket.Geonorge.Download.Services
 
                     if (!canDownload) {
                         Log.Warn($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
-                        throw new Exception($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
+                        throw new AccessRestrictionException($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
                     }
 
                 }
