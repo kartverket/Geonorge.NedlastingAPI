@@ -87,7 +87,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             if(clippableOrderItems.Count > 0) 
             {
-                foreach(OrderItem item in clippableOrderItems) 
+                foreach(OrderItem item in clippableOrderItems.Where(c => !string.IsNullOrEmpty(c.Coordinates) && !string.IsNullOrWhiteSpace(c.Coordinates))) 
                 {
                     var capabilities = _dbContext.Capabilities.Where(c => c.MetadataUuid == item.MetadataUuid).FirstOrDefault();
                     if(capabilities != null) 
