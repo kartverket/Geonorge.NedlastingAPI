@@ -369,7 +369,7 @@ namespace Kartverket.Geonorge.Download.Services
                 if (area != null)
                 {
                     AreaType a1 = new AreaType();
-                    a1.type = "Kommuner";
+                    a1.type = "kommune";
                     a1.code = municipality;
                     a1.name = $"{_registerFetcher.GetArea("kommune", municipality).name}";
                     a1.projections = area?.projections;
