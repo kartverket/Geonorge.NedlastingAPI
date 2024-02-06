@@ -17,6 +17,7 @@ using System.Web.Routing;
 using Autofac;
 using Kartverket.Geonorge.Download.App_Start;
 using Kartverket.Geonorge.Download.Models.Translations;
+using System.Collections.Specialized;
 
 namespace Kartverket.Geonorge.Download
 {
@@ -57,6 +58,8 @@ namespace Kartverket.Geonorge.Download
 
         protected void Application_BeginRequest()
         {
+            ValidateReturnUrl(Context.Request.QueryString);
+
             var cookie = Context.Request.Cookies["_culture"];
             if (cookie == null)
             {
@@ -74,6 +77,26 @@ namespace Kartverket.Geonorge.Download
         protected void Application_PreSendRequestHeaders()
         {
              Response.Headers.Remove("Access-Control-Allow-Origin");
+        }
+
+        void ValidateReturnUrl(NameValueCollection queryString)
+        {
+            if (queryString != null)
+            {
+                var returnUrl = queryString.Get("returnUrl");
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    returnUrl = returnUrl.Replace("http://", "");
+                    returnUrl = returnUrl.Replace("https://", "");
+
+                    var host = Request.Url.Host;
+                    if (returnUrl.StartsWith("localhost:44350"))
+                        host = "localhost";
+
+                    if (!returnUrl.StartsWith(host))
+                        HttpContext.Current.Response.StatusCode = 400;
+                }
+            }
         }
     }
 }
