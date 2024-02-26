@@ -116,6 +116,22 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
         }
 
+        /// <summary>
+        ///     Validate user
+        /// </summary>
+        [HttpGet]
+        [Route("api/download/validate-user")]
+        public IHttpActionResult ValidateUser()
+        {
+            AuthenticatedUser authenticatedUser = _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
+            var userIsLoggedIn = authenticatedUser != null;
+
+            if (!userIsLoggedIn)
+                return Content(HttpStatusCode.InternalServerError, "Feil brukernavn/passord");
+
+            return Ok();
+        }
+
         private AuthenticatedUser GetAuthenticatedUser()
         {
             return _authenticationService.GetAuthenticatedUser(ControllerContext.Request);
