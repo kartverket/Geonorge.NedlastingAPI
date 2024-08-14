@@ -145,8 +145,8 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
         public static string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
         {
-            var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
             var server = ConfigurationManager.AppSettings["DownloadUrl"];
+            var encodedReturnUrl = HttpUtility.UrlEncode(server + downloadUrl);
             return $"{server}/Home/SignIn?ReturnUrl={encodedReturnUrl}";
         }
     }
