@@ -116,12 +116,9 @@ namespace Kartverket.Geonorge.Download.Services.Auth
                 }
             }
 
-            string userName = "";
-            if (ClaimsPrincipal.Current != null)
-                userName = ClaimsPrincipal.Current.GetUsername();
-
-            if (!string.IsNullOrEmpty(userName))
-                return new AuthenticatedUser(userName, AuthenticationMethod.GeoId);
+            var user = GetAuthenticatedUser();
+            if (user != null)
+                return user;
 
             return null;
         }
