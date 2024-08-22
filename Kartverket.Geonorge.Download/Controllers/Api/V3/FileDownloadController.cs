@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -62,7 +63,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 Log.Info($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user must be logged in.");
 
                 if (Request.Headers.Accept.First().MediaType.Equals("text/html")) // be kind to browsers and redirect to login page
-                    return Redirect(DownloadV3Controller.UrlToAuthenticationPageWithRedirectToDownloadUrl("/api/download/file/" + datasetUuid + "/" + fileUuid));
+                    return Redirect(DownloadV3Controller.UrlToAuthenticationPageWithRedirectToDownloadUrl(ConfigurationManager.AppSettings["DownloadUrl"] + "/api/download/file/" + datasetUuid + "/" + fileUuid));
 
                 return StatusCode(HttpStatusCode.Forbidden);
             }
