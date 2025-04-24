@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@kartverket/geonorge-web-components@^2.20.6":
+"@kartverket/geonorge-web-components@2.20.6":
   version "2.20.6"
   resolved "https://registry.yarnpkg.com/@kartverket/geonorge-web-components/-/geonorge-web-components-2.20.6.tgz#5dd9909c70a0188064e7172d5da7abad6ede107e"
   integrity sha512-uEB6nfLkSx45q1OnDAvannvN/slzvbg7vMlHNv4g7hsqstzik/WdihEnYVtiUNIezBAB6APGqNwIasrIrfSuwg==
