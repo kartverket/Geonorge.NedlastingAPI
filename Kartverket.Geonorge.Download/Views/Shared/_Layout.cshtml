@@ -49,12 +49,53 @@
             })(window, document, 'script', 'dataLayer', 'GTM-MR2X5P');
         }</script>
 </head>
+@{
+    dynamic userInfo = new System.Dynamic.ExpandoObject();
+    userInfo.name = "";
+    userInfo.email = "";
 
+    dynamic organization = new System.Dynamic.ExpandoObject();
+    organization.organizationName = "";
+    organization.organizationNumber = "";
+
+    <!-- user claims: -->
+    var cp = (ClaimsPrincipal)User;
+    foreach (var claim in cp.Claims)
+    {
+        <!-- @claim.Type = @claim.Value -->
+        if (claim.Type == "Name")
+        {
+            userInfo.name = claim.Value;
+        }
+        if (claim.Type == "Email")
+        {
+            userInfo.email = claim.Value;
+        }
+        if (claim.Type == "OrganizationOrgnr")
+        {
+            organization.organizationNumber = claim.Value;
+        }
+        if (claim.Type == "OrganizationName")
+        {
+            organization.organizationName = claim.Value;
+        }
+    }
+
+    <!-- roles: -->
+    var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
+    foreach (var role in roles)
+    {
+        <!-- @role.Value-->
+    }
+
+    string userInfoJson = Newtonsoft.Json.JsonConvert.SerializeObject(userInfo);
+    string organizationJson = Newtonsoft.Json.JsonConvert.SerializeObject(organization);
+}
 <body class="geonorge-container prototype geonorge fixed-menu-margin">
 
     <div id="loading-animation" class="loading-animation" style="display: none;"></div>
 
-    <main-navigation environment="@Html.EnvironmentName()"
+    <main-navigation userinfo='@userInfoJson' organization='@organizationJson' environment="@Html.EnvironmentName()"
                      signinurl="@Html.Raw(Url.Action("SignIn", "Home"))"
                      signouturl="@Html.Raw(Url.Action("SignOut", "Home"))"
                      isLoggedIn="@Request.IsAuthenticated.ToString().ToLower()"
@@ -102,15 +143,15 @@
     @if (Html.EnvironmentName() == "dev" && HttpContext.Current.IsDebuggingEnabled)
     {
         <!-- user claims: -->
-        var cp = (ClaimsPrincipal)User;
-        foreach (var claim in cp.Claims)
+        var cp2 = (ClaimsPrincipal)User;
+        foreach (var claim in cp2.Claims)
         {
             <!-- @claim.Type = @claim.Value -->
         }
 
         <!-- roles: -->
-        var roles = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
-        foreach (var role in roles)
+        var roles2 = cp.FindAll(GeonorgeAuthorizationService.ClaimIdentifierRole);
+        foreach (var role in roles2)
         {
             <!-- @role.Value-->
         }

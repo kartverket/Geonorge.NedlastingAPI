@@ -59,7 +59,7 @@ namespace Kartverket.Geonorge.Download.Controllers
         /// <returns></returns>
         public ActionResult SignOutCallback()
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return Redirect("/Home?logout=true");
         }
 
         public ActionResult SetCulture(string culture, string returnUrl)
