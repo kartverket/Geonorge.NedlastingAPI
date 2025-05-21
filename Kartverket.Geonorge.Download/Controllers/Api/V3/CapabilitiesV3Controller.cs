@@ -228,6 +228,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     return true;
                 case ".geojson":
                     return true;
+                case ".json":
+                    return true;
+                case ".gpkg":
+                    return true;
+                case ".fgb":
+                    return true;
                 default:
                     return false;
             }
