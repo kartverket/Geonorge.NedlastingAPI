@@ -165,7 +165,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     Guid id = Guid.NewGuid();
                     var postedFile = httpRequest.Files[0];
                     if (!CheckFileType(postedFile.FileName))
-                        return Request.CreateResponse(HttpStatusCode.BadRequest);
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "File type not supported");
 
                     string fileName = id.ToString();
                     string extension = System.IO.Path.GetExtension(postedFile.FileName);
