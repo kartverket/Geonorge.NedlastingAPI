@@ -193,6 +193,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
                     if (!clipperFileResponseType.valid) 
                     {
+                        Log.Error("Clipper file validation failed for uuid: " + metadataUuid + " with message: " + clipperFileResponseType.message);
                         return Request.CreateResponse(HttpStatusCode.InternalServerError, clipperFileResponseType.message);
                     }
                     else 
