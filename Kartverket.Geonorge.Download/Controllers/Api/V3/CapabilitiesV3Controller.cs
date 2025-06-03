@@ -191,9 +191,16 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     clipperFileResponseType.message = clipperFileResponse.Value<string>("message");
                     clipperFileResponseType.url = clipperFile;
 
-                    _capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
+                    if (!clipperFileResponseType.valid) 
+                    {
+                        return Request.CreateResponse(HttpStatusCode.InternalServerError, clipperFileResponseType.message);
+                    }
+                    else 
+                    { 
+                        _capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
 
-                    result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                        result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                    }
                 }
                 else
                 {
