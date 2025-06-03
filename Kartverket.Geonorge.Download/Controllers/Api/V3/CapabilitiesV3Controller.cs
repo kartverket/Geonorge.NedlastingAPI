@@ -186,6 +186,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
                     var clipperFileResponse = 
                         _downloadService.CallClipperFileChecker(clipperFileValidator + "?CLIPPER_FILE=" + clipperFile + "&UUID=" +metadataUuid + "&token=" + clipperFileValidatorToken); 
+                    Log.Info("Clipper file validation response for uuid: " + metadataUuid + " is: " + clipperFileResponse);
                     ClipperFileResponseType clipperFileResponseType = new ClipperFileResponseType();
                     clipperFileResponseType.valid = clipperFileResponse.Value<bool>("valid");
                     clipperFileResponseType.message = clipperFileResponse.Value<string>("message");
