@@ -173,6 +173,11 @@ namespace Kartverket.Geonorge.Download.Services
 
             var fmeToken = ConfigurationManager.AppSettings["FmeToken"];
 
+            if (clipperUrl.Contains("nedlasting2.geonorge.no"))
+            {
+                fmeToken = ConfigurationManager.AppSettings["FmeToken2"];
+            }
+
             var urlBuilder = new StringBuilder(clipperUrl);
             if (!string.IsNullOrEmpty(orderItem.ClipperFile))
             {
