@@ -64,7 +64,10 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
             // Download open data directly from it's location:
             if (!order.ContainsRestrictedDatasets())
+            {
+                order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
                 return Redirect(order.DownloadBundleUrl);
+            }
 
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(order.DownloadBundleUrl));
@@ -109,8 +112,10 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 return NotFound();
 
             // Download open data directly from it's location:
-            if (item.AccessConstraint.IsOpen())
+            if (item.AccessConstraint.IsOpen()) {
+                item.DownloadUrl = item.DownloadUrl.Replace("http://", "https://");
                 return Redirect(item.DownloadUrl);
+            }
 
             // Download restricted data as stream trought this api:
             return Ok(_downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
