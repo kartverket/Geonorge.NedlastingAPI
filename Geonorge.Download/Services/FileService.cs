@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Geonorge.AuthLib.Common;
+﻿using Geonorge.AuthLib.Common;
 using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

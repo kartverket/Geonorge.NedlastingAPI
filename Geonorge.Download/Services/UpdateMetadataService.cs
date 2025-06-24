@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using GeoNorgeAPI;
-using Geonorge.Download.Models;
+﻿using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
-using www.opengis.net;
 using Geonorge.Download.Services.Interfaces;
+using GeoNorgeAPI;
 
 namespace Geonorge.Download.Services
 {

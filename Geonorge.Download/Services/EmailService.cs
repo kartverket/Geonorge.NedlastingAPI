@@ -1,6 +1,5 @@
 ﻿using Geonorge.Download.Services.Interfaces;
 using System.Net.Mail;
-using System.Reflection;
 
 namespace Geonorge.Download.Services
 {

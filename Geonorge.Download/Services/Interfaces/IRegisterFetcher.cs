@@ -1,6 +1,5 @@
-﻿using Geonorge.NedlastingApi.V1;
+﻿using Geonorge.NedlastingApi.V3;
 using Geonorge.Download.Models;
-using System.Collections.Generic;
 
 namespace Geonorge.Download.Services.Interfaces
 {

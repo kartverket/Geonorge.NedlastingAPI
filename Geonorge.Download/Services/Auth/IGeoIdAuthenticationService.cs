@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Geonorge.Download.Models;
+﻿using Geonorge.Download.Models;
 
 namespace Geonorge.Download.Services.Auth
 {

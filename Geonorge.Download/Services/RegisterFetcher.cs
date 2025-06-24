@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Geonorge.NedlastingApi.V1;
-using Geonorge.Download.Models;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.Download.Services.Misc;
+using Geonorge.NedlastingApi.V3;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Geonorge.Download.Services
 {

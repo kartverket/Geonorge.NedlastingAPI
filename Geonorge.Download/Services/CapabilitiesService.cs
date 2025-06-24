@@ -1,13 +1,7 @@
 using Geonorge.Download.Models;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using Geonorge.NedlastingApi.V3;
-using System.Net.Http;
 using Geonorge.Download.Services.Auth;
-using System;
 using Geonorge.Download.Services.Interfaces;
+using Geonorge.NedlastingApi.V3;
 
 namespace Geonorge.Download.Services
 {

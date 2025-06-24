@@ -1,12 +1,5 @@
 ﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Web;
 
 namespace Geonorge.Download.Services
 {

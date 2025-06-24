@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-
-namespace Geonorge.Download.Services.Interfaces
+﻿namespace Geonorge.Download.Services.Interfaces
 {
     public interface IExternalRequestService
     {

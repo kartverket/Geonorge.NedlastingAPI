@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Reflection;
-using System.Text;
-using Geonorge.Download.Models;
-using System.Linq;
+﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
+using System.Net.Mail;
+using System.Text;
 
 namespace Geonorge.Download.Services
 {

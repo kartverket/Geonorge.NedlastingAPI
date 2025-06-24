@@ -1,12 +1,7 @@
-﻿using System;
-using System.Configuration;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Geonorge.Download.Models;
+﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
+using System.Text;
 
 namespace Geonorge.Download.Services
 {

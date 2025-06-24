@@ -1,9 +1,6 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
-using System;
-using Geonorge.Download.Models;
-using System.Security.Cryptography;
+﻿using Geonorge.Download.Models;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Geonorge.Download.Services.Auth
 {

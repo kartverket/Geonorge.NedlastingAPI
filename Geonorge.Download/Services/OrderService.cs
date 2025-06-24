@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Geonorge.NedlastingApi.V3;
+using Geonorge.AuthLib.Common;
 using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
+using Geonorge.Download.Services.Exceptions;
+using Geonorge.Download.Services.Interfaces;
+using Geonorge.NedlastingApi.V3;
 using Microsoft.EntityFrameworkCore;
-using Geonorge.AuthLib.Common;
-using System.Net.Http;
-using System.Configuration;
-using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using Geonorge.Download.Services.Interfaces;
-using Geonorge.Download.Services.Exceptions;
+using System.Text;
 
 namespace Geonorge.Download.Services
 {

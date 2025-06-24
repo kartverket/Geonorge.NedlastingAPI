@@ -1,8 +1,4 @@
-﻿using System;
-using System.Web;
-using Geonorge.NedlastingApi.V2;
-using Geonorge.Download.Models;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Geonorge.Download.Services.Interfaces
 {

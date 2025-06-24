@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Geonorge.Download.Models;
+﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 
 namespace Geonorge.Download.Services

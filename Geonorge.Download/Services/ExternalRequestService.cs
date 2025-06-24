@@ -1,9 +1,4 @@
 ﻿using Geonorge.Download.Services.Interfaces;
-using System;
-using System.Configuration;
-using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Geonorge.Download.Services
 {

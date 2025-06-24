@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Geonorge.NedlastingApi.V3;
 using Geonorge.Download.Models;
-using Microsoft.EntityFrameworkCore;
 using Geonorge.Download.Services.Interfaces;
+using Geonorge.NedlastingApi.V3;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Geonorge.Download.Services
 {

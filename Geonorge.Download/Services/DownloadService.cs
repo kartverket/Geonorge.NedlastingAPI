@@ -1,13 +1,7 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Web;
-using Geonorge.Download.Models;
-using Geonorge.Download.Services.Interfaces;
+﻿using Geonorge.Download.Services.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Text;
 
 namespace Geonorge.Download.Services
 {

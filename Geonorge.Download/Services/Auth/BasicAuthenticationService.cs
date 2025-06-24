@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using Geonorge.Download.Models;
 using System.Text;
-using Geonorge.Download.Models;
 
 namespace Geonorge.Download.Services.Auth
 {
