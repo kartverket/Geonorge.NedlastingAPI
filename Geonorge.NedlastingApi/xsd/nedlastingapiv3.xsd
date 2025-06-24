@@ -60,6 +60,7 @@
       <xs:element name="mapSelectionLayer" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="supportsDownloadBundling" minOccurs="1" maxOccurs="1" type="xs:boolean" />
       <xs:element name="distributedBy" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
+	  <xs:element name="accessConstraintRequiredRole" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
       <xs:element name="deliveryNotificationByEmail" minOccurs="1" maxOccurs="1" type="xs:boolean" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
@@ -180,7 +181,8 @@
       <xs:element name="projections" minOccurs="0" maxOccurs="1" nillable="true" type="app:ProjectionListe" />
       <xs:element name="coordinates" minOccurs="1" maxOccurs="1" type="xs:string" />
       <xs:element name="coordinatesystem" minOccurs="1" maxOccurs="1" type="xs:string" />
-      <xs:element name="usagePurpose" minOccurs="0" maxOccurs="unbounded" nillable="true" type="xs:string" />
+	  <xs:element name="clipperFile" minOccurs="0" maxOccurs="1" nillable="true" type="xs:string" />
+	  <xs:element name="usagePurpose" minOccurs="0" maxOccurs="unbounded" nillable="true" type="xs:string" />
       <xs:element name="_links" minOccurs="0" maxOccurs="1" nillable="true" type="rest:LinkListeType" />
     </xs:sequence>
   </xs:complexType>

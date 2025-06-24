@@ -1,0 +1,97 @@
+﻿@inherits LayoutComponentBase
+@using System.Text.Json
+@using System.Globalization
+@using System.Security.Claims
+@using Geonorge.Download.Helpers
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+@inject IJSRuntime JS
+
+<div class="geonorge-container prototype geonorge fixed-menu-margin">
+    <main-navigation userinfo="@userInfoJson"
+                     organization="@organizationJson"
+                     environment="@EnvironmentName"
+                     signinurl="/Home/SignIn"
+                     signouturl="/Home/SignOut"
+                     isLoggedIn="@isLoggedIn.ToString().ToLower()"
+                     norwegianurl="@CultureSwitchUrl("no")"
+                     englishurl="@CultureSwitchUrl("en")"
+                     language="@CurrentCulture" />
+
+    <div class="container container-breadcrumbs" id="navTabCont">
+        <ul class="breadcrumbs col-md-12">
+            <li><a href="@GeonorgeUrl">Geonorge</a></li>
+            @* TODO: not hardcoded resources *@
+            <li><a href="@($"{GeonorgeUrl}verktoy/")">For utviklere</a></li>
+            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/")">API-er og grensesnitt</a></li>
+            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/nedlastingsapiet/")">Nedlasting API</a></li>
+
+            @if (BreadcrumbContent is not null)
+            {
+                @BreadcrumbContent
+            }
+        </ul>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+    {
+        <div class="alert alert-success">@SuccessMessage</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(FailureMessage))
+    {
+        <div class="alert alert-danger">@FailureMessage</div>
+    }
+
+    <div class="body-content">
+        <div class="container">
+            @Body
+        </div>
+    </div>
+
+    <geonorge-footer language="@CurrentCulture"
+                     version="@AppVersion"
+                     environment="@EnvironmentName" />
+</div>
+
+@code {
+    [Parameter] public RenderFragment? BreadcrumbContent { get; set; }
+
+    private string GeonorgeUrl => "https://www.geonorge.no/";
+    private string? SuccessMessage;
+    private string? FailureMessage;
+
+    private ClaimsPrincipal user;
+    private string userInfoJson;
+    private string organizationJson;
+    private string AppVersion => "1.0.0"; // Get from configuration or injected
+    private string EnvironmentName => Configuration["EnvironmentName"] ?? "dev";
+    private string CurrentCulture => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+    private bool isLoggedIn = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+
+        isLoggedIn = user?.Identity?.IsAuthenticated ?? false;
+
+        var userInfo = new
+        {
+            name = user?.FindFirst("Name")?.Value ?? "",
+            email = user?.FindFirst("Email")?.Value ?? ""
+        };
+
+        var organization = new
+        {
+            organizationName = user?.FindFirst("OrganizationName")?.Value ?? "",
+            organizationNumber = user?.FindFirst("OrganizationOrgnr")?.Value ?? ""
+        };
+
+        userInfoJson = JsonSerializer.Serialize(userInfo);
+        organizationJson = JsonSerializer.Serialize(organization);
+    }
+
+    private string CultureSwitchUrl(string lang) =>
+        $"/Home/SetCulture?culture={lang}&ReturnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
+}

@@ -1,0 +1,39 @@
+﻿@page "/"
+<PageTitle>Hjem</PageTitle>
+
+<section class="heading">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Nedlasting API</h1>
+        </div>
+        <div class="col-sm-12">
+            <span class="separator-lg"></span>
+        </div>
+    </div>
+</section>
+
+<p class="lead" style="font-size:18px">
+    Se <a href="/Help">dokumentasjon for nedlasting API</a>
+</p>
+
+<h2>Versjonshistorikk</h2>
+<ul>
+    <li>
+        <p><strong>13.06.2025</strong> - .NET 8</p>
+    </li>
+    <li>
+        <p><strong>27.02.2018</strong> - Nytt felt <strong>deliveryNotificationByEmail</strong> (bool) i responsen til /api/capabilities/{uuid} <br />
+            Benyttes til å gi klienten beskjed om epost er påkrevd ved oppretting av ny ordre. Dersom filene som skal leveres allerede er ferdig generert 
+            tilbys det ofte en nedlastingslenke direkte. Men for noen datasett kan det hende at filene genereres på forespørsel. 
+            I disse tilfellene må brukeren oppgi epost slik at han/hun får beskjed om at bestillingen er klar. Feltet settes til true dersom epost må oppgis ved bestilling.</p>
+    </li>
+    <li>
+        <p>
+            <strong>19.12.2017</strong> - Versjon 3 av APIet utgitt:
+            <ul>
+                <li>Pakking av ordre</li>
+                <li>Format og projeksjoner har nå en liste med henholdsvis projeksjoner og formater som støttes.</li>
+            </ul>
+        </p>
+    </li>
+</ul>

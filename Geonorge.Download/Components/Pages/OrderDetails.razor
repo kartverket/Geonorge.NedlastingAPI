@@ -1,0 +1,53 @@
+﻿@page "/order/details/{OrderId}"
+@using Geonorge.Download.Models
+@using Geonorge.Download.Services
+@using Geonorge.Download.Services.Interfaces
+@inject IOrderService OrderService
+
+<h2>Ordre @order?.referenceNumber</h2>
+
+@if (order == null)
+{
+    <p><em>Laster ordredata...</em></p>
+}
+else
+{
+    <hr />
+    <ul class="list-group">
+        @foreach (var item in order.orderItem)
+        {
+            <li class="list-group-item">
+                @if (item.IsReadyForDownload())
+                {
+                    <a href="@($"{ApiMethodGetFile}/{item.Order.Uuid}/{item.Uuid}")">
+                        @item.MetadataName: @item.FileName
+                    </a>
+                }
+                else
+                {
+                    @item.MetadataName <span>(venter på behandling)</span>
+                }
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public string OrderId { get; set; } = "";
+
+    private Order? order;
+
+    // Hardcoded for now; you could inject it later or get from config
+    private string ApiMethodGetFile = "/api/v2/download/order";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+
+        if (!string.IsNullOrWhiteSpace(OrderId))
+        {
+            order = OrderService.Find(OrderId);
+        }
+    }
+}

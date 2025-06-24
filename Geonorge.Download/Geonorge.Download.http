@@ -1,0 +1,6 @@
+@Geonorge.Download_HostAddress = https://localhost:7208
+
+GET {{Geonorge.Download_HostAddress}}/api/capabilities/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b
+Accept: application/json
+
+###

@@ -1,0 +1,461 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <UserSecretsId>584ea991-0dd6-4722-a9c1-015d3e85b6b4</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\js\**" />
+    <Content Remove="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\js\**" />
+    <EmbeddedResource Remove="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\js\**" />
+    <None Remove="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\lib\geonorge\BodyText.js" />
+    <Content Remove="wwwroot\lib\geonorge\BodyText.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\BreadcrumbList.js" />
+    <Content Remove="wwwroot\lib\geonorge\BreadcrumbList.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\ContentContainer.js" />
+    <Content Remove="wwwroot\lib\geonorge\ContentContainer.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\DownloadItem.js" />
+    <Content Remove="wwwroot\lib\geonorge\DownloadItem.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GeonorgeFooter.js" />
+    <Content Remove="wwwroot\lib\geonorge\GeonorgeFooter.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnAccordion.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnAccordion.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnBadgeList.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnBadgeList.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnBreadcrumbList.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnBreadcrumbList.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnButton.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnButton.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnDialog.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnDialog.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnFieldContainer.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnFieldContainer.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnIcon.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnIcon.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnInput.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnInput.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnLabel.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnLabel.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnList.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnList.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnSelect.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnSelect.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnShortcutButton.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnShortcutButton.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnSrOnly.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnSrOnly.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnTable.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnTable.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\GnTextarea.js" />
+    <Content Remove="wwwroot\lib\geonorge\GnTextarea.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\HeadingText.js" />
+    <Content Remove="wwwroot\lib\geonorge\HeadingText.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\index.css" />
+    <Content Remove="wwwroot\lib\geonorge\index.css.map" />
+    <Content Remove="wwwroot\lib\geonorge\index.js" />
+    <Content Remove="wwwroot\lib\geonorge\index.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\MainMenu.js" />
+    <Content Remove="wwwroot\lib\geonorge\MainMenu.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\MainNavigation.js" />
+    <Content Remove="wwwroot\lib\geonorge\MainNavigation.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\MainSearchField.js" />
+    <Content Remove="wwwroot\lib\geonorge\MainSearchField.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\MapItem.js" />
+    <Content Remove="wwwroot\lib\geonorge\MapItem.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabContent.js" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabContent.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabHeading.js" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabHeading.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabs.js" />
+    <Content Remove="wwwroot\lib\geonorge\NavigationTabs.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\SearchTypeSelector.js" />
+    <Content Remove="wwwroot\lib\geonorge\SearchTypeSelector.js.map" />
+    <Content Remove="wwwroot\lib\geonorge\UserAccount.js" />
+    <Content Remove="wwwroot\lib\geonorge\UserAccount.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Geonorge.AuthLib.Common" Version="2.0.0-alpha1" />
+    <PackageReference Include="GeoNorgeAPI" Version="4.0.0-alpha1" />
+    <PackageReference Include="Kartverket.Geonorge.Utilities" Version="2.0.0-alpha1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Geonorge.NedlastingApi\Geonorge.NedlastingApi.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+	<Content Include="node_modules\%40kartverket\geonorge-web-components\package.json" />
+	<Content Include="node_modules\.package-lock.json" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\.bower.json" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\chosen-sprite.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\chosen-sprite@2x.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_444444_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_555555_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_777620_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_777777_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_cc0000_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\images\ui-icons_ffffff_256x240.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\main.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\main.min.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\vendor.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\vendor.min.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\vendorfonts.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\css\vendorfonts.min.css" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\702ZOKiLJc3WVjuplzInF5uFdDttMLvmWuJdhhgs.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.eot" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.woff" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\fontawesome-webfont.woff2" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\FontAwesome.otf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\I4k9un7TZVWzRVT-T8y3USBnSvpkopQaUR-2r7iU.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\JXh38I15wypJXxuGMBp0EAVxt0G0biEntp43Qt6E.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\KeOuBrn4kERxqtaUH3aCWcynf_cDxXwCLxiixG1c.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\lAoFXXQEzZoMSUteGWKCWcynf_cDxXwCLxiixG1c.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\MzqLaYbbbCL9X6EvaIy3USBnSvpkopQaUR-2r7iU.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\oNo9fC8O2RDydKj12by3USBnSvpkopQaUR-2r7iU.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.eot" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\statusicon.woff" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\tzj9b56b8RgXW8FAriS3USBnSvpkopQaUR-2r7iU.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\Y3_3JNqUVRAQQRNVteQ.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\fonts\_ySUJH_bn48VBG8sNSonF5uFdDttMLvmWuJdhhgs.ttf" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\arrow-select-blue.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\arrow-select-orange.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\chevron-down.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\chevron-up.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\gif\gif_loading-01.gif" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\gif\loading.gif" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\kvlogo_col.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\loader.gif" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\lock.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\opendata.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\png\Dot_ffffff_8px-01.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\png\geonorge.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\png\kartverket.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\png\norgeskart-marker.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arealplan.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-down.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-right.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow-up.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\Arrow_414042_12px_mobile.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow_414042_6px-01-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\arrow_414042_8px-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\Arrow_968c83_12px_mobile.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\breadcrumb-arrow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-default.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-green.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-lime.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-orange.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-red.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked-yellow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-checked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-default.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-green.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-lime.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-orange.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-red.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked-yellow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checkbox-unchecked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\checked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\danger.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\datadeling.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dekningskart.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\den-norske-loeve.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\dok.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\eksternlink.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\external_link_3867c8_12px-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\external_link_ffffff_12px-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\file-xml-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\file-xml.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format-checked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format-checked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format-warning-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format-warning.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\format.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\geonorge_devlogo.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\geonorge_logo.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\geonorge_testlogo.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\gml.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-added.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-disabled-added.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-gray.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-white-added.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\handlekurv.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-aapen-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-aapen-green.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-aapen-red.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-aapen-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-aapen-yellow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-lukket-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-lukket-green.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-lukket-red.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-lukket-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\hengelaas-lukket-yellow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\info.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\inspire.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-needs-permission.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-unavailable-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-unavailable-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-unavailable.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-warning-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-warning-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-warning.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\kartmarkoer.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned-white.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lastned.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\lukk_968c83_50px-01-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\metadatatjeneste.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\norge-digitalt.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\open_fe5000_50px-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\produktark.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-checked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-checked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-warning-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection-warning.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\projection.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-checked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-checked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked-disabled.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\radio-unchecked.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn-circle.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\seksjonstegn.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-green.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-red.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\smile-yellow.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\soek.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\sosi.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\tick_fe5000_16px.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\totop_3867c8_75px-01.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\warning.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\svg\wfs.svg" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\images\unlock.png" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.min.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Analytics.min.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer.min.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.min.cshtml" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\assets\partials\_Footer_eng.min.html" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\bower.json" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\package-lock.json" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\README.md" />
+	<Content Include="wwwroot\Content\bower_components\kartverket-felleskomponenter\yarn.lock" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="node_modules\%40kartverket\geonorge-web-components\apiHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\body-text.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\BodyText.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\BodyText.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\breadcrumb-list.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\BreadcrumbList.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\BreadcrumbList.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\content-container.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\ContentContainer.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\ContentContainer.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\cookieHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\download-items.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\DownloadItem.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\DownloadItem.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\downloadItemHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\geonorge-footer.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GeonorgeFooter.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GeonorgeFooter.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-accordion.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-badge-list.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-breadcrumb-list.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-button.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-dialog.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-field-container.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-icon.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-input.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-label.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-list.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-select.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-shortcut-button.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-sr-only.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-table.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\gn-textarea.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnAccordion.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnAccordion.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnBadgeList.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnBadgeList.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnBreadcrumbList.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnBreadcrumbList.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnButton.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnButton.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnDialog.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnDialog.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnFieldContainer.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnFieldContainer.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnIcon.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnIcon.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnInput.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnInput.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnLabel.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnLabel.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnList.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnList.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnSelect.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnSelect.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnShortcutButton.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnShortcutButton.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnSrOnly.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnSrOnly.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnTable.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnTable.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnTextarea.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\GnTextarea.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\guiHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\heading-text.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\HeadingText.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\HeadingText.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\index.css" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\index.css.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\index.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\index.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\index.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\main-menu.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\main-navigation.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\main-search-field.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainMenu.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainMenu.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainNavigation.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainNavigation.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainSearchField.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MainSearchField.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\map-items.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MapItem.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\MapItem.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\mapItemHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\navigation-tab-content.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\navigation-tab-heading.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\navigation-tabs.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabContent.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabContent.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabHeading.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabHeading.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabs.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\NavigationTabs.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\search-type-selector.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\search.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\SearchTypeSelector.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\SearchTypeSelector.js.map" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\urlHelpers.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\user-account.d.ts" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\UserAccount.js" />
+    <None Include="node_modules\%40kartverket\geonorge-web-components\UserAccount.js.map" />
+    <None Include="wwwroot\lib\geonorge\BodyText.js" />
+    <None Include="wwwroot\lib\geonorge\BodyText.js.map" />
+    <None Include="wwwroot\lib\geonorge\BreadcrumbList.js" />
+    <None Include="wwwroot\lib\geonorge\BreadcrumbList.js.map" />
+    <None Include="wwwroot\lib\geonorge\ContentContainer.js" />
+    <None Include="wwwroot\lib\geonorge\ContentContainer.js.map" />
+    <None Include="wwwroot\lib\geonorge\DownloadItem.js" />
+    <None Include="wwwroot\lib\geonorge\DownloadItem.js.map" />
+    <None Include="wwwroot\lib\geonorge\GeonorgeFooter.js" />
+    <None Include="wwwroot\lib\geonorge\GeonorgeFooter.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnAccordion.js" />
+    <None Include="wwwroot\lib\geonorge\GnAccordion.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnBadgeList.js" />
+    <None Include="wwwroot\lib\geonorge\GnBadgeList.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnBreadcrumbList.js" />
+    <None Include="wwwroot\lib\geonorge\GnBreadcrumbList.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnButton.js" />
+    <None Include="wwwroot\lib\geonorge\GnButton.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnDialog.js" />
+    <None Include="wwwroot\lib\geonorge\GnDialog.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnFieldContainer.js" />
+    <None Include="wwwroot\lib\geonorge\GnFieldContainer.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnIcon.js" />
+    <None Include="wwwroot\lib\geonorge\GnIcon.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnInput.js" />
+    <None Include="wwwroot\lib\geonorge\GnInput.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnLabel.js" />
+    <None Include="wwwroot\lib\geonorge\GnLabel.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnList.js" />
+    <None Include="wwwroot\lib\geonorge\GnList.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnSelect.js" />
+    <None Include="wwwroot\lib\geonorge\GnSelect.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnShortcutButton.js" />
+    <None Include="wwwroot\lib\geonorge\GnShortcutButton.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnSrOnly.js" />
+    <None Include="wwwroot\lib\geonorge\GnSrOnly.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnTable.js" />
+    <None Include="wwwroot\lib\geonorge\GnTable.js.map" />
+    <None Include="wwwroot\lib\geonorge\GnTextarea.js" />
+    <None Include="wwwroot\lib\geonorge\GnTextarea.js.map" />
+    <None Include="wwwroot\lib\geonorge\HeadingText.js" />
+    <None Include="wwwroot\lib\geonorge\HeadingText.js.map" />
+    <None Include="wwwroot\lib\geonorge\index.css" />
+    <None Include="wwwroot\lib\geonorge\index.css.map" />
+    <None Include="wwwroot\lib\geonorge\index.js" />
+    <None Include="wwwroot\lib\geonorge\index.js.map" />
+    <None Include="wwwroot\lib\geonorge\MainMenu.js" />
+    <None Include="wwwroot\lib\geonorge\MainMenu.js.map" />
+    <None Include="wwwroot\lib\geonorge\MainNavigation.js" />
+    <None Include="wwwroot\lib\geonorge\MainNavigation.js.map" />
+    <None Include="wwwroot\lib\geonorge\MainSearchField.js" />
+    <None Include="wwwroot\lib\geonorge\MainSearchField.js.map" />
+    <None Include="wwwroot\lib\geonorge\MapItem.js" />
+    <None Include="wwwroot\lib\geonorge\MapItem.js.map" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabContent.js" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabContent.js.map" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabHeading.js" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabHeading.js.map" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabs.js" />
+    <None Include="wwwroot\lib\geonorge\NavigationTabs.js.map" />
+    <None Include="wwwroot\lib\geonorge\SearchTypeSelector.js" />
+    <None Include="wwwroot\lib\geonorge\SearchTypeSelector.js.map" />
+    <None Include="wwwroot\lib\geonorge\UserAccount.js" />
+    <None Include="wwwroot\lib\geonorge\UserAccount.js.map" />
+  </ItemGroup>
+</Project>

@@ -159,17 +159,23 @@ namespace Geonorge.NedlastingApi.V1
 
         private string relField;
 
-        private bool templatedField;
+        // Not in use
+        //private bool templatedField;
 
-        private bool templatedFieldSpecified;
+        // Not in use
+        //private bool templatedFieldSpecified;
 
-        private string typeField;
+        // Not in use
+        //private string typeField;
 
-        private string deprecationField;
+        // Not in use
+        //private string deprecationField;
 
-        private string nameField;
+        // Not in use
+        //private string nameField;
 
-        private string titleField;
+        // Not in use
+        //private string titleField;
 
         /// <remarks/>
         /// <summary>
