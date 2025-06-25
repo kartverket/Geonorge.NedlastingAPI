@@ -6,6 +6,7 @@ using Geonorge.Download.Models;
 using Geonorge.Download.Services;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -25,7 +26,7 @@ builder.Host.UseSerilog();
 
 // --- Database ---
 builder.Services.AddDbContext<DownloadContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // --- AuthN/AuthZ ---
 builder.Services.AddAuthentication("ExternalToken")
@@ -212,7 +213,18 @@ if (app.Environment.IsDevelopment())
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+else
+{
+    // If docker/k8s
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+    });
+}
 app.UseAuthorization();
 
 app.UseStaticFiles();

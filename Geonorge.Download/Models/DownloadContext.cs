@@ -34,12 +34,12 @@ namespace Geonorge.Download.Models
 
             modelBuilder.Entity<Order>()
             .HasIndex(e => e.Uuid)
-            .HasDatabaseName("IDX_Uuid")
+            .HasDatabaseName("IDX_OrderUuid")
             .IsUnique(false);
 
             modelBuilder.Entity<OrderItem>()
             .HasIndex(e => e.Uuid)
-            .HasDatabaseName("IDX_Uuid")
+            .HasDatabaseName("IDX_OrderItemUuid")
             .IsUnique(false);
 
             modelBuilder.Entity<OrderItem>()
