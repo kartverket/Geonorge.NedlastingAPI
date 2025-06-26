@@ -235,16 +235,17 @@ app.MapControllers(); // For versioned REST API
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode(); // For Blazor pages
 
-app.MapGet("/debug-secrets", (IConfiguration cfg) =>
-{
-    return new
-    {
-        Secret1 = cfg["GeoID:BaatAuthzApiCredentials"],
-        ExtToken = cfg["ExternalToken:Token"],
-        BasicAuthUser0 = cfg["basicAuth:users:0:username"],
-        BasicAuthUser1 = cfg["basicAuth:users:0:roles:0:name"]
-    };
-});
+// TODO: Remove this in production!
+//app.MapGet("/debug-secrets", (IConfiguration cfg) =>
+//{
+//    return new
+//    {
+//        Secret1 = cfg["GeoID:BaatAuthzApiCredentials"],
+//        ExtToken = cfg["ExternalToken:Token"],
+//        BasicAuthUser0 = cfg["basicAuth:users:0:username"],
+//        BasicAuthUser1 = cfg["basicAuth:users:0:roles:0:name"]
+//    };
+//});
 
 
 app.Run();

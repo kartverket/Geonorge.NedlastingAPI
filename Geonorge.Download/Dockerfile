@@ -14,13 +14,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-RUN dotnet nuget add source \
-         "http://host.docker.internal:5640/v3/index.json" \
-         --name testFeed \
-         --username token \
-         --password "MyAwesome1337Key" \
-         --store-password-in-clear-text
-
 COPY ["Geonorge.Download/Geonorge.Download.csproj", "Geonorge.Download/"]
 RUN dotnet restore "./Geonorge.Download/Geonorge.Download.csproj"
 COPY . .
