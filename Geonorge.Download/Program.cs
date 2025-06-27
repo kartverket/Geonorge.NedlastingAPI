@@ -193,8 +193,8 @@ builder.Services.AddRazorComponents()
 var app = builder.Build();
 
 // --- Swagger Setup ---
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -208,7 +208,7 @@ if (app.Environment.IsDevelopment())
         //options.RoutePrefix = "swagger";
         //options.ConfigObject.AdditionalItems["urls.primaryName"] = "v3";
     });
-}
+//}
 
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed
