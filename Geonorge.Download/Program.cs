@@ -6,12 +6,14 @@ using Geonorge.Download.Models;
 using Geonorge.Download.Services;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using StackExchange.Redis;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,16 @@ builder.Host.UseSerilog();
 // --- Database ---
 builder.Services.AddDbContext<DownloadContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+if (!builder.Environment.IsDevelopment())
+{
+    // --- Redis Data Protection ---
+    string redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException("Redis connection string is not configured.");
+    var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+    builder.Services.AddDataProtection()
+        .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
+}
 
 // --- AuthN/AuthZ ---
 builder.Services.AddAuthentication("ExternalToken")
@@ -213,18 +225,18 @@ var app = builder.Build();
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-else
-{
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseHttpsRedirection();
+//}
+//else
+//{
     // If docker/k8s
     app.UseForwardedHeaders(new ForwardedHeadersOptions
     {
         ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
     });
-}
+//}
 app.UseAuthorization();
 
 app.UseStaticFiles();
