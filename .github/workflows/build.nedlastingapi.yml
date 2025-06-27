@@ -1,5 +1,8 @@
 name: NedlastingAPI
 on:
+  push:
+    branches:
+      - dotnet-8
   workflow_dispatch:
 
 env:
