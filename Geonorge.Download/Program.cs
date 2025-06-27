@@ -34,6 +34,7 @@ if (!builder.Environment.IsDevelopment())
 {
     // --- Redis Data Protection ---
     string redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException("Redis connection string is not configured.");
+    Log.Logger.Information("Using Redis connection string: {RedisConnectionString}", redisConnectionString);
     var redis = ConnectionMultiplexer.Connect(redisConnectionString);
     builder.Services.AddDataProtection()
         .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
