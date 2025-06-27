@@ -1,0 +1,55 @@
+name: NedlastingAPI
+on:
+  workflow_dispatch:
+
+env:
+  DOCKER_REGISTRY: ghcr.io
+  NEDLASTINGAPI_NAME: kartverket/geonorge-nedlastingapi
+
+jobs:
+  build_nedlastingapi:
+    name: Build and Push genorge-nedlastingapi Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      actions: read
+      id-token: write
+
+    outputs:
+      version: ${{ steps.set_output.outputs.version }}
+      tags: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.NEDLASTINGAPI_NAME }}
+          tags: type=sha,format=long
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build docker image and push
+        id: build_nedlastingapi
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./Geonorge.Download/Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+
+      - name: Summarize Image Digest and Set Output
+        id: set_output
+        run: |
+          echo "Full Image URL: ${{ env.DOCKER_REGISTRY }}/${{ env.NEDLASTINGAPI_NAME }}:${{ steps.meta.outputs.version }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_STEP_SUMMARY
+          echo "version=${{ github.ref_name }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_OUTPUT
