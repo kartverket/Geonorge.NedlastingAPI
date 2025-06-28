@@ -3,6 +3,7 @@
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
 # USER $APP_UID
+COPY ./Geonorge.Download/Certs/_dev.geonorge.no.pem /etc/ssl/certs/
 USER 150
 WORKDIR /app
 EXPOSE 8080
