@@ -25,6 +25,13 @@ jobs:
       commit_message: ${{ steps.get_commit_message.outputs.nedlasting_commit_message }}
 
     steps:
+      - run: echo ${{ github.event.client_payload.ref }}
+      - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
+        id: octo-sts
+        with:
+          scope: kartverket/datadeling-apps
+          identity: geonorge-nedlastingapi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
