@@ -6,10 +6,14 @@ using Geonorge.Download.Models;
 using Geonorge.Download.Services;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -116,7 +120,15 @@ builder.Services.AddSwaggerGen(options =>
 
     //options.SwaggerDoc("v1", new OpenApiInfo { Title = "Download API v1", Version = "v1" });
     //options.SwaggerDoc("v2", new OpenApiInfo { Title = "Download API v2", Version = "v2" });
-    options.SwaggerDoc("v3", new OpenApiInfo { Title = "Geonorge nedlastings-API", Version = "v3" });
+    options.SwaggerDoc("v3", new OpenApiInfo 
+        { 
+            Title = "Geonorge nedlastings-API", 
+            Version = "v3",
+            Description = """
+            A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
+            For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
+            """
+    });
 
     options.CustomSchemaIds(type => type.Name);    
 
@@ -208,7 +220,7 @@ var app = builder.Build();
 // --- Swagger Setup ---
 //if (app.Environment.IsDevelopment())
 //{
-    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -238,9 +250,67 @@ app.UseCors("AllowAll"); // Or switch to a named policy as needed
         ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
     });
 //}
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
+var fileProvider = new FileExtensionContentTypeProvider();
+fileProvider.Mappings[".sos"] = "text/vnd.sosi";
+fileProvider.Mappings[".gml"] = "application/gml+xml";
+fileProvider.Mappings[".gdb"] = "application/octet-stream";
+fileProvider.Mappings[".geojson"] = "application/geo+json";
+fileProvider.Mappings[".7z"] = "application/x-7z-compressed";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.WebRootPath, "clipperfiles")),
+    RequestPath = "/clipperfiles",
+    ContentTypeProvider = fileProvider,
+
+    // Safety-net: let the file through even when the mapping is missing
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "application/octet-stream",
+
+    // TODO: Når trenger man authentication på clipperfiles? 
+    //OnPrepareResponse = ctx =>
+    //{
+    //    // Deny anonymous users
+    //    if (!ctx.Context.User.Identity?.IsAuthenticated ?? true)
+    //    {
+    //        ctx.Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+    //        ctx.Context.Response.ContentLength = 0;
+    //        ctx.Context.Response.Body = Stream.Null;
+    //        return;
+    //    }
+    //// Optional: fine-grained policy check (role/claim)
+    //    var auth = ctx.Context.RequestServices.GetRequiredService<IAuthorizationService>();
+    //    var ok = await auth.AuthorizeAsync(ctx.Context.User, null, "DownloaderOnly");
+    //        if (!ok.Succeeded)
+    //    {
+    //        ctx.Context.Response.StatusCode = StatusCodes.Status403Forbidden;
+    //        ctx.Context.Response.ContentLength = 0;
+    //        ctx.Context.Response.Body = Stream.Null;
+    //    }
+    //}
+    });
+
+var fileServerOIptions = new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.WebRootPath, "geonorge")),
+    RequestPath = "/geonorge",
+    EnableDirectoryBrowsing = true,          // ← **key line**
+    EnableDefaultFiles = false,         // (keeps /index.html out of the way)
+};
+
+fileServerOIptions.StaticFileOptions.ContentTypeProvider = fileProvider;
+fileServerOIptions.StaticFileOptions.ServeUnknownFileTypes = true;
+fileServerOIptions.StaticFileOptions.DefaultContentType = "application/octet-stream";
+
+app.UseFileServer(fileServerOIptions);
+
+
 app.UseAntiforgery();
 
 // --- Endpoints ---

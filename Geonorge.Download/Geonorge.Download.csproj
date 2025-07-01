@@ -45,7 +45,8 @@
   </ItemGroup>
 	
   <ItemGroup>
-	<None Include="wwwroot\**" CopyToPublishDirectory="Always" />
+	<Content Remove="wwwroot\clipperfiles\**" CopyToPublishDirectory="Never" Condition="'$(Configuration)' == 'Release'" />
+	<Content Remove="wwwroot\geonorge\**" CopyToPublishDirectory="Never" Condition="'$(Configuration)' == 'Release'" />
 	<None Include="node_modules\**" />
-  </ItemGroup>
+	</ItemGroup>
 </Project>
