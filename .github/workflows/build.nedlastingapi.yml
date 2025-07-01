@@ -22,28 +22,28 @@ jobs:
     outputs:
       version: ${{ steps.set_output.outputs.version }}
       tags: ${{ steps.meta.outputs.tags }}
-      commit_message: ${{ steps.get_commit_message.outputs.nedlasting_commit_message }}
+      # commit_message: ${{ steps.get_commit_message.outputs.nedlasting_commit_message }}
 
     steps:
-      - run: echo ${{ github.event.client_payload.ref }}
-      - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
-        id: octo-sts
-        with:
-          scope: kartverket/datadeling-apps
-          identity: geonorge-nedlastingapi
+      # - run: echo ${{ github.event.client_payload.ref }}
+      # - uses: octo-sts/action@6177b4481c00308b3839969c3eca88c96a91775f # v1.0.0
+      #   id: octo-sts
+      #   with:
+      #     scope: kartverket/datadeling-apps
+      #     identity: geonorge-nedlastingapi
 
       - name: Checkout repository
         uses: actions/checkout@v4
 
       # Extract the latest commit message from the current repo
-      - name: Get commit message
-        id: get_commit_message
-        run: |
-          {
-            echo 'nedlasting_commit_message<<EOF'
-            git log -1 --pretty=%B
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+      # - name: Get commit message
+      #   id: get_commit_message
+      #   run: |
+      #     {
+      #       echo 'nedlasting_commit_message<<EOF'
+      #       git log -1 --pretty=%B
+      #       echo 'EOF'
+      #     } >> "$GITHUB_OUTPUT"
 
       - name: Extract Docker metadata
         id: meta
@@ -75,25 +75,25 @@ jobs:
           echo "Full Image URL: ${{ env.DOCKER_REGISTRY }}/${{ env.NEDLASTINGAPI_NAME }}:${{ steps.meta.outputs.version }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_STEP_SUMMARY
           echo "version=${{ github.ref_name }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_OUTPUT
 
-  deploy:
-    needs: [build_nedlastingapi]
-    name: Deploy
-    permissions:
-      # contents: write
-      # actions: write
-      id-token: write
-    uses: kartverket/datadeling-apps/.github/workflows/release-geosaga.yml@main
-    # secrets:
-    #   token: ${{  needs.deploy.outputs.token }}
-    with:
-      # Apps repo namespace
-      namespace: datadeling-geonorge
-      # Apps repo app name
-      application: geonorge-nedlasting-api
-      # Ghrc.io image tag
-      tag: ${{ needs.build_mapserver.outputs.tags }}
-      # identity for the octo-sts action
-      identity: geonorge-nedlastingapi
-      deploy_dev: true
-      deploy_prod: false
-      commit_message: ${{ needs.build_mapserver.outputs.commit_message }}
+  # deploy:
+  #   needs: [build_nedlastingapi]
+  #   name: Deploy
+  #   permissions:
+  #     # contents: write
+  #     # actions: write
+  #     id-token: write
+  #   uses: kartverket/datadeling-apps/.github/workflows/release-geosaga.yml@main
+  #   # secrets:
+  #   #   token: ${{  needs.deploy.outputs.token }}
+  #   with:
+  #     # Apps repo namespace
+  #     namespace: datadeling-geonorge
+  #     # Apps repo app name
+  #     application: geonorge-nedlasting-api
+  #     # Ghrc.io image tag
+  #     tag: ${{ needs.build_mapserver.outputs.tags }}
+  #     # identity for the octo-sts action
+  #     identity: geonorge-nedlastingapi
+  #     deploy_dev: true
+  #     deploy_prod: false
+  #     commit_message: ${{ needs.build_mapserver.outputs.commit_message }}

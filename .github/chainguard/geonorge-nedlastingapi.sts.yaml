@@ -1,5 +1,0 @@
-issuer: https://token.actions.githubusercontent.com
-subject: repo:kartverket/Geonorge.NedlastingAPI:ref:refs/heads/dotnet-8
-
-permissions:
-  contents: write
