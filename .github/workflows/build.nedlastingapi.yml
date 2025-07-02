@@ -40,8 +40,7 @@ jobs:
         id: get_commit_message
         run: |
           RAW_MSG="$(git log -1 --pretty=%B)"
-          CLEANED_MSG=$(jq -Rs . <<<"$RAW_MSG")
-          CLEANED_MSG="${CLEANED_MSG:1:-1}"
+          CLEANED_MSG=$(jq -Rs '.' <<<"$RAW_MSG" | jq -r '. | gsub("\\n";" ")')
           echo "nedlasting_commit_message=$CLEANED_MSG" >> $GITHUB_OUTPUT
 
       - name: Extract Docker metadata
