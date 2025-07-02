@@ -22,7 +22,7 @@ jobs:
     outputs:
       version: ${{ steps.set_output.outputs.version }}
       tags: ${{ steps.meta.outputs.tags }}
-      # commit_message: ${{ steps.get_commit_message.outputs.nedlasting_commit_message }}
+      commit_message: ${{ steps.get_commit_message.outputs.nedlasting_commit_message }}
 
     steps:
       # - run: echo ${{ github.event.client_payload.ref }}
@@ -36,14 +36,14 @@ jobs:
         uses: actions/checkout@v4
 
       # Extract the latest commit message from the current repo
-      # - name: Get commit message
-      #   id: get_commit_message
-      #   run: |
-      #     {
-      #       echo 'nedlasting_commit_message<<EOF'
-      #       git log -1 --pretty=%B
-      #       echo 'EOF'
-      #     } >> "$GITHUB_OUTPUT"
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          {
+            echo 'nedlasting_commit_message<<EOF'
+            git log -1 --pretty=%B
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Extract Docker metadata
         id: meta
@@ -75,6 +75,17 @@ jobs:
           echo "Full Image URL: ${{ env.DOCKER_REGISTRY }}/${{ env.NEDLASTINGAPI_NAME }}:${{ steps.meta.outputs.version }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_STEP_SUMMARY
           echo "version=${{ github.ref_name }}@${{steps.build_nedlastingapi.outputs.digest}}" >> $GITHUB_OUTPUT
 
+  trigger_internal:
+    needs: [build_nedlastingapi]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger internal repo workflow
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.INTERNAL_PAT }}" \
+            https://api.github.com/repos/kartverket/datadeling-apps/actions/workflows/update-dev-image.yml/dispatches \
+            -d '{"ref":"main", "inputs":{ "application":"geonorge-nedlasting-api", "namespace":"datadeling-geonorge", "tag":"${{ needs.build_nedlastingapi.outputs.tags }}", "commit_message":"${{ needs.build_nedlastingapi.outputs.commit_message }}" } }'
   # deploy:
   #   needs: [build_nedlastingapi]
   #   name: Deploy
