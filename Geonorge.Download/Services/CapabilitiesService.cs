@@ -371,7 +371,7 @@ namespace Geonorge.Download.Services
         {
             ClipperFile clipperFile = new ClipperFile();
             clipperFile.Id = id;
-            clipperFile.DateUploaded = DateTime.Now;
+            clipperFile.DateUploaded = DateTime.UtcNow;
             clipperFile.File = url;
             clipperFile.Valid = valid;
             clipperFile.Message = message;

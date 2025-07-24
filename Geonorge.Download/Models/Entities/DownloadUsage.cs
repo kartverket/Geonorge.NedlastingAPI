@@ -71,7 +71,7 @@ namespace Geonorge.Download.Models
 
         public DownloadUsageEntry()
         {
-            Timestamp = DateTime.Now;
+            Timestamp = DateTime.UtcNow;
         }
     }
 }

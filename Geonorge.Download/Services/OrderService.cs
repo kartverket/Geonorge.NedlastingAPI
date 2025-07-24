@@ -446,7 +446,7 @@ namespace Geonorge.Download.Services
             if (orderStatus.Status == "ReadyForDownload" && !order.DownloadBundleNotificationSent.HasValue)
             {
                 notificationService.SendReadyForDownloadBundleNotification(order);
-                order.DownloadBundleNotificationSent = DateTime.Now;
+                order.DownloadBundleNotificationSent = DateTime.UtcNow;
             }
 
             downloadContext.SaveChanges();

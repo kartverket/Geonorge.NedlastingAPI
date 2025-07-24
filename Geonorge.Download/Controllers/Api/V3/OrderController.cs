@@ -176,7 +176,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             {
                 referenceNumber = order.Uuid.ToString(),
                 email = order.email,
-                orderDate = order.orderDate ?? DateTime.Now,
+                orderDate = order.orderDate ?? DateTime.UtcNow,
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
                 downloadBundleUrl = downloadBundleUrl,

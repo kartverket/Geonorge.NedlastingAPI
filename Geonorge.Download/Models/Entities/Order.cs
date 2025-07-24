@@ -12,7 +12,7 @@ namespace Geonorge.Download.Models
         public Order()
         {
             orderItem = new List<OrderItem>();
-            orderDate = DateTime.Now;
+            orderDate = DateTime.UtcNow;
             Uuid = Guid.NewGuid();
         }
 
