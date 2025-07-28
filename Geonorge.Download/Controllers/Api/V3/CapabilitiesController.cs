@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Routing;
 using Geonorge.Download.Services.Interfaces;
+using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -31,7 +33,14 @@ namespace Geonorge.Download.Controllers.Api.V3
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
-    public class CapabilitiesController(ILogger<CapabilitiesController> logger, IConfiguration config, ICapabilitiesService capabilitiesService, IDownloadService downloadService, IWebHostEnvironment webHostEnvironment) : ControllerBase
+    public class CapabilitiesController(
+        ILogger<CapabilitiesController> logger, 
+        IConfiguration config, 
+        ICapabilitiesService capabilitiesService, 
+        IDownloadService downloadService, 
+        IWebHostEnvironment webHostEnvironment,
+        StorageClient storageClient,
+        GcsSettings gcsSettings) : ControllerBase
     {
         /// <summary>
         /// Get Capabilities from download service
@@ -203,21 +212,7 @@ namespace Geonorge.Download.Controllers.Api.V3
 
                 var fileName = id + extension;
 
-                // Define safe file path
-                var folderPath = Path.Combine(webHostEnvironment.WebRootPath, "clipperfiles");
-                Directory.CreateDirectory(folderPath); // ensure folder exists
-                var filePath = Path.Combine(folderPath, fileName);
-
-                // Save uploaded file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                // Construct URL
-                var scheme = HttpContext.Request.Scheme;
-                var host = HttpContext.Request.Host.Value;
-                var clipperFile = $"{scheme}://{host}/clipperfiles/{fileName}";
+                var clipperFile = await UploadToGcsAsync(file, storageClient, gcsSettings, HttpContext);
 
                 // Override in local dev
                 if (clipperFile.Contains("localhost"))
@@ -254,6 +249,35 @@ namespace Geonorge.Download.Controllers.Api.V3
                 logger.LogError(ex, "Error validating clipper file for UUID: {MetadataUuid}", metadataUuid);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private async Task<string> UploadToGcsAsync(
+            IFormFile file,
+            StorageClient storage,
+            GcsSettings gcs,
+            HttpContext http)
+        {
+            var id = Guid.NewGuid().ToString("N");
+            var extension = Path.GetExtension(file.FileName);
+            var objectKey = id + extension;
+
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".sos"] = "text/vnd.sosi";
+            provider.Mappings[".gml"] = "application/gml+xml";
+            provider.Mappings[".gdb"] = "application/octet-stream";
+            provider.Mappings[".geojson"] = "application/geo+json";
+            provider.Mappings[".7z"] = "application/x-7z-compressed";
+            if (!provider.TryGetContentType(objectKey, out var contentType))
+                contentType = file.ContentType ?? "application/octet-stream";
+
+            await using var src = file.OpenReadStream();
+            await storage.UploadObjectAsync(
+                bucket: gcs.Bucket,
+                objectName: objectKey,
+                contentType: contentType,
+                source: src);
+
+            return $"{http.Request.Scheme}://{http.Request.Host}/clipperfiles/{objectKey}";
         }
 
         /// <summary>

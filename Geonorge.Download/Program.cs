@@ -19,6 +19,8 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using StackExchange.Redis;
 using System.Reflection;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,22 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+var gcsSection = builder.Configuration.GetSection("Gcs");
+var bucketName = gcsSection["Bucket"];
+var credsPath = gcsSection["CredentialsPath"];
+
+GoogleCredential gcsCred =
+    string.IsNullOrWhiteSpace(credsPath)
+        ? GoogleCredential.GetApplicationDefault()
+        : GoogleCredential.FromFile(credsPath);
+
+builder.Services.AddSingleton(new StorageClientBuilder { Credential = gcsCred }.Build());
+
+//builder.Services.AddSingleton(UrlSigner.FromCredential(gcsCred));
+
+builder.Services.AddSingleton(new GcsSettings(bucketName));
+
 
 // --- Database ---
 builder.Services.AddDbContext<DownloadContext>(options =>
@@ -54,6 +72,7 @@ builder.Services.AddAuthentication("ExternalToken")
 builder.Services.AddAuthorization();
 
 // --- Services ---
+builder.Services.AddHostedService<StartupProbe>();
 builder.Services.AddSingleton<IRegisterFetcher, RegisterFetcher>();
 builder.Services.AddScoped<IEiendomService, EiendomService>();
 builder.Services.AddScoped<ICapabilitiesService, CapabilitiesService>();
@@ -251,65 +270,37 @@ app.UseCors("AllowAll"); // Or switch to a named policy as needed
     });
 //}
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-var fileProvider = new FileExtensionContentTypeProvider();
-fileProvider.Mappings[".sos"] = "text/vnd.sosi";
-fileProvider.Mappings[".gml"] = "application/gml+xml";
-fileProvider.Mappings[".gdb"] = "application/octet-stream";
-fileProvider.Mappings[".geojson"] = "application/geo+json";
-fileProvider.Mappings[".7z"] = "application/x-7z-compressed";
-
-app.UseStaticFiles(new StaticFileOptions
+app.MapGet("/clipperfiles/{**objectKey}", async (
+        string objectKey,
+        HttpContext http,
+        StorageClient storage,
+        GcsSettings gcs
+    ) =>
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.WebRootPath, "clipperfiles")),
-    RequestPath = "/clipperfiles",
-    ContentTypeProvider = fileProvider,
+    if (string.IsNullOrWhiteSpace(objectKey))
+        return Results.BadRequest("Missing object key");
 
-    // Safety-net: let the file through even when the mapping is missing
-    ServeUnknownFileTypes = true,
-    DefaultContentType = "application/octet-stream",
+    try
+    {
+        var meta = await storage.GetObjectAsync(gcs.Bucket, objectKey);
 
-    // TODO: Når trenger man authentication på clipperfiles? 
-    //OnPrepareResponse = ctx =>
-    //{
-    //    // Deny anonymous users
-    //    if (!ctx.Context.User.Identity?.IsAuthenticated ?? true)
-    //    {
-    //        ctx.Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-    //        ctx.Context.Response.ContentLength = 0;
-    //        ctx.Context.Response.Body = Stream.Null;
-    //        return;
-    //    }
-    //// Optional: fine-grained policy check (role/claim)
-    //    var auth = ctx.Context.RequestServices.GetRequiredService<IAuthorizationService>();
-    //    var ok = await auth.AuthorizeAsync(ctx.Context.User, null, "DownloaderOnly");
-    //        if (!ok.Succeeded)
-    //    {
-    //        ctx.Context.Response.StatusCode = StatusCodes.Status403Forbidden;
-    //        ctx.Context.Response.ContentLength = 0;
-    //        ctx.Context.Response.Body = Stream.Null;
-    //    }
-    //}
-    });
+        http.Response.ContentType = meta.ContentType ?? "application/octet-stream";
+        http.Response.ContentLength = (long?)meta.Size;
+        http.Response.Headers["Cache-Control"] = "public,max-age=31536000,immutable";
 
-var fileServerOIptions = new FileServerOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.WebRootPath, "geonorge")),
-    RequestPath = "/geonorge",
-    EnableDirectoryBrowsing = true,          // ← **key line**
-    EnableDefaultFiles = false,         // (keeps /index.html out of the way)
-};
-
-fileServerOIptions.StaticFileOptions.ContentTypeProvider = fileProvider;
-fileServerOIptions.StaticFileOptions.ServeUnknownFileTypes = true;
-fileServerOIptions.StaticFileOptions.DefaultContentType = "application/octet-stream";
-
-app.UseFileServer(fileServerOIptions);
-
+        await storage.DownloadObjectAsync(gcs.Bucket, objectKey, http.Response.Body);
+        return Results.Empty;
+    }
+    catch (Google.GoogleApiException ex) when (ex.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
+    {
+        return Results.NotFound();
+    }
+});
 
 app.UseAntiforgery();
 
@@ -332,3 +323,23 @@ app.MapRazorComponents<App>()
 
 
 app.Run();
+
+
+
+public sealed record GcsSettings(string Bucket);
+
+public sealed class StartupProbe : IHostedService
+{
+    private readonly StorageClient _gcs;
+    private readonly GcsSettings _opt;
+
+    public StartupProbe(StorageClient gcs, GcsSettings opt)
+        => (_gcs, _opt) = (gcs, opt);
+
+    public async Task StartAsync(CancellationToken ct)
+    {
+        // one HEAD call to make sure the creds & bucket are valid
+        await _gcs.GetBucketAsync(_opt.Bucket, cancellationToken: ct);
+    }
+    public Task StopAsync(CancellationToken _) => Task.CompletedTask;
+}
