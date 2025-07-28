@@ -257,7 +257,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             GcsSettings gcs,
             HttpContext http)
         {
-            var id = Guid.NewGuid().ToString("N");
+            var id = Guid.NewGuid().ToString();
             var extension = Path.GetExtension(file.FileName);
             var objectKey = id + extension;
 
@@ -273,7 +273,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             await using var src = file.OpenReadStream();
             await storage.UploadObjectAsync(
                 bucket: gcs.Bucket,
-                objectName: objectKey,
+                objectName: $"clipperfiles/{objectKey}",
                 contentType: contentType,
                 source: src);
 

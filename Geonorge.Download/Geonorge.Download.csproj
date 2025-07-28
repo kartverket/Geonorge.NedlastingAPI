@@ -47,6 +47,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+	<None Include="wwwroot\**" CopyToPublishDirectory="Always" />
 	<None Include="node_modules\**" />
   </ItemGroup>
 </Project>

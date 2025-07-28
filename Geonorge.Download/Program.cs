@@ -287,13 +287,13 @@ app.MapGet("/clipperfiles/{**objectKey}", async (
 
     try
     {
-        var meta = await storage.GetObjectAsync(gcs.Bucket, objectKey);
+        var meta = await storage.GetObjectAsync(gcs.Bucket, $"clipperfiles/{objectKey}");
 
         http.Response.ContentType = meta.ContentType ?? "application/octet-stream";
         http.Response.ContentLength = (long?)meta.Size;
         http.Response.Headers["Cache-Control"] = "public,max-age=31536000,immutable";
 
-        await storage.DownloadObjectAsync(gcs.Bucket, objectKey, http.Response.Body);
+        await storage.DownloadObjectAsync(gcs.Bucket, $"clipperfiles/{objectKey}", http.Response.Body);
         return Results.Empty;
     }
     catch (Google.GoogleApiException ex) when (ex.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
