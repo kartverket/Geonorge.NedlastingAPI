@@ -170,3 +170,9 @@ $RECYCLE.BIN/
 
 # npm packages 
 node_modules/
+
+# environment variables
+.env
+
+# GCP credentials
+.application_credentials*

@@ -1,0 +1,84 @@
+networks:
+  geonorge-network:
+    driver: bridge
+
+services:
+  geonorge.download:
+    # image: ${DOCKER_REGISTRY-}geonorgedownload
+    build:
+      context: .
+      dockerfile: Geonorge.Download/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+    volumes:
+      - ./.application_credentials_bucket:/var/run/secrets/tokens/gcp-ksa/google-application-credentials.json
+    networks:
+    - geonorge-network
+
+  geonorge.download.redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: redis-cli ping | grep PONG
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - geonorge-network
+
+  geonorge.download.redis-insight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "5540:5540"
+    networks:
+      - geonorge-network
+
+  geonorge.download.db:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.18.0
+    command: >
+      --private-ip
+      --auto-iam-authn
+      --address 0.0.0.0
+      --port 5432
+      --credentials-file /tmp/application_credentials_sql.json
+      datadeling-dev-e88f:europe-north1:geonorge-dev
+    volumes:
+      - ./.application_credentials_sql:/tmp/application_credentials_sql.json:ro
+    ports:
+      - "5432:5432"
+    networks:
+    - geonorge-network
+
+  # geonorge.download.db:
+  #   image: postgres:17.5
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_USER: nedlasting
+  #     POSTGRES_PASSWORD: nedlasting
+  #     POSTGRES_DB: kartverket_nedlasting
+  #   command: [ "postgres",
+  #              "-c", "log_statement=all",
+  #              "-c", "logging_collector=true",
+  #              "-c", "log_file_mode=0644",
+  #              "-c", "log_directory=/var/log/postgresql",
+  #              "-c", "log_filename=postgresql.log" ]
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  #   volumes:
+  #     - nedlasting_pgdata:/var/lib/postgresql/data
+  #     - nedlasting_pglog:/var/log/postgresql
+  #   networks:
+  #     - geonorge-network
+
+# volumes:
+#   nedlasting_pgdata:
+#   nedlasting_pglog:

@@ -83,7 +83,7 @@ jobs:
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.INTERNAL_PAT }}" \
           https://api.github.com/repos/kartverket/datadeling-apps/actions/workflows/update-dev-image.yml/dispatches \
-          -d '{"ref":"main","inputs":{"application":"geonorge-nedlasting-api","namespace":"datadeling-geonorge","tag":"${{needs.build_nedlastingapi.outputs.tags}}","commit_message":"${{needs.build_nedlastingapi.outputs.commit_message}}"}}'
+          -d '{"ref":"main","inputs":{"application":"geonorge-nedlasting-api", "dev_env":"atgcp1", "namespace":"datadeling-geonorge","tag":"${{needs.build_nedlastingapi.outputs.tags}}","commit_message":"${{needs.build_nedlastingapi.outputs.commit_message}}"}}'
 
   # deploy:
   #   needs: [build_nedlastingapi]
