@@ -12,8 +12,7 @@
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-	<None Include=".env" />
-	<None Include=".application_credentials_bucket" />
-    <None Include=".application_credentials_sql" />
+    <None Include=".env" />
+    <None Include="application_default_credentials.json" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ networks:
 
 services:
   geonorge.download:
-    # image: ${DOCKER_REGISTRY-}geonorgedownload
+    image: ${DOCKER_REGISTRY-}geonorgedownload
     build:
       context: .
       dockerfile: Geonorge.Download/Dockerfile
@@ -14,8 +14,9 @@ services:
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Testing
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcloud/application_default_credentials.json
     volumes:
-      - ./.application_credentials_bucket:/var/run/secrets/tokens/gcp-ksa/google-application-credentials.json
+      - ./application_default_credentials.json:/app/gcloud/application_default_credentials.json:ro
     networks:
     - geonorge-network
 
@@ -45,10 +46,10 @@ services:
       --auto-iam-authn
       --address 0.0.0.0
       --port 5432
-      --credentials-file /tmp/application_credentials_sql.json
-      datadeling-dev-e88f:europe-north1:geonorge-dev
+      --credentials-file /tmp/application_default_credentials.json
+      datadeling-dev-e88f:europe-north1:geonorge-dev      
     volumes:
-      - ./.application_credentials_sql:/tmp/application_credentials_sql.json:ro
+      - ./application_default_credentials.json:/tmp/application_default_credentials.json:ro
     ports:
       - "5432:5432"
     networks:

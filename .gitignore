@@ -175,4 +175,4 @@ node_modules/
 .env
 
 # GCP credentials
-.application_credentials*
+application_default_credentials.json
