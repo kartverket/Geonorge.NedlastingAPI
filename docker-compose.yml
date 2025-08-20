@@ -12,9 +12,6 @@ services:
       - "8080:8080"
     env_file:
       - .env
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Testing
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcloud/application_default_credentials.json
     volumes:
       - ./application_default_credentials.json:/app/gcloud/application_default_credentials.json:ro
     networks:
@@ -60,9 +57,9 @@ services:
   #   ports:
   #     - 5432:5432
   #   environment:
-  #     POSTGRES_USER: nedlasting
-  #     POSTGRES_PASSWORD: nedlasting
-  #     POSTGRES_DB: kartverket_nedlasting
+  #     POSTGRES_USER: <some-db-username>
+  #     POSTGRES_PASSWORD: <some-db-password>
+  #     POSTGRES_DB: <some-db-name>
   #   command: [ "postgres",
   #              "-c", "log_statement=all",
   #              "-c", "logging_collector=true",
