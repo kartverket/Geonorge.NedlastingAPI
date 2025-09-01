@@ -166,127 +166,96 @@ namespace Geonorge.Download.Services
         {
             var orderItems = new List<OrderItem>();
 
+            if (order?.orderLines == null || !order.orderLines.Any())
+            {
+                return orderItems;
+            }
+
             foreach (var orderLine in order.orderLines)
             {
-                IEnumerable<Models.File> files = new List<Models.File>();
+                var ds = downloadContext.
+                    Capabilities
+                    .AsNoTracking()
+                    .Where(d => d.MetadataUuid == orderLine.metadataUuid)
+                    .Select(d => new
+                    {
+                        d.Id,
+                        d.Title,
+                        d.AccessConstraintRequiredRole
+                    })
+                    .FirstOrDefault();
 
-                var sqlDataset = "select Tittel from Dataset where metadataUuid = @p0";
-                var datasetTitle = downloadContext.Database.SqlQueryRaw<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
-                sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
-                var accessConstraintRequiredRole = downloadContext.Database.SqlQueryRaw<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
-
-                if (authenticatedUser != null && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole) &&
-                    !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
+                if (ds == null)
                     continue;
 
-                int initialCount = 0;
-                int count = 0;
+                if (authenticatedUser != null
+                    && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole)
+                    && !string.IsNullOrEmpty(ds.AccessConstraintRequiredRole)
+                    && ds.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
+                {
+                    continue;
+                }
 
-                var sql = "select filliste.[id] as Id, filliste.[filnavn] as Filename ,filliste.[url] as Url,filliste.[kategori] as Category ,filliste.[underkategori] as SubCategory, filliste.[inndeling] as Division,filliste.[inndelingsverdi] as DivisionKey ,filliste.[projeksjon] as Projection ,filliste.[format] as Format ,filliste.[dataset] as DatasetId ,filliste.[AccessConstraintRequiredRole] as AccessConstraintRequiredRole from filliste, Dataset where filliste.dataset = Dataset.id and dataset.metadataUuid = @p" + initialCount++;
-                List<string> parameters = new List<string>();
-                parameters.Add(orderLine.metadataUuid);
+                IQueryable<Models.File> query =
+                    from f in downloadContext.Set<Models.File>().AsNoTracking()
+                    where f.DatasetId == ds.Id
+                    select f;
 
                 if (orderLine.projections != null && orderLine.projections.Any())
                 {
-                    var projections = orderLine.projections.Select(p => p.code).ToList();
-                    if (projections.Any())
-                        sql = sql + " AND (";
+                    var projectionCodes = orderLine.projections
+                        .Select(p => p?.code)
+                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                        .Distinct()
+                        .ToList();
 
-                    var initial = true;
-
-                    foreach (var projection in projections)
-                    {
-                        if (initial)
-                            initial = false;
-                        else
-                            sql = sql + " OR ";
-
-                        sql = sql + "(projeksjon = @p" + initialCount++ + " )";
-                        parameters.Add(projection);
-
-                    }
-
-                    if (projections.Any())
-                        sql = sql + " )";
-
+                    if (projectionCodes.Count > 0)
+                        query = query.Where(f => projectionCodes.Contains(f.Projection));
                 }
 
                 if (orderLine.formats != null && orderLine.formats.Any())
                 {
-                    var formats = orderLine.formats.Select(p => p.name).ToList();
+                    var formatNames = orderLine.formats
+                        .Select(p => p?.name)
+                        .Where(n => !string.IsNullOrWhiteSpace(n))
+                        .Distinct()
+                        .ToList();
 
-                    if (formats.Any())
-                        sql = sql + " AND (";
-
-                    var initial = true;
-
-                    foreach (var format in formats)
-                    {
-                        if (initial)
-                            initial = false;
-                        else
-                            sql = sql + " OR ";
-
-                        sql = sql + "(format =  @p" + initialCount++ + " )";
-                        parameters.Add(format);
-                    }
-
-                    if (formats.Any())
-                        sql = sql + " )";
-
+                    if (formatNames.Count > 0)
+                        query = query.Where(f => formatNames.Contains(f.Format));
                 }
-                List<string> parametersArea = new List<string>();
 
                 if (orderLine.areas != null && orderLine.areas.Any())
                 {
-                    count = initialCount;
-                    var areas = orderLine.areas.Select(a => new { a.code, a.type });
+                    var grouped = orderLine.areas
+                        .Where(a => !string.IsNullOrWhiteSpace(a?.type) && !string.IsNullOrWhiteSpace(a?.code))
+                        .GroupBy(a => a.type)
+                        .ToList();
 
-                    areas = areas.ToList();
-                    string sqlArea = "";
-
-                    if (areas.Any())
-                        sqlArea = sqlArea + " AND (";
-
-                    var initial = true;
-
-                    foreach (var area in areas)
+                    if (grouped.Count > 0)
                     {
+                        IQueryable<Models.File> union = null;
 
-                        if (initial)
-                            initial = false;
-                        else
-                            sqlArea = sqlArea + " OR ";
-
-                        sqlArea = sqlArea + "(inndeling = @p" + count++ + " AND inndelingsverdi = @p" + count++ + " )" ;
-                        parametersArea.Add(area.type);
-                        parametersArea.Add(area.code);
-
-                        if (count > 2000)
+                        foreach (var g in grouped)
                         {
-                            List<string> param2 = parameters;
-                            param2 = param2.Concat(parametersArea).ToList();
-                            var sqlStatement = sql + sqlArea + ") ";
-                            files = files.Concat(downloadContext.Database.SqlQueryRaw<Models.File>(sqlStatement, param2.ToArray()).ToList());
-                            sqlArea = "";
-                            count = initialCount;
-                            parametersArea = new List<string>();
-                            initial = true;
+                            var localType = g.Key;
+                            var codes = g.Select(x => x.code).Distinct().ToList();
+
+                            var sub = query.Where(f => f.Division == localType && codes.Contains(f.DivisionKey));
+                            union = union == null ? sub : union.Concat(sub);
                         }
+                        if (union != null)
+                            query = union.Distinct();
                     }
-                    if(!sqlArea.StartsWith(" AND"))
-                        sql = sql + " AND (" + sqlArea + ") ";
-                    else
-                        sql = sql + " " + sqlArea + " ) ";
                 }
 
-                object[] param = parameters.ToArray();
-                param = param.Concat(parametersArea).ToList().ToArray();
+                var files = query.ToList();
 
-                files = files.Concat(downloadContext.Database.SqlQueryRaw<Models.File>(sql, param).Distinct().ToList());
-
-                foreach (Models.File item in files)
+                foreach (var item in files)
                 {
+                    var areaName = registerFetcher.GetArea(item.Division, item.DivisionKey)?.name;
+                    var projectionName = registerFetcher.GetProjection(item.Projection)?.name;
+
                     orderItems.Add(new OrderItem
                     {
                         DownloadUrl = item.Url,
@@ -294,16 +263,17 @@ namespace Geonorge.Download.Services
                         FileUuid = item.Id,
                         Format = item.Format,
                         Area = item.DivisionKey,
-                        AreaName = registerFetcher.GetArea(item.Division, item.DivisionKey).name,
+                        AreaName = areaName,
                         Projection = item.Projection,
-                        ProjectionName =  registerFetcher.GetProjection(item.Projection).name,
+                        ProjectionName = projectionName,
                         MetadataUuid = orderLine.metadataUuid,
                         Status = OrderItemStatus.ReadyForDownload,
-                        MetadataName = datasetTitle,
+                        MetadataName = ds.Title,
                         UsagePurpose = orderLine.usagePurpose
                     });
                 }
             }
+
             return orderItems;
         }
 
@@ -361,7 +331,7 @@ namespace Geonorge.Download.Services
             List<string> distinctMetadataUuids = order.orderItem.Select(o => o.MetadataUuid).Distinct().ToList();
 
             List<DatasetAccessConstraint> accessConstraints = downloadContext.Capabilities
-                .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && d.AccessConstraint != null)
+                .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && !string.IsNullOrWhiteSpace(d.AccessConstraint))
                 .Select(d => new DatasetAccessConstraint() {
                     MetadataUuid = d.MetadataUuid,
                     AccessConstraint = new AccessConstraint()
@@ -378,7 +348,7 @@ namespace Geonorge.Download.Services
             List<string> distinctFileNames = order.orderItem.Select(o => o.FileName).Distinct().ToList();
             List<FileAccessConstraint> accessConstraintsFiles = null;
             if(distinctFileNames != null && distinctFileNames.Count > 0)
-            accessConstraintsFiles = downloadContext.FileList.Where(f => distinctFileNames.Contains(f.Filename) && f.AccessConstraintRequiredRole != null)
+            accessConstraintsFiles = downloadContext.FileList.Where(f => distinctFileNames.Contains(f.Filename) && !string.IsNullOrWhiteSpace(f.AccessConstraintRequiredRole))
                 .Select(a => new FileAccessConstraint
                 { MetadataUuid = a.Dataset.MetadataUuid, File = a.Filename, Role = a.AccessConstraintRequiredRole})
                 .ToList();
@@ -485,7 +455,11 @@ namespace Geonorge.Download.Services
         protected void DeleteOldPeronalData()
         {
             //Remove personal info older than 7 days
-            downloadContext.Database.ExecuteSql($"UPDATE [kartverket_nedlasting].[dbo].[orderDownload] set email = '', username = '' where email<>'' AND orderDate < DATEADD(day, -7, GETDATE())");
+            downloadContext.OrderDownloads
+                .Where(o => o.email != "" && o.orderDate < DateTime.Now.AddDays(-7))
+                .ExecuteUpdate(setters => setters
+                    .SetProperty(o => o.email, o => "")
+                    .SetProperty(o => o.username, o => ""));
         }
 
         public void CheckPackageSize(Order order)

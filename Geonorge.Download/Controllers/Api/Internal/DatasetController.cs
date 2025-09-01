@@ -68,10 +68,16 @@ namespace Geonorge.Download.Controllers.Api.Internal
                 if (dataset.filliste.Count > 0)
                 {
                     //Remove old files
-                    var deleteSql =
-                        "DELETE FROM filliste FROM Dataset INNER JOIN filliste ON Dataset.ID = filliste.dataset WHERE(Dataset.metadataUuid = {0} )";
-                    logger.LogInformation("Deleting from filliste for uuid: " + uuid);
-                    downloadContext.Database.ExecuteSqlRaw(deleteSql, uuid);
+                    var filesToRemove = downloadContext.FileList
+                        .Where(f => downloadContext.Capabilities
+                            .Any(d => d.Id == f.DatasetId && d.MetadataUuid == uuid))
+                        .ToList();
+
+                    if (filesToRemove.Any())
+                    {
+                        logger.LogInformation("Deleting from filliste for uuid: " + uuid);
+                        downloadContext.FileList.RemoveRange(filesToRemove);
+                    }
 
                     //Add new files
                     foreach (var file in dataset.filliste)

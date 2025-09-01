@@ -44,7 +44,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            AuthenticatedUser authenticatedUser = GetAuthenticatedUser();            
+            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);            
             var userIsLoggedIn = authenticatedUser != null;
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
@@ -102,7 +102,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            AuthenticatedUser authenticatedUser = GetAuthenticatedUser();
+            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);
 
             var userIsLoggedIn = authenticatedUser != null;
 
@@ -156,11 +156,6 @@ namespace Geonorge.Download.Controllers.Api.V3
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil brukernavn/passord");
             }
             return Ok();
-        }
-
-        private AuthenticatedUser GetAuthenticatedUser()
-        {
-            return authenticationService.GetAuthenticatedUser(HttpContext.Request);
         }
 
         internal static bool IsValidUuid(string input)

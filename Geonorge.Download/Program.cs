@@ -34,18 +34,8 @@ builder.Host.UseSerilog();
 
 var gcsSection = builder.Configuration.GetSection("Gcs");
 var bucketName = gcsSection["Bucket"];
-//var credsPath = gcsSection["CredentialsPath"];
 
-//GoogleCredential gcsCred =
-//    string.IsNullOrWhiteSpace(credsPath)
-//        ? GoogleCredential.GetApplicationDefault()
-//        : GoogleCredential.FromFile(credsPath);
-
-//builder.Services.AddSingleton(new StorageClientBuilder { Credential = gcsCred }.Build());
 builder.Services.AddSingleton(StorageClient.Create());
-
-//builder.Services.AddSingleton(UrlSigner.FromCredential(gcsCred));
-
 builder.Services.AddSingleton(new GcsSettings(bucketName));
 
 
@@ -73,7 +63,6 @@ builder.Services.AddAuthentication("ExternalToken")
 builder.Services.AddAuthorization();
 
 // --- Services ---
-//builder.Services.AddHostedService<StartupProbe>();
 builder.Services.AddSingleton<IRegisterFetcher, RegisterFetcher>();
 builder.Services.AddScoped<IEiendomService, EiendomService>();
 builder.Services.AddScoped<ICapabilitiesService, CapabilitiesService>();
@@ -310,37 +299,6 @@ app.MapControllers(); // For versioned REST API
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode(); // For Blazor pages
 
-// TODO: Remove this in production!
-//app.MapGet("/debug-secrets", (IConfiguration cfg) =>
-//{
-//    return new
-//    {
-//        Secret1 = cfg["GeoID:BaatAuthzApiCredentials"],
-//        ExtToken = cfg["ExternalToken:Token"],
-//        BasicAuthUser0 = cfg["basicAuth:users:0:username"],
-//        BasicAuthUser1 = cfg["basicAuth:users:0:roles:0:name"]
-//    };
-//});
-
-
 app.Run();
 
-
-
 public sealed record GcsSettings(string Bucket);
-
-//public sealed class StartupProbe : IHostedService
-//{
-//    private readonly StorageClient _gcs;
-//    private readonly GcsSettings _opt;
-
-//    public StartupProbe(StorageClient gcs, GcsSettings opt)
-//        => (_gcs, _opt) = (gcs, opt);
-
-//    public async Task StartAsync(CancellationToken ct)
-//    {
-//        // one HEAD call to make sure the creds & bucket are valid
-//        await _gcs.GetBucketAsync(_opt.Bucket, cancellationToken: ct);
-//    }
-//    public Task StopAsync(CancellationToken _) => Task.CompletedTask;
-//}

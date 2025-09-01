@@ -41,7 +41,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         {
             try
             {
-                var savedOrder = orderService.CreateOrder(order, GetAuthenticatedUser());
+                var savedOrder = orderService.CreateOrder(order, authenticationService.GetAuthenticatedUser(HttpContext.Request));
                 orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder, Request));
             }
@@ -82,7 +82,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(GetAuthenticatedUser()))
+            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(authenticationService.GetAuthenticatedUser(HttpContext.Request)))
                 return Unauthorized();
 
             return Ok(ConvertToReceipt(order, Request));
@@ -114,7 +114,7 @@ namespace Geonorge.Download.Controllers.Api.V3
                 if (order == null)
                     return NotFound();
 
-                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(GetAuthenticatedUser()))
+                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(authenticationService.GetAuthenticatedUser(HttpContext.Request)))
                     return Unauthorized();
 
                 orderService.CheckPackageSize(order);
@@ -159,11 +159,6 @@ namespace Geonorge.Download.Controllers.Api.V3
                 logger.LogError("Error while getting order uuid file:{e}", e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        private AuthenticatedUser GetAuthenticatedUser()
-        {
-            return authenticationService.GetAuthenticatedUser(HttpContext.Request);
         }
 
         private OrderReceiptType ConvertToReceipt(Order order, HttpRequest request)

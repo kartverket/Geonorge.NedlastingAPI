@@ -22,6 +22,11 @@ namespace Geonorge.Download.Services.Auth
     {
         public AuthenticatedUser GetAuthenticatedUser()
         {
+            if (ClaimsPrincipal.Current == null)
+            {
+                return null;
+            }
+
             var username = ClaimsPrincipal.Current.GetUsername();
 
             if (string.IsNullOrEmpty(username))
