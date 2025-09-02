@@ -111,7 +111,7 @@ builder.Services.AddApiVersioning(options =>
     .AddMvc()
     .AddApiExplorer(options =>
     {
-        options.GroupNameFormat = "'v'V"; // Produces "v3.0"
+        options.GroupNameFormat = "'v'VVV";
         options.SubstituteApiVersionInUrl = true;
     });
 
@@ -124,25 +124,51 @@ builder.Services.AddSwaggerGen(options =>
 
     //options.SchemaFilter<Geonorge.Download.Controllers.Api.V3.XsdExampleSchemaFilter>();
     options.DocumentFilter<TagDescriptionsDocumentFilter>(xmlPath);
-    options.OperationFilter<RemoveVersionParameterFilter>();
+    options.OperationFilter<RemoveVersionParameterFilter>(); // version parameter not needed in requests, just version in path
     options.OperationFilter<AuthorizeCheckOperationFilter>();
+    options.CustomSchemaIds(type => type.Name);
 
-    //options.SwaggerDoc("v1", new OpenApiInfo { Title = "Download API v1", Version = "v1" });
-    //options.SwaggerDoc("v2", new OpenApiInfo { Title = "Download API v2", Version = "v2" });
-    options.SwaggerDoc("v3", new OpenApiInfo 
-        { 
-            Title = "Geonorge nedlastings-API", 
-            Version = "v3",
-            Description = """
-            A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
-            For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
-            """
+    options.SwaggerDoc("internal", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API (internal)",
+        Version = "internal",
+        Description = "Endpoints intended for internal operators, dataset providers, and admin tooling."
     });
 
-    options.CustomSchemaIds(type => type.Name);    
+    options.SwaggerDoc("v3", new OpenApiInfo 
+    { 
+        Title = "Geonorge nedlastings-API", 
+        Version = "v3",
+        Description = """
+        A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
+        For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
+        """
+    });
+
+    options.SwaggerDoc("latest", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API",
+        Version = "latest",
+        Description = """
+        A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
+        For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
+        """
+    });
 
     options.DocInclusionPredicate((docName, apiDesc) =>
     {
+        if (docName.Equals("internal"))
+            return string.Equals(apiDesc.GroupName, "internal", StringComparison.OrdinalIgnoreCase);
+
+        if (docName.Equals("latest"))
+        {
+            if (apiDesc.RelativePath != null && apiDesc.RelativePath.StartsWith("api/v3"))
+            {
+                return false;
+            }
+            return string.Equals(apiDesc.GroupName, "latest", StringComparison.OrdinalIgnoreCase);
+        }
+
         var metadata = apiDesc.ActionDescriptor.EndpointMetadata
             .OfType<ApiVersionMetadata>()
             .FirstOrDefault();
@@ -152,15 +178,15 @@ builder.Services.AddSwaggerGen(options =>
             Console.WriteLine($"[SWAGGER DEBUG] Skipping {apiDesc.RelativePath} (no version metadata)");
             return false;
         }
-        else if (apiDesc.RelativePath != null && apiDesc.RelativePath.StartsWith("api/v3"))
+        else if (apiDesc.RelativePath != null && !apiDesc.RelativePath.StartsWith("api/v3"))
         {
             return false;
         }
 
-            var majors = metadata.Map(ApiVersionMapping.Explicit | ApiVersionMapping.Implicit)
-                             .DeclaredApiVersions
-                             .Select(v => $"v{v.MajorVersion}");
-        
+        var majors = metadata.Map(ApiVersionMapping.Explicit | ApiVersionMapping.Implicit)
+                         .DeclaredApiVersions
+                         .Select(v => $"v{v.MajorVersion}");
+
         return majors.Contains(docName);
     });
 
@@ -227,45 +253,45 @@ builder.Services.AddRazorComponents()
 var app = builder.Build();
 
 // --- Swagger Setup ---
-//if (app.Environment.IsDevelopment())
-//{
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
-        {
-            options.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json",
-                $"Geonorge nedlastings-API {description.ApiVersion}");
-        }
-        //options.RoutePrefix = "swagger";
-        //options.ConfigObject.AdditionalItems["urls.primaryName"] = "v3";
+        options.SwaggerEndpoint(
+                $"/swagger/latest/swagger.json",
+                $"Geonorge nedlastings-API (latest)");
+
+        options.SwaggerEndpoint(
+                $"/swagger/v3/swagger.json",
+                $"Geonorge nedlastings-API 3.0");
+
+        options.SwaggerEndpoint(
+                $"/swagger/internal/swagger.json",
+                $"Geonorge nedlastings-API (internal)");
+
+        //foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
+        //{
+        //    options.SwaggerEndpoint(
+        //        $"/swagger/{description.GroupName}/swagger.json",
+        //        $"Geonorge nedlastings-API {description.ApiVersion}");
+        //}
     });
-//}
 
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseHttpsRedirection();
-//}
-//else
-//{
-    // If docker/k8s
-    app.UseForwardedHeaders(new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
-    });
-//}
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+});
 
 app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/clipperfiles/{**objectKey}", async (
+app.MapGet("/clipperfiles/{**objectKey}", async 
+    (
         string objectKey,
         HttpContext http,
         StorageClient storage,

@@ -9,22 +9,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Asp.Versioning;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
-    [Route("api/internal/dataset")]
-    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
+    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiController]
     [RequireHttps]
+    [ApiVersionNeutral]
+    [ApiExplorerSettings(GroupName = "internal")]
+    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
+    [Route("api/internal/dataset")]
     public class DatasetController(ILogger<DatasetController> logger, DownloadContext downloadContext) : ControllerBase
     {
 
         /// <summary>
-        ///     List datasets
+        /// List datasets
         /// </summary>
         // GET: api/internal/dataset
         [HttpGet]
-        [Route("")]
         public IEnumerable<DatasetViewModel> GetCapabilities()
         {
             return downloadContext.Capabilities.Select(d => new DatasetViewModel
@@ -37,11 +40,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Get info dataset
+        /// Get info dataset
         /// </summary>
         // GET: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
-        [HttpGet]        
-        [Route("{uuid:guid}")]
+        [HttpGet("{uuid:guid}")]
         [ProducesResponseType(typeof(Dataset), StatusCodes.Status200OK)]
         public IActionResult GetDataset(string uuid)
         {
@@ -53,11 +55,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Update dataset
+        /// Update dataset
         /// </summary>
         // PUT: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
-        [HttpPut]
-        [Route("{uuid:guid}")]
+        [HttpPut("{uuid:guid}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public IActionResult PutDataset(string uuid, Dataset dataset)
         {
@@ -115,7 +116,7 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Create new dataset
+        /// Create new dataset
         /// </summary>
         // POST: api/internal/dataset
         [HttpPost]
@@ -147,11 +148,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Add file(s) to dataset
+        /// Add file(s) to dataset
         /// </summary>
         // POST: api/internal/dataset/files/73f863ba-628f-48af-b7fa-30d3ab331b8d
-        [HttpPost]
-        [Route("files/{uuid}")]
+        [HttpPost("files/{uuid}")]
         public IActionResult PostFiles(string uuid, HashSet<Models.File> filelist)
         {
             try
@@ -185,11 +185,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Delete dataset
+        /// Delete dataset
         /// </summary>
         // DELETE: api/internal/dataset/db4b872f-264d-434c-9574-57232f1e90d2
-        [HttpDelete]
-        [Route("{uuid:guid}")]
+        [HttpDelete("{uuid:guid}")]
         [ProducesResponseType(typeof(Dataset), StatusCodes.Status200OK)]
         public IActionResult DeleteDataset(string uuid)
         {
@@ -219,11 +218,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Delete file
+        /// Delete file
         /// </summary>
         // DELETE: api/internal/dataset/file/Offentligetjenester_2014_Loppa_25835_Skoler_SOSI.zip
-        [HttpDelete]
-        [Route("file/{filnavn}")]
+        [HttpDelete("file/{filnavn}")]
         [ProducesResponseType(typeof(Models.File), StatusCodes.Status200OK)]
         public IActionResult Deletefilliste(string filnavn)
         {
@@ -253,11 +251,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Delete filename list
+        /// Delete filename list
         /// </summary>
         // DELETE: api/internal/dataset/files
-        [HttpDelete]
-        [Route("files")]
+        [HttpDelete("files")]
         public IActionResult DeleteFiles(List<string> filliste)
         {
             try

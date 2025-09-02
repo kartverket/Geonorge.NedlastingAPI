@@ -30,6 +30,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// <param name="webHostEnvironment"></param>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
@@ -278,29 +279,6 @@ namespace Geonorge.Download.Controllers.Api.V3
                 source: src);
 
             return $"{http.Request.Scheme}://{http.Request.Host}/clipperfiles/{objectKey}";
-        }
-
-        /// <summary>
-        /// Test endpoint for matrikkeleiendom
-        /// </summary>
-        /// <param name="baatid">Baatid for tilgangskontroll</param>
-        /// <returns></returns>
-        [HttpGet("tilgangskontrollmatrikkeleiendomtest/{baatid}")]
-        [Produces("application/json", "application/xml")]
-        [ProducesResponseType(typeof(List<Eiendom>), StatusCodes.Status200OK)]
-        public ActionResult<List<Eiendom>> GetEiendomTest([FromRoute] string baatid)
-        {
-            var request = Request;
-            var auth = request.Headers.Authorization;
-
-            List<Eiendom> eiendoms = new()
-            {
-                new Eiendom { kommunenr = "3021", gaardsnr = "1", bruksnr = "1", festenr = "0" },
-                new Eiendom { kommunenr = "3021", gaardsnr = "20", bruksnr = "1", festenr = "0" },
-                new Eiendom { kommunenr = "3817", gaardsnr = "1", bruksnr = "1", festenr = "0" }
-            };
-
-            return eiendoms;
         }
 
         private bool CheckFileType(string fileName)

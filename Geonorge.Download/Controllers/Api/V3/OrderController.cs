@@ -19,6 +19,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// </summary>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog_2")]
@@ -26,8 +27,8 @@ namespace Geonorge.Download.Controllers.Api.V3
     public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IAuthenticationService authenticationService) : ControllerBase
     {
         /// <summary>
-        ///     Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
-        ///     the files are delivered via email
+        /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
+        /// the files are delivered via email
         /// </summary>
         /// <param name="order">OrderType model</param>
         /// <response code="400">Bad request</response>
@@ -59,7 +60,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         }
 
         /// <summary>
-        ///     Get info about files in order
+        /// Get info about files in order
         /// </summary>
         [HttpGet("order/{orderUuid}")]
         [Produces("application/json", "application/xml")]
@@ -89,7 +90,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         }
 
         /// <summary>
-        ///     Updates order with info to send to bundling
+        /// Updates order with info to send to bundling
         /// </summary>
         /// <param name="orderUuid">Uuid for order to update</param>
         /// <param name="incomingOrder">
@@ -97,7 +98,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// * email
         /// * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
         /// <returns>
-        ///    Http status code 200 if updated ok.
+        /// Http status code 200 if updated ok.
         /// </returns>
         [HttpPut("order/{orderUuid}")]
         [Consumes("application/json", "application/xml")]
@@ -137,10 +138,10 @@ namespace Geonorge.Download.Controllers.Api.V3
 
         [ApiExplorerSettings(IgnoreApi = true)]
         /// <summary>
-        ///     Get fileIds for order
+        /// Get fileIds for order
         /// </summary>
         /// <returns>
-        ///    Http status code 200.
+        /// Http status code 200.
         /// </returns>
         [HttpGet("order/uuidfile/{orderUuid}")]
         public IActionResult GetUuidFile(string orderUuid)

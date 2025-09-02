@@ -1,4 +1,5 @@
-﻿using Geonorge.Download.Models;
+﻿using Asp.Versioning;
+using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -6,17 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
-    [Route("api/internal/order")]
+    [ApiController]
+    [ApiVersionNeutral]
+    [ApiExplorerSettings(GroupName = "internal")]
     [Authorize(Roles = AuthConfig.DatasetProviderRole)]
+    [Route("api/internal/order")]
     public class ManageOrderController(ILogger<ManageOrderController> logger, IUpdateFileStatusService updateFileStatusService, IOrderService orderService) : ControllerBase
     {
         /// <summary>
-        ///     Update status on a given file that has been processed.
+        /// Update status on a given file that has been processed.
         /// </summary>
         /// <param name="request">Updated information about a file.</param>
         /// <returns>HTTP status codes 200 if ok.</returns>
-        [Route("update-file-status")]
-        [HttpPost]
+        [HttpPost("update-file-status")]
         public IActionResult UpdateFileStatus(UpdateFileStatusRequest request)
         {
             try
@@ -47,8 +50,7 @@ namespace Geonorge.Download.Controllers.Api.Internal
             return Ok();
         }
 
-        [Route("update-order-status")]
-        [HttpPost]
+        [HttpPost("update-order-status")]
         public IActionResult UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
         {
             try
@@ -67,11 +69,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
 
 
         /// <summary>
-        ///     Inform user about file clipping status
+        /// Inform user about file clipping status
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
-        [Route("status-notification")]
-        [HttpGet]
+        [HttpGet("status-notification")]
         public IActionResult StatusNotification()
         {
             try
@@ -89,11 +90,10 @@ namespace Geonorge.Download.Controllers.Api.Internal
         }
 
         /// <summary>
-        ///     Inform user about file clipping jobs that will not be delivered
+        /// Inform user about file clipping jobs that will not be delivered
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
-        [Route("status-notification-not-deliverable")]
-        [HttpGet]
+        [HttpGet("status-notification-not-deliverable")]
         public IActionResult StatusNotificationNotDeliverable()
         {
             try

@@ -4,19 +4,28 @@ using Geonorge.Download.Models.Api.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Geonorge.Download.Services.Interfaces;
+using Asp.Versioning;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
+    /// <summary>
+    /// stuff
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="config"></param>
+    /// <param name="updateMetadataService"></param>
+    [ApiController]
+    [ApiVersionNeutral]
+    [ApiExplorerSettings(GroupName = "internal")]
     [Authorize(Roles = AuthConfig.DatasetProviderRole)]
     [Route("api/internal/metadata")]
     public class MetadataController(ILogger<MetadataController> logger, IConfiguration config, IUpdateMetadataService updateMetadataService) : ControllerBase
     {
 
         /// <summary>
-        ///     Update metadata
+        /// Update metadata
         /// </summary>
-        [Route("update")]
-        [HttpPost]
+        [HttpPost("update")]
         public IActionResult UpdateMetadata(UpdateMetadataRequest metadata)
         {
             try
