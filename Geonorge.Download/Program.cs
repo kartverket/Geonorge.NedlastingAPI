@@ -21,6 +21,7 @@ using StackExchange.Redis;
 using System.Reflection;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
+using Mi = Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,10 +56,14 @@ if (!builder.Environment.IsDevelopment())
 }
 
 // --- AuthN/AuthZ ---
-builder.Services.AddAuthentication("ExternalToken")
-                .AddScheme<ExternalTokenOptions, ExternalTokenHandler>(
-                    "ExternalToken",
-                    options => builder.Configuration.GetSection("ExternalToken").Bind(options));
+builder.Services
+    .AddAuthentication(BasicAuthHandler.SchemeName)
+    .AddScheme<BasicAuthOptions, BasicAuthHandler>(
+        BasicAuthHandler.SchemeName,
+        options => builder.Configuration.GetSection("auth:BasicAuth").Bind(options))
+    .AddScheme<ExternalTokenOptions, ExternalTokenHandler>(
+        "ExternalToken",
+        options => builder.Configuration.GetSection("auth:ExternalToken").Bind(options));
 
 builder.Services.AddAuthorization();
 
@@ -77,6 +82,9 @@ builder.Services.AddScoped<IOrderBundleService, OrderBundleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+// --- Internal Services ---
+builder.Services.AddScoped<IUpdateMetadataService, UpdateMetadataService>();
 
 // Optional service using HttpClient
 builder.Services.AddHttpClient<IExternalRequestService, ExternalRequestService>(client =>
@@ -206,6 +214,14 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "Token",
         In = ParameterLocation.Header,
         Description = "External client bearer token. Paste **only** the token."
+    });
+
+    options.AddSecurityDefinition("Meep", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Basic",
+        In = ParameterLocation.Header,
+        Description = "Enter credentials as 'Basic {base64(username:password)}'"
     });
 });
 

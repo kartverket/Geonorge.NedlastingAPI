@@ -48,10 +48,10 @@ namespace Geonorge.Download.Services
 
         public void UpdateMetadata(UpdateMetadataInformation metadataInfo)
         {
-            string server = config["GeoNetworkUrl"];
-            string usernameGeonetwork = config["GeoNetworkUsername"];
-            string password = config["GeoNetworkPassword"];
-            string geonorgeUsername = config["GeonorgeUsername"];
+            string server = config["GeoNetwork:Url"];
+            string usernameGeonetwork = config["GeoNetwork:Username"];
+            string password = config["GeoNetwork:Password"];
+            string geonorgeUsername = config["GeoNetwork:GeonorgeUsername"];
 
 
             GeoNorge api = new GeoNorge(usernameGeonetwork, password, server);

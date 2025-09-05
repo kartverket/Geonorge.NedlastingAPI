@@ -109,7 +109,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         [ProducesResponseType(typeof(List<AreaType>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetAreas([FromRoute] string metadataUuid, string access_token = null)
+        public IActionResult GetAreas([FromRoute] string metadataUuid)
         {
             try
             {

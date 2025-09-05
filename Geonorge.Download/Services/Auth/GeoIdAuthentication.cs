@@ -46,11 +46,11 @@ namespace Geonorge.Download.Services.Auth
             string accessToken = GetAccessTokenFromHeader(request);
             if (accessToken != null)
             {
-                var geoIdIntrospectionUrl = config["GeoID:IntrospectionUrl"];
-                var geoIdIntrospectionCredentials = config["GeoID:IntrospectionCredentials"];
+                var geoIdIntrospectionUrl = config["auth:oidc:IntrospectionUrl"];
+                var geoIdIntrospectionCredentials = config["auth:oidc:IntrospectionCredentials"];
 
-                var clientId = config["GeoID:ClientId"];
-                var clientSecret = config["GeoID:ClientSecret"];
+                var clientId = config["auth:oidc:ClientId"];
+                var clientSecret = config["auth:oidc:ClientSecret"];
 
                 logger.LogDebug("Token validation - requestUrl: " + geoIdIntrospectionUrl);
                 
@@ -124,7 +124,7 @@ namespace Geonorge.Download.Services.Auth
         {
             UserInfo userInfo = new UserInfo();
 
-            var geoIdUserInfoUrl = config["GeoID:BaatAuthzApiUrl"] + "info/" + username;
+            var geoIdUserInfoUrl = config["auth:oidc:BaatAuthzApiUrl"] + "info/" + username;
 
             logger.LogDebug("User role info - requestUrl: " + geoIdUserInfoUrl);
 
