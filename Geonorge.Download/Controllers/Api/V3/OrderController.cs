@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Asp.Versioning;
+using Geonorge.Download.Models;
+using Geonorge.Download.Services.Auth;
+using Geonorge.Download.Services.Exceptions;
+using Geonorge.Download.Services.Interfaces;
+using Geonorge.NedlastingApi.V3;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using Geonorge.NedlastingApi.V3;
-using Geonorge.Download.Models;
-using Geonorge.Download.Services.Auth;
-using Microsoft.Net.Http.Headers;
-using Asp.Versioning;
-using Geonorge.Download.Services.Interfaces;
-using Geonorge.Download.Services.Exceptions;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -23,8 +25,10 @@ namespace Geonorge.Download.Controllers.Api.V3
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog_2")]
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme}")]
     //[HandleError]
-    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IAuthenticationService authenticationService) : ControllerBase
+    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService) : ControllerBase
     {
         /// <summary>
         /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
@@ -42,7 +46,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         {
             try
             {
-                var savedOrder = orderService.CreateOrder(order, authenticationService.GetAuthenticatedUser(HttpContext.Request));
+                var savedOrder = orderService.CreateOrder(order, HttpContext.User);
                 orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder, Request));
             }
@@ -83,7 +87,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(authenticationService.GetAuthenticatedUser(HttpContext.Request)))
+            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(HttpContext.User))
                 return Unauthorized();
 
             return Ok(ConvertToReceipt(order, Request));
@@ -115,7 +119,7 @@ namespace Geonorge.Download.Controllers.Api.V3
                 if (order == null)
                     return NotFound();
 
-                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(authenticationService.GetAuthenticatedUser(HttpContext.Request)))
+                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(HttpContext.User))
                     return Unauthorized();
 
                 orderService.CheckPackageSize(order);

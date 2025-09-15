@@ -1,8 +1,9 @@
 ﻿@page "/order/details/{OrderId}"
 @using Geonorge.Download.Models
-@using Geonorge.Download.Services
 @using Geonorge.Download.Services.Interfaces
 @inject IOrderService OrderService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Nav
 
 <h2>Ordre @order?.referenceNumber</h2>
 
@@ -12,42 +13,53 @@
 }
 else
 {
-    <hr />
-    <ul class="list-group">
-        @foreach (var item in order.orderItem)
-        {
-            <li class="list-group-item">
-                @if (item.IsReadyForDownload())
-                {
-                    <a href="@($"{ApiMethodGetFile}/{item.Order.Uuid}/{item.Uuid}")">
-                        @item.MetadataName: @item.FileName
-                    </a>
-                }
-                else
-                {
-                    @item.MetadataName <span>(venter på behandling)</span>
-                }
-            </li>
-        }
-    </ul>
+    <div>
+        <hr />
+        <ul>
+            @foreach (var item in order.orderItem)
+            {
+                <li class="list-group">
+                    @if (item.IsReadyForDownload())
+                    {
+                        <a href="@($"{ApiMethodGetFile}/{item.Order.Uuid}/{item.Uuid}")">
+                            @item.MetadataName: @item.FileName
+                        </a>
+                    }
+                    else
+                    {
+                        @item.MetadataName <span>(venter på behandling)</span>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
 }
 
 @code {
-    [Parameter]
-    public string OrderId { get; set; } = "";
-
+    [Parameter] public string OrderId { get; set; } = "";
     private Order? order;
+    private string ApiMethodGetFile = "/api/download/order";
 
-    // Hardcoded for now; you could inject it later or get from config
-    private string ApiMethodGetFile = "/api/v2/download/order";
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await Task.CompletedTask;
-
-        if (!string.IsNullOrWhiteSpace(OrderId))
+        if (string.IsNullOrWhiteSpace(OrderId))
         {
-            order = OrderService.Find(OrderId);
+            Nav.NavigateTo("/not-found", forceLoad: true);
+            return;
+        }
+
+        order = OrderService.Find(OrderId);
+        if (order is null)
+        {
+            Nav.NavigateTo("/not-found", forceLoad: true);
+            return;
+        }
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        if (!order.CanBeDownloadedByUser(authState.User))
+        {
+            Nav.NavigateTo("/access-denied", forceLoad: true);
+            return;
         }
     }
 }

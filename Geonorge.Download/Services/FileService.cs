@@ -2,6 +2,7 @@
 using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services
 {
@@ -53,12 +54,12 @@ namespace Geonorge.Download.Services
             return file;
         }
 
-        public bool HasAccess(Models.File file, AuthenticatedUser authenticatedUser)
+        public bool HasAccess(Models.File file, ClaimsPrincipal principal)
         {
             var datasetAccessConstraintRequiredRole = file.Dataset.AccessConstraintRequiredRole;
             var fileAccessConstraintRequiredRole = file.AccessConstraintRequiredRole;
 
-            if (!authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin))
+            if (!principal.IsInRole(GeonorgeRoles.MetadataAdmin))
             {
                 if (!string.IsNullOrEmpty(datasetAccessConstraintRequiredRole) || !string.IsNullOrEmpty(fileAccessConstraintRequiredRole))
                 {
@@ -67,7 +68,7 @@ namespace Geonorge.Download.Services
                     List<string> datasetAccessConstraintRequiredRoles = ParseRoles(datasetAccessConstraintRequiredRole);
 
                     foreach (var requiredRole in datasetAccessConstraintRequiredRoles)
-                        if (authenticatedUser.HasRole(requiredRole))
+                        if (principal.IsInRole(requiredRole))
                             access = true;
 
                     if (!string.IsNullOrEmpty(fileAccessConstraintRequiredRole))
@@ -75,7 +76,7 @@ namespace Geonorge.Download.Services
                         access = false;
                         List<string> fileAccessConstraintRequiredRoles = ParseRoles(fileAccessConstraintRequiredRole);
                         foreach (var requiredRole in fileAccessConstraintRequiredRoles)
-                            if (authenticatedUser.HasRole(requiredRole))
+                            if (principal.IsInRole(requiredRole))
                                 access = true;
                     }
 

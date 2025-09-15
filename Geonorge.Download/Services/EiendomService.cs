@@ -1,19 +1,20 @@
 ﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services
 {
     public class EiendomService(ILogger<EiendomService> logger, IConfiguration config) : IEiendomService
     {
 
-        public List<Eiendom> GetEiendoms(AuthenticatedUser user)
+        public List<Eiendom> GetEiendoms(ClaimsPrincipal user)
         {
             List<Eiendom> eiendoms = [];
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var url = config["MatrikkelEiendomEndpoint"] + "/" + user.Username.ToUpper();
+                    var url = config["MatrikkelEiendomEndpoint"] + "/" + user.Identity!.Name!.ToUpper();
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Add("x-api-key", config["MatrikkelEiendomEndpointToken"]);
 

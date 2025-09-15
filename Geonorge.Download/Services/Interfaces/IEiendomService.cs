@@ -1,9 +1,10 @@
 ﻿using Geonorge.Download.Models;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services.Interfaces
 {
     public interface IEiendomService
     {
-        List<Eiendom> GetEiendoms(AuthenticatedUser user);
+        List<Eiendom> GetEiendoms(ClaimsPrincipal user);
     }
 }

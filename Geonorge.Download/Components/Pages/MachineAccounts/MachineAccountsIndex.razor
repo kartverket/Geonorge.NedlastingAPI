@@ -1,0 +1,123 @@
+﻿@page "/machineaccounts"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using Geonorge.Download.Models
+@inject IMachineAccountService MachineAccountService
+@attribute [Authorize(Roles = GeonorgeRoles.MetadataAdmin)]
+
+<h2>Konfigurasjon av lokale påloggingskontoer</h2>
+
+<p>
+    Kontoene som er registrert her kan benyttes til å laste ned datasett som er "Norge digitalt begrenset" ved hjelp av Basic Authentication.
+    Alle API-metoder i Nedlastingsløsningen vil kunne benyttes ved hjelp av disse påloggingsdetaljene.
+    Vær oppmerksom på å benytte en sikker kommunikasjonskanal for å distribuere passord til brukeren.
+</p>
+
+<p>
+    <NavLink class="btn" href="/machineaccounts/create">Opprett ny konto</NavLink>
+</p>
+
+@if (_loading)
+{
+    <p>Laster...</p>
+}
+else if (!string.IsNullOrWhiteSpace(_error))
+{
+    <div class="alert alert-danger">@_error</div>
+}
+else
+{
+    <GnDialog @ref="_confirm"
+              Title="Delete machine account"
+              Danger="true"
+              ShowDefaultFooter="true"
+              ConfirmText="Delete"
+              CancelText="Cancel"
+              OnConfirm="DeleteConfirmed"
+              OnClose="DialogClosed">
+        <Body>
+            <p>Are you sure you want to delete <strong>@_pendingDelete?.Username</strong>?</p>
+            <p class="text-muted small">This action cannot be undone.</p>
+        </Body>
+    </GnDialog>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Brukernavn</th>
+                <th>Virksomhet</th>
+                <th>Kontaktperson</th>
+                <th>E-post</th>
+                <th>Opprettet</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _items)
+            {
+                <tr>
+                    <td>@item.Username</td>
+                    <td>@item.Company</td>
+                    <td>@item.ContactPerson</td>
+                    <td>@item.ContactEmail</td>
+                    <td>@item.Created</td>
+                    <td>
+                        <NavLink class="btn" href=@($"/machineaccounts/edit/{Uri.EscapeDataString(item.Username)}")>Edit</NavLink>
+                        <NavLink class="btn" href=@($"/machineaccounts/details/{Uri.EscapeDataString(item.Username)}")>Details</NavLink>
+                        <button type="button" class="btn" @onclick="() => AskDelete(item)">Delete</button>
+                        @* <button class="btn" @onclick="() => ConfirmDeleteAsync(item)">Delete</button> *@
+                        @* <NavLink class="btn" href=@($"/machineaccounts/delete/{Uri.EscapeDataString(item.Username)}")>Delete</NavLink> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private bool _loading = true;
+    // private bool _show;
+    private string? _error;
+    private List<MachineAccountCreate_VM> _items = new();
+    private MachineAccountCreate_VM? _pendingDelete;
+    private GnDialog? _confirm;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _items = await MachineAccountService.ListAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = "Kunne ikke laste kontoer: " + ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task AskDelete(MachineAccountCreate_VM a)
+    {
+        _pendingDelete = a;
+        await _confirm!.OpenAsync();    // or: _showDialog = true;
+    }
+
+    private async Task DeleteConfirmed()
+    {
+        if (_pendingDelete is null) return;
+        await MachineAccountService.DeleteAsync(_pendingDelete.Username);
+        _items.Remove(_pendingDelete);
+        _pendingDelete = null;
+        await _confirm!.CloseAsync();   // optional; OnClose runs either way
+    }
+
+    private Task DialogClosed()
+    {
+        // Optional: cleanup when closed (backdrop/Esc/X or after confirm)
+        _pendingDelete = null;
+        return Task.CompletedTask;
+    }
+
+}

@@ -18,7 +18,7 @@ namespace Geonorge.Download.Services.Auth
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            // 1) Must have Authorization header
+            // Check for Authorization header
             if (!Request.Headers.TryGetValue("Authorization", out var authHeaderValues))
                 return Task.FromResult(AuthenticateResult.NoResult());
 
@@ -26,7 +26,7 @@ namespace Geonorge.Download.Services.Auth
             if (!authHeader.StartsWith("Basic ", StringComparison.OrdinalIgnoreCase))
                 return Task.FromResult(AuthenticateResult.NoResult());
 
-            // 2) Decode "Basic base64(user:pass)"
+            // Decode "Basic base64(user:pass)"
             string userPass;
             try
             {
@@ -46,18 +46,17 @@ namespace Geonorge.Download.Services.Auth
             var username = userPass.Substring(0, idx);
             var password = userPass[(idx + 1)..];
 
-            // 3) Look up user from configuration (supports env-var overrides)
+            // Look up user from configuration/appsettings.json
             var user = Options.Users
                 .FirstOrDefault(u => string.Equals(u.Username, username, StringComparison.Ordinal));
 
             if (user is null || user.Password is null)
                 return Task.FromResult(AuthenticateResult.Fail("Invalid username or password"));
 
-            // 4) Constant-time comparison to minimize timing side-channels
             if (!FixedTimeEquals(password, user.Password))
                 return Task.FromResult(AuthenticateResult.Fail("Invalid username or password"));
 
-            // 5) Build claims principal with configured roles
+            // Build claims principal with configured roles
             var claims = new List<Claim> { new(ClaimTypes.Name, user.Username) };
             foreach (var r in user.Roles)
                 claims.Add(new Claim(ClaimTypes.Role, r));
@@ -70,7 +69,6 @@ namespace Geonorge.Download.Services.Auth
 
         private static bool FixedTimeEquals(string a, string b)
         {
-            // Handles nulls? We guard above; both non-null here
             var ba = Encoding.UTF8.GetBytes(a);
             var bb = Encoding.UTF8.GetBytes(b);
             if (ba.Length != bb.Length)

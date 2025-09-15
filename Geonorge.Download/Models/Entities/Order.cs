@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Models
 {
@@ -96,24 +97,22 @@ namespace Geonorge.Download.Models
         /// <summary>
         /// Restricted datasets require registered username in order and the username must be the same as the requesting username
         /// </summary>
-        /// <param name="requestUsername"></param>
+        /// <param name="principal"></param>
         /// <returns></returns>
-        public bool CanBeDownloadedByUser(string requestUsername)
+        public bool CanBeDownloadedByUser(ClaimsPrincipal principal)
         {
-            if (ContainsRestrictedDatasets() && !BelongsToUser(requestUsername))
+            if (ContainsRestrictedDatasets() && !BelongsToUser(principal))
                 return false;
 
             return true;
         }
 
-        private bool BelongsToUser(string requestUsername)
+        public bool BelongsToUser(ClaimsPrincipal principal)
         {
-            return string.Equals(username, requestUsername, StringComparison.CurrentCultureIgnoreCase);
-        }
-
-        public bool BelongsToUser(AuthenticatedUser authenticatedUser)
-        {
-            return authenticatedUser != null && BelongsToUser(authenticatedUser.UsernameForStorage());
+            string? storageUsername = principal?.UsernameForStorage();
+            return principal != null && 
+                   !string.IsNullOrEmpty(storageUsername) &&
+                   string.Equals(username, storageUsername, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public bool ContainsRestrictedDatasets()

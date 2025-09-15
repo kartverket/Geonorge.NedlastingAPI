@@ -2,6 +2,7 @@ using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text;
 
 namespace Geonorge.Download.Services
@@ -10,7 +11,7 @@ namespace Geonorge.Download.Services
     {
         private const string DefaultEpsgCode = "25833";
          
-        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, AuthenticatedUser authenticatedUser = null, List<Eiendom> eiendoms = null)
+        public List<OrderItem> GetClippableOrderItems(OrderType incomingOrder, ClaimsPrincipal principal = null, List<Eiendom> eiendoms = null)
         {
             var orderItems = new List<OrderItem>();
 
@@ -45,7 +46,7 @@ namespace Geonorge.Download.Services
                     var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
                     var accessConstraintRequiredRole = downloadContext.Database.SqlQueryRaw<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
 
-                    if ( !(authenticatedUser != null && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole) &&
+                    if ( !(principal != null && principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole) &&
                         !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole)))
                         continue;
 

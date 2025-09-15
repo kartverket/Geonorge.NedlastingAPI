@@ -5,15 +5,16 @@ using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Geonorge.Download.Services.Auth;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
     [ApiController]
     [ApiVersionNeutral]
     [ApiExplorerSettings(GroupName = "internal")]
-    [Authorize(AuthenticationSchemes = "ExternalToken")]
     [Route("api/internal/download-usage")]
     [EnableCors("AllowKartkatalog")] // Was AllowAllWithCreds
+    [Authorize(AuthenticationSchemes = ExternalTokenHandler.SchemeName)]
     //[HandleError]
     public class DownloadUsageController(IOrderService orderService) : ControllerBase
     {

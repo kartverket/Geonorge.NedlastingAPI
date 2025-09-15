@@ -1,18 +1,19 @@
 ﻿using Geonorge.NedlastingApi.V3;
 using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services.Interfaces
 {
     public interface IOrderService
     {
-        Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser);
+        Order CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal);
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
         Order Find(string orderUuid);
 
-        void CheckAccessRestrictions(Order order, AuthenticatedUser authenticatedUser);
+        void CheckAccessRestrictions(Order order, ClaimsPrincipal principal);
 
         OrderItem FindOrderItem(string fileId);
 

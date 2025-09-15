@@ -28,6 +28,31 @@ namespace Geonorge.Download.Services.Auth
             return false;
         }
 
+        public string HashPassword(string password)
+        {
+            int iterationCount = 10000;
+
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            byte[] array = new byte[16];
+            using (RNGCryptoServiceProvider rngcryptoServiceProvider = new RNGCryptoServiceProvider())
+            {
+                rngcryptoServiceProvider.GetBytes(array);
+            }
+            byte[] bytes;
+            using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, array, iterationCount))
+            {
+                bytes = rfc2898DeriveBytes.GetBytes(32);
+            }
+            byte[] array2 = new byte[49];
+            array2[0] = 0;
+            Buffer.BlockCopy(array, 0, array2, 1, 16);
+            Buffer.BlockCopy(bytes, 0, array2, 17, 32);
+            return Convert.ToBase64String(array2);
+        }
+
         public static bool VerifyHashedPassword(string hashedPassword, string password, int iterationCount = 10000)
         {
             if (hashedPassword == null)

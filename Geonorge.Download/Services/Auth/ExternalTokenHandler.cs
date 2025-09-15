@@ -11,7 +11,9 @@ public sealed class ExternalTokenHandler(
         ISystemClock clock)
         : AuthenticationHandler<ExternalTokenOptions>(options, loggerFactory, encoder, clock)
 {
-    // ↓↓↓ paste the method here ↓↓↓
+    
+    public const string SchemeName = "ExternalToken";
+
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Request.Headers.TryGetValue("Authorization", out var raw))

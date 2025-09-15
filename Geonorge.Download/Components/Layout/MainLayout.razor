@@ -12,8 +12,8 @@
     <main-navigation userinfo="@userInfoJson"
                      organization="@organizationJson"
                      environment="@EnvironmentName"
-                     signinurl="/Home/SignIn"
-                     signouturl="/Home/SignOut"
+                     signinurl="/account/login"
+                     signouturl="/account/logout"
                      isLoggedIn="@isLoggedIn.ToString().ToLower()"
                      norwegianurl="@CultureSwitchUrl("no")"
                      englishurl="@CultureSwitchUrl("en")"
@@ -92,6 +92,6 @@
         organizationJson = JsonSerializer.Serialize(organization);
     }
 
-    private string CultureSwitchUrl(string lang) =>
-        $"/Home/SetCulture?culture={lang}&ReturnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
+    private string CultureSwitchUrl(string lang) => 
+        $"/account/set-culture?culture={lang}&ReturnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
 }

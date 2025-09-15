@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert alert-danger">Du har ikke tilgang.</div>
+        </Authorized>
+        <NotAuthorized>
+            @code {
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var returnUrl = Uri.EscapeDataString(Nav.Uri);
+                Nav.NavigateTo($"/account/login?returnUrl={returnUrl}", forceLoad: true);
+            }
+        }
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>

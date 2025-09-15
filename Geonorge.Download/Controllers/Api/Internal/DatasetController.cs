@@ -10,16 +10,16 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Asp.Versioning;
+using Geonorge.Download.Services.Auth;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
-    //[ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [RequireHttps]
     [ApiVersionNeutral]
     [ApiExplorerSettings(GroupName = "internal")]
-    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
     [Route("api/internal/dataset")]
+    [Authorize(AuthenticationSchemes = BasicAuthHandler.SchemeName, Roles = AuthConfig.DatasetProviderRole)]
     public class DatasetController(ILogger<DatasetController> logger, DownloadContext downloadContext) : ControllerBase
     {
 

@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
+using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +11,8 @@ namespace Geonorge.Download.Controllers.Api.Internal
     [ApiController]
     [ApiVersionNeutral]
     [ApiExplorerSettings(GroupName = "internal")]
-    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
     [Route("api/internal/order")]
+    [Authorize(AuthenticationSchemes = BasicAuthHandler.SchemeName, Roles = AuthConfig.DatasetProviderRole)]
     public class ManageOrderController(ILogger<ManageOrderController> logger, IUpdateFileStatusService updateFileStatusService, IOrderService orderService) : ControllerBase
     {
         /// <summary>

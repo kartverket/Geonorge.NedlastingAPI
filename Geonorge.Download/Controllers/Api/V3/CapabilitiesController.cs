@@ -1,4 +1,16 @@
-﻿using System;
+﻿using Asp.Versioning;
+using Geonorge.Download.Models;
+using Geonorge.Download.Services.Auth;
+using Geonorge.Download.Services.Interfaces;
+using Geonorge.NedlastingApi.V3;
+using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.StaticFiles;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
@@ -6,15 +18,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
-using Geonorge.NedlastingApi.V3;
-using Geonorge.Download.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using Asp.Versioning;
-using Microsoft.AspNetCore.Routing;
-using Geonorge.Download.Services.Interfaces;
-using Google.Cloud.Storage.V1;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -34,6 +37,8 @@ namespace Geonorge.Download.Controllers.Api.V3
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme}")]
     public class CapabilitiesController(
         ILogger<CapabilitiesController> logger, 
         IConfiguration config, 
@@ -113,7 +118,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         {
             try
             {
-                return Ok(capabilitiesService.GetAreas(metadataUuid, HttpContext.Request));
+                return Ok(capabilitiesService.GetAreas(metadataUuid, HttpContext.User));
             }
             catch (UnauthorizedAccessException ex)
             {

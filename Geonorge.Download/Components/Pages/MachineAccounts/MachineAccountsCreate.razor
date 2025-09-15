@@ -1,0 +1,106 @@
+﻿@page "/machineaccounts/create"
+@using Geonorge.Download.Models
+@using SimpleBlazorMultiselect
+@inject IConfiguration Config
+@inject NavigationManager Nav
+@inject IMachineAccountService MachineAccountService
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = GeonorgeRoles.MetadataAdmin)]
+
+<h2>Opprett ny</h2>
+
+<EditForm Model="model" OnSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="form-horizontal">
+        <h4>MachineAccount</h4>
+        <hr />
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Username</label>
+            <div class="col-md-10">
+                <InputText @bind-Value="model.Username" class="form-control" />
+                <ValidationMessage For="() => model.Username" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Password</label>
+            <div class="col-md-10">
+                <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                <ValidationMessage For="() => model.Password" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Company</label>
+            <div class="col-md-10">
+                <InputText @bind-Value="model.Company" class="form-control" />
+                <ValidationMessage For="() => model.Company" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">ContactPerson</label>
+            <div class="col-md-10">
+                <InputText @bind-Value="model.ContactPerson" class="form-control" />
+                <ValidationMessage For="() => model.ContactPerson" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">ContactEmail</label>
+            <div class="col-md-10">
+                <InputText @bind-Value="model.ContactEmail" type="email" class="form-control" />
+                <ValidationMessage For="() => model.ContactEmail" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Roles">Roles</label>
+            <div class="col-md-10">
+                <CascadingValue Name="Standalone" Value="true">
+                    <SimpleMultiselect Options="availableRoles"  
+                                       TItem="string"
+                                       @bind-SelectedOptions="selectedRoles"
+                                       Style="width: 100%; max-width: 400px;" />
+                </CascadingValue>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn">Create</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<div>
+    <button type="button" class="btn" @onclick="BackToList">Cancel</button>
+</div>
+
+@code {
+    private MachineAccountCreate_VM? model { get; set; } = new();
+    private List<string> availableRoles { get; set; } = new();
+    private HashSet<string> selectedRoles { get; set; } = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        model ??= new();
+
+        availableRoles = MachineAccountService.GetAvailableRoles();
+
+        return Task.CompletedTask;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        model!.Roles = selectedRoles.ToList();
+        await MachineAccountService.CreateAsync(model);
+        Nav.NavigateTo("/machineaccounts");
+    }
+
+    private void BackToList() => Nav.NavigateTo("/machineaccounts");
+}

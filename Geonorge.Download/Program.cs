@@ -1,11 +1,18 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Geonorge.AuthLib.Common;
 using Geonorge.Download.Components;
 using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Models;
 using Geonorge.Download.Services;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -14,13 +21,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using SimpleBlazorMultiselect;
 using StackExchange.Redis;
 using System.Reflection;
-using Google.Apis.Auth.OAuth2;
-using Google.Cloud.Storage.V1;
+using System.Security.Claims;
 using Mi = Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,16 +65,125 @@ if (!builder.Environment.IsDevelopment())
 }
 
 // --- AuthN/AuthZ ---
+builder.Services.AddScoped<IBaatAuthzApi>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var logger = sp.GetRequiredService<ILogger<BaatAuthzApi>>();
+    var hfac = sp.GetRequiredService<IHttpClientFactory>();
+    return new BaatAuthzApi(logger, config, hfac);
+});
+builder.Services.AddScoped<IGeonorgeAuthorizationService, GeonorgeAuthorizationService>();
+//builder.Services.AddScoped<GeonorgeOpenIdConnectEvents>();
+
 builder.Services
-    .AddAuthentication(BasicAuthHandler.SchemeName)
+    .AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        //options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    //.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    //{
+    //    options.Cookie.Name = "geonorge-downloads-auth";
+    //    //options.LoginPath = "/signin-oidc";
+    //    //options.LogoutPath = "/signout-callback-oidc";
+    //    //options.AccessDeniedPath = "/auth/accessdenied";
+    //    options.SlidingExpiration = true;
+    //    options.ExpireTimeSpan = TimeSpan.FromHours(4);
+    //    options.Cookie.SameSite = SameSiteMode.Lax;
+    //    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    //})
+    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, oidc =>
+    {
+        // Fill from configuration/secrets
+        //oidc.TokenValidationParameters.ValidIssuer = builder.Configuration["auth:oidc:Issuer"];
+        oidc.Authority = builder.Configuration["auth:oidc:Authority"];       // e.g. https://login.microsoftonline.com/<tenant>/v2.0
+        oidc.ClientId = builder.Configuration["auth:oidc:ClientId"];
+        oidc.ClientSecret = builder.Configuration["auth:oidc:ClientSecret"];
+        //oidc.MetadataAddress = builder.Configuration["auth:oidc:MetadataAddress"];
+        //oidc.SignedOutRedirectUri = builder.Configuration["auth:oidc:PostLogoutRedirectUri"]!;
+            
+        // Core OIDC
+        oidc.ResponseType = OpenIdConnectResponseType.Code;
+        oidc.UsePkce = true;
+
+        //oidc.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        oidc.SaveTokens = true;
+        oidc.GetClaimsFromUserInfoEndpoint = true;
+
+        // Be explicit about claim types you rely on (avoid surprises)
+        //oidc.TokenValidationParameters = new TokenValidationParameters
+        //{
+        //    NameClaimType = "name",
+        //    RoleClaimType = ClaimTypes.Role,
+        //    ValidateIssuer = true
+        //};
+
+        // Scopes
+        //oidc.Scope.Clear();
+        //oidc.Scope.Add("openid");
+        //oidc.Scope.Add("profile");
+        //oidc.Scope.Add("email");
+
+        // Plug in your events class that enriches claims/roles from DB
+        //oidc.EventsType = typeof(GeonorgeOpenIdConnectEvents);
+
+        // Optional but often convenient to control callback paths
+        oidc.CallbackPath = "/signin-oidc";
+        oidc.SignedOutCallbackPath = "/signout-callback-oidc";
+        //oidc.SignedOutRedirectUri = "/?logout=true"; // builder.Configuration["auth:oidc:PostLogoutRedirectUri"];
+        oidc.RemoteSignOutPath = "/signout-oidc";
+        oidc.Events = new OpenIdConnectEvents
+        {
+            OnTokenValidated = async ctx =>
+            {
+                await ClaimsHelper.AddClaims(ctx.Principal, ctx.HttpContext);
+            }
+        };
+    })
+    .AddScheme<BasicMachineAuthOptions, BasicMachineAuthHandler>(
+        BasicMachineAuthHandler.SchemeName,
+        options => { })
     .AddScheme<BasicAuthOptions, BasicAuthHandler>(
         BasicAuthHandler.SchemeName,
         options => builder.Configuration.GetSection("auth:BasicAuth").Bind(options))
     .AddScheme<ExternalTokenOptions, ExternalTokenHandler>(
-        "ExternalToken",
-        options => builder.Configuration.GetSection("auth:ExternalToken").Bind(options));
+        ExternalTokenHandler.SchemeName,
+        options => builder.Configuration.GetSection("auth:ExternalToken").Bind(options))
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = builder.Configuration["auth:oidc:Authority"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudience = "account",           // must match the aud in the token
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+            // Clock skew helps if server and issuer have slight time drift
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+
+        // If your IdP sends tokens without a "typ" header or with "at+jwt", this avoids strict checks
+        options.MapInboundClaims = false; // keep standard JWT claim types like "sub", "scope"
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = async ctx =>
+            {
+                await ClaimsHelper.AddClaims(ctx.Principal, ctx.HttpContext);
+            },
+            OnAuthenticationFailed = ctx =>
+            {
+                ctx.NoResult(); // avoid throwing
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddDbContextFactory<DownloadContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // --- Services ---
 builder.Services.AddSingleton<IRegisterFetcher, RegisterFetcher>();
@@ -74,14 +192,12 @@ builder.Services.AddScoped<ICapabilitiesService, CapabilitiesService>();
 builder.Services.AddScoped<IDownloadService, DownloadService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IBasicAuthenticationCredentialValidator, BasicAuthenticationCredentialValidator>();
-builder.Services.AddScoped<IBasicAuthenticationService, BasicAuthenticationService>();
-builder.Services.AddScoped<IGeoIdAuthenticationService, GeoIdAuthentication>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IClipperService, ClipperService>();
 builder.Services.AddScoped<IOrderBundleService, OrderBundleService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IMachineAccountService, MachineAccountService>();
 
 // --- Internal Services ---
 builder.Services.AddScoped<IUpdateMetadataService, UpdateMetadataService>();
@@ -266,6 +382,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.WebHost.UseStaticWebAssets();
+SimpleMultiselectGlobals.Standalone = true;
 var app = builder.Build();
 
 // --- Swagger Setup ---
@@ -344,3 +462,25 @@ app.MapRazorComponents<App>()
 app.Run();
 
 public sealed record GcsSettings(string Bucket);
+
+internal sealed class ClaimsHelper
+{
+    internal static async Task AddClaims(ClaimsPrincipal? principal, HttpContext httpContext)
+    {
+        var events = httpContext.RequestServices.GetRequiredService<IGeonorgeAuthorizationService>();
+        if (principal?.Identity is ClaimsIdentity identity)
+        {
+            identity.AddClaims(await events.GetClaims(identity));
+            var orgNrClaim = identity.Claims.FirstOrDefault(c => c.Type == GeonorgeClaims.OrganizationOrgnr);
+            if (orgNrClaim != null && !string.IsNullOrEmpty(orgNrClaim.Value))
+            {
+                var r_svc = httpContext.RequestServices.GetRequiredService<IRegisterFetcher>();
+                var organization = r_svc.GetOrganization(orgNrClaim.Value);
+                if (organization != null && !string.IsNullOrWhiteSpace(organization.MunicipalityCode))
+                {
+                    identity.AddClaim(new Claim("MunicipalityCode", organization.MunicipalityCode));
+                }
+            }
+        }
+    }
+}

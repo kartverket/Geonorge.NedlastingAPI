@@ -1,4 +1,13 @@
-﻿using System;
+﻿using Asp.Versioning;
+using Geonorge.Download.Models;
+using Geonorge.Download.Services;
+using Geonorge.Download.Services.Auth;
+using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -8,12 +17,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Microsoft.AspNetCore.Mvc;
-using Geonorge.Download.Models;
-using Geonorge.Download.Services;
-using Geonorge.Download.Services.Auth;
-using Asp.Versioning;
-using Geonorge.Download.Services.Interfaces;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -23,7 +26,9 @@ namespace Geonorge.Download.Controllers.Api.V3
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
-    public class FileDownloadController(ILogger<FileDownloadController> logger, IConfiguration config, IFileService fileService, IAuthenticationService authenticationService, IDownloadService downloadService) : ControllerBase
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme}")]
+    public class FileDownloadController(ILogger<FileDownloadController> logger, IConfiguration config, IFileService fileService, IDownloadService downloadService) : ControllerBase
     {
         /// <summary>
         /// Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
@@ -54,7 +59,9 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (file == null)
                 return NotFound();
 
-            var userIsLoggedIn = UserIsLoggedIn();
+
+            var user = HttpContext.User.Identity;
+            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
             var isRestrictedDataset = dataset.IsRestricted();
             if (isRestrictedDataset && !userIsLoggedIn)
             {
@@ -64,17 +71,16 @@ namespace Geonorge.Download.Controllers.Api.V3
                 if (Request.Headers.Accept.Any(h => h.Contains("text/html"))) // be kind to browsers and redirect to login page
                     return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(config["DownloadUrl"] + "/api/download/file/" + datasetUuid + "/" + fileUuid));
 
-                return Forbid();
+                return Forbid(BasicMachineAuthHandler.SchemeName); // TODO: Make smart scheme?
             }
 
             if (isRestrictedDataset && userIsLoggedIn)
             {
-                var authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);
-                var userHasAccess = fileService.HasAccess(file, authenticatedUser);
+                var userHasAccess = fileService.HasAccess(file, HttpContext.User);
                 if (!userHasAccess)
                 {
                     logger.LogInformation($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user does not have required access/role.");
-                    return Forbid();
+                    return Forbid(BasicMachineAuthHandler.SchemeName); // TODO: Make smart scheme?
                 }
             }
 
@@ -85,15 +91,6 @@ namespace Geonorge.Download.Controllers.Api.V3
             return NoContent(); // Response already written by StreamRemoteFileToResponseAsync
 
             //return Ok(downloadService.CreateResponseFromRemoteFile(file.Url));
-        }
-
-        private bool UserIsLoggedIn()
-        {
-            if(ClaimsPrincipal.Current != null && ClaimsPrincipal.Current.Identity.IsAuthenticated)
-                return true;
-
-            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);
-            return authenticatedUser != null;
         }
 
         private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)

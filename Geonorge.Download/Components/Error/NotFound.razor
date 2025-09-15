@@ -1,0 +1,77 @@
+﻿@* @page "/error/not-found"
+@using Geonorge.Download.Resources
+@using Geonorge.Download.Helpers
+@inject Microsoft.Extensions.Options.IOptions<AppLinksOptions> AppLinks
+@inject NavigationManager Nav
+
+<div class="container page-not-found-container">
+    <h1>@UI.NotFoundText</h1>
+    <span class="separator-lg start-page-separator-lg"></span>
+
+    <div class="illustration col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="illustration-text col-xs-12">
+            <p>@UI.NotFoundText</p>
+        </div>
+
+        <img src="@AssetUrl("Static/img/404_illustration-01.svg")"
+             alt="404 illustration" />
+
+        <div class="help-links">
+            <div class="col-xs-4">
+                <a href="@HomeUrl()">
+                    <div class="help-links-icon-container">
+                        <img src="@AssetUrl("Static/img/404_house_icon_968c83_35px-01.svg")"
+                             class="icon-house" alt="@UI.Home" />
+                    </div>
+                    <p>@UI.Home</p>
+                </a>
+            </div>
+
+            <div class="col-xs-4">
+                <a href="mailto:@(AppLinks.Value.WebmasterEmail ?? "webmaster@geonorge.no")">
+                    <div class="help-links-icon-container">
+                        <img src="@AssetUrl("Static/img/404_envelope_icon_968c83_30px-01.svg")"
+                             class="icon-envelope" alt="@UI.ContactUs" />
+                    </div>
+                    <p>@UI.ContactUs</p>
+                </a>
+            </div>
+
+            <div class="col-xs-4">
+                <a href="@SearchUrl()">
+                    <div class="help-links-icon-container">
+                        <img src="@AssetUrl("Static/img/404_magnifying_icon_968c83_34px-01.svg")"
+                             class="icon-magnifying-glass" alt="@UI.SearchFor" />
+                    </div>
+                    <p>@UI.SearchFor</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // Prefer configured Geonorge base URL; fall back to app's base
+    private string BaseGeonorgeUrl =>
+        EnsureTrailingSlash(AppLinks.Value.GeonorgeUrl) ?? EnsureTrailingSlash(Nav.BaseUri);
+
+    private string AssetUrl(string relative) =>
+        CombineUrl(BaseGeonorgeUrl, relative);
+
+    private string HomeUrl() =>
+        "/"; // If you actually mean Geonorge homepage instead of app root, use BaseGeonorgeUrl
+
+    private string SearchUrl()
+    {
+        // You had "~/Search/"; if that lives under Kartkatalogen, use the configured URL.
+        var kk = EnsureTrailingSlash(AppLinks.Value.KartkatalogenUrl);
+        return kk is not null ? CombineUrl(kk, "search") : "/search";
+    }
+
+    private static string? EnsureTrailingSlash(string? u)
+        => string.IsNullOrWhiteSpace(u) ? null : (u!.EndsWith("/") ? u : u + "/");
+
+    private static string CombineUrl(string baseUrl, string relative)
+        => baseUrl.EndsWith("/") ? baseUrl + relative.TrimStart('/') : baseUrl + "/" + relative.TrimStart('/');
+}
+ *@

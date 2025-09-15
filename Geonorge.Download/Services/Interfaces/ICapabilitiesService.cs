@@ -1,5 +1,6 @@
 ﻿using Geonorge.NedlastingApi.V3;
 using Geonorge.Download.Models;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services.Interfaces
 {
@@ -8,7 +9,7 @@ namespace Geonorge.Download.Services.Interfaces
         CapabilitiesType GetCapabilities(HttpRequest request, string metadataUuid);
         Dataset GetDataset(string metadataUuid);
         List<ProjectionType> GetProjections(string metadataUuid);
-        List<AreaType> GetAreas(string metadataUuid, HttpRequest request = null);
+        List<AreaType> GetAreas(string metadataUuid, ClaimsPrincipal principal);
         List<FormatType> GetFormats(string metadataUuid);
         void SaveClipperFile(Guid id, string url, bool valid, string message);
     }

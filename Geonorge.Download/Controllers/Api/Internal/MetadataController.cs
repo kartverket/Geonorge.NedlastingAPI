@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Geonorge.Download.Services.Interfaces;
 using Asp.Versioning;
+using Geonorge.Download.Services.Auth;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
@@ -17,8 +18,8 @@ namespace Geonorge.Download.Controllers.Api.Internal
     [ApiController]
     [ApiVersionNeutral]
     [ApiExplorerSettings(GroupName = "internal")]
-    [Authorize(Roles = AuthConfig.DatasetProviderRole)]
     [Route("api/internal/metadata")]
+    [Authorize(AuthenticationSchemes = BasicAuthHandler.SchemeName, Roles = AuthConfig.DatasetProviderRole)]
     public class MetadataController(ILogger<MetadataController> logger, IConfiguration config, IUpdateMetadataService updateMetadataService) : ControllerBase
     {
 

@@ -1,0 +1,165 @@
+﻿@using Microsoft.JSInterop
+
+@if (_isRendered)
+{
+    <!-- avoid rendering before we can bind; prevents rehydrate flicker -->
+    <gn-dialog @ref="_el"
+               id="@Id"
+               show="@(Visible ? "" : null)"
+               width="@Width"
+               overflow="@Overflow"
+               nopadding="@(NoPadding ? "" : null)">
+        <div role="dialog" aria-modal="true" aria-labelledby="@($"{Id}-title")">
+            @if (Header is not null)
+            {
+                <div class="mb-2">@Header</div>
+            }
+            else if (!string.IsNullOrWhiteSpace(Title))
+            {
+                <h5 id="@($"{Id}-title")" class="mb-3">@Title</h5>
+            }
+
+            @Body
+
+            @if (ShowDefaultFooter)
+            {
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <button class="btn btn-outline-secondary" @onclick="OnCancelClick" disabled="@Busy">@CancelText</button>
+                    <button class="@ConfirmCss" @onclick="OnConfirmClick" disabled="@Busy">
+                        @if (Busy) { <span class="spinner-border spinner-border-sm me-2" /> }
+                        @ConfirmText
+                    </button>
+                </div>
+            }
+            else if (Footer is not null)
+            {
+                <div class="mt-3">@Footer</div>
+            }
+        </div>
+    </gn-dialog>
+}
+
+@code {
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    // -------- Parameters
+    [Parameter] public string Id { get; set; } = $"dlg_{Guid.NewGuid():N}";
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
+    [Parameter] public EventCallback OnOpen { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter, EditorRequired] public RenderFragment Body { get; set; } = default!;
+    [Parameter] public RenderFragment? Footer { get; set; }
+
+    [Parameter] public bool ShowDefaultFooter { get; set; } = false;
+    [Parameter] public string ConfirmText { get; set; } = "OK";
+    [Parameter] public string CancelText { get; set; } = "Cancel";
+    [Parameter] public bool Danger { get; set; } = false;
+    [Parameter] public bool Busy { get; set; } = false;
+
+    [Parameter] public string Width { get; set; } = "540px";
+    [Parameter] public string Overflow { get; set; } = "visible";
+    [Parameter] public bool NoPadding { get; set; } = false;
+
+    // Higher z-index if Bootstrap elements overlap (optional)
+    [Parameter] public int? ZIndex { get; set; }
+
+    // Exposed events for default footer
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    // -------- Internal
+    private ElementReference _el;
+    private IJSObjectReference? _bridgeModule;
+    private IJSObjectReference? _observerHandle;
+    private DotNetObjectReference<GnDialog>? _selfRef;
+    private bool _isRendered;
+    private bool _squelch; // avoid feedback loops when we change Visible from DOM event
+
+    private string ConfirmCss => Danger ? "btn btn-danger" : "btn btn-primary";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _isRendered = true; // allow initial render
+        await InvokeAsync(StateHasChanged);  // render once, then wire events
+
+        // Import the module after the element exists
+        _bridgeModule = await JS.InvokeAsync<IJSObjectReference>("import", "/js/gnDialogEvents.js");
+        _selfRef = DotNetObjectReference.Create(this);
+        _observerHandle = await _bridgeModule.InvokeAsync<IJSObjectReference>("wire", _el, _selfRef);
+
+        // Optional: apply z-index override
+        if (ZIndex is int z)
+        {
+            await JS.InvokeVoidAsync("eval", $"document.querySelector('#{Id}')?.shadowRoot?.querySelector('#dialog-container')?.style.setProperty('z-index','{z}')");
+        }
+
+        if (Visible)
+            await OpenAsync();
+    }
+
+    // Called by JS bridge on 'show' attribute changes (backdrop/esc/X or programmatic)
+    [JSInvokable]
+    public async Task OnShowChangedFromDom(bool open)
+    {
+        if (Visible == open) return;
+
+        // suppress echo back to DOM when we bubble the change up
+        _squelch = true;
+        try
+        {
+            Visible = open;
+            await VisibleChanged.InvokeAsync(open);
+            if (open) await OnOpen.InvokeAsync();
+            else      await OnClose.InvokeAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+        finally
+        {
+            _squelch = false;
+        }
+    }
+
+    // Public API you can call from parent
+    public async Task OpenAsync()
+    {
+        if (_squelch) return;
+        Visible = true;
+        await VisibleChanged.InvokeAsync(true);
+        if (_bridgeModule is not null)
+            await _bridgeModule.InvokeVoidAsync("open", _el);
+    }
+
+    public async Task CloseAsync()
+    {
+        if (_squelch) return;
+        Visible = false;
+        await VisibleChanged.InvokeAsync(false);
+        if (_bridgeModule is not null)
+            await _bridgeModule.InvokeVoidAsync("close", _el);
+    }
+
+    private async Task OnConfirmClick()
+    {
+        await OnConfirm.InvokeAsync();
+    }
+
+    private async Task OnCancelClick()
+    {
+        await OnCancel.InvokeAsync();
+        await CloseAsync();
+    }
+
+    public void Dispose()
+    {
+        try { _selfRef?.Dispose(); } catch { }
+        // Observer handle is an object created in JS; disposing isn’t strictly necessary here.
+        // If you want to call handle.dispose(), expose it in JS and invoke from here.
+        _ = _bridgeModule?.DisposeAsync();
+    }
+}

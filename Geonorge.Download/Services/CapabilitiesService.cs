@@ -2,10 +2,11 @@ using Geonorge.Download.Models;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
+using System.Security.Claims;
 
 namespace Geonorge.Download.Services
 {
-    public class CapabilitiesService(ILogger<CapabilitiesService> logger, IConfiguration config, DownloadContext dbContext, IRegisterFetcher registerFetcher, IEiendomService eiendomService, IAuthenticationService authenticationService) : ICapabilitiesService
+    public class CapabilitiesService(ILogger<CapabilitiesService> logger, IConfiguration config, DownloadContext dbContext, IRegisterFetcher registerFetcher, IEiendomService eiendomService) : ICapabilitiesService
     {
 
         public CapabilitiesType GetCapabilities(HttpRequest request, string metadataUuid) 
@@ -78,9 +79,9 @@ namespace Geonorge.Download.Services
         }
 
 
-        public List<AreaType> GetAreas(string metadataUuid, HttpRequest request = null)
+        public List<AreaType> GetAreas(string metadataUuid, ClaimsPrincipal principal)
         {
-            string limitMunicipalityCode = "";
+            string? limitMunicipalityCode = "";
 
             var areasQuery = (from p in dbContext.FileList
                               where p.Dataset.MetadataUuid == metadataUuid
@@ -92,19 +93,17 @@ namespace Geonorge.Download.Services
 
             if(dataset != null && !string.IsNullOrEmpty(dataset.AccessConstraintRequiredRole)
                 &&(dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole)
-                || dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
-                )
+                || dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole)))
             {
-                var user = authenticationService.GetAuthenticatedUser(request);
 
-                if (user == null)
+                if (principal == null)
                     throw new UnauthorizedAccessException("Bruker har ikke tilgang");
 
-              if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) &&
-                    user.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
+                if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole) &&
+                    principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole))
                 {
 
-                    List<Eiendom> eiendoms = eiendomService.GetEiendoms(user);
+                    List<Eiendom> eiendoms = eiendomService.GetEiendoms(principal);
 
                     if (eiendoms == null)
                         eiendoms = new List<Eiendom>();
@@ -115,9 +114,9 @@ namespace Geonorge.Download.Services
                    
                 }
                 else if (dataset.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetOnlyOwnMunicipalityRole) &&
-                    user.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
+                    principal.IsInRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
                 {
-                    limitMunicipalityCode = user.MunicipalityCode;
+                    limitMunicipalityCode = principal.MunicipalityCode();
                     if (!string.IsNullOrEmpty(limitMunicipalityCode))
                     {
                             areasQuery = (from p in dbContext.FileList
@@ -125,7 +124,6 @@ namespace Geonorge.Download.Services
                                           && p.Division == "kommune" && p.DivisionKey == limitMunicipalityCode
                                           select new { inndeling = p.Division, inndelingsverdi = p.DivisionKey, projeksjon = p.Projection, format = p.Format }).Distinct().ToList();
                     }
-                        
                 }
             }
 

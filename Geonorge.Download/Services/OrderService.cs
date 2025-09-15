@@ -7,6 +7,7 @@ using Geonorge.NedlastingApi.V3;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 
 namespace Geonorge.Download.Services
@@ -22,7 +23,7 @@ namespace Geonorge.Download.Services
         IDownloadService downloadService,
         DownloadContext downloadContext) : IOrderService
     {
-        public Order CreateOrder(OrderType incomingOrder, AuthenticatedUser authenticatedUser)
+        public Order CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal)
         {
             var order = new Order
             {
@@ -32,21 +33,21 @@ namespace Geonorge.Download.Services
                 SoftwareClientVersion = incomingOrder.softwareClientVersion
             };
 
-            if (authenticatedUser != null)
-                order.username = authenticatedUser.UsernameForStorage();
+            if (principal != null)
+                order.username = principal.UsernameForStorage();
 
             List<Eiendom> eiendoms = null;
 
-            if (authenticatedUser != null) { 
-                if(authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole))
-                    eiendoms = GetEiendomsForUser(authenticatedUser);
+            if (principal != null) { 
+                if(principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole))
+                    eiendoms = GetEiendomsForUser(principal);
             }
 
-            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, authenticatedUser));
-            List<OrderItem> clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, authenticatedUser, eiendoms);
+            order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, principal));
+            List<OrderItem> clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, principal, eiendoms);
             order.AddOrderItems(clippableOrderItems);
             
-            CheckAccessRestrictions(order, authenticatedUser);
+            CheckAccessRestrictions(order, principal);
 
             CheckRestrictions(clippableOrderItems);
 
@@ -93,7 +94,7 @@ namespace Geonorge.Download.Services
             
         }
 
-        private List<Eiendom> GetEiendomsForUser(AuthenticatedUser user)
+        private List<Eiendom> GetEiendomsForUser(ClaimsPrincipal user)
         {
             List<Eiendom> eiendoms = null;
 
@@ -103,31 +104,31 @@ namespace Geonorge.Download.Services
         }
 
         // ReSharper disable once UnusedParameter.Local
-        public void CheckAccessRestrictions(Order order, AuthenticatedUser authenticatedUser)
+        public void CheckAccessRestrictions(Order order, ClaimsPrincipal principal)
         {
             var accessRestrictions = GetAccessRestrictionsForOrder(order);
             bool hasAnyRestrictedDatasets = accessRestrictions.Any();
 
-            if (hasAnyRestrictedDatasets && authenticatedUser == null)
+            if (hasAnyRestrictedDatasets && principal == null)
                 throw new AccessRestrictionException("Order contains restricted datasets, but no user information is provided.");
 
             var accessRestrictionsRequiredRole = accessRestrictions.
                 Where(a => a.AccessConstraint.RequiredRoles != null);
 
-            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole != null && accessRestrictionsRequiredRole.Any())
+            if (hasAnyRestrictedDatasets && !principal.IsInRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole != null && accessRestrictionsRequiredRole.Any())
             {
                 foreach(var dataset in accessRestrictionsRequiredRole)
                 {
                     bool access = false;
                     foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles) {
                         if(requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole 
-                            && authenticatedUser.HasRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
+                            && principal.IsInRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
                         {
-                            if(order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != authenticatedUser.MunicipalityCode).Any())
+                            if(order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != principal.MunicipalityCode()).Any())
                                 throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for area for " + dataset.MetadataUuid);
  
                         }
-                        if (authenticatedUser.HasRole(requiredRole))
+                        if (principal.IsInRole(requiredRole))
                             access = true;
                     }
 
@@ -139,7 +140,7 @@ namespace Geonorge.Download.Services
             var accessRestrictionsRequiredRoleFiles = accessRestrictions.
                 Where(a => a.FileAccessConstraints != null);
 
-            if (hasAnyRestrictedDatasets && !authenticatedUser.HasRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRoleFiles != null && accessRestrictionsRequiredRoleFiles.Any())
+            if (hasAnyRestrictedDatasets && !principal.IsInRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRoleFiles != null && accessRestrictionsRequiredRoleFiles.Any())
             {
                 foreach (var dataset in accessRestrictionsRequiredRoleFiles)
                 {
@@ -152,7 +153,7 @@ namespace Geonorge.Download.Services
                     foreach (var file in dataset.FileAccessConstraints) { 
                         fileAccessConstraint = file;
                         foreach (var role in file.Roles)
-                            if (authenticatedUser.HasRole(role))
+                            if (principal.IsInRole(role))
                                 access = true;
                     }
                     if (!access)
@@ -162,7 +163,7 @@ namespace Geonorge.Download.Services
 
         }
 
-        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, AuthenticatedUser authenticatedUser)
+        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, ClaimsPrincipal principal)
         {
             var orderItems = new List<OrderItem>();
 
@@ -188,8 +189,8 @@ namespace Geonorge.Download.Services
                 if (ds == null)
                     continue;
 
-                if (authenticatedUser != null
-                    && authenticatedUser.HasRole(AuthConfig.DatasetAgriculturalPartyRole)
+                if (principal != null
+                    && principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole)
                     && !string.IsNullOrEmpty(ds.AccessConstraintRequiredRole)
                     && ds.AccessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole))
                 {

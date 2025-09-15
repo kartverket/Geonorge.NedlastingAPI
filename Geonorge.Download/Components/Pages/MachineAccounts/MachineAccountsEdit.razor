@@ -1,0 +1,181 @@
+﻿@page "/machineaccounts/edit/{Username}"
+@using Geonorge.Download.Models
+@using SimpleBlazorMultiselect
+@inject IConfiguration Config
+@inject NavigationManager Nav
+@inject IMachineAccountService MachineAccountService
+@attribute [Authorize(Roles = GeonorgeRoles.MetadataAdmin)]
+@rendermode InteractiveServer
+
+<h2>Rediger</h2>
+
+@if (_loadError is not null)
+{
+    <div class="alert alert-danger">@_loadError</div>
+}
+else if (model is null)
+{
+    <div class="alert alert-warning">Fant ikke bruker «@Username».</div>
+    <NavLink class="btn" href="/machineaccounts">Tilbake til liste</NavLink>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-horizontal">
+            <h4>MachineAccount</h4>
+            <hr />
+
+            <!-- Username (key) -->
+            <div class="form-group">
+                <label class="control-label col-md-2">Username</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="model.Username" class="form-control" readonly />
+                    <ValidationMessage For="() => model.Username" class="text-danger" />
+                </div>
+            </div>
+
+            <!-- Optional password change -->
+            <div class="form-group">
+                <label class="control-label col-md-2">New password</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="_newPassword" type="password" class="form-control" placeholder="Leave blank to keep current" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Company</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="model.Company" class="form-control" />
+                    <ValidationMessage For="() => model.Company" class="text-danger" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">ContactPerson</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="model.ContactPerson" class="form-control" />
+                    <ValidationMessage For="() => model.ContactPerson" class="text-danger" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">ContactEmail</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="model.ContactEmail" type="email" class="form-control" />
+                    <ValidationMessage For="() => model.ContactEmail" class="text-danger" />
+                </div>
+            </div>
+
+            <!-- Roles -->
+            <div class="form-group">
+                <label class="control-label col-md-2" for="Roles">Roles</label>
+                <div class="col-md-10">
+                    <CascadingValue Name="Standalone" Value="true">
+                        <SimpleMultiselect Options="availableRoles"
+                                           TItem="string"
+                                           @bind-SelectedOptions="selectedRoles"
+                                           Style="width: 100%; max-width: 400px;" />
+                    </CascadingValue>
+                </div>
+            </div>
+
+            <!-- Created (read-only info) -->
+            @if (model.Created != default)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-2">Created</label>
+                    <div class="col-md-10">
+                        <input class="form-control" value="@model.Created!.Value.ToString("yyyy-MM-dd HH:mm")" readonly />
+                    </div>
+                </div>
+            }
+
+            <div class="form-group mt-3">
+                <div class="col-md-offset-2 col-md-10 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn" @onclick="BackToList">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public string? Username { get; set; }
+
+    private MachineAccountEdit_VM? model { get; set; }
+    private List<string> availableRoles { get; set; } = new();
+    private HashSet<string> selectedRoles { get; set; } = new();
+    private string? _newPassword;
+    private string? _loadError;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _loadError = null;
+        model = null;
+
+        if (string.IsNullOrWhiteSpace(Username))
+        {
+            _loadError = "Username mangler.";
+            return;
+        }
+
+        try
+        {
+            // Load roles up front
+            availableRoles = MachineAccountService.GetAvailableRoles();
+
+            // Fetch the account
+            var existing = await MachineAccountService.GetByUsernameAsync(Username);
+            if (existing is null)
+            {
+                model = null;
+                return;
+            }
+
+            // Clone → edit VM (so you can map properties as needed)
+            model = new MachineAccountEdit_VM
+            {
+                Username = existing.Username,
+                Company = existing.Company,
+                ContactPerson = existing.ContactPerson,
+                ContactEmail = existing.ContactEmail,
+                Created = existing.Created,
+                Roles = existing.Roles?.ToList() ?? new List<string>()
+            };
+
+            selectedRoles = new HashSet<string>(model.Roles ?? Enumerable.Empty<string>());
+            _newPassword = null; // blank by default
+        }
+        catch (Exception ex)
+        {
+            _loadError = $"Kunne ikke laste bruker «{Username}»: {ex.Message}";
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (model is null) return;
+
+        // Sync roles from the multiselect
+        model.Roles = selectedRoles.ToList();
+
+        // Only update password if user provided one
+        if (!string.IsNullOrWhiteSpace(_newPassword))
+        {
+            model.Password = _newPassword;
+        }
+        else
+        {
+            model.Password = null; // let API ignore null password updates
+        }
+
+        await MachineAccountService.UpdateAsync(model); // implement server-side to respect null password
+        Nav.NavigateTo("/machineaccounts");
+    }
+
+    private void BackToList() => Nav.NavigateTo("/machineaccounts");
+}

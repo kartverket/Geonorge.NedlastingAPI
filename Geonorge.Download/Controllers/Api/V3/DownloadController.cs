@@ -10,6 +10,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -23,7 +24,9 @@ namespace Geonorge.Download.Controllers.Api.V3
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
-    public class DownloadController(IConfiguration config, IDownloadService downloadService, IAuthenticationService authenticationService, IOrderService orderService) : ControllerBase
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{BasicMachineAuthHandler.SchemeName}")]
+    public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService) : ControllerBase
     {
 
         /// <summary>
@@ -45,8 +48,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);            
-            var userIsLoggedIn = authenticatedUser != null;
+            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
             {
@@ -56,7 +58,7 @@ namespace Geonorge.Download.Controllers.Api.V3
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
             }
 
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(authenticatedUser))
+            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(HttpContext.User))
                 return Forbid(); // "User not allowed to download order"
 
             if (string.IsNullOrEmpty(order.DownloadBundleUrl))
@@ -103,9 +105,7 @@ namespace Geonorge.Download.Controllers.Api.V3
             if (order == null)
                 return NotFound();
 
-            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);
-
-            var userIsLoggedIn = authenticatedUser != null;
+            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
 
             if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
             {
@@ -117,7 +117,7 @@ namespace Geonorge.Download.Controllers.Api.V3
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
             }
 
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(authenticatedUser))
+            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(HttpContext.User))
                 return Forbid(); // "User not allowed to download order"
 
             var item = order.GetItemWithFileId(fileId);
@@ -149,9 +149,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult ValidateUser()
         {
-            AuthenticatedUser authenticatedUser = authenticationService.GetAuthenticatedUser(HttpContext.Request);
-            var userIsLoggedIn = authenticatedUser != null;
-
+            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
             if (!userIsLoggedIn)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Feil brukernavn/passord");

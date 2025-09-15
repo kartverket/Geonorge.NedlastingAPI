@@ -9,5 +9,11 @@
         /// <returns></returns>
         bool ValidCredentials(Credentials credentials);
 
+        /// <summary>
+        /// Hash a password for storage
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        string HashPassword(string password);
     }
 }

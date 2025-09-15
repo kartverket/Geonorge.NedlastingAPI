@@ -1,0 +1,135 @@
+﻿@page "/machineaccounts/details/{Username}"
+@using System.ComponentModel
+@using System.ComponentModel.DataAnnotations
+@using Geonorge.Download.Models
+@inject IMachineAccountService MachineAccountService
+@inject NavigationManager Nav
+@attribute [Authorize(Roles = GeonorgeRoles.MetadataAdmin)]
+
+<PageTitle>Machine Account – @Username</PageTitle>
+
+@if (_isLoading)
+{
+    <div class="mt-4">
+        <span class="spinner-border" role="status" aria-hidden="true"></span>
+        <span class="ms-2">Loading…</span>
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(_error))
+{
+    <div class="alert alert-danger mt-4">
+        @_error
+    </div>
+}
+else if (_model is null)
+{
+    <div class="alert alert-warning mt-4">
+        Could not find a machine account with username “@Username”.
+    </div>
+    <p class="mt-3">
+        <NavLink class="btn" href="/machine-accounts">Back to list</NavLink>
+    </p>
+}
+else
+{
+    <h2 class="mt-2">Details</h2>
+    <div class="mt-3">
+        <h4>MachineAccount</h4>
+        <hr />
+        <!-- Bootstrap-flavored <dl> similar to MVC's DisplayFor layout -->
+        <dl class="row">
+            <dt class="col-sm-3">Brukernavn</dt>
+            <dd class="col-sm-9">@_model.Username</dd>
+
+            <dt class="col-sm-3">Virksomhet</dt>
+            <dd class="col-sm-9">@_model.Company</dd>
+
+            <dt class="col-sm-3">Kontaktperson</dt>
+            <dd class="col-sm-9">@_model.ContactPerson</dd>
+
+            <dt class="col-sm-3">E-post</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrWhiteSpace(_model.ContactEmail))
+                {
+                    <a href="mailto:@_model.ContactEmail">@_model.ContactEmail</a>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Opprettet</dt>
+            <dd class="col-sm-9">@_model.Created!.Value.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            <dt class="col-sm-3">Tilganger</dt>
+            <dd class="col-sm-9">
+                @if (_model.Roles is { Count: > 0 })
+                {
+                    <!-- Show as chips; fall back to comma-joined text if preferred -->
+                    <ul class="list-inline m-0">
+                        @foreach (var r in _model.Roles)
+                        {
+                            <li class="list-inline-item"><span class="badge bg-secondary">@r</span></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <em>None</em>
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <p class="mt-3">
+        <NavLink class="btn" href="@($"/machineaccounts/edit/{Uri.EscapeDataString(_model.Username)}")">Edit</NavLink>
+        <NavLink class="btn" href="/machineaccounts">Back to List</NavLink>
+    </p>
+}
+
+@code {
+    [Parameter] public string? Username { get; set; }
+
+    private MachineAccountCreate_VM? _model;
+    private bool _isLoading;
+    private string? _error;
+    private CancellationTokenSource? _loadCts;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Cancel prior in-flight load if user navigates between usernames fast
+        _loadCts?.Cancel();
+        _loadCts = new CancellationTokenSource();
+
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                _model = null;
+                _error = "No username provided.";
+                return;
+            }
+
+            // You can decide whether Username is case-sensitive; normalize if needed
+            _model = await MachineAccountService.GetByUsernameAsync(Username, _loadCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // ignored; navigation race
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load details for “{Username}”. {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+    }
+}
