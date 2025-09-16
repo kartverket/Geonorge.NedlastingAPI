@@ -1,5 +1,4 @@
-﻿using Geonorge.Download.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Xml;
@@ -10,16 +9,16 @@ namespace Geonorge.Download.Models
     {
         public DownloadContext(DbContextOptions options) : base(options) { }
 
-        public virtual DbSet<Dataset> Capabilities { get; set; }
-        public virtual DbSet<File> FileList { get; set; }
-        public virtual DbSet<Order> OrderDownloads { get; set; }
+        public DbSet<Dataset> Capabilities { get; set; }
+        public DbSet<File> FileList { get; set; }
+        public DbSet<Order> OrderDownloads { get; set; }
 
-        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
-        public virtual DbSet<MachineAccount> MachineAccounts { get; set; }
+        public DbSet<MachineAccount> MachineAccounts { get; set; }
         
-        public virtual DbSet<DownloadUsageEntry> DownloadUsages { get; set; }
-        public virtual DbSet<ClipperFile> ClipperFiles { get; set; }
+        public DbSet<DownloadUsageEntry> DownloadUsages { get; set; }
+        public DbSet<ClipperFile> ClipperFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

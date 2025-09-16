@@ -136,7 +136,6 @@ else
                 return;
             }
 
-            // Clone → edit VM (so you can map properties as needed)
             model = new MachineAccountEdit_VM
             {
                 Username = existing.Username,
@@ -160,7 +159,6 @@ else
     {
         if (model is null) return;
 
-        // Sync roles from the multiselect
         model.Roles = selectedRoles.ToList();
 
         // Only update password if user provided one
@@ -170,10 +168,10 @@ else
         }
         else
         {
-            model.Password = null; // let API ignore null password updates
+            model.Password = null; 
         }
 
-        await MachineAccountService.UpdateAsync(model); // implement server-side to respect null password
+        await MachineAccountService.UpdateAsync(model);
         Nav.NavigateTo("/machineaccounts");
     }
 

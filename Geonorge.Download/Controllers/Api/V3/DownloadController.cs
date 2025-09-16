@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -25,7 +26,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{BasicMachineAuthHandler.SchemeName}")]
+    [Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{BasicMachineAuthHandler.SchemeName},{CookieAuthenticationDefaults.AuthenticationScheme}")]
     public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService) : ControllerBase
     {
 
@@ -167,7 +168,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         {
             var server = config["DownloadUrl"];
             var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
-            return $"{server}/Home/SignIn?ReturnUrl={encodedReturnUrl}";
+            return $"{server}account/login?ReturnUrl={encodedReturnUrl}";
         }
     }
 }

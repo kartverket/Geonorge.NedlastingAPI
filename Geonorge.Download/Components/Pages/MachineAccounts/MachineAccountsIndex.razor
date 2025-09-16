@@ -65,8 +65,6 @@ else
                         <NavLink class="btn" href=@($"/machineaccounts/edit/{Uri.EscapeDataString(item.Username)}")>Edit</NavLink>
                         <NavLink class="btn" href=@($"/machineaccounts/details/{Uri.EscapeDataString(item.Username)}")>Details</NavLink>
                         <button type="button" class="btn" @onclick="() => AskDelete(item)">Delete</button>
-                        @* <button class="btn" @onclick="() => ConfirmDeleteAsync(item)">Delete</button> *@
-                        @* <NavLink class="btn" href=@($"/machineaccounts/delete/{Uri.EscapeDataString(item.Username)}")>Delete</NavLink> *@
                     </td>
                 </tr>
             }

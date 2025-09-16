@@ -21,7 +21,7 @@ else
                 <li class="list-group">
                     @if (item.IsReadyForDownload())
                     {
-                        <a href="@($"{ApiMethodGetFile}/{item.Order.Uuid}/{item.Uuid}")">
+                        <a href="@($"{ApiMethodGetFile}/{item.Order.Uuid}/{item.Uuid}")" download>
                             @item.MetadataName: @item.FileName
                         </a>
                     }
@@ -51,14 +51,15 @@ else
         order = OrderService.Find(OrderId);
         if (order is null)
         {
-            Nav.NavigateTo("/not-found", forceLoad: true);
+            Nav.NavigateTo("/error/not-found", forceLoad: true);
             return;
         }
 
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         if (!order.CanBeDownloadedByUser(authState.User))
         {
-            Nav.NavigateTo("/access-denied", forceLoad: true);
+            var returnUrl = Uri.EscapeDataString(Nav.Uri);
+            Nav.NavigateTo($"/error/unauthorized?returnUrl={returnUrl}");
             return;
         }
     }

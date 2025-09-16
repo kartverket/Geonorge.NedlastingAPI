@@ -6,6 +6,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
 #USER root
 #COPY ./Geonorge.Download/Certs/devcert.crt /usr/local/share/ca-certificates/devgeonorgeregister.crt
 #RUN apk --no-cache add ca-certificates openssl && update-ca-certificates
+RUN apk add --no-cache icu-libs icu-data-full tzdata
 
 USER 150
 WORKDIR /app

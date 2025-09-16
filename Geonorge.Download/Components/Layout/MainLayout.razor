@@ -2,7 +2,6 @@
 @using System.Text.Json
 @using System.Globalization
 @using System.Security.Claims
-@using Geonorge.Download.Helpers
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
@@ -15,7 +14,7 @@
                      signinurl="/account/login"
                      signouturl="/account/logout"
                      isLoggedIn="@isLoggedIn.ToString().ToLower()"
-                     norwegianurl="@CultureSwitchUrl("no")"
+                     norwegianurl="@CultureSwitchUrl("nb-NO")"
                      englishurl="@CultureSwitchUrl("en")"
                      language="@CurrentCulture" />
 

@@ -1,13 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.Logging;
-using Geonorge.Download.Helpers;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace Geonorge.Download.Controllers
 {
@@ -17,9 +17,9 @@ namespace Geonorge.Download.Controllers
     {
         // GET /account/login
         [HttpGet("login")]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = "/")
         {
-            var redirectUri = string.IsNullOrWhiteSpace(config["auth:oidc:RedirectUri"]) ? "/" : config["auth:oidc:RedirectUri"];
+            var redirectUri = returnUrl; // string.IsNullOrWhiteSpace(config["auth:oidc:RedirectUri"]) ? "/" : config["auth:oidc:RedirectUri"];
             
             return Challenge(new AuthenticationProperties
             {
@@ -47,25 +47,23 @@ namespace Geonorge.Download.Controllers
             if (!string.IsNullOrEmpty(idToken))
                 props.StoreTokens([new AuthenticationToken { Name = "id_token", Value = idToken }]);
 
-            // Always sign out of the local cookie; trigger remote sign-out if configured.
             return SignOut(props, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
         }
 
         [HttpGet("set-culture")]
-        public IActionResult SetCulture(string culture, string returnUrl)
+        public IActionResult SetCulture(string culture, string returnUrl = "/")
         {
-            culture = CultureHelper.GetImplementedCulture(culture);
+            Response.Cookies.Append(
+                "_culture",
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    IsEssential = true,
+                    Path = "/"
+                });
 
-            Response.Cookies.Append("_culture", culture, new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddYears(1),
-                IsEssential = true
-            });
-
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction("Index");
+            return Redirect(returnUrl);
         }
     }
 }

@@ -28,6 +28,8 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using SimpleBlazorMultiselect;
 using StackExchange.Redis;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using System.Reflection;
 using System.Security.Claims;
 using Mi = Microsoft.AspNetCore.Authentication;
@@ -378,6 +380,9 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
 
+// --- Localization ---
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
 // --- Blazor Components ---
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -385,6 +390,22 @@ builder.Services.AddRazorComponents()
 builder.WebHost.UseStaticWebAssets();
 SimpleMultiselectGlobals.Standalone = true;
 var app = builder.Build();
+
+app.UseRequestLocalization(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("nb-NO"),
+        new CultureInfo("en")
+    };
+    options.DefaultRequestCulture = new RequestCulture(supportedCultures[0]);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider
+    {
+        CookieName = "_culture"
+    });
+});
 
 // --- Swagger Setup ---
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
