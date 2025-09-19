@@ -17,10 +17,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -28,8 +30,8 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using SimpleBlazorMultiselect;
 using StackExchange.Redis;
+using System;
 using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 using System.Reflection;
 using System.Security.Claims;
 using Mi = Microsoft.AspNetCore.Authentication;
@@ -62,7 +64,8 @@ if (!builder.Environment.IsDevelopment())
     Log.Logger.Information("Using Redis connection string: {RedisConnectionString}", redisConnectionString);
     var redis = ConnectionMultiplexer.Connect(redisConnectionString);
     builder.Services.AddDataProtection()
-        .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
+        .PersistKeysToStackExchangeRedis(redis, "dp:keys")
+        .SetApplicationName("Geonorge.Download")
         .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
 }
 
@@ -81,40 +84,31 @@ builder.Services
     .AddAuthentication(options =>
     {
         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        //options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
     })
-    .AddCookie()
-    //.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    //{
-    //    options.Cookie.Name = "geonorge-downloads-auth";
-    //    //options.LoginPath = "/signin-oidc";
-    //    //options.LogoutPath = "/signout-callback-oidc";
-    //    //options.AccessDeniedPath = "/auth/accessdenied";
-    //    options.SlidingExpiration = true;
-    //    options.ExpireTimeSpan = TimeSpan.FromHours(4);
-    //    options.Cookie.SameSite = SameSiteMode.Lax;
-    //    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    //})
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.AccessDeniedPath = "/error/unauthorized";
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.SlidingExpiration = false;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(25);
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    })
     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, oidc =>
     {
         // Fill from configuration/secrets
         //oidc.TokenValidationParameters.ValidIssuer = builder.Configuration["auth:oidc:Issuer"];
-        oidc.Authority = builder.Configuration["auth:oidc:Authority"];       // e.g. https://login.microsoftonline.com/<tenant>/v2.0
+        oidc.Authority = builder.Configuration["auth:oidc:Authority"];
         oidc.ClientId = builder.Configuration["auth:oidc:ClientId"];
         oidc.ClientSecret = builder.Configuration["auth:oidc:ClientSecret"];
-        //oidc.MetadataAddress = builder.Configuration["auth:oidc:MetadataAddress"];
-        //oidc.SignedOutRedirectUri = builder.Configuration["auth:oidc:PostLogoutRedirectUri"]!;
             
         // Core OIDC
         oidc.ResponseType = OpenIdConnectResponseType.Code;
         oidc.UsePkce = true;
 
-        //oidc.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         oidc.SaveTokens = true;
         oidc.GetClaimsFromUserInfoEndpoint = true;
 
-        // Be explicit about claim types you rely on (avoid surprises)
         //oidc.TokenValidationParameters = new TokenValidationParameters
         //{
         //    NameClaimType = "name",
@@ -123,15 +117,11 @@ builder.Services
         //};
 
         // Scopes
-        //oidc.Scope.Clear();
-        //oidc.Scope.Add("openid");
-        //oidc.Scope.Add("profile");
-        //oidc.Scope.Add("email");
+        oidc.Scope.Clear();
+        oidc.Scope.Add("openid");
+        oidc.Scope.Add("profile");
+        oidc.Scope.Add("email");
 
-        // Plug in your events class that enriches claims/roles from DB
-        //oidc.EventsType = typeof(GeonorgeOpenIdConnectEvents);
-
-        // Optional but often convenient to control callback paths
         oidc.CallbackPath = "/signin-oidc";
         oidc.SignedOutCallbackPath = "/signout-callback-oidc";
         //oidc.SignedOutRedirectUri = "/?logout=true"; // builder.Configuration["auth:oidc:PostLogoutRedirectUri"];
@@ -162,11 +152,11 @@ builder.Services
             ValidateAudience = true,
             ValidateIssuer = true,
             ValidateLifetime = true,
-            // Clock skew helps if server and issuer have slight time drift
+            // If server and issuer have slight time drift
             ClockSkew = TimeSpan.FromMinutes(2)
         };
 
-        // If your IdP sends tokens without a "typ" header or with "at+jwt", this avoids strict checks
+        // If IdP sends tokens without a "typ" header or with "at+jwt", this avoids strict checks
         options.MapInboundClaims = false; // keep standard JWT claim types like "sub", "scope"
         options.Events = new JwtBearerEvents
         {
@@ -181,7 +171,7 @@ builder.Services
             }
         };
     });
-
+builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContextFactory<DownloadContext>(opt =>
@@ -221,13 +211,58 @@ builder.Services.AddControllers(options =>
         //options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
         //options.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
     })
-    .AddXmlSerializerFormatters()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-    });
+    })
+    .AddXmlSerializerFormatters();
+    
 
+// --- Caching ---
+
+builder.Services.AddStackExchangeRedisOutputCache(o =>
+{
+    o.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    o.InstanceName = "oc:";
+});
+
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy("MetaTag", b =>
+    {
+        b.Cache()
+         .SetVaryByHeader("Accept")
+         .SetVaryByHeader("Accept-Language")
+         .SetVaryByQuery("*")
+         .SetLocking(true)
+         .With(ctx =>
+         {
+             ctx.EnableOutputCaching = true;
+             ctx.AllowCacheLookup = true;
+             ctx.AllowCacheStorage = true;
+             ctx.AllowLocking = true;
+
+             ctx.CacheVaryByRules.RouteValueNames = new[] { "metadataUuid" };
+
+             if (ctx.HttpContext.Request.RouteValues.TryGetValue("metadataUuid", out var v) &&
+                 v is string uuid && !string.IsNullOrWhiteSpace(uuid))
+             {
+                 ctx.Tags.Add($"meta:{uuid.ToLowerInvariant()}");
+                 ctx.ResponseExpirationTimeSpan = TimeSpan.FromDays(30);
+             }
+             else
+             {
+                 ctx.ResponseExpirationTimeSpan = TimeSpan.FromHours(10);
+                 ctx.Tags.Add("meta:__missing__");
+             }
+
+             return true;
+         });
+    });
+});
+
+// --- OpenAPI ---
 builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(3, 0);
@@ -435,6 +470,8 @@ var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>()
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed
 
+app.UseOutputCache();
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
@@ -479,6 +516,14 @@ app.UseAntiforgery();
 app.MapControllers(); // For versioned REST API
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode(); // For Blazor pages
+
+app.MapFallback(async context =>
+{
+    context.Items["originalPath"] = context.Request.Path;
+
+    context.Response.StatusCode = StatusCodes.Status404NotFound;
+    await Results.LocalRedirect($"/error/not-found?errorpath={context.Request.Path}").ExecuteAsync(context);
+});
 
 app.Run();
 

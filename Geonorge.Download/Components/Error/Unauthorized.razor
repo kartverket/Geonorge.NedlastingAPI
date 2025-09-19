@@ -2,19 +2,30 @@
 @using Geonorge.Download.Resources
 @using Microsoft.AspNetCore.Components.Routing
 @inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthProvider
 
 <div class="container page-not-found-container">
     <h1>@UI.UnauthorizedText</h1>
 
     <p class="lead" style="margin-top:1rem;">
-        <a class="btn btn-primary" href="@LoginUrl()">Logg inn</a>
-        <a class="btn btn-link" href="@Nav.BaseUri">Til forsiden </a>
+        @if (!isAuthn_notAuthz)
+        {
+            <a class="btn btn-primary" href="@LoginUrl()">Logg inn</a>
+        }
+        <a class="btn btn-link" href="@Nav.BaseUri">Til forsiden</a>
     </p>
 </div>
 
 @code {
     [Parameter, SupplyParameterFromQuery(Name = "returnUrl")]
     public string? ReturnUrl { get; set; }
+    private bool isAuthn_notAuthz;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        isAuthn_notAuthz = state.User.Identity?.IsAuthenticated ?? false;
+    }
 
     private string LoginUrl()
     {

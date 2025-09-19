@@ -226,6 +226,7 @@ namespace Geonorge.Download.Services
                         query = query.Where(f => formatNames.Contains(f.Format));
                 }
 
+                // TODO: Sjekke mulige utfordringer med mange områder
                 if (orderLine.areas != null && orderLine.areas.Any())
                 {
                     var grouped = orderLine.areas

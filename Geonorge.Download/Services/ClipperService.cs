@@ -159,11 +159,6 @@ namespace Geonorge.Download.Services
 
             var fmeToken = config["FmeToken"];
 
-            if (clipperUrl.Contains("nedlasting2.geonorge.no"))
-            {
-                fmeToken = config["FmeToken2"];
-            }
-
             var urlBuilder = new StringBuilder(clipperUrl);
             if (!string.IsNullOrEmpty(orderItem.ClipperFile))
             {

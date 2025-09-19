@@ -1,11 +1,12 @@
-﻿using Geonorge.Download.Controllers.Api.V3;
+﻿using Asp.Versioning;
 using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Geonorge.Download.Services.Interfaces;
-using Asp.Versioning;
 using Geonorge.Download.Services.Auth;
+using Geonorge.Download.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using System;
 
 namespace Geonorge.Download.Controllers.Api.Internal
 {
@@ -13,21 +14,21 @@ namespace Geonorge.Download.Controllers.Api.Internal
     /// stuff
     /// </summary>
     /// <param name="logger"></param>
-    /// <param name="config"></param>
     /// <param name="updateMetadataService"></param>
+    /// <param name="cacheStore"></param>
     [ApiController]
     [ApiVersionNeutral]
     [ApiExplorerSettings(GroupName = "internal")]
     [Route("api/internal/metadata")]
     [Authorize(AuthenticationSchemes = BasicAuthHandler.SchemeName, Roles = AuthConfig.DatasetProviderRole)]
-    public class MetadataController(ILogger<MetadataController> logger, IConfiguration config, IUpdateMetadataService updateMetadataService) : ControllerBase
+    public class MetadataController(ILogger<MetadataController> logger, IUpdateMetadataService updateMetadataService, IOutputCacheStore cacheStore) : ControllerBase
     {
 
         /// <summary>
         /// Update metadata
         /// </summary>
         [HttpPost("update")]
-        public IActionResult UpdateMetadata(UpdateMetadataRequest metadata)
+        public async Task<IActionResult> UpdateMetadata(UpdateMetadataRequest metadata)
         {
             try
             {
@@ -37,15 +38,8 @@ namespace Geonorge.Download.Controllers.Api.Internal
 
                 updateMetadataService.UpdateMetadata(metadataInformation);
 
-                // TODO: Fix caching
 
-                //var cache = Configuration.CacheOutputConfiguration().GetCacheOutputProvider(Request);
-
-                //// invalidate cache of "CapabilitiesV3Controller"
-                //cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetCapabilities(metadata.Uuid)));
-                //cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetAreas(metadata.Uuid, null)));
-                //cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetProjections(metadata.Uuid)));
-                //cache.RemoveStartsWith(Configuration.CacheOutputConfiguration().MakeBaseCachekey((CapabilitiesV3Controller t) => t.GetFormats(metadata.Uuid)));
+                await cacheStore.EvictByTagAsync($"meta:{metadata.Uuid.ToString().ToLowerInvariant()}", default);
 
             }
             catch (Exception e)

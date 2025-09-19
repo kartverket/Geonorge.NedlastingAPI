@@ -28,6 +28,8 @@ namespace Geonorge.Download.Models
         public List<string> Roles { get; set; } = new();
     }
 
+
+    // Only difference from MachineAccountCreate_VM is that Password is optional here.
     public class MachineAccountEdit_VM
     {
         [Required, StringLength(100)]

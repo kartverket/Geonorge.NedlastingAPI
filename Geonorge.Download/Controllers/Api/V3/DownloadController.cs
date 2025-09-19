@@ -77,9 +77,6 @@ namespace Geonorge.Download.Controllers.Api.V3
 
             // Response already written
             return NoContent();
-
-            // Download restricted data as stream trought this api:
-            //return Ok(downloadService.CreateResponseFromRemoteFile(order.DownloadBundleUrl));
         }
 
         /// <summary>
@@ -137,9 +134,6 @@ namespace Geonorge.Download.Controllers.Api.V3
 
             // Response already written
             return NoContent();
-
-            // Download restricted data as stream trought this api:
-            //return Ok(downloadService.CreateResponseFromRemoteFile(item.DownloadUrl));
         }
 
         /// <summary>
@@ -147,13 +141,13 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// </summary>
         [HttpGet("download/validate-user")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult ValidateUser()
         {
             bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
             if (!userIsLoggedIn)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Feil brukernavn/passord");
+                return StatusCode(StatusCodes.Status401Unauthorized, "Feil brukernavn/passord");
             }
             return Ok();
         }

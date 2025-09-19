@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.StaticFiles;
 using System;
@@ -52,8 +53,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// Get Capabilities from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        // TODO: Fix caching later
-        //[GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
+        [OutputCache(PolicyName = "MetaTag")]
         [HttpGet("capabilities/{metadataUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(CapabilitiesType), StatusCodes.Status200OK)]
@@ -84,8 +84,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// Get Projections from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        // TODO: Fix caching later
-        //[GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
+        [OutputCache(PolicyName = "MetaTag")]
         [HttpGet("codelists/projection/{metadataUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<ProjectionType>), StatusCodes.Status200OK)]
@@ -107,8 +106,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// Get Areas from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        // TODO: Fix caching later
-        //[GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
+        [OutputCache(PolicyName = "MetaTag")]
         [HttpGet("codelists/area/{metadataUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<AreaType>), StatusCodes.Status200OK)]
@@ -136,8 +134,7 @@ namespace Geonorge.Download.Controllers.Api.V3
         /// Get Format from download service
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
-        // TODO: Fix caching later
-        //[GeonorgeCacheOutput(ClientTimeSpan = 2592000, ServerTimeSpan = 2592000)] // 30 days cache
+        [OutputCache(PolicyName = "MetaTag")]
         [HttpGet("codelists/format/{metadataUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<FormatType>), StatusCodes.Status200OK)]

@@ -2,6 +2,7 @@
 @using System.Text.Json
 @using System.Globalization
 @using System.Security.Claims
+@using Geonorge.Download.Resources
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
@@ -21,10 +22,9 @@
     <div class="container container-breadcrumbs" id="navTabCont">
         <ul class="breadcrumbs col-md-12">
             <li><a href="@GeonorgeUrl">Geonorge</a></li>
-            @* TODO: not hardcoded resources *@
-            <li><a href="@($"{GeonorgeUrl}verktoy/")">For utviklere</a></li>
-            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/")">API-er og grensesnitt</a></li>
-            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/nedlastingsapiet/")">Nedlasting API</a></li>
+            <li><a href="@($"{GeonorgeUrl}verktoy/")">@UI.ForDevelopers</a></li>
+            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/")" data-no-interception>@UI.APIsAndInterfaces</a></li>
+            <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/nedlastingsapiet/")" data-no-interception>@UI.DownloadAPI</a></li>
 
             @if (BreadcrumbContent is not null)
             {
@@ -63,7 +63,7 @@
     private ClaimsPrincipal user;
     private string userInfoJson;
     private string organizationJson;
-    private string AppVersion => "1.0.0"; // Get from configuration or injected
+    private string AppVersion => Configuration["BuildVersionNumber"] ?? "unknown";
     private string EnvironmentName => Configuration["EnvironmentName"] ?? "dev";
     private string CurrentCulture => CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
     private bool isLoggedIn = false;
@@ -91,6 +91,5 @@
         organizationJson = JsonSerializer.Serialize(organization);
     }
 
-    private string CultureSwitchUrl(string lang) => 
-        $"/account/set-culture?culture={lang}&ReturnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
+    private string CultureSwitchUrl(string lang) => $"/account/set-culture?culture={lang}&ReturnUrl={Uri.EscapeDataString(NavigationManager.Uri)}";
 }

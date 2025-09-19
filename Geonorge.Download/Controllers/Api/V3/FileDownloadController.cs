@@ -88,16 +88,14 @@ namespace Geonorge.Download.Controllers.Api.V3
 
             await downloadService.StreamRemoteFileToResponseAsync(HttpContext, file.Url);
 
-            return NoContent(); // Response already written by StreamRemoteFileToResponseAsync
-
-            //return Ok(downloadService.CreateResponseFromRemoteFile(file.Url));
+            return NoContent();
         }
 
         private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
         {
             var server = config["DownloadUrl"];
             var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
-            return $"{server}/Home/SignIn?ReturnUrl={encodedReturnUrl}";
+            return $"{server}account/login?ReturnUrl={encodedReturnUrl}";
         }
     }
 }
