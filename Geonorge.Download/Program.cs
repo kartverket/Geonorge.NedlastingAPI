@@ -517,7 +517,8 @@ app.UseOutputCache();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
+    ForwardLimit = int.Parse(builder.Configuration["HeaderForwardLimit"]!) // Default is 1
 });
 
 app.UseStaticFiles();
