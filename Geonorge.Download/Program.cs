@@ -130,6 +130,16 @@ builder.Services
             OnTokenValidated = async ctx =>
             {
                 await ClaimsHelper.AddClaims(ctx.Principal, ctx.HttpContext);
+            },
+            OnRedirectToIdentityProvider = ctx =>
+            {
+                var req = ctx.Request;
+
+                var host = req.Host.Value; // change if proxy doesn't preserve original Host
+                var proto = req.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? req.Scheme;
+
+                ctx.ProtocolMessage.RedirectUri = $"{proto}://{host}{ctx.Options.CallbackPath}";
+                return Task.CompletedTask;
             }
         };
     })
