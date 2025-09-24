@@ -34,7 +34,6 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Security.Claims;
-using Mi = Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -217,7 +216,7 @@ builder.Services.AddControllers(options =>
         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
     })
     .AddXmlSerializerFormatters();
-    
+
 
 // --- Caching ---
 
@@ -283,10 +282,12 @@ builder.Services.AddSwaggerGen(options =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
 
-    //options.SchemaFilter<Geonorge.Download.Controllers.Api.V3.XsdExampleSchemaFilter>();
     options.DocumentFilter<TagDescriptionsDocumentFilter>(xmlPath);
     options.OperationFilter<RemoveVersionParameterFilter>(); // version parameter not needed in requests, just version in path
     options.OperationFilter<AuthorizeCheckOperationFilter>();
+    options.DocumentFilter<HideSecuritySchemesPerDocFilter>();
+    options.SchemaFilter<XsdExampleSchemaFilter>();
+    //options.OperationFilter<MultipleExamplesOperationFilter>();
     options.CustomSchemaIds(type => type.Name);
 
     options.SwaggerDoc("internal", new OpenApiInfo
@@ -351,30 +352,38 @@ builder.Services.AddSwaggerGen(options =>
         return majors.Contains(docName);
     });
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("GeoID", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter your Keycloak JWT Bearer token in the format 'Bearer {token}'"
+        Description = "GeoID access token."
+    });
+
+    options.AddSecurityDefinition("Machine account", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Basic",
+        In = ParameterLocation.Header,
+        Description = "For machine accounts. Enter username and password"
     });
 
     options.AddSecurityDefinition("ExternalToken", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "Token",
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "External client bearer token. Paste **only** the token."
+        Description = "External client bearer token."
     });
 
-    options.AddSecurityDefinition("Meep", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("FME", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
         Scheme = "Basic",
         In = ParameterLocation.Header,
-        Description = "Enter credentials as 'Basic {base64(username:password)}'"
+        Description = "For FME user. Enter username and password"
     });
 });
 
@@ -444,28 +453,62 @@ app.UseRequestLocalization(options =>
 
 // --- Swagger Setup ---
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+
+// protect internal API documentation
+app.UseWhen(ctx => (ctx.Request.Path.StartsWithSegments("/swagger/internal") || 
+                    ctx.Request.Path.StartsWithSegments("/swagger-internal")), branch =>
+{
+    branch.Use(async (context, next) =>
     {
-        options.SwaggerEndpoint(
-                $"/swagger/latest/swagger.json",
-                $"Geonorge nedlastings-API (latest)");
+        var authenticateResult = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        options.SwaggerEndpoint(
-                $"/swagger/v3/swagger.json",
-                $"Geonorge nedlastings-API 3.0");
+        if (!authenticateResult.Succeeded || !(authenticateResult.Principal?.Identity?.IsAuthenticated ?? false))
+        {
+            await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
+            {
+                RedirectUri = context.Request.PathBase + context.Request.Path + context.Request.QueryString
+            });
+            return;
+        }
 
-        options.SwaggerEndpoint(
-                $"/swagger/internal/swagger.json",
-                $"Geonorge nedlastings-API (internal)");
+        context.User = authenticateResult.Principal;
 
-        //foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
-        //{
-        //    options.SwaggerEndpoint(
-        //        $"/swagger/{description.GroupName}/swagger.json",
-        //        $"Geonorge nedlastings-API {description.ApiVersion}");
-        //}
+        if (!context.User.IsInRole(GeonorgeRoles.MetadataAdmin))
+        {
+            await context.ForbidAsync();
+            return;
+        }
+
+        await next();
     });
+});
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint(
+            $"/swagger/latest/swagger.json",
+            $"Geonorge nedlastings-API (latest)");
+
+    options.SwaggerEndpoint(
+            $"/swagger/v3/swagger.json",
+            $"Geonorge nedlastings-API 3.0");
+
+    //foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
+    //{
+    //    options.SwaggerEndpoint(
+    //        $"/swagger/{description.GroupName}/swagger.json",
+    //        $"Geonorge nedlastings-API {description.ApiVersion}");
+    //}
+});
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint(
+            $"/swagger/internal/swagger.json",
+            $"Geonorge nedlastings-API (internal)");
+    options.RoutePrefix = "swagger-internal";
+});
+
 
 // --- Middleware ---
 app.UseCors("AllowAll"); // Or switch to a named policy as needed

@@ -155,6 +155,6 @@
     <value>Søk etter</value>
   </data>
   <data name="UnauthorizedText" xml:space="preserve">
-    <value>Du har ikke tilgang til denne ressursen (HTTP 401)</value>
+    <value>Du har ikke tilgang til denne ressursen</value>
   </data>
 </root>

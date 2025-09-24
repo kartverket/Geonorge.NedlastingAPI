@@ -3,6 +3,7 @@
 @using System.Globalization
 @using System.Security.Claims
 @using Geonorge.Download.Resources
+@using Microsoft.AspNetCore.Components.Sections
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
@@ -26,10 +27,7 @@
             <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/")" data-no-interception>@UI.APIsAndInterfaces</a></li>
             <li><a href="@($"{GeonorgeUrl}verktoy/APIer-og-grensesnitt/nedlastingsapiet/")" data-no-interception>@UI.DownloadAPI</a></li>
 
-            @if (BreadcrumbContent is not null)
-            {
-                @BreadcrumbContent
-            }
+            <SectionOutlet SectionName="BreadcrumbContent" />
         </ul>
     </div>
 
@@ -54,8 +52,6 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? BreadcrumbContent { get; set; }
-
     private string GeonorgeUrl => "https://www.geonorge.no/";
     private string? SuccessMessage;
     private string? FailureMessage;

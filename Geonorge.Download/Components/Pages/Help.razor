@@ -1,0 +1,723 @@
+﻿@page "/help"
+@using System.Web
+@using Geonorge.Download.Resources
+@using Microsoft.AspNetCore.Components.Sections
+@inherits LayoutComponentBase
+@inject IConfiguration config
+
+<PageTitle>Nedlastings-API – Dokumentasjon</PageTitle>
+
+<SectionContent SectionName="BreadcrumbContent">
+    <li class="breadcrumb-item active" aria-current="page">@UI.ApiDocumentation</li>
+</SectionContent>
+
+<header class="help-page border-bottom mb-4">
+    <div class="container py-4">
+        <div class="d-flex align-items-center">
+            <div class="me-3">
+                <span class="badge bg-primary">v3</span>
+                <span class="badge bg-primary">latest</span>
+            </div>
+            <div>
+                <h1 class="h2 mb-0">Dokumentasjon for nedlastings-API</h1>
+                <small class="text-muted">Hvordan API-et fungerer, hvilke ressurser som finnes, og eksempler på kall</small>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main id="body" class="help-page">
+    <section class="featured">
+        <div class="container">
+
+            <!-- Intro + nav -->
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="h4">Formål</h2>
+                            <p class="mb-2">
+                                Dokumentet beskriver hvordan Geonorge sitt nedlastings-API fungerer,
+                                og hvordan klienter (f.eks. Kartkatalogen) integrerer mot det.
+                            </p>
+                            <p>
+                                Du finner også dokumentasjon her i form av <a class="link-primary" href="@($"{BaseUrl}/swagger")">Swagger</a> og <a class="link-primary" href="@($"{BaseUrl}/swagger/latest/swagger.json")">OpenAPI-dokumentasjon</a>.
+                            </p>
+                            <p class="mb-0">
+                                Eksempeldatasett:
+                                <a class="link-primary" href="https://kartkatalog.geonorge.no/metadata/riksantikvaren/kulturminner-brannsmitteomrader/73f863ba-628f-48af-b7fa-30d3ab331b8d"
+                                   target="_blank" rel="noopener">
+                                    Kulturminner – Brannsmitteområder
+                                </a>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <div class="fw-semibold">Viktig for oppsett</div>
+                        <ul class="mb-0">
+                            <li>Bruk <strong>HTTPS</strong> på eget domene.</li>
+                            <li>Aktiver <strong>CORS</strong> slik at <code>https://kartkatalog.geonorge.no</code> kan gjøre forespørsler mot etatens domene.</li>
+                            <li>
+                                I dataset-metadata: sett distribusjonstype til <em>Geonorge nedlastings-API</em> og URL til
+                                <code>https://nedlasting.geonorge.no/api/capabilities/</code> (bytt til etatens domene).
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">Innhold</div>
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" href="/help#capabilities">Capabilities</a>
+                            <a class="list-group-item list-group-item-action" href="/help#areas-proj-format">Områder / projeksjoner / formater</a>
+                            <a class="list-group-item list-group-item-action" href="/help#polygon-check">Polygon-sjekk</a>
+                            <a class="list-group-item list-group-item-action" href="/help#order">Sende inn ordre</a>
+                            <a class="list-group-item list-group-item-action" href="/help#order-status">Oppdatere ordre-status</a>
+                            <a class="list-group-item list-group-item-action" href="/help#order-info">Hente info om ordre</a>
+                            <a class="list-group-item list-group-item-action" href="/help#bundling">Pakking av datasett</a>
+                            <a class="list-group-item list-group-item-action" href="/help#map-sheets">Valg fra kartblad</a>
+                            <a class="list-group-item list-group-item-action" href="/help#restricted">Tilgangsbegrensede data</a>
+                            <a class="list-group-item list-group-item-action" href="/help#implementation">Mer om implementering</a>
+                            <a class="list-group-item list-group-item-action" href="/help#java-version">Java-versjon</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Capabilities -->
+            <div id="capabilities" class="mt-5 pt-3 border-top">
+                <h2 class="h4 d-flex align-items-center gap-2">
+                    Hente informasjon om ressurser (capabilities)
+                </h2>
+
+                <p class="mb-2">API-utvekslingsformatet er <strong>JSON</strong> (men XML støttes også foreløpig).</p>
+                <p class="mb-2">                    
+                    Kartkatalogen eller annen klient kaller metadata-distribusjonens URL med UUID:
+                    <code>@($"{BaseUrl}/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d")</code>
+                    som gir:
+                </p>
+
+                <div class="card">
+                    <div class="card-body">                        
+<pre class="mb-0"><code>{
+    "supportsProjectionSelection": true,
+    "supportsFormatSelection": true,
+    "supportsPolygonSelection": true,
+    "supportsAreaSelection": true,
+    "supportsDownloadBundling": true,
+    "distributedBy": "Geonorge",
+    "deliveryNotificationByEmail": false,
+    "_links": [
+        {
+            "href": "@($"{BaseUrl}/api/codelists/projection/73f863ba-628f-48af-b7fa-30d3ab331b8d")",
+            "rel": "http://rel.geonorge.no/download/projection"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/codelists/format/73f863ba-628f-48af-b7fa-30d3ab331b8d")",
+            "rel": "http://rel.geonorge.no/download/format"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d")",
+            "rel": "http://rel.geonorge.no/download/area"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/order")",
+            "rel": "http://rel.geonorge.no/download/order"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d")",
+            "rel": "self"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/can-download")",
+            "rel": "http://rel.geonorge.no/download/can-download"
+        }
+    ]
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="alert alert-secondary mb-0">
+                            <div class="fw-semibold">Påkrevde capabilities-flagg</div>
+                            <ul class="mb-0">
+                                <li><code>supportsProjectionSelection = true</code></li>
+                                <li><code>supportsFormatSelection = true</code></li>
+                                <li><code>supportsAreaSelection = true</code></li>
+                            </ul>
+                            <small class="text-muted">Påkrevd i Kartkatalogen per i dag.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-secondary mb-0">
+                            <div class="fw-semibold">Valgfritt</div>
+                            <ul class="mb-0">
+                                <li><code>supportsPolygonSelection = true</code> kun dersom det finnes en klippetjeneste.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    Egenskapen distributedBy i capabilities-kallet brukes for å gi info om etaten som har implementert løsningen. Her skriver man f.eks. Geonorge eller NGU.
+                    Dersom det er påkrevd at brukeren må oppgi e-post for at datasettet skal kunne leveres settes deliveryNotificationByEmail = true i capabilities-kallet.
+                </p>
+
+            </div>
+
+            <!-- Areas / Projections / Formats -->
+            <div id="areas-proj-format" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Hente ut områder, projeksjoner og formater</h2>
+                <p>
+                    I <code>_links</code> fra capabilities ligger tilgjengelige ressurser.
+                    <code>rel = http://rel.geonorge.no/download/area</code> peker til hvor man finner områder,
+                    samt per område hvilke projeksjoner og formater som finnes. <strong>rel</strong> er nøkkelen;
+                    etaten bytter ut <code>href</code> til sin egen lenke.
+                </p>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel-kall</div>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute end-2 top-2"
+                                style="top:.5rem; right:.5rem;"
+                                aria-label="Kopier innhold"
+                                onclick="const el=document.getElementById('get-codelists-area'); const btn=this; navigator.clipboard.writeText(el.innerText).then(()=> { btn.disabled=true; const t=btn.innerText; btn.innerText='Kopiert!'; setTimeout(()=>{btn.disabled=false; btn.innerText=t;}, 1200); }).catch(()=>{ alert('Kunne ikke kopiere. Er siden lastet over HTTPS?'); });">
+                            Kopier
+                        </button>
+<pre class="mb-0">GET <code id="get-codelists-area">@($"{BaseUrl}/api/codelists/area/73f863ba-628f-48af-b7fa-30d3ab331b8d")</code></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel-respons</div>
+<pre class="mb-0"><code>[
+    {
+        "type": "fylke",
+        "name": "Akershus",
+        "code": "32",
+        "projections": [
+            {
+                "code": "25832",
+                "name": "EUREF89 UTM sone 32, 2d",
+                "codespace": "http://www.opengis.net/def/crs/EPSG/0/25832",
+                "formats": [
+                    {
+                        "name": "GML"
+                    },
+                    {
+                        "name": "SOSI"
+                    }
+                ]
+            }
+        ],
+        "formats": [
+            {
+                "name": "GML",
+                "projections": [
+                    {
+                        "code": "25832",
+                        "name": "EUREF89 UTM sone 32, 2d",
+                        "codespace": "http://www.opengis.net/def/crs/EPSG/0/25832"
+                    }
+                ]
+            },
+            {
+                "name": "SOSI",
+                "projections": [
+                    {
+                        "code": "25832",
+                        "name": "EUREF89 UTM sone 32, 2d",
+                        "codespace": "http://www.opengis.net/def/crs/EPSG/0/25832"
+                    }
+                ]
+            }
+        ]
+    }
+]</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polygon check -->
+            <div id="polygon-check" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Sjekke om polygon er innenfor et lovlig område</h2>
+                <p>
+                    Kallene til <code>/api/codelists/projection/{uuid}</code> og
+                    <code>/api/codelists/format/{uuid}</code> benyttes kun ved kartvalg
+                    (<code>supportsPolygonSelection = true</code>). Når polygonvalg er aktivert kan brukeren velge koordinater i Norgeskart.
+                </p>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute end-2 top-2"
+                                style="top:.5rem; right:.5rem;"
+                                aria-label="Kopier innhold"
+                                onclick="const el=document.getElementById('post-can-download'); const btn=this; navigator.clipboard.writeText(el.innerText).then(()=> { btn.disabled=true; const t=btn.innerText; btn.innerText='Kopiert!'; setTimeout(()=>{btn.disabled=false; btn.innerText=t;}, 1200); }).catch(()=>{ alert('Kunne ikke kopiere. Er siden lastet over HTTPS?'); });">
+                            Kopier
+                        </button>
+                        <div class="small text-muted mb-1">Kall for validering</div>
+<pre class="mb-0">POST @($"{BaseUrl}/api/can-download")
+Content-Type: application/json
+
+<code id="post-can-download">{
+    "metadataUuid":"73f863ba-628f-48af-b7fa-30d3ab331b8d",
+    "coordinates":"344754 7272921 404330 7187619 304134 7156477 344754 7272921",
+    "coordinateSystem":"25833"
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="card border-success">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel-respons</div>
+<pre class="mb-0"><code>{
+    "canDownload": true
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order -->
+            <div id="order" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Sende inn en ordre/bestilling</h2>
+                <ul>
+                    <li>Har bruker valgt polygon fra kart, <strong>må</strong> e-post sendes med (klippejobb → e-postvarsel).</li>
+                    <li>
+                        Når bruker laster ned fra kurv, sendes kall til relevante etater. Eksempel-endpoint:
+                        <code>@($"{BaseUrl}/api/order")</code>.
+                    </li>
+                </ul>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute end-2 top-2"
+                                style="top:.5rem; right:.5rem;"
+                                aria-label="Kopier innhold"
+                                onclick="const el=document.getElementById('post-order'); const btn=this; navigator.clipboard.writeText(el.innerText).then(()=> { btn.disabled=true; const t=btn.innerText; btn.innerText='Kopiert!'; setTimeout(()=>{btn.disabled=false; btn.innerText=t;}, 1200); }).catch(()=>{ alert('Kunne ikke kopiere. Er siden lastet over HTTPS?'); });">
+                            Kopier
+                        </button>
+                        <div class="small text-muted mb-1">Eksempel – ordre (to orderLines, hvor #2 er polygon)</div>
+<pre class="mb-0"><code id="post-order">{
+    "email": "bruker@epost.no",
+    "orderLines": [
+        {
+            "areas": [
+                {
+                    "code": "32",
+                    "type": "fylke",
+                    "name": "Akershus"
+                }
+            ],
+            "formats": [
+                {
+                    "name": "SOSI"
+                },
+                {
+                    "name": "GML"
+                }
+            ],
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "projections": [
+                {
+                    "code": "25832",
+                    "name": "EUREF89 UTM sone 32, 2d",
+                    "codespace": "http://www.opengis.net/def/crs/EPSG/0/25832"
+                }
+            ]
+        },
+        {
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "areas": [
+                {
+                    "code": "Kart",
+                    "name": "Valgt fra kart",
+                    "type": "polygon"
+                }
+            ],
+            "projections": [
+                {
+                    "code": "25832",
+                    "name": "EUREF89 UTM sone 32, 2d",
+                    "codespace": "http://www.opengis.net/def/crs/EPSG/0/25832"
+                }
+            ],
+            "formats": [
+                {
+                    "code": "",
+                    "name": "GML",
+                    "type": ""
+                }
+            ],
+            "coordinates": "344754 7272921 404330 7187619 304134 7156477 344754 7272921"
+        }
+    ]
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel – respons</div>
+<pre class="mb-0"><code>{
+    "referenceNumber": "d85fce6f-7bda-428b-ae7b-89b84b15e168",
+    "files": [
+        {
+            "downloadUrl": "@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/874261f7-fe63-4653-aa83-3ae7ab349143")",
+            "name": "Kulturminner_32_Akershus_25832_Brannsmitteomrader_GML.zip",
+            "fileId": "874261f7-fe63-4653-aa83-3ae7ab349143",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "area": "32",
+            "projection": "25832",
+            "format": "GML",
+            "status": "ReadyForDownload",
+            "metadataName": "Brannsmitteomrader",
+            "areaName": "Akershus",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        },
+        {
+            "downloadUrl": "@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/5afcb418-67e5-4b6f-8e77-2a338e310354")",
+            "name": "Kulturminner_32_Akershus_25832_Brannsmitteomrader_SOSI.zip",
+            "fileId": "5afcb418-67e5-4b6f-8e77-2a338e310354",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "area": "32",
+            "projection": "25832",
+            "format": "SOSI",
+            "status": "ReadyForDownload",
+            "metadataName": "Brannsmitteomrader",
+            "areaName": "Akershus",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        },
+        {
+            "fileId": "53fdfe80-da46-4d68-aba0-4cc612a26cbe",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "coordinates": "344754 7272921 404330 7187619 304134 7156477 344754 7272921",
+            "projection": "25832",
+            "format": "GML",
+            "status": "WaitingForProcessing",
+            "metadataName": "Brannsmitteomrader",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        }
+    ],
+    "email": "bruker@epost.no",
+    "orderDate": "2025-09-24T09:25:29.0002865+02:00",
+    "downloadAsBundle": false,
+    "_links": [
+        {
+            "href": "@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")",
+            "rel": "self"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")",
+            "rel": "http://rel.geonorge.no/download/order/bundle"
+        }
+    ]
+}</code></pre>
+                    </div>
+                </div>
+
+                <p class="mb-0">Hvis kombinasjonen område + projeksjon + format ikke matcher filer, returneres en tom <code>files</code>-liste.</p>
+            </div>
+
+            <!-- Order status -->
+            <div id="order-status" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Oppdatere ordre-status</h2>
+                <p>
+                    For klippe-jobber med <code>Status = WaitingForProcessing</code> kan status oppdateres via
+                    <code>POST @($"{BaseUrl}/api/internal/order/update-file-status")</code>.
+                    Det er opp til hver etat hvordan flyten implementeres.
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+<pre class="mb-0"><code>{ "FileId" : "0F2F7602-6520-425A-8735-730CCCCC02F5", "Status" : "ReadyForDownload", "DownloadUrl" : "http://testnedlasting.geonorge.no/fmedatadownload/results/FME_2D59470B_1479891186705_8996.zip" }
+
+</code></pre>
+                    </div>
+                </div>
+
+                <p class="mt-2 mb-0">
+                    Etter oppdatering sendes typisk e-post til bruker med nedlastingslenke.
+                    Se hjelpesidene for gyldige statusverdier.
+                </p>
+            </div>
+
+            <!-- Order info -->
+            <div id="order-info" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Hente info om ordre</h2>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute end-2 top-2"
+                                style="top:.5rem; right:.5rem;"
+                                aria-label="Kopier innhold"
+                                onclick="const el=document.getElementById('get-order'); const btn=this; navigator.clipboard.writeText(el.innerText).then(()=> { btn.disabled=true; const t=btn.innerText; btn.innerText='Kopiert!'; setTimeout(()=>{btn.disabled=false; btn.innerText=t;}, 1200); }).catch(()=>{ alert('Kunne ikke kopiere. Er siden lastet over HTTPS?'); });">
+                            Kopier
+                        </button>
+                        <div class="small text-muted mb-1">Finn ordreinfo</div>
+<pre class="mb-0">GET <code id="get-order">@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")</code></pre>
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel-respons</div>
+<pre class="mb-0"><code>{
+    "referenceNumber": "d85fce6f-7bda-428b-ae7b-89b84b15e168",
+    "files": [
+        {
+            "downloadUrl": "@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/874261f7-fe63-4653-aa83-3ae7ab349143")",
+            "name": "Kulturminner_32_Akershus_25832_Brannsmitteomrader_GML.zip",
+            "fileId": "874261f7-fe63-4653-aa83-3ae7ab349143",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "area": "32",
+            "projection": "25832",
+            "format": "GML",
+            "status": "ReadyForDownload",
+            "metadataName": "Brannsmitteomrader",
+            "areaName": "Akershus",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        },
+        {
+            "downloadUrl": "@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/5afcb418-67e5-4b6f-8e77-2a338e310354")",
+            "name": "Kulturminner_32_Akershus_25832_Brannsmitteomrader_SOSI.zip",
+            "fileId": "5afcb418-67e5-4b6f-8e77-2a338e310354",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "area": "32",
+            "projection": "25832",
+            "format": "SOSI",
+            "status": "ReadyForDownload",
+            "metadataName": "Brannsmitteomrader",
+            "areaName": "Akershus",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        },
+        {
+            "downloadUrl": "@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/53fdfe80-da46-4d68-aba0-4cc612a26cbe")",
+            "fileId": "53fdfe80-da46-4d68-aba0-4cc612a26cbe",
+            "metadataUuid": "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+            "coordinates": "344754 7272921 404330 7187619 304134 7156477 344754 7272921",
+            "projection": "25832",
+            "format": "GML",
+            "status": "ReadyForDownload",
+            "metadataName": "Brannsmitteomrader",
+            "projectionName": "EUREF89 UTM sone 32, 2d"
+        }
+    ],
+    "email": "bruker@epost.no",
+    "orderDate": "2025-09-24T09:25:29",
+    "downloadAsBundle": false,
+    "_links": [
+        {
+            "href": "@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")",
+            "rel": "self"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")",
+            "rel": "http://rel.geonorge.no/download/order/bundle"
+        }
+    ]
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Last ned enkeltfil (referenceNumber/fileId)</div>
+<pre class="mb-0"><code>GET @($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/874261f7-fe63-4653-aa83-3ae7ab349143")</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bundling -->
+            <div id="bundling" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Pakking av datasett</h2>
+                <p>
+                    Dersom capabilities kallet returnerer supportsDownloadBundling lik true kan man etter å ha lagt inn bestilling/order kalle på
+                    <a href="@($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")" target="_blank" rel="noopener"></a>
+                    for å sende ordren til pakking.
+                </p>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary position-absolute end-2 top-2"
+                                style="top:.5rem; right:.5rem;"
+                                aria-label="Kopier innhold"
+                                onclick="const el=document.getElementById('put-order'); const btn=this; navigator.clipboard.writeText(el.innerText).then(()=> { btn.disabled=true; const t=btn.innerText; btn.innerText='Kopiert!'; setTimeout(()=>{btn.disabled=false; btn.innerText=t;}, 1200); }).catch(()=>{ alert('Kunne ikke kopiere. Er siden lastet over HTTPS?'); });">
+                            Kopier
+                        </button>
+                        <div class="small text-muted mb-1">Kall for pakking</div>
+<pre class="mb-0">PUT @($"{BaseUrl}/api/order/d85fce6f-7bda-428b-ae7b-89b84b15e168")
+Content-Type: application/json
+
+<code id="put-order">{ 
+    "downloadAsBundle": true,
+    "email": "user@email.no"
+}</code></pre>
+                    </div>
+                </div>
+
+                <p>
+                    Når pakken er ferdig produsert sendes det epost til brukeren med link for å laste ned. Eksempel på link er da <code>@($"{BaseUrl}/api/download/order/d85fce6f-7bda-428b-ae7b-89b84b15e168/bundle")</code>.
+                </p>
+            </div>
+
+            <!-- Map sheet selection -->
+            <div id="map-sheets" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Valg fra kartblad</h2>
+                <p>
+                    For å hjelpe bruker å velge kartblad via Norgeskart, sett egenskapen <code>mapSelectionLayer</code>.
+                    Eksempel capabilities:
+                    <a href="@($"{BaseUrl}/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22")" target="_blank" rel="noopener">capabilities</a>.
+                </p>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel – capabilities med kartblad</div>
+<pre class="mb-0"><code>{
+    "supportsProjectionSelection": true,
+    "supportsFormatSelection": true,
+    "supportsPolygonSelection": false,
+    "supportsAreaSelection": true,
+    "mapSelectionLayer": "raster-n250",
+    "supportsDownloadBundling": true,
+    "distributedBy": "Geonorge",
+    "deliveryNotificationByEmail": false,
+    "_links": [
+        {
+            "href": "@($"{BaseUrl}/api/codelists/projection/d2ae29bd-0692-40de-a173-833afcddfe22")",
+            "rel": "http://rel.geonorge.no/download/projection"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/codelists/format/d2ae29bd-0692-40de-a173-833afcddfe22")",
+            "rel": "http://rel.geonorge.no/download/format"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/codelists/area/d2ae29bd-0692-40de-a173-833afcddfe22")",
+            "rel": "http://rel.geonorge.no/download/area"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/order")",
+            "rel": "http://rel.geonorge.no/download/order"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/capabilities/d2ae29bd-0692-40de-a173-833afcddfe22")",
+            "rel": "self"
+        },
+        {
+            "href": "@($"{BaseUrl}/api/can-download")",
+            "rel": "http://rel.geonorge.no/download/can-download"
+        }
+    ]
+}</code></pre>
+                    </div>
+                </div>
+
+                <p class="mb-2">
+                    Oversikt over tilgjengelige lag finnes her:
+                    <a href="https://github.com/kartverket/anathem/tree/norgeskart/themes/layers/geoJSON" target="_blank" rel="noopener">anathem / layers / geoJSON</a>.
+                    Fra valgt lag (f.eks.
+                    <a href="https://github.com/kartverket/anathem/blob/norgeskart/themes/layers/geoJSON/raster-n250.yaml" target="_blank" rel="noopener">raster-n250.yaml</a>)
+                    legger man verdien fra egenskapen <code>id</code> inn i <code>mapSelectionLayer</code>.
+                </p>
+                <p class="mb-3">
+                    Tilgjengelige kartblad finnes ved å følge egenskapen <code>url</code> (relativ til Norgeskart),
+                    f.eks. <code>http://norgeskart.no/json/dekning/raster/n250_ny.geojson</code>.
+                    Området (kartbladet) må også være tilgjengelig i områdelisten:
+                    <a href="@($"{BaseUrl}/api/codelists/area/d2ae29bd-0692-40de-a173-833afcddfe22")" target="_blank" rel="noopener">/api/codelists/area/{uuid}</a>.
+                </p>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="small text-muted mb-1">Eksempel – utdrag fra områdeliste</div>
+<pre class="mb-0"><code>[
+    {
+        "type": "celle",
+        "name": "101",
+        "code": "101",
+        "projections": [
+            {
+                "code": "25833",
+                "name": "EUREF89 UTM sone 33, 2d",
+                "codespace": "http://www.opengis.net/def/crs/EPSG/0/25833",
+                "formats": [
+                    {
+                        "name": "TIFF"
+                    }
+                ]
+            }
+        ],
+        "formats": [
+            {
+                "name": "TIFF",
+                "projections": [
+                    {
+                        "code": "25833",
+                        "name": "EUREF89 UTM sone 33, 2d",
+                        "codespace": "http://www.opengis.net/def/crs/EPSG/0/25833"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "celle",
+        "name": "102",
+        "code": "102",
+        // osv.
+    }    
+]</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restricted -->
+            <div id="restricted" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Tilgangsbegrensede data</h2>
+                <ul>
+                    <li>Settes i metadataeditoren under <em>Restriksjoner</em> og <em>tilgangsrestriksjoner</em>.</li>
+                    <li>Man må logge på med med <strong>GeoID-bruker</strong> for å legge i kurven i kartkatalogen. Geonorge sin nedlastingsløsning sjekker om man har gyldig pålogging for å kunne laste ned.</li>
+                    <li>Dersom det er tilgangsbegrenset data må man implementere en authentiserings-mekanisme for at brukeren skal kunne laste ned filen.</li>
+                </ul>
+            </div>
+
+            <!-- Implementation -->
+            <div id="implementation" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Mer om implementering</h2>
+                <p class="mb-2">
+                    API-et skal returnere respons i henhold til dokumentasjonen på
+                    <a href="@($"{BaseUrl}/help")" target="_blank" rel="noopener">/help</a>.
+                    Referanseimplementasjon:
+                    <a href="https://github.com/kartverket/Geonorge.NedlastingAPI" target="_blank" rel="noopener">GitHub – Geonorge.NedlastingAPI</a>.
+                </p>
+                <ul class="mb-2">
+                    <li>Man kan gjenbruke kildekoden for å generere nødvendige tabeller, og bruke Dataset-API for å registrere datasett.</li>
+                    <li>XSD-filer: <a href="https://github.com/kartverket/Geonorge.NedlastingAPI/tree/master/Geonorge.NedlastingApi/xsd" target="_blank" rel="noopener">/xsd</a>.</li>
+                </ul>
+            </div>
+
+            <!-- Java version -->
+            <div id="java-version" class="mt-5 pt-3 border-top">
+                <h2 class="h4">Java-versjon</h2>
+                <p><a href="https://github.com/ngu/geonorge-nedlastingapi" target="_blank" rel="noopener">Java-versjon</a></p>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+@code {
+    private string? BaseUrl { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        BaseUrl = config["DownloadUrl"]!.TrimEnd('/');
+    }
+}

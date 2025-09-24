@@ -193,8 +193,19 @@ namespace Geonorge.Download.Controllers.Api.V3
         [ProducesResponseType(typeof(ClipperFileResponseType), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ValidateClipperFile([FromRoute] string metadataUuid, IFormFile file)
+        public async Task<IActionResult> ValidateClipperFile([FromRoute] string metadataUuid, IFormFile? file)
         {
+            if (file == null)
+            {
+                var httpRequest = HttpContext.Request;
+
+                if (!httpRequest.HasFormContentType || httpRequest.Form.Files.Count != 1)
+                {
+                    return BadRequest("Exactly one file is required");
+                }
+                file = httpRequest.Form.Files[0];
+            }
+            
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");

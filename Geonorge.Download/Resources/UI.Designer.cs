@@ -170,7 +170,7 @@ namespace Geonorge.Download.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Du har ikke tilgang til denne ressursen (HTTP 401).
+        ///   Looks up a localized string similar to Du har ikke tilgang til denne ressursen.
         /// </summary>
         public static string UnauthorizedText {
             get {

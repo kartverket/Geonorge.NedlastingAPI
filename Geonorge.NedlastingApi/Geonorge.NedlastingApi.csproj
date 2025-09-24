@@ -17,4 +17,7 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>    
 	<!--Assembly info END-->
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
 </Project>
