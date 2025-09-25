@@ -311,9 +311,10 @@ builder.Services.AddSwaggerGen(options =>
     { 
         Title = "Geonorge nedlastings-API", 
         Version = "v3",
-        Description = """
-        A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
-        For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
+        Description = $$"""
+        ### *Note:* v3 *is the stable and currently latest version of the API. To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. /api/<some-endpoint> (notice the lack of version) will always point to the latest version (currently v3, but may change). To see different definitions, use the drop down at the top right of this page*
+        ### A client will start by calling capabilities (api/v3/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
+        ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
         """
     });
 
@@ -321,9 +322,10 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Geonorge nedlastings-API",
         Version = "latest",
-        Description = """
-        A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel).
-        For more info implementing api please also see [documentation](https://nedlasting.dev.geonorge.no/help/documentation)
+        Description = $$"""
+        ### *Note: the* latest definition *points to the latest version of the API. Requests to an unversioned route (e.g. /api/<some-endpoint>) as documented in this page, will always point to the latest version of the API (currently v3) To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. The latest definition (unversioned route) may be subject to potential breaking changes (for instance, say v4 is added then using unversioned route will point to v4 instead). To see different definitions, use the drop down at the top right of this page*
+        ### A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
+        ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
         """
     });
 
@@ -562,6 +564,12 @@ app.MapGet("/clipperfiles/{**objectKey}", async
     {
         return Results.NotFound();
     }
+});
+
+app.MapGet("/help", async () =>
+{
+    await Task.CompletedTask;
+    return Results.LocalRedirect("/swagger", permanent:true);
 });
 
 app.UseAntiforgery();

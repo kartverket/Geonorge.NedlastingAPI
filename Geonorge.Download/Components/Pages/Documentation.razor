@@ -1,4 +1,4 @@
-﻿@page "/help"
+﻿@page "/help/documentation"
 @using System.Web
 @using Geonorge.Download.Resources
 @using Microsoft.AspNetCore.Components.Sections
@@ -41,7 +41,7 @@
                                 og hvordan klienter (f.eks. Kartkatalogen) integrerer mot det.
                             </p>
                             <p>
-                                Du finner også dokumentasjon her i form av <a class="link-primary" href="@($"{BaseUrl}/swagger")">Swagger</a> og <a class="link-primary" href="@($"{BaseUrl}/swagger/latest/swagger.json")">OpenAPI-dokumentasjon</a>.
+                                For dokumentasjon rundt bruk av API-et, se <a class="link-primary" href="@($"{BaseUrl}/swagger")">Swagger</a> og <a class="link-primary" href="@($"{BaseUrl}/swagger/latest/swagger.json")">OpenAPI-json</a>.
                             </p>
                             <p class="mb-0">
                                 Eksempeldatasett:
@@ -70,17 +70,17 @@
                     <div class="card">
                         <div class="card-header">Innhold</div>
                         <div class="list-group list-group-flush">
-                            <a class="list-group-item list-group-item-action" href="/help#capabilities">Capabilities</a>
-                            <a class="list-group-item list-group-item-action" href="/help#areas-proj-format">Områder / projeksjoner / formater</a>
-                            <a class="list-group-item list-group-item-action" href="/help#polygon-check">Polygon-sjekk</a>
-                            <a class="list-group-item list-group-item-action" href="/help#order">Sende inn ordre</a>
-                            <a class="list-group-item list-group-item-action" href="/help#order-status">Oppdatere ordre-status</a>
-                            <a class="list-group-item list-group-item-action" href="/help#order-info">Hente info om ordre</a>
-                            <a class="list-group-item list-group-item-action" href="/help#bundling">Pakking av datasett</a>
-                            <a class="list-group-item list-group-item-action" href="/help#map-sheets">Valg fra kartblad</a>
-                            <a class="list-group-item list-group-item-action" href="/help#restricted">Tilgangsbegrensede data</a>
-                            <a class="list-group-item list-group-item-action" href="/help#implementation">Mer om implementering</a>
-                            <a class="list-group-item list-group-item-action" href="/help#java-version">Java-versjon</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#capabilities">Capabilities</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#areas-proj-format">Områder / projeksjoner / formater</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#polygon-check">Polygon-sjekk</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#order">Sende inn ordre</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#order-status">Oppdatere ordre-status</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#order-info">Hente info om ordre</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#bundling">Pakking av datasett</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#map-sheets">Valg fra kartblad</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#restricted">Tilgangsbegrensede data</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#implementation">Mer om implementering</a>
+                            <a class="list-group-item list-group-item-action" href="/help/documentation#java-version">Java-versjon</a>
                         </div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                     Hente informasjon om ressurser (capabilities)
                 </h2>
 
-                <p class="mb-2">API-utvekslingsformatet er <strong>JSON</strong> (men XML støttes også foreløpig).</p>
+                <p class="mb-2">API-utvekslingsformatet er <strong>JSON</strong>.</p>
                 <p class="mb-2">                    
                     Kartkatalogen eller annen klient kaller metadata-distribusjonens URL med UUID:
                     <code>@($"{BaseUrl}/api/capabilities/73f863ba-628f-48af-b7fa-30d3ab331b8d")</code>
