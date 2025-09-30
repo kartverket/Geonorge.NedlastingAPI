@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Geonorge.Download.Models
+namespace Geonorge.Download.Models.Postgres
 {
     public class MachineAccount
     {
-        [Key]
-        [StringLength(128)]
-        public string Username { get; set; }
+        [Key] public string Username { get; set; }
 
         public string? Passsword { get; set; }
 
@@ -18,7 +15,6 @@ namespace Geonorge.Download.Models
 
         public string? ContactEmail { get; set; }
 
-        [Column(TypeName = "datetime")]
         public DateTime Created { get; set; }
 
         public string? Roles { get; set; }

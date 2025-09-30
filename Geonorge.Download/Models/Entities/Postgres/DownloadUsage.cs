@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Geonorge.Download.Models
+namespace Geonorge.Download.Models.Postgres
 {
     public class DownloadUsage
     {
@@ -31,7 +31,6 @@ namespace Geonorge.Download.Models
         
         public Guid RequestId { get;set;}
 
-        [Column(TypeName = "datetime")]
         public DateTime Timestamp { get; set; }
         
         /// <summary>

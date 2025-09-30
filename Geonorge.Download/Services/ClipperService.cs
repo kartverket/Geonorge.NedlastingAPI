@@ -43,8 +43,7 @@ namespace Geonorge.Download.Services
 
                 if (eiendoms != null & string.IsNullOrWhiteSpace(orderLine.coordinates) && orderLine.areas != null && !string.IsNullOrWhiteSpace(incomingOrder.email))
                 {
-                    var sqlDataset = "select AccessConstraintRequiredRole from Dataset where metadataUuid = @p0";
-                    var accessConstraintRequiredRole = downloadContext.Database.SqlQueryRaw<string>(sqlDataset, orderLine.metadataUuid).FirstOrDefault();
+                    var accessConstraintRequiredRole = downloadContext.Capabilities.FirstOrDefault(c => c.MetadataUuid == orderLine.metadataUuid)?.AccessConstraintRequiredRole;
 
                     if ( !(principal != null && principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole) &&
                         !string.IsNullOrEmpty(accessConstraintRequiredRole) && accessConstraintRequiredRole.Contains(AuthConfig.DatasetAgriculturalPartyRole)))

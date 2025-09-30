@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Geonorge.Download.Models
+namespace Geonorge.Download.Models.Postgres
 {
     [Table("orderDownload")]
     public class Order
@@ -33,10 +33,10 @@ namespace Geonorge.Download.Models
         public Guid Uuid { get; set; }
 
         [StringLength(50)]
-        [Column("email", TypeName = "varchar")]
+        [Column("email")]
         public string? email { get; set; }
 
-        [Column("orderDate", TypeName = "datetime")]
+        [Column("orderDate")]
         public DateTime? orderDate { get; set; }
 
         [Column("username")]
@@ -66,7 +66,6 @@ namespace Geonorge.Download.Models
         /// <summary>
         /// Timestamp of when an email notification with bundle download url was sent to user.
         /// </summary>
-        [Column(TypeName = "datetime")]
         public DateTime? DownloadBundleNotificationSent { get; set; }
 
         public void AddOrderItems(List<OrderItem> items)

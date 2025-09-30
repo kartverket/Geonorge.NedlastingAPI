@@ -1,11 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Geonorge.Download.Models
+namespace Geonorge.Download.Models.Postgres
 {
     [Table("orderItem")]
     public class OrderItem
@@ -18,7 +17,6 @@ namespace Geonorge.Download.Models
         }
 
         [Key]
-        [Column("id")]
         public int Id { get; set; }
 
         /// <summary>
@@ -35,21 +33,16 @@ namespace Geonorge.Download.Models
         /// <summary>
         /// The complete url to the file to be downloaded.
         /// </summary>
-        [Column("downloadUrl")]
-        [Unicode(false)]
         public string? DownloadUrl { get; set; }
 
         /// <summary>
         /// FileName will be used when delivering the file to the user.
         /// </summary>
-        [Column("fileName")]
-        [Unicode(false)]
         public string? FileName { get; set; }
 
         /// <summary>
         /// Reference number of the order it is associated with.
         /// </summary>
-        [Column("referenceNumber")]
         public int ReferenceNumber { get; set; }
 
         public virtual Order Order { get; set; }

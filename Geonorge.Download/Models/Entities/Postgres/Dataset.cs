@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Geonorge.Download.Models
+namespace Geonorge.Download.Models.Postgres
 {
     [Table("Dataset")]
     public class Dataset
@@ -10,11 +10,11 @@ namespace Geonorge.Download.Models
         [Key] [Column("ID")] 
         public int Id { get; set; }
 
-        [Column("Tittel", TypeName = "varchar")] 
-        [StringLength(255)]
+        [Column("Tittel")] 
+        [StringLength(255)] 
         public string? Title { get; set; }
 
-        [Column("metadataUuid", TypeName = "varchar")]
+        [Column("metadataUuid")]
         [StringLength(255)]
         public string? MetadataUuid { get; set; }
 
@@ -30,12 +30,10 @@ namespace Geonorge.Download.Models
         [Column("supportsProjectionSelection")]
         public bool? SupportsProjectionSelection { get; set; }
 
-        [Column("fmeklippeUrl")]
-        [StringLength(255)]
+        [Column("fmeklippeUrl")] 
         public string? FmeClippingUrl { get; set; }
 
-        [Column("mapSelectionLayer")]
-        [StringLength(255)]
+        [Column("mapSelectionLayer")] 
         public string? MapSelectionLayer { get; set; }
 
         [Column("AccessConstraint")] 

@@ -3,45 +3,46 @@ using System;
 using Geonorge.Download.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Geonorge.Download.Migrations
 {
     [DbContext(typeof(DownloadContext))]
-    [Migration("20250625113647_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250930104737_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.17")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .UseCollation("Danish_Norwegian_CI_AS")
+                .HasAnnotation("ProductVersion", "8.0.20")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Geonorge.Download.Models.ClipperFile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateUploaded")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("File")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Valid")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -52,55 +53,59 @@ namespace Geonorge.Download.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ID");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccessConstraint")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("AccessConstraint");
 
                     b.Property<string>("AccessConstraintRequiredRole")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("AccessConstraintRequiredRole");
 
                     b.Property<string>("FmeClippingUrl")
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("fmeklippeUrl");
 
                     b.Property<string>("MapSelectionLayer")
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("mapSelectionLayer");
 
                     b.Property<int>("MaxArea")
-                        .HasColumnType("integer")
-                        .HasColumnName("maxArea");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("maxArea")
+                        .HasDefaultValueSql("0");
 
                     b.Property<string>("MetadataUuid")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar")
                         .HasColumnName("metadataUuid");
 
                     b.Property<bool?>("SupportsAreaSelection")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("supportsAreaSelection");
 
                     b.Property<bool?>("SupportsFormatSelection")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("supportsFormatSelection");
 
                     b.Property<bool?>("SupportsPolygonSelection")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("supportsPolygonSelection");
 
                     b.Property<bool?>("SupportsProjectionSelection")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bit")
                         .HasColumnName("supportsProjectionSelection");
 
                     b.Property<string>("Title")
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar")
                         .HasColumnName("Tittel");
 
                     b.HasKey("Id");
@@ -114,43 +119,45 @@ namespace Geonorge.Download.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AreaCode")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AreaName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Format")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Group")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Projection")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PurposeAsStrings")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("Purpose");
 
                     b.Property<Guid>("RequestId")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
 
                     b.Property<string>("SoftwareClient")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SoftwareClientVersion")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Uuid")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -161,55 +168,57 @@ namespace Geonorge.Download.Migrations
                 {
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
                     b.Property<string>("AccessConstraintRequiredRole")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("AccessConstraintRequiredRole");
 
                     b.Property<string>("Category")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("kategori");
 
                     b.Property<int?>("DatasetId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("dataset");
 
                     b.Property<string>("Division")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("inndeling");
 
                     b.Property<string>("DivisionKey")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("inndelingsverdi");
 
                     b.Property<string>("Filename")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("filnavn")
                         .HasColumnOrder(0);
 
                     b.Property<string>("Format")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("format");
 
                     b.Property<string>("Projection")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar")
                         .HasColumnName("projeksjon");
 
                     b.Property<string>("SubCategory")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("underkategori");
 
                     b.Property<string>("Url")
-                        .HasColumnType("text")
+                        .IsRequired()
+                        .HasColumnType("ntext")
                         .HasColumnName("url")
                         .HasColumnOrder(1);
 
@@ -231,25 +240,26 @@ namespace Geonorge.Download.Migrations
             modelBuilder.Entity("Geonorge.Download.Models.MachineAccount", b =>
                 {
                     b.Property<string>("Username")
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Company")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactEmail")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContactPerson")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Passsword")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Roles")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Username");
 
@@ -260,40 +270,44 @@ namespace Geonorge.Download.Migrations
                 {
                     b.Property<int>("referenceNumber")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("referenceNumber");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("referenceNumber"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("referenceNumber"), 1000L);
 
                     b.Property<bool>("DownloadAsBundle")
-                        .HasColumnType("boolean");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("DownloadBundleNotificationSent")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("DownloadBundleUrl")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("Uuid")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
 
                     b.Property<string>("email")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("varchar")
                         .HasColumnName("email");
 
                     b.Property<DateTime?>("orderDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("orderDate");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("orderDate")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("username")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("username");
 
                     b.HasKey("referenceNumber");
 
                     b.HasIndex("Uuid")
-                        .HasDatabaseName("IDX_OrderUuid");
+                        .HasDatabaseName("IDX_Uuid");
 
                     b.ToTable("orderDownload");
                 });
@@ -302,60 +316,68 @@ namespace Geonorge.Download.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Area")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AreaName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClipperFile")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoordinateSystem")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Coordinates")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DownloadUrl")
-                        .HasColumnType("text");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("downloadUrl");
 
                     b.Property<string>("FileName")
-                        .HasColumnType("text");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("fileName");
 
                     b.Property<Guid?>("FileUuid")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Format")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetadataName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MetadataUuid")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Projection")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectionName")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReferenceNumber")
-                        .HasColumnType("integer");
+                        .HasColumnType("int")
+                        .HasColumnName("referenceNumber");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<Guid>("Uuid")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
 
                     b.HasKey("Id");
 
@@ -365,7 +387,7 @@ namespace Geonorge.Download.Migrations
                     b.HasIndex("ReferenceNumber");
 
                     b.HasIndex("Uuid")
-                        .HasDatabaseName("IDX_OrderItemUuid");
+                        .HasDatabaseName("IDX_Uuid");
 
                     b.ToTable("orderItem");
                 });

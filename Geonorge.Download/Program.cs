@@ -53,8 +53,8 @@ builder.Services.AddSingleton(new GcsSettings(bucketName));
 
 
 // --- Database ---
-builder.Services.AddDbContext<DownloadContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<DownloadContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//TODO: For postgres, use: builder.Services.AddDbContext<DownloadContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -182,9 +182,6 @@ builder.Services
     });
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorization();
-
-builder.Services.AddDbContextFactory<DownloadContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // --- Services ---
 builder.Services.AddSingleton<IRegisterFetcher, RegisterFetcher>();

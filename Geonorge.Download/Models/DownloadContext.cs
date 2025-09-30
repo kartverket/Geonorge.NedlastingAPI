@@ -7,7 +7,7 @@ namespace Geonorge.Download.Models
 {
     public class DownloadContext : DbContext
     {
-        public DownloadContext(DbContextOptions options) : base(options) { }
+        public DownloadContext(DbContextOptions<DownloadContext> options) : base(options) { }
 
         public DbSet<Dataset> Capabilities { get; set; }
         public DbSet<File> FileList { get; set; }
@@ -24,6 +24,8 @@ namespace Geonorge.Download.Models
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.UseCollation("Danish_Norwegian_CI_AS");            
+
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.orderItem)
                 .WithOne(item => item.Order)
@@ -32,13 +34,27 @@ namespace Geonorge.Download.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Order>()
+                .Property(o => o.referenceNumber)
+                .UseIdentityColumn(seed: 1000, increment: 1);
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.orderDate)
+                .HasDefaultValueSql("getdate()");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Uuid)
+                .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
+
+            modelBuilder.Entity<Order>()
             .HasIndex(e => e.Uuid)
-            .HasDatabaseName("IDX_OrderUuid")
+            .HasDatabaseName("IDX_Uuid")
+            //TODO: postgres: .HasDatabaseName("IDX_OrderUuid")
             .IsUnique(false);
 
             modelBuilder.Entity<OrderItem>()
             .HasIndex(e => e.Uuid)
-            .HasDatabaseName("IDX_OrderItemUuid")
+            .HasDatabaseName("IDX_Uuid")
+            //TODO: postgres: .HasDatabaseName("IDX_OrderItemUuid")
             .IsUnique(false);
 
             modelBuilder.Entity<OrderItem>()
@@ -46,8 +62,16 @@ namespace Geonorge.Download.Models
             .HasDatabaseName("IDX_FileUuid")
             .IsUnique(false);
 
+            modelBuilder.Entity<OrderItem>()
+                .Property(o => o.Uuid)
+                .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
+
             modelBuilder.Entity<Dataset>()
             .HasIndex(d => d.MetadataUuid);
+
+            modelBuilder.Entity<Dataset>()
+                .Property(o => o.MaxArea)
+                .HasDefaultValueSql("0");
 
             modelBuilder.Entity<File>()
             .HasIndex(f => f.Division);
@@ -61,12 +85,16 @@ namespace Geonorge.Download.Models
             modelBuilder.Entity<File>()
             .HasIndex(f => f.Format);
 
+            modelBuilder.Entity<DownloadUsageEntry>()
+                .Property(o => o.RequestId)
+                .HasDefaultValueSql("CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier)");
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 var clrType = entityType.ClrType;
 
                 var nonPublicProps = clrType
-                    .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetProperties(BindingFlags.SetProperty | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic)
                     .Where(p => p.GetCustomAttributes(typeof(ColumnAttribute), inherit: true).Any());
 
                 var mappedProps = entityType.GetProperties().Select(p => p.Name).ToHashSet();
