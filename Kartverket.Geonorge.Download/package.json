@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "packageManager": "yarn@1.22.22",
   "name": "asp.net",
   "private": true,
   "dependencies": {
