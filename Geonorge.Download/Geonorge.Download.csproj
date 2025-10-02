@@ -92,6 +92,5 @@
 
 	<ItemGroup>
 	  <Folder Include="Helpers\" />
-	  <Folder Include="Migrations\" />
 	</ItemGroup>
 </Project>

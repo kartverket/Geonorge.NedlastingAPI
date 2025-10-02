@@ -42,7 +42,7 @@ services:
   #     - "1433:1433"
   #   environment:
   #     - ACCEPT_EULA=Y
-  #     - MSSQL_SA_PASSWORD=Your_password123
+  #     - MSSQL_SA_PASSWORD=<some-db-password>
   #     - MSSQL_PID=Developer
     
   #   networks:
