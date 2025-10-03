@@ -247,11 +247,17 @@ namespace Geonorge.Download.Services
                             union = union == null ? sub : union.Concat(sub);
                         }
                         if (union != null)
-                            query = union.Distinct();
+                            // ntext
+                            query = union;
+                            // varchar(max)
+                            //query = union.Distinct();
                     }
                 }
 
-                var files = query.ToList();
+                // TODO: File.Url should be nvarchar(max) or something instead of ntext
+                var files = query.ToList().DistinctBy(x => x.Id);
+                // varchar(max)
+                //var files = query.ToList();
 
                 foreach (var item in files)
                 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Geonorge.Download.Migrations
 {
     [DbContext(typeof(DownloadContext))]
-    [Migration("20250930104737_InitialMigration")]
+    [Migration("20251003071222_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -218,7 +218,7 @@ namespace Geonorge.Download.Migrations
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("ntext")
                         .HasColumnName("url")
                         .HasColumnOrder(1);
 

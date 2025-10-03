@@ -215,7 +215,7 @@ namespace Geonorge.Download.Migrations
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("ntext")
                         .HasColumnName("url")
                         .HasColumnOrder(1);
 

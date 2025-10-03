@@ -14,7 +14,7 @@ namespace Geonorge.Download.Models
         [StringLength(255)]
         public string Filename { get; set; }
 
-        [Column("url", Order = 1)]
+        [Column("url", Order = 1, TypeName = "ntext")]
         public string Url { get; set; }
 
         [Column("kategori")]

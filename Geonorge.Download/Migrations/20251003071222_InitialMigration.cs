@@ -113,7 +113,7 @@ namespace Geonorge.Download.Migrations
                 columns: table => new
                 {
                     filnavn = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    url = table.Column<string>(type: "ntext", nullable: false),
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     kategori = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     underkategori = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
