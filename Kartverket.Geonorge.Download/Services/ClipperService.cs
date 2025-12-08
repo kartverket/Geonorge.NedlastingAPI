@@ -213,7 +213,8 @@ namespace Kartverket.Geonorge.Download.Services
                     using (var content = response.Content)
                     {
                         var result = await content.ReadAsStringAsync();
-                        Log.Debug($"Result from ClippingService: {result}");
+                        Log.Info($"Result from ClippingService: {result}");
+                        //todo - handle errors from FME?
                     }
                 }
             }
