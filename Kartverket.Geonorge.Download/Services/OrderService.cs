@@ -493,7 +493,7 @@ namespace Kartverket.Geonorge.Download.Services
 
         public void SendStatusNotificationNotDeliverable()
         {
-            var waitingDateTime = DateTime.Now.AddDays(-1);
+            var waitingDateTime = DateTime.Now.AddHours(-8);
             var orders = _dbContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty) && s.Order.orderDate <= waitingDateTime).Select(o => o.Order).Distinct().ToList();
 
             foreach (var order in orders)
