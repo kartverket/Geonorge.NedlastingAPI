@@ -250,6 +250,11 @@ namespace Kartverket.Geonorge.Download.Services
             foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
             {
                 body.AppendLine($"{item.MetadataName} {item.AreaName}");
+                body.AppendLine($"Koordinater: {item?.Coordinates}");
+                body.AppendLine($"Projeksjon: {item?.Projection} {item?.ProjectionName}");
+                body.AppendLine($"Format: {item?.Format}");
+                body.AppendLine($"MetadataUuid: {item?.MetadataUuid}");
+                body.AppendLine($"Ordredato: {item?.Order?.orderDate}");
             }
 
             AddFooter(body);

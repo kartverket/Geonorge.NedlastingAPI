@@ -173,6 +173,11 @@ namespace Kartverket.Geonorge.Download.Services
 
             var fmeToken = ConfigurationManager.AppSettings["FmeToken"];
 
+            if (clipperUrl.Contains("nedlasting2.geonorge.no"))
+            {
+                fmeToken = ConfigurationManager.AppSettings["FmeToken2"];
+            }
+
             var urlBuilder = new StringBuilder(clipperUrl);
             if (!string.IsNullOrEmpty(orderItem.ClipperFile))
             {
@@ -208,7 +213,8 @@ namespace Kartverket.Geonorge.Download.Services
                     using (var content = response.Content)
                     {
                         var result = await content.ReadAsStringAsync();
-                        Log.Debug($"Result from ClippingService: {result}");
+                        Log.Info($"Result from ClippingService: {result}");
+                        //todo - handle errors from FME?
                     }
                 }
             }

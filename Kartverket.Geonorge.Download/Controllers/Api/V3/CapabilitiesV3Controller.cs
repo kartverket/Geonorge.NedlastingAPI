@@ -165,7 +165,7 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                     Guid id = Guid.NewGuid();
                     var postedFile = httpRequest.Files[0];
                     if (!CheckFileType(postedFile.FileName))
-                        return Request.CreateResponse(HttpStatusCode.BadRequest);
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "File type not supported");
 
                     string fileName = id.ToString();
                     string extension = System.IO.Path.GetExtension(postedFile.FileName);
@@ -186,14 +186,23 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
 
                     var clipperFileResponse = 
                         _downloadService.CallClipperFileChecker(clipperFileValidator + "?CLIPPER_FILE=" + clipperFile + "&UUID=" +metadataUuid + "&token=" + clipperFileValidatorToken); 
+                    Log.Info("Clipper file validation response for uuid: " + metadataUuid + " is: " + clipperFileResponse);
                     ClipperFileResponseType clipperFileResponseType = new ClipperFileResponseType();
                     clipperFileResponseType.valid = clipperFileResponse.Value<bool>("valid");
                     clipperFileResponseType.message = clipperFileResponse.Value<string>("message");
                     clipperFileResponseType.url = clipperFile;
 
-                    _capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
+                    if (!clipperFileResponseType.valid) 
+                    {
+                        Log.Error("Clipper file validation failed for uuid: " + metadataUuid + " with message: " + clipperFileResponseType.message);
+                        return Request.CreateResponse(HttpStatusCode.InternalServerError, clipperFileResponseType.message);
+                    }
+                    else 
+                    { 
+                        _capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
 
-                    result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                        result = Request.CreateResponse(HttpStatusCode.Created, clipperFileResponseType);
+                    }
                 }
                 else
                 {
@@ -227,6 +236,12 @@ namespace Kartverket.Geonorge.Download.Controllers.Api.V3
                 case ".gml":
                     return true;
                 case ".geojson":
+                    return true;
+                case ".json":
+                    return true;
+                case ".gpkg":
+                    return true;
+                case ".fgb":
                     return true;
                 default:
                     return false;
