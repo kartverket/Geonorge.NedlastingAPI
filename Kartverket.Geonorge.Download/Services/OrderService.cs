@@ -498,15 +498,16 @@ namespace Kartverket.Geonorge.Download.Services
 
             foreach (var order in orders)
             {
-                foreach(var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
+
+                _notificationService.SendOrderStatusNotificationNotDeliverable(order);
+
+                foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
                 {
                     item.Status = OrderItemStatus.Error;
                     item.Message = "Bestillingen kunne ikke leveres innen fristen.";
                     _dbContext.Entry(item).State = EntityState.Modified;
                     _dbContext.SaveChanges();
                 }
-
-                _notificationService.SendOrderStatusNotificationNotDeliverable(order);
             }
 
             DeleteOldPeronalData();
