@@ -253,6 +253,8 @@ namespace Kartverket.Geonorge.Download.Services
                 body.AppendLine($"Koordinater: {item?.Coordinates}");
                 body.AppendLine($"Projeksjon: {item?.Projection} {item?.ProjectionName}");
                 body.AppendLine($"Format: {item?.Format}");
+                body.AppendLine($"MetadataUuid: {item?.MetadataUuid}");
+                body.AppendLine($"Ordredato: {item?.Order?.orderDate}");
             }
 
             AddFooter(body);
