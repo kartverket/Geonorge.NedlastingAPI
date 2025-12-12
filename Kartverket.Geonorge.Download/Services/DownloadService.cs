@@ -17,67 +17,48 @@ namespace Kartverket.Geonorge.Download.Services
 
         public HttpResponse CreateResponseFromRemoteFile(string url)
         {
-            //Create a stream for the file
             Stream stream = null;
-
-            //This controls how many bytes to read at a time and send to the client
-            var bytesToRead = 10000;
-
-            // Buffer to read bytes in chunk size specified above
+            var bytesToRead = 64 * 1024; // larger chunk helps throughput
             var buffer = new byte[bytesToRead];
 
-            // The number of bytes read
             try
             {
-                //Create a WebRequest to get the file
-                var fileReq = (HttpWebRequest) WebRequest.Create(url);
+                var fileReq = (HttpWebRequest)WebRequest.Create(url);
+                fileReq.AllowReadStreamBuffering = false; // stream directly
+                fileReq.Timeout = System.Threading.Timeout.Infinite; // beware: ties up the request thread
+                fileReq.ReadWriteTimeout = System.Threading.Timeout.Infinite;
 
-                //Create a response for this request
-                var fileResp = (HttpWebResponse) fileReq.GetResponse();
-
-                if (fileReq.ContentLength > 0)
-                    fileResp.ContentLength = fileReq.ContentLength;
-
-                //Get the Stream returned from the response
+                var fileResp = (HttpWebResponse)fileReq.GetResponse();
                 stream = fileResp.GetResponseStream();
 
-                // prepare the response to the client. resp is the client Response
                 var response = HttpContext.Current.Response;
-
-                //Indicate the type of data being sent
+                response.BufferOutput = false; // stream, don’t buffer whole response
                 response.ContentType = "application/octet-stream";
 
-                //Name the file 
-
                 var fileName = url.Substring(url.LastIndexOf('/') + 1);
+                response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
 
-                response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-                response.AddHeader("Content-Length", fileResp.ContentLength.ToString());
+                if (fileResp.ContentLength > 0)
+                    response.AddHeader("Content-Length", fileResp.ContentLength.ToString());
+
+                // Extend server-side script timeout for long transfers
+                HttpContext.Current.Server.ScriptTimeout = 24 * 60 * 60; // 24h
 
                 int length;
                 do
                 {
-                    // Verify that the client is connected.
-                    if (response.IsClientConnected)
+                    if (!response.IsClientConnected)
                     {
-                        // Read data into the buffer.
-                        length = stream.Read(buffer, 0, bytesToRead);
+                        length = -1;
+                        break;
+                    }
 
-                        // and write it out to the response's output stream
+                    length = stream.Read(buffer, 0, bytesToRead);
+                    if (length > 0)
                         response.OutputStream.Write(buffer, 0, length);
 
-                        // Flush the data
-                        response.Flush();
-
-                        //Clear the buffer
-                        buffer = new byte[bytesToRead];
-                    }
-                    else
-                    {
-                        // cancel the download if client has disconnected
-                        length = -1;
-                    }
-                } while (length > 0); //Repeat until no data is read
+                    // Avoid per-chunk Flush() to prevent slow client stalls and header finalization issues
+                } while (length > 0);
 
                 return response;
             }
@@ -88,7 +69,6 @@ namespace Kartverket.Geonorge.Download.Services
             }
             finally
             {
-                //Close the input stream
                 stream?.Close();
             }
         }
