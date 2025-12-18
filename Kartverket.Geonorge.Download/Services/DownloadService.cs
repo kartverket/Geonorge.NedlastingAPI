@@ -17,48 +17,60 @@ namespace Kartverket.Geonorge.Download.Services
 
         public HttpResponse CreateResponseFromRemoteFile(string url)
         {
-            Stream stream = null;
-            var bytesToRead = 64 * 1024; // larger chunk helps throughput
-            var buffer = new byte[bytesToRead];
+            HttpWebResponse fileResp = null;
+            Stream remoteStream = null;
 
             try
             {
-                var fileReq = (HttpWebRequest)WebRequest.Create(url);
-                fileReq.AllowReadStreamBuffering = false; // stream directly
-                fileReq.Timeout = System.Threading.Timeout.Infinite; // beware: ties up the request thread
-                fileReq.ReadWriteTimeout = System.Threading.Timeout.Infinite;
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.AllowReadStreamBuffering = false;         // stream, don't buffer in memory
+                request.Timeout = System.Threading.Timeout.Infinite;
+                request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
+                request.Proxy = null;                             // avoid proxy lookup overhead if not needed
+                request.AutomaticDecompression = DecompressionMethods.None;
+                request.KeepAlive = true;
 
-                var fileResp = (HttpWebResponse)fileReq.GetResponse();
-                stream = fileResp.GetResponseStream();
+                // Raise per-host connection limit to avoid throttling (default = 2)
+                var sp = request.ServicePoint;
+                if (sp.ConnectionLimit < 100) sp.ConnectionLimit = 100;
+
+                fileResp = (HttpWebResponse)request.GetResponse();
+                remoteStream = fileResp.GetResponseStream();
 
                 var response = HttpContext.Current.Response;
-                response.BufferOutput = false; // stream, don’t buffer whole response
+                response.BufferOutput = false;                    // don't buffer whole response in ASP.NET
                 response.ContentType = "application/octet-stream";
 
-                var fileName = url.Substring(url.LastIndexOf('/') + 1);
-                response.AddHeader("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+                // Set download filename (best-effort)
+                string fileName;
+                try
+                {
+                    var uri = new Uri(url);
+                    fileName = Path.GetFileName(uri.LocalPath);
+                    if (string.IsNullOrEmpty(fileName)) fileName = "download.bin";
+                }
+                catch
+                {
+                    var slash = url.LastIndexOf('/');
+                    fileName = slash >= 0 ? url.Substring(slash + 1) : "download.bin";
+                }
+                response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
                 if (fileResp.ContentLength > 0)
                     response.AddHeader("Content-Length", fileResp.ContentLength.ToString());
 
-                // Extend server-side script timeout for long transfers
+                // Long transfers: extend script timeout
                 HttpContext.Current.Server.ScriptTimeout = 24 * 60 * 60; // 24h
 
-                int length;
-                do
+                const int bufferSize = 64 * 1024;               // 64KB avoids LOH and is a good throughput size
+                var buffer = new byte[bufferSize];              // allocate ONCE and REUSE
+                int read;
+                while ((read = remoteStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    if (!response.IsClientConnected)
-                    {
-                        length = -1;
-                        break;
-                    }
-
-                    length = stream.Read(buffer, 0, bytesToRead);
-                    if (length > 0)
-                        response.OutputStream.Write(buffer, 0, length);
-
-                    // Avoid per-chunk Flush() to prevent slow client stalls and header finalization issues
-                } while (length > 0);
+                    if (!response.IsClientConnected) break;     // stop if client disconnected
+                    response.OutputStream.Write(buffer, 0, read);
+                    // Do NOT Flush() per chunk; let IIS/ASP.NET handle it to avoid head-of-line blocking
+                }
 
                 return response;
             }
@@ -69,7 +81,8 @@ namespace Kartverket.Geonorge.Download.Services
             }
             finally
             {
-                stream?.Close();
+                if (remoteStream != null) remoteStream.Dispose();
+                if (fileResp != null) fileResp.Dispose();
             }
         }
 
