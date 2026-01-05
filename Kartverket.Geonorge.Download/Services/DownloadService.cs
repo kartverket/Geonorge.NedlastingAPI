@@ -17,60 +17,67 @@ namespace Kartverket.Geonorge.Download.Services
 
         public HttpResponse CreateResponseFromRemoteFile(string url)
         {
-            HttpWebResponse fileResp = null;
-            Stream remoteStream = null;
+            //Create a stream for the file
+            Stream stream = null;
 
+            //This controls how many bytes to read at a time and send to the client
+            var bytesToRead = 10000;
+
+            // Buffer to read bytes in chunk size specified above
+            var buffer = new byte[bytesToRead];
+
+            // The number of bytes read
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.AllowReadStreamBuffering = false;         // stream, don't buffer in memory
-                request.Timeout = System.Threading.Timeout.Infinite;
-                request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
-                request.Proxy = null;                             // avoid proxy lookup overhead if not needed
-                request.AutomaticDecompression = DecompressionMethods.None;
-                request.KeepAlive = true;
+                //Create a WebRequest to get the file
+                var fileReq = (HttpWebRequest)WebRequest.Create(url);
 
-                // Raise per-host connection limit to avoid throttling (default = 2)
-                var sp = request.ServicePoint;
-                if (sp.ConnectionLimit < 100) sp.ConnectionLimit = 100;
+                //Create a response for this request
+                var fileResp = (HttpWebResponse)fileReq.GetResponse();
 
-                fileResp = (HttpWebResponse)request.GetResponse();
-                remoteStream = fileResp.GetResponseStream();
+                if (fileReq.ContentLength > 0)
+                    fileResp.ContentLength = fileReq.ContentLength;
 
+                //Get the Stream returned from the response
+                stream = fileResp.GetResponseStream();
+
+                // prepare the response to the client. resp is the client Response
                 var response = HttpContext.Current.Response;
-                response.BufferOutput = false;                    // don't buffer whole response in ASP.NET
+
+                //Indicate the type of data being sent
                 response.ContentType = "application/octet-stream";
 
-                // Set download filename (best-effort)
-                string fileName;
-                try
-                {
-                    var uri = new Uri(url);
-                    fileName = Path.GetFileName(uri.LocalPath);
-                    if (string.IsNullOrEmpty(fileName)) fileName = "download.bin";
-                }
-                catch
-                {
-                    var slash = url.LastIndexOf('/');
-                    fileName = slash >= 0 ? url.Substring(slash + 1) : "download.bin";
-                }
+                //Name the file 
+
+                var fileName = url.Substring(url.LastIndexOf('/') + 1);
+
                 response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                response.AddHeader("Content-Length", fileResp.ContentLength.ToString());
 
-                if (fileResp.ContentLength > 0)
-                    response.AddHeader("Content-Length", fileResp.ContentLength.ToString());
-
-                // Long transfers: extend script timeout
-                HttpContext.Current.Server.ScriptTimeout = 24 * 60 * 60; // 24h
-
-                const int bufferSize = 64 * 1024;               // 64KB avoids LOH and is a good throughput size
-                var buffer = new byte[bufferSize];              // allocate ONCE and REUSE
-                int read;
-                while ((read = remoteStream.Read(buffer, 0, buffer.Length)) > 0)
+                int length;
+                do
                 {
-                    if (!response.IsClientConnected) break;     // stop if client disconnected
-                    response.OutputStream.Write(buffer, 0, read);
-                    // Do NOT Flush() per chunk; let IIS/ASP.NET handle it to avoid head-of-line blocking
-                }
+                    // Verify that the client is connected.
+                    if (response.IsClientConnected)
+                    {
+                        // Read data into the buffer.
+                        length = stream.Read(buffer, 0, bytesToRead);
+
+                        // and write it out to the response's output stream
+                        response.OutputStream.Write(buffer, 0, length);
+
+                        // Flush the data
+                        response.Flush();
+
+                        //Clear the buffer
+                        buffer = new byte[bytesToRead];
+                    }
+                    else
+                    {
+                        // cancel the download if client has disconnected
+                        length = -1;
+                    }
+                } while (length > 0); //Repeat until no data is read
 
                 return response;
             }
@@ -81,8 +88,8 @@ namespace Kartverket.Geonorge.Download.Services
             }
             finally
             {
-                if (remoteStream != null) remoteStream.Dispose();
-                if (fileResp != null) fileResp.Dispose();
+                //Close the input stream
+                stream?.Close();
             }
         }
 
@@ -116,7 +123,7 @@ namespace Kartverket.Geonorge.Download.Services
         {
             string jsonResult;
 
-            var request = (HttpWebRequest) WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             Log.Info("Area checker request: " + url);
             try
             {
@@ -126,12 +133,12 @@ namespace Kartverket.Geonorge.Download.Services
                     var reader = new StreamReader(responseStream, Encoding.UTF8);
                     jsonResult = reader.ReadToEnd();
                 }
-                Log.Info("Area checker response: " + ((HttpWebResponse)response).StatusCode + " Body: "+jsonResult);
+                Log.Info("Area checker response: " + ((HttpWebResponse)response).StatusCode + " Body: " + jsonResult);
             }
             catch (WebException exception)
             {
                 var errorResponse = exception.Response;
-                
+
                 using (var responseStream = errorResponse.GetResponseStream())
                 {
                     var reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
