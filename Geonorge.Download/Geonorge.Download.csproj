@@ -13,11 +13,12 @@
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-		<PackageReference Include="Geonorge.AuthLib.Common" Version="2.0.0-alpha4" />
-		<PackageReference Include="GeoNorgeAPI" Version="4.0.0-alpha3" />
+		<PackageReference Include="Geonorge.AuthLib.Common" Version="1.0.67" />
+		<PackageReference Include="Geonorge.AuthLib.NetFull" Version="1.0.67" />
+		<PackageReference Include="GeoNorgeAPI" Version="4.0.3" />
 		<PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
 		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
-		<PackageReference Include="Kartverket.Geonorge.Utilities" Version="2.0.0-alpha1" />
+		<PackageReference Include="Kartverket.Geonorge.Utilities" Version="1.0.64" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.16" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.17" />

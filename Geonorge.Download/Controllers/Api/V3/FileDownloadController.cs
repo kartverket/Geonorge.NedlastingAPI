@@ -16,7 +16,6 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Http;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {

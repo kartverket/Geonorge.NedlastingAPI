@@ -1,6 +1,7 @@
 ﻿using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using System.Security.Claims;
+using System.Net.Http.Json; // Add this using directive
 
 namespace Geonorge.Download.Services
 {
@@ -24,7 +25,7 @@ namespace Geonorge.Download.Services
                         {
                             try
                             {
-                                eiendoms = result.Content.ReadAsAsync<List<Eiendom>>().Result;
+                                eiendoms = result.Content.ReadFromJsonAsync<List<Eiendom>>().Result;
                             }
                             catch(Exception e) 
                             {
