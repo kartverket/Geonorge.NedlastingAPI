@@ -448,12 +448,21 @@ namespace Geonorge.Download.Services
 
         public void SendStatusNotificationNotDeliverable()
         {
-            var sevenDaysAgo = DateTime.Now.AddDays(-7);
-            var orders = downloadContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty) && s.Order.orderDate <= sevenDaysAgo).Select(o => o.Order).Distinct().ToList();
+            var waitingDateTime = DateTime.Now.AddHours(-8);
+            var orders = downloadContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty) && s.Order.orderDate <= waitingDateTime).Select(o => o.Order).Distinct().ToList();
 
             foreach (var order in orders)
             {
+
                 notificationService.SendOrderStatusNotificationNotDeliverable(order);
+
+                foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
+                {
+                    item.Status = OrderItemStatus.Error;
+                    item.Message = "Bestillingen kunne ikke leveres innen fristen.";
+                    downloadContext.Entry(item).State = EntityState.Modified;
+                    downloadContext.SaveChanges();
+                }
             }
 
             DeleteOldPeronalData();
