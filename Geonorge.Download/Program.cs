@@ -53,7 +53,8 @@ builder.Services.AddSingleton(new GcsSettings(bucketName));
 
 
 // --- Database ---
-builder.Services.AddDbContext<DownloadContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = Environment.GetEnvironmentVariable("EF_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<DownloadContext>(options => options.UseSqlServer(connectionString));
 //TODO: For postgres, use: builder.Services.AddDbContext<DownloadContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 if (!builder.Environment.IsDevelopment())

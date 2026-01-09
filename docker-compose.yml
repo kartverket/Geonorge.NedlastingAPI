@@ -36,17 +36,16 @@ services:
     networks:
       - geonorge-network
 
-  # geonorge.download.db:
-  #   image: mcr.microsoft.com/mssql/server:2022-latest
-  #   ports:
-  #     - "1433:1433"
-  #   environment:
-  #     - ACCEPT_EULA=Y
-  #     - MSSQL_SA_PASSWORD=<some-db-password>
-  #     - MSSQL_PID=Developer
-    
-  #   networks:
-  #   - geonorge-network
+  geonorge.download.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1434:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=test#test123
+      - MSSQL_PID=Developer
+    networks:
+      - geonorge-network
 
   # geonorge.download.db:
   #   image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.18.0
