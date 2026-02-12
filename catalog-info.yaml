@@ -1,1 +1,30 @@
-Audiences in Jwt are not allowed
+# nonk8s
+apiVersion: "backstage.io/v1alpha1"
+kind: "Component"
+metadata:
+  name: "Geonorge.NedlastingAPI"
+  tags:
+  - "public"
+spec:
+  type: "service"
+  lifecycle: "production"
+  owner: "datadeling_og_distribusjon"
+  system: "geonorge"
+  providesApis:
+  - "Geonorge.NedlastingAPI-api"
+---
+apiVersion: "backstage.io/v1alpha1"
+kind: "API"
+metadata:
+  name: "Geonorge.NedlastingAPI-api"
+  tags:
+  - "public"
+spec:
+  type: "openapi"
+  lifecycle: "production"
+  owner: "datadeling_og_distribusjon"
+  definition: |
+    openapi: "3.0.0"
+    info:
+        title: Geonorge.NedlastingAPI API
+    paths:
