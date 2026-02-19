@@ -87,7 +87,7 @@ namespace Geonorge.Download.Controllers.Api.V3
 
             await downloadService.StreamRemoteFileToResponseAsync(HttpContext, file.Url);
 
-            return NoContent();
+            return new EmptyResult(); 
         }
 
         private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)

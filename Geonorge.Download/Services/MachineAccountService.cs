@@ -18,7 +18,7 @@ namespace Geonorge.Download.Services
 
             foreach (var account in accounts)
             {
-                var roles = account.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                var roles = account.Roles?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
                 accountsView.Add(new MachineAccountCreate_VM
                 {
                     Username = account.Username,
@@ -26,7 +26,7 @@ namespace Geonorge.Download.Services
                     ContactPerson = account.ContactPerson,
                     ContactEmail = account.ContactEmail,
                     Created = account.Created,
-                    Roles = roles
+                    Roles = roles ?? []
                 });
             }
 
@@ -81,7 +81,7 @@ namespace Geonorge.Download.Services
             if (account == null)
                 return null;
             
-            var roles = account.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+            var roles = account.Roles?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
             var accountView = new MachineAccountCreate_VM
             {
                 Username = account.Username,
@@ -89,7 +89,7 @@ namespace Geonorge.Download.Services
                 ContactPerson = account.ContactPerson,
                 ContactEmail = account.ContactEmail,
                 Created = account.Created,
-                Roles = roles
+                Roles = roles ?? []
             };
 
             return accountView;

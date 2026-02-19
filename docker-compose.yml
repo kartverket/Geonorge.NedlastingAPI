@@ -2,6 +2,9 @@ networks:
   geonorge-network:
     driver: bridge
 
+volumes:
+  nedlasting_mssql:
+
 services:
   geonorge.download:
     image: ${DOCKER_REGISTRY-}geonorgedownload
@@ -44,6 +47,9 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=test#test123
       - MSSQL_PID=Developer
+    volumes:
+      - ./volumes/backup:/backup:ro
+      - nedlasting_mssql:/var/opt/mssql
     networks:
       - geonorge-network
 
