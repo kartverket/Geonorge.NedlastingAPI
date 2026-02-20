@@ -89,6 +89,11 @@ namespace Geonorge.Download.Models
             return Status == OrderItemStatus.ReadyForDownload;
         }
 
+        public bool IsNotWaitingForProcessing()
+        {
+            return Status != OrderItemStatus.WaitingForProcessing;
+        }
+
         public string CollectIdForBundling()
         {
             return FileUuid?.ToString() ?? Uuid.ToString();

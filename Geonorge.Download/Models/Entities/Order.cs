@@ -138,7 +138,7 @@ namespace Geonorge.Download.Models
 
         public bool IsReadyForBundleDownload()
         {
-            return DownloadAsBundle && orderItem.All(item => item.IsReadyForDownload());
+            return DownloadAsBundle && orderItem.All(item => item.IsNotWaitingForProcessing());
         }
 
         public DownloadUsage GetDownloadUsage()
