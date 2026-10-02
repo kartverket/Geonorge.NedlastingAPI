@@ -54,11 +54,7 @@ namespace Kartverket.Geonorge.Download.Services
                     else if (status == "Sendt inn" || status == "Utkast")
                         label = label + " (ny)";
 
-                    AreaType omraade;
-                    if(codevalue.Length == 2)
-                        omraade = new AreaType { code = codevalue, name = label, type = "fylke" };
-                    else
-                        omraade = new AreaType { code = codevalue, name = label, type = "kommune" };
+                    AreaType omraade = new AreaType { code = codevalue, name = label, type = "region" };
 
                     areas.Add(omraade);
                 }
