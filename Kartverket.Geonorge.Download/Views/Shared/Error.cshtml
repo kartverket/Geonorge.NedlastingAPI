@@ -1,9 +1,0 @@
-﻿@using Kartverket.Geonorge.Download.Resources
-@model HandleErrorInfo
-
-@{
-    ViewBag.Title = UI.Error;
-}
-
-<h1 class="text-danger"><p>@UI.ErrorInfo</p></h1>
-@Html.Raw(UI.ErrorReport)
