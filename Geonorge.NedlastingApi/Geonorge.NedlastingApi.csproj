@@ -5,7 +5,7 @@
 
 	<!--Assembly info START-->
     <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
-	<Description>Library for use by Kartverket.Geonorge.Download</Description>
+	<Description>Library for use by Geonorge.Download</Description>
 	<Configuration />
 	<Company>Statens kartverk</Company>
     <Product>$(AssemblyName)</Product>
