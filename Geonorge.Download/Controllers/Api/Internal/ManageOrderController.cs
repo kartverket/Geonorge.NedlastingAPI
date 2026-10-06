@@ -61,7 +61,7 @@ namespace Geonorge.Download.Controllers.Api.Internal
                 }
                 updateFileStatusInformation.Status = itemStatus;
 
-                updateFileStatusService.UpdateFileStatus(updateFileStatusInformation);
+                await updateFileStatusService.UpdateFileStatus(updateFileStatusInformation);
             }
             catch (Exception e)
             {
@@ -98,7 +98,7 @@ namespace Geonorge.Download.Controllers.Api.Internal
 
                 logger.LogInformation("UpdateOrderStatus invoked for order: {OrderUuid}", orderStatus.OrderUuid);
 
-                orderService.UpdateOrderStatus(orderStatus);
+                await orderService.UpdateOrderStatus(orderStatus);
             }
             catch (Exception e)
             {
@@ -115,13 +115,13 @@ namespace Geonorge.Download.Controllers.Api.Internal
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
         [HttpGet("status-notification")]
-        public IActionResult StatusNotification()
+        public async Task<IActionResult> StatusNotification()
         {
             try
             {
                 logger.LogInformation($"StatusNotification invoked");
 
-                orderService.SendStatusNotification();
+                await orderService.SendStatusNotification();
             }
             catch (Exception e)
             {
@@ -136,12 +136,12 @@ namespace Geonorge.Download.Controllers.Api.Internal
         /// </summary>
         /// <returns>HTTP status codes 200 if ok.</returns>
         [HttpGet("status-notification-not-deliverable")]
-        public IActionResult StatusNotificationNotDeliverable()
+        public async Task<IActionResult> StatusNotificationNotDeliverable()
         {
             try
             {
                 logger.LogInformation($"StatusNotificationNotDeliverable invoked");
-                orderService.SendStatusNotificationNotDeliverable();
+                await orderService.SendStatusNotificationNotDeliverable();
             }
             catch (Exception e)
             {

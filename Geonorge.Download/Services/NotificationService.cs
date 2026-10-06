@@ -9,18 +9,18 @@ namespace Geonorge.Download.Services
     public class NotificationService(ILogger<NotificationService> logger, IConfiguration config, IEmailService emailService) : INotificationService
     {
 
-        public void SendReadyForDownloadNotification(OrderItem orderItem)
+        public async Task SendReadyForDownloadNotification(OrderItem orderItem)
         {
             var message = CreateReadyForDownloadEmailMessage(orderItem);
 
-            SendEmailNotification(message);
+            await SendEmailNotification(message);
         }
 
-        public void SendReadyForDownloadBundleNotification(Order order)
+        public async Task SendReadyForDownloadBundleNotification(Order order)
         {
             var message = CreateReadyForDownloadBundleEmailMessage(order);
 
-            SendEmailNotification(message);
+            await SendEmailNotification(message);
         }
 
         public MailMessage CreateReadyForDownloadBundleEmailMessage(Order order)
@@ -119,16 +119,24 @@ namespace Geonorge.Download.Services
             return message;
         }
 
-        public void SendEmailNotification(MailMessage message)
+        public async Task SendEmailNotification(MailMessage message)
         {
-            emailService.Send(message);
+            // A failed email must not fail the operation (the order is already saved), but it should be visible in the logs.
+            try
+            {
+                await emailService.Send(message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to send email notification with subject: {Subject}", message.Subject);
+            }
         }
 
-        public void SendOrderInfoNotification(Order order, List<OrderItem> clippableOrderItems)
+        public async Task SendOrderInfoNotification(Order order, List<OrderItem> clippableOrderItems)
         {
             var message = CreateOrderInfoEmailMessage(order, clippableOrderItems);
 
-            SendEmailNotification(message);
+            await SendEmailNotification(message);
         }
 
         private MailMessage CreateOrderInfoEmailMessage(Order order, List<OrderItem> clippableOrderItems)
@@ -160,11 +168,11 @@ namespace Geonorge.Download.Services
             return message;
         }
 
-        public void SendOrderStatusNotification(Order order)
+        public async Task SendOrderStatusNotification(Order order)
         {
             var message = CreateOrderStatusEmailMessage(order);
 
-            SendEmailNotification(message);
+            await SendEmailNotification(message);
         }
 
         private MailMessage CreateOrderStatusEmailMessage(Order order)
@@ -217,11 +225,11 @@ namespace Geonorge.Download.Services
             return message;
         }
 
-        public void SendOrderStatusNotificationNotDeliverable(Order order)
+        public async Task SendOrderStatusNotificationNotDeliverable(Order order)
         {
             var message = CreateOrderStatusNotDeliverableEmailMessage(order);
 
-            SendEmailNotification(message);
+            await SendEmailNotification(message);
         }
         private MailMessage CreateOrderStatusNotDeliverableEmailMessage(Order order)
         {

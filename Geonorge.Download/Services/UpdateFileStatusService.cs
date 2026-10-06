@@ -5,7 +5,7 @@ namespace Geonorge.Download.Services
 {
     public class UpdateFileStatusService(ILogger<UpdateFileStatusService> logger, INotificationService notificationService, IOrderService orderService) : IUpdateFileStatusService
     {
-        public void UpdateFileStatus(UpdateFileStatusInformation statusInfo)
+        public async Task UpdateFileStatus(UpdateFileStatusInformation statusInfo)
         {
             OrderItem orderItem = orderService.FindOrderItem(statusInfo.FileId);
 
@@ -14,7 +14,7 @@ namespace Geonorge.Download.Services
                 orderService.UpdateFileStatus(statusInfo);
                 orderItem = orderService.FindOrderItem(statusInfo.FileId);
                 if (IsReadyForDownloadNotification(orderItem))
-                    notificationService.SendReadyForDownloadNotification(orderItem);
+                    await notificationService.SendReadyForDownloadNotification(orderItem);
             }
             else
             {

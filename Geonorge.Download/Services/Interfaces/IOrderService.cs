@@ -7,7 +7,7 @@ namespace Geonorge.Download.Services.Interfaces
 {
     public interface IOrderService
     {
-        Order CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal);
+        Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal);
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
@@ -18,10 +18,10 @@ namespace Geonorge.Download.Services.Interfaces
         OrderItem FindOrderItem(string fileId);
 
         void UpdateOrder(Order order, OrderType incomingOrder);
-        void UpdateOrderStatus(UpdateOrderStatusRequest orderStatus);
+        Task UpdateOrderStatus(UpdateOrderStatusRequest orderStatus);
         void AddOrderUsage(DownloadUsage usage);
-        void SendStatusNotification();
-        void SendStatusNotificationNotDeliverable();
+        Task SendStatusNotification();
+        Task SendStatusNotificationNotDeliverable();
         void CheckPackageSize(Order order);
     }
 }
