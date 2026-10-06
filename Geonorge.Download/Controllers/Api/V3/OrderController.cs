@@ -42,11 +42,11 @@ namespace Geonorge.Download.Controllers.Api.V3
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult PostOrder([FromBody] OrderType order)
+        public async Task<IActionResult> PostOrder([FromBody] OrderType order)
         {
             try
             {
-                var savedOrder = orderService.CreateOrder(order, HttpContext.User);
+                var savedOrder = await orderService.CreateOrder(order, HttpContext.User);
                 orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder, Request));
             }

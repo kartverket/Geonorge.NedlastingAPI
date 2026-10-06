@@ -23,7 +23,7 @@ namespace Geonorge.Download.Services
         IDownloadService downloadService,
         DownloadContext downloadContext) : IOrderService
     {
-        public Order CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal)
+        public async Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal)
         {
             var order = new Order
             {
@@ -56,7 +56,7 @@ namespace Geonorge.Download.Services
             clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
             if(clippableOrderItems.Count > 0)
-                notificationService.SendOrderInfoNotification(order, clippableOrderItems);
+                await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
 
             return order;
         }
@@ -415,7 +415,7 @@ namespace Geonorge.Download.Services
             }
         }
 
-        public void UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
+        public async Task UpdateOrderStatus(UpdateOrderStatusRequest orderStatus)
         {
             Order order = Find(orderStatus.OrderUuid);
             order.DownloadBundleUrl = orderStatus.DownloadUrl;
@@ -423,7 +423,7 @@ namespace Geonorge.Download.Services
 
             if (orderStatus.Status == "ReadyForDownload" && !order.DownloadBundleNotificationSent.HasValue)
             {
-                notificationService.SendReadyForDownloadBundleNotification(order);
+                await notificationService.SendReadyForDownloadBundleNotification(order);
                 order.DownloadBundleNotificationSent = DateTime.UtcNow;
             }
 
@@ -436,17 +436,17 @@ namespace Geonorge.Download.Services
             downloadContext.SaveChanges();
         }
 
-        public void SendStatusNotification()
+        public async Task SendStatusNotification()
         {
             var orders = downloadContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty)).Select(o => o.Order).Distinct().ToList();
 
             foreach(var order in orders) 
             {
-                notificationService.SendOrderStatusNotification(order);
+                await notificationService.SendOrderStatusNotification(order);
             }
         }
 
-        public void SendStatusNotificationNotDeliverable()
+        public async Task SendStatusNotificationNotDeliverable()
         {
             var waitingDateTime = DateTime.Now.AddHours(-8);
             var orders = downloadContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty) && s.Order.orderDate <= waitingDateTime).Select(o => o.Order).Distinct().ToList();
@@ -454,7 +454,7 @@ namespace Geonorge.Download.Services
             foreach (var order in orders)
             {
 
-                notificationService.SendOrderStatusNotificationNotDeliverable(order);
+                await notificationService.SendOrderStatusNotificationNotDeliverable(order);
 
                 foreach (var item in order.orderItem.Where(i => i.Status == OrderItemStatus.WaitingForProcessing))
                 {

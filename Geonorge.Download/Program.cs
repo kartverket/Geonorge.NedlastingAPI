@@ -202,15 +202,27 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorization();
 
 // --- Services ---
-builder.Services.AddSingleton(new GraphMailOptions
+if (!string.IsNullOrWhiteSpace(builder.Configuration["GraphMail:ClientId"]))
 {
-    TenantId = builder.Configuration["GraphMail:TenantId"]!,
-    ClientId = builder.Configuration["GraphMail:ClientId"]!,
-    ClientSecret = builder.Configuration["GraphMail:ClientSecret"]!,
-    SenderMailbox = builder.Configuration["GraphMail:SenderEmail"]!,
-    BaseUrl = builder.Configuration["GraphMail:BaseUrl"]!
-});
-builder.Services.AddSingleton<IEmailService, EmailService>();
+    builder.Services.AddSingleton(new GraphMailOptions
+    {
+        TenantId = builder.Configuration["GraphMail:TenantId"]!,
+        ClientId = builder.Configuration["GraphMail:ClientId"]!,
+        ClientSecret = builder.Configuration["GraphMail:ClientSecret"]!,
+        SenderMailbox = builder.Configuration["GraphMail:SenderEmail"]!,
+        BaseUrl = builder.Configuration["GraphMail:BaseUrl"]!
+    });
+    builder.Services.AddSingleton<IEmailService, EmailService>();
+}
+else if (builder.Environment.IsProduction())
+{
+    throw new InvalidOperationException("GraphMail is not configured.");
+}
+else
+{
+    // Local development without mail credentials: log instead of sending.
+    builder.Services.AddSingleton<IEmailService, LoggingEmailService>();
+}
 builder.Services.AddSingleton<IRegisterFetcher, RegisterFetcher>();
 builder.Services.AddScoped<IEiendomService, EiendomService>();
 builder.Services.AddScoped<ICapabilitiesService, CapabilitiesService>();

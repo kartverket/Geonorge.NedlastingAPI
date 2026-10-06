@@ -4,6 +4,6 @@ namespace Geonorge.Download.Services.Interfaces
 {
     public interface IUpdateFileStatusService
     {
-        void UpdateFileStatus(UpdateFileStatusInformation statusInfo);
+        Task UpdateFileStatus(UpdateFileStatusInformation statusInfo);
     }
 }
