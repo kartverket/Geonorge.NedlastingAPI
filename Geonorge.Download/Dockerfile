@@ -1,7 +1,7 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
 # USER $APP_UID
 #USER root
 #COPY ./Geonorge.Download/Certs/devcert.crt /usr/local/share/ca-certificates/devgeonorgeregister.crt
@@ -17,7 +17,7 @@ ENV ASPNETCORE_HTTP_PORTS=8080;8081
 ENV ASPNETCORE_HTTPS_PORTS=
 
 # This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 

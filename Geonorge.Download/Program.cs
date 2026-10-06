@@ -25,7 +25,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Newtonsoft.Json.Serialization;
 using Prometheus;
 using Serilog;
@@ -479,8 +479,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
     ForwardLimit = int.Parse(builder.Configuration["HeaderForwardLimit"]!), // Default is 1
     KnownProxies = { IPAddress.Loopback, IPAddress.Parse("127.0.0.6") },
-    KnownNetworks = {
-        new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse("10.0.0.0"), 8),
+    KnownIPNetworks = {
+        new System.Net.IPNetwork(IPAddress.Parse("10.0.0.0"), 8),
     }
 });
 

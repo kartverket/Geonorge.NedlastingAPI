@@ -1,11 +1,11 @@
 ﻿using Geonorge.Download.Controllers.Api.V3;
 using Geonorge.NedlastingApi.V3;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Nodes;
 using System.Xml.XPath;
 
 namespace Geonorge.Download.Controllers.Api
@@ -23,12 +23,12 @@ namespace Geonorge.Download.Controllers.Api
         {
             // Find all unique tag names used in operations
             var tagsInUse = swaggerDoc.Paths
-                .SelectMany(p => p.Value.Operations)
-                .SelectMany(op => op.Value.Tags)
+                .SelectMany(p => p.Value.Operations ?? [])
+                .SelectMany(op => op.Value.Tags ?? Enumerable.Empty<OpenApiTagReference>())
                 .Select(t => t.Name)
                 .Distinct();
 
-            swaggerDoc.Tags = new List<OpenApiTag>();
+            swaggerDoc.Tags = new HashSet<OpenApiTag>();
 
             foreach (var tag in tagsInUse)
             {
@@ -93,34 +93,22 @@ namespace Geonorge.Download.Controllers.Api
             operation.Security ??= new List<OpenApiSecurityRequirement>();
             operation.Security.Add(new OpenApiSecurityRequirement
             {
-                [new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "GeoID" }
-                }] = Array.Empty<string>()
+                [new OpenApiSecuritySchemeReference("GeoID", context.Document)] = []
             });
 
             operation.Security.Add(new OpenApiSecurityRequirement
             {
-                [new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Machine account" }
-                }] = Array.Empty<string>()
+                [new OpenApiSecuritySchemeReference("Machine account", context.Document)] = []
             });
 
             operation.Security.Add(new OpenApiSecurityRequirement
             {
-                [new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "ExternalToken" }
-                }] = Array.Empty<string>()
+                [new OpenApiSecuritySchemeReference("ExternalToken", context.Document)] = []
             });
 
             operation.Security.Add(new OpenApiSecurityRequirement
             {
-                [new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "FME" }
-                }] = Array.Empty<string>()
+                [new OpenApiSecuritySchemeReference("FME", context.Document)] = []
             });
         }
     }
@@ -152,7 +140,7 @@ namespace Geonorge.Download.Controllers.Api
 
             foreach (var pathKvp in swaggerDoc.Paths)
             {
-                foreach (var op in pathKvp.Value.Operations.Values)
+                foreach (var op in pathKvp.Value.Operations?.Values ?? Enumerable.Empty<OpenApiOperation>())
                 {
                     if (op.Security == null || op.Security.Count == 0) continue;
 
@@ -182,8 +170,11 @@ namespace Geonorge.Download.Controllers.Api
 
     internal sealed class XsdExampleSchemaFilter : ISchemaFilter
     {
-        public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+        public void Apply(IOpenApiSchema openApiSchema, SchemaFilterContext context)
         {
+            if (openApiSchema is not OpenApiSchema schema)
+                return;
+
             schema.Xml ??= new OpenApiXml();
             if (string.IsNullOrEmpty(schema.Xml.Name) && context.Type.Namespace != "System" && context.Type.Namespace != "System.Collections.Generic")
             {
@@ -194,197 +185,197 @@ namespace Geonorge.Download.Controllers.Api
             {
                 // --- /api/capabilities/{metadataUuid} ---
                 case nameof(CapabilitiesType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["supportsProjectionSelection"] = new OpenApiBoolean(true),
-                        ["supportsFormatSelection"] = new OpenApiBoolean(true),
-                        ["supportsPolygonSelection"] = new OpenApiBoolean(true),
-                        ["supportsAreaSelection"] = new OpenApiBoolean(true),
-                        ["mapSelectionLayer"] = new OpenApiString("raster-n250"),
-                        ["supportsDownloadBundling"] = new OpenApiBoolean(true),
-                        ["distributedBy"] = new OpenApiString("Geonorge"),
-                        ["deliveryNotificationByEmail"] = new OpenApiBoolean(false),
-                        ["_links"] = new OpenApiArray
+                        ["supportsProjectionSelection"] = true,
+                        ["supportsFormatSelection"] = true,
+                        ["supportsPolygonSelection"] = true,
+                        ["supportsAreaSelection"] = true,
+                        ["mapSelectionLayer"] = "raster-n250",
+                        ["supportsDownloadBundling"] = true,
+                        ["distributedBy"] = "Geonorge",
+                        ["deliveryNotificationByEmail"] = false,
+                        ["_links"] = new JsonArray
                         {
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["rel"]  = new OpenApiString("http://rel.geonorge.no/download/projection")
+                                ["href"] = "https://nedlasting.geonorge.no/api/codelists/projection/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["rel"]  = "http://rel.geonorge.no/download/projection"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["rel"]  = new OpenApiString("http://rel.geonorge.no/download/format")
+                                ["href"] = "https://nedlasting.geonorge.no/api/codelists/format/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["rel"]  = "http://rel.geonorge.no/download/format"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["rel"]  = new OpenApiString("http://rel.geonorge.no/download/area")
+                                ["href"] = "https://nedlasting.geonorge.no/api/codelists/area/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["rel"]  = "http://rel.geonorge.no/download/area"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/order"),
-                                ["rel"]  = new OpenApiString("http://rel.geonorge.no/download/order")
+                                ["href"] = "https://nedlasting.geonorge.no/api/order",
+                                ["rel"]  = "http://rel.geonorge.no/download/order"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/capabilities/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["rel"]  = new OpenApiString("self")
+                                ["href"] = "https://nedlasting.geonorge.no/api/capabilities/041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["rel"]  = "self"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["href"] = new OpenApiString("https://nedlasting.geonorge.no/api/can-download"),
-                                ["rel"]  = new OpenApiString("http://rel.geonorge.no/download/can-download")
+                                ["href"] = "https://nedlasting.geonorge.no/api/can-download",
+                                ["rel"]  = "http://rel.geonorge.no/download/can-download"
                             }
                         }
                     };
                     break;
                 // --- /api/codelists/projection/{metadataUuid} ---
                 case nameof(ProjectionType):
-                    schema.Example = new OpenApiArray
+                    schema.Example = new JsonArray
                     {
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["code"] = new OpenApiString("25832"),
-                            ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                            ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832"),
-                            ["formats"] = new OpenApiArray
+                            ["code"] = "25832",
+                            ["name"] = "EUREF89 UTM sone 32, 2d",
+                            ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832",
+                            ["formats"] = new JsonArray
                             {
-                                new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") },
-                                new OpenApiObject { ["name"] = new OpenApiString("GML 3.2.1") },
-                                new OpenApiObject { ["name"] = new OpenApiString("PostGIS 12") }
+                                new JsonObject { ["name"] = "GeoJSON" },
+                                new JsonObject { ["name"] = "GML 3.2.1" },
+                                new JsonObject { ["name"] = "PostGIS 12" }
                             }
                         },
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["code"] = new OpenApiString("25833"),
-                            ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                            ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833"),
-                            ["formats"] = new OpenApiArray
+                            ["code"] = "25833",
+                            ["name"] = "EUREF89 UTM sone 33, 2d",
+                            ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833",
+                            ["formats"] = new JsonArray
                             {
-                                new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") },
-                                new OpenApiObject { ["name"] = new OpenApiString("GML 3.2.1") },
-                                new OpenApiObject { ["name"] = new OpenApiString("PostGIS 12") }
+                                new JsonObject { ["name"] = "GeoJSON" },
+                                new JsonObject { ["name"] = "GML 3.2.1" },
+                                new JsonObject { ["name"] = "PostGIS 12" }
                             }
                         },
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["code"] = new OpenApiString("4258"),
-                            ["name"] = new OpenApiString("EUREF 89 Geografisk (ETRS 89) 2d"),
-                            ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/4258"),
-                            ["formats"] = new OpenApiArray
+                            ["code"] = "4258",
+                            ["name"] = "EUREF 89 Geografisk (ETRS 89) 2d",
+                            ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/4258",
+                            ["formats"] = new JsonArray
                             {
-                                new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") }
+                                new JsonObject { ["name"] = "GeoJSON" }
                             }
                         }
                     };
                     break;
                 // --- /api/codelists/area/{metadataUuid} ---
                 case nameof(AreaType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["type"] = new OpenApiString("fylke"),
-                        ["name"] = new OpenApiString("Agder"),
-                        ["code"] = new OpenApiString("42"),
-                        ["projections"] = new OpenApiArray
+                        ["type"] = "fylke",
+                        ["name"] = "Agder",
+                        ["code"] = "42",
+                        ["projections"] = new JsonArray
                         {
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["code"] = new OpenApiString("4258"),
-                                ["name"] = new OpenApiString("EUREF 89 Geografisk (ETRS 89) 2d"),
-                                ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/4258"),
-                                ["formats"] = new OpenApiArray
+                                ["code"] = "4258",
+                                ["name"] = "EUREF 89 Geografisk (ETRS 89) 2d",
+                                ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/4258",
+                                ["formats"] = new JsonArray
                                 {
-                                    new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") }
+                                    new JsonObject { ["name"] = "GeoJSON" }
                                 }
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["code"] = new OpenApiString("25832"),
-                                ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832"),
-                                ["formats"] = new OpenApiArray
+                                ["code"] = "25832",
+                                ["name"] = "EUREF89 UTM sone 32, 2d",
+                                ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832",
+                                ["formats"] = new JsonArray
                                 {
-                                    new OpenApiObject { ["name"] = new OpenApiString("GML") },
-                                    new OpenApiObject { ["name"] = new OpenApiString("PostGIS") },
-                                    new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") }
+                                    new JsonObject { ["name"] = "GML" },
+                                    new JsonObject { ["name"] = "PostGIS" },
+                                    new JsonObject { ["name"] = "GeoJSON" }
                                 }
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["code"] = new OpenApiString("25833"),
-                                ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833"),
-                                ["formats"] = new OpenApiArray
+                                ["code"] = "25833",
+                                ["name"] = "EUREF89 UTM sone 33, 2d",
+                                ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833",
+                                ["formats"] = new JsonArray
                                 {
-                                    new OpenApiObject { ["name"] = new OpenApiString("GeoJSON") },
-                                    new OpenApiObject { ["name"] = new OpenApiString("GML") },
-                                    new OpenApiObject { ["name"] = new OpenApiString("PostGIS") }
+                                    new JsonObject { ["name"] = "GeoJSON" },
+                                    new JsonObject { ["name"] = "GML" },
+                                    new JsonObject { ["name"] = "PostGIS" }
                                 }
                             }
                         },
-                        ["formats"] = new OpenApiArray
+                        ["formats"] = new JsonArray
                         {
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["name"] = new OpenApiString("GeoJSON"),
-                                ["projections"] = new OpenApiArray
+                                ["name"] = "GeoJSON",
+                                ["projections"] = new JsonArray
                                 {
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("4258"),
-                                        ["name"] = new OpenApiString("EUREF 89 Geografisk (ETRS 89) 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/4258")
+                                        ["code"] = "4258",
+                                        ["name"] = "EUREF 89 Geografisk (ETRS 89) 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/4258"
                                     },
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25833"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                        ["code"] = "25833",
+                                        ["name"] = "EUREF89 UTM sone 33, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                     },
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25832"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                        ["code"] = "25832",
+                                        ["name"] = "EUREF89 UTM sone 32, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                     }
                                 }
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["name"] = new OpenApiString("GML"),
-                                ["projections"] = new OpenApiArray
+                                ["name"] = "GML",
+                                ["projections"] = new JsonArray
                                 {
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25832"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                        ["code"] = "25832",
+                                        ["name"] = "EUREF89 UTM sone 32, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                     },
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25833"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                        ["code"] = "25833",
+                                        ["name"] = "EUREF89 UTM sone 33, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                     }
                                 }
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["name"] = new OpenApiString("PostGIS"),
-                                ["projections"] = new OpenApiArray
+                                ["name"] = "PostGIS",
+                                ["projections"] = new JsonArray
                                 {
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25832"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                        ["code"] = "25832",
+                                        ["name"] = "EUREF89 UTM sone 32, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                     },
-                                    new OpenApiObject
+                                    new JsonObject
                                     {
-                                        ["code"] = new OpenApiString("25833"),
-                                        ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                        ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                        ["code"] = "25833",
+                                        ["name"] = "EUREF89 UTM sone 33, 2d",
+                                        ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                     }
                                 }
                             }
@@ -393,68 +384,68 @@ namespace Geonorge.Download.Controllers.Api
                     break;
                 // --- /api/codelists/format/{metadataUuid} ---
                 case nameof(FormatType):
-                    schema.Example = new OpenApiArray
+                    schema.Example = new JsonArray
                     {
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["name"] = new OpenApiString("GeoJSON"),
-                            ["projections"] = new OpenApiArray
+                            ["name"] = "GeoJSON",
+                            ["projections"] = new JsonArray
                             {
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25832"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                    ["code"] = "25832",
+                                    ["name"] = "EUREF89 UTM sone 32, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                 },
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25833"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                    ["code"] = "25833",
+                                    ["name"] = "EUREF89 UTM sone 33, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                 },
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("4258"),
-                                    ["name"] = new OpenApiString("EUREF 89 Geografisk (ETRS 89) 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/4258")
+                                    ["code"] = "4258",
+                                    ["name"] = "EUREF 89 Geografisk (ETRS 89) 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/4258"
                                 }
                             }
                         },
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["name"] = new OpenApiString("GML"),
-                            ["projections"] = new OpenApiArray
+                            ["name"] = "GML",
+                            ["projections"] = new JsonArray
                             {
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25832"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                    ["code"] = "25832",
+                                    ["name"] = "EUREF89 UTM sone 32, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                 },
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25833"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                    ["code"] = "25833",
+                                    ["name"] = "EUREF89 UTM sone 33, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                 }
                             }
                         },
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["name"] = new OpenApiString("PostGIS"),
-                            ["projections"] = new OpenApiArray
+                            ["name"] = "PostGIS",
+                            ["projections"] = new JsonArray
                             {
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25832"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                    ["code"] = "25832",
+                                    ["name"] = "EUREF89 UTM sone 32, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                 },
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("25833"),
-                                    ["name"] = new OpenApiString("EUREF89 UTM sone 33, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25833")
+                                    ["code"] = "25833",
+                                    ["name"] = "EUREF89 UTM sone 33, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25833"
                                 }
                             }
                         }
@@ -462,61 +453,61 @@ namespace Geonorge.Download.Controllers.Api
                     break;
                 // --- /api/can-download ---
                 case nameof(CanDownloadRequestType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["metadataUuid"] = new OpenApiString("73f863ba-628f-48af-b7fa-30d3ab331b8d"),
-                        ["coordinates"] = new OpenApiString("344754 7272921 404330 7187619 304134 7156477 344754 7272921"),
-                        ["coordinateSystem"] = new OpenApiString("25833")
+                        ["metadataUuid"] = "73f863ba-628f-48af-b7fa-30d3ab331b8d",
+                        ["coordinates"] = "344754 7272921 404330 7187619 304134 7156477 344754 7272921",
+                        ["coordinateSystem"] = "25833"
                     };
                     break;
 
                 case nameof(CanDownloadResponseType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["canDownload"] = new OpenApiBoolean(true)
+                        ["canDownload"] = true
                     };
                     break;
                 // --- /api/validate-clipperfile/{metadataUuid} ---
                 case nameof(ClipperFileResponseType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["valid"] = new OpenApiBoolean(true),
-                        ["message"] = new OpenApiString(""),
-                        ["url"] = new OpenApiString("https://nedlasting.geonorge.no/clipperfiles/3114fe13-43ga-26c5-91da-2e3e533f23ca.geojson")
+                        ["valid"] = true,
+                        ["message"] = "",
+                        ["url"] = "https://nedlasting.geonorge.no/clipperfiles/3114fe13-43ga-26c5-91da-2e3e533f23ca.geojson"
                     };
                     break;
                 // --- /api/order ---
                 case nameof(OrderType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["downloadAsBundle"] = new OpenApiBoolean(false),
-                        ["email"] = new OpenApiString("bruker@epost.no"),
-                        ["orderLines"] = new OpenApiArray
+                        ["downloadAsBundle"] = false,
+                        ["email"] = "bruker@epost.no",
+                        ["orderLines"] = new JsonArray
                     {
-                        new OpenApiObject
+                        new JsonObject
                         {
-                            ["areas"] = new OpenApiArray
+                            ["areas"] = new JsonArray
                             {
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"] = new OpenApiString("32"),
-                                    ["name"] = new OpenApiString("Akershus"),
-                                    ["type"] = new OpenApiString("fylke")
+                                    ["code"] = "32",
+                                    ["name"] = "Akershus",
+                                    ["type"] = "fylke"
                                 }
                             },
-                            ["formats"] = new OpenApiArray
+                            ["formats"] = new JsonArray
                             {
-                                new OpenApiObject { ["name"] = new OpenApiString("GeoJSON ") },
-                                new OpenApiObject { ["name"] = new OpenApiString("GML 3.2.1") }
+                                new JsonObject { ["name"] = "GeoJSON " },
+                                new JsonObject { ["name"] = "GML 3.2.1" }
                             },
-                            ["metadataUuid"] = new OpenApiString("041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                            ["projections"]  = new OpenApiArray
+                            ["metadataUuid"] = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                            ["projections"]  = new JsonArray
                             {
-                                new OpenApiObject
+                                new JsonObject
                                 {
-                                    ["code"]      = new OpenApiString("25832"),
-                                    ["name"]      = new OpenApiString("EUREF89 UTM sone 32, 2d"),
-                                    ["codespace"] = new OpenApiString("http://www.opengis.net/def/crs/EPSG/0/25832")
+                                    ["code"]      = "25832",
+                                    ["name"]      = "EUREF89 UTM sone 32, 2d",
+                                    ["codespace"] = "http://www.opengis.net/def/crs/EPSG/0/25832"
                                 }
                             }
                         }
@@ -525,43 +516,43 @@ namespace Geonorge.Download.Controllers.Api
                     break;
 
                 case nameof(OrderReceiptType):
-                    schema.Example = new OpenApiObject
+                    schema.Example = new JsonObject
                     {
-                        ["referenceNumber"] = new OpenApiString("3f854e9c-5345-4428-b2fd-1ea3db5d2f7a"),
-                        ["files"] = new OpenApiArray
+                        ["referenceNumber"] = "3f854e9c-5345-4428-b2fd-1ea3db5d2f7a",
+                        ["files"] = new JsonArray
                         {
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["downloadUrl"] = new OpenApiString("https://nedlasting.geonorge.no/api/download/order/3f854e9c-5345-4428-b2fd-1ea3db5d2f7a/0e23b13e-cd0f-4d24-9497-408c4f65aa33"),
-                                ["name"]        = new OpenApiString("Basisdata_32_Akershus_25832_Kommuner_GeoJSON.zip"),
-                                ["fileId"]      = new OpenApiString("0e23b13e-cd0f-4d24-9497-408c4f65aa33"),
-                                ["metadataUuid"] = new OpenApiString("041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["area"]        = new OpenApiString("32"),
-                                ["projection"]  = new OpenApiString("25832"),
-                                ["format"]        = new OpenApiString("GeoJSON "),
-                                ["status"]      = new OpenApiString("ReadyForDownload"),
-                                ["metadataName"] = new OpenApiString("Kommuner"),
-                                ["areaName"]    = new OpenApiString("Akershus"),
-                                ["projectionName"] = new OpenApiString("EUREF89 UTM sone 32, 2d")
+                                ["downloadUrl"] = "https://nedlasting.geonorge.no/api/download/order/3f854e9c-5345-4428-b2fd-1ea3db5d2f7a/0e23b13e-cd0f-4d24-9497-408c4f65aa33",
+                                ["name"]        = "Basisdata_32_Akershus_25832_Kommuner_GeoJSON.zip",
+                                ["fileId"]      = "0e23b13e-cd0f-4d24-9497-408c4f65aa33",
+                                ["metadataUuid"] = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["area"]        = "32",
+                                ["projection"]  = "25832",
+                                ["format"]        = "GeoJSON ",
+                                ["status"]      = "ReadyForDownload",
+                                ["metadataName"] = "Kommuner",
+                                ["areaName"]    = "Akershus",
+                                ["projectionName"] = "EUREF89 UTM sone 32, 2d"
                             },
-                            new OpenApiObject
+                            new JsonObject
                             {
-                                ["downloadUrl"] = new OpenApiString("https://nedlasting.geonorge.no/api/download/order/3f854e9c-5345-4428-b2fd-1ea3db5d2f7a/64303302-b64e-46e2-8fa6-b31bee8f23da"),
-                                ["name"]        = new OpenApiString("Basisdata_32_Akershus_25832_Kommuner_GML.zip"),
-                                ["fileId"]      = new OpenApiString("64303302-b64e-46e2-8fa6-b31bee8f23da"),
-                                ["metadataUuid"] = new OpenApiString("041f1e6e-bdbc-4091-b48f-8a5990f3cc5b"),
-                                ["area"]        = new OpenApiString("32"),
-                                ["projection"]  = new OpenApiString("25832"),
-                                ["format"]        = new OpenApiString("GML 3.2.1"),
-                                ["status"]      = new OpenApiString("ReadyForDownload"),
-                                ["metadataName"] = new OpenApiString("Kommuner"),
-                                ["areaName"]    = new OpenApiString("Akershus"),
-                                ["projectionName"] = new OpenApiString("EUREF89 UTM sone 32, 2d")
+                                ["downloadUrl"] = "https://nedlasting.geonorge.no/api/download/order/3f854e9c-5345-4428-b2fd-1ea3db5d2f7a/64303302-b64e-46e2-8fa6-b31bee8f23da",
+                                ["name"]        = "Basisdata_32_Akershus_25832_Kommuner_GML.zip",
+                                ["fileId"]      = "64303302-b64e-46e2-8fa6-b31bee8f23da",
+                                ["metadataUuid"] = "041f1e6e-bdbc-4091-b48f-8a5990f3cc5b",
+                                ["area"]        = "32",
+                                ["projection"]  = "25832",
+                                ["format"]        = "GML 3.2.1",
+                                ["status"]      = "ReadyForDownload",
+                                ["metadataName"] = "Kommuner",
+                                ["areaName"]    = "Akershus",
+                                ["projectionName"] = "EUREF89 UTM sone 32, 2d"
                             }
                         },
-                        ["email"] = new OpenApiString("bruker@epost.no"),
-                        ["orderDate"] = new OpenApiString("2025-09-23T12:00:00.0Z"),
-                        ["downloadAsBundle"] = new OpenApiBoolean(false)
+                        ["email"] = "bruker@epost.no",
+                        ["orderDate"] = "2025-09-23T12:00:00.0Z",
+                        ["downloadAsBundle"] = false
                     };
                     break;
             }
@@ -588,15 +579,15 @@ namespace Geonorge.Download.Controllers.Api
     //                        mediaType.Examples["Minimal"] = new OpenApiExample
     //                        {
     //                            Summary = "Small order",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["customerId"] = new OpenApiString("C-1001"),
-    //                                ["items"] = new OpenApiArray
+    //                                ["customerId"] = "C-1001",
+    //                                ["items"] = new JsonArray
     //                            {
-    //                                new OpenApiObject
+    //                                new JsonObject
     //                                {
-    //                                    ["sku"] = new OpenApiString("ABC-123"),
-    //                                    ["qty"] = new OpenApiInteger(1)
+    //                                    ["sku"] = "ABC-123",
+    //                                    ["qty"] = 1
     //                                }
     //                            }
     //                            }
@@ -604,17 +595,17 @@ namespace Geonorge.Download.Controllers.Api
     //                        mediaType.Examples["WithNotes"] = new OpenApiExample
     //                        {
     //                            Summary = "Order with notes & priority",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["customerId"] = new OpenApiString("C-1001"),
-    //                                ["priority"] = new OpenApiString("Express"),
-    //                                ["notes"] = new OpenApiString("Leave at back door"),
-    //                                ["items"] = new OpenApiArray
+    //                                ["customerId"] = "C-1001",
+    //                                ["priority"] = "Express",
+    //                                ["notes"] = "Leave at back door",
+    //                                ["items"] = new JsonArray
     //                            {
-    //                                new OpenApiObject
+    //                                new JsonObject
     //                                {
-    //                                    ["sku"] = new OpenApiString("XYZ-999"),
-    //                                    ["qty"] = new OpenApiInteger(2)
+    //                                    ["sku"] = "XYZ-999",
+    //                                    ["qty"] = 2
     //                                }
     //                            }
     //                            }
@@ -647,23 +638,23 @@ namespace Geonorge.Download.Controllers.Api
     //                        mediaType.Examples["Accepted"] = new OpenApiExample
     //                        {
     //                            Summary = "Receipt for a paid order",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["orderId"] = new OpenApiString("ORD-2025-0001"),
-    //                                ["status"] = new OpenApiString("Accepted"),
-    //                                ["total"] = new OpenApiDouble(149.90),
-    //                                ["currency"] = new OpenApiString("NOK"),
-    //                                ["downloadUrl"] = new OpenApiString("https://api.example.org/orders/ORD-2025-0001/download")
+    //                                ["orderId"] = "ORD-2025-0001",
+    //                                ["status"] = "Accepted",
+    //                                ["total"] = 149.90,
+    //                                ["currency"] = "NOK",
+    //                                ["downloadUrl"] = "https://api.example.org/orders/ORD-2025-0001/download"
     //                            }
     //                        };
     //                        mediaType.Examples["Queued"] = new OpenApiExample
     //                        {
     //                            Summary = "Receipt for queued processing",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["orderId"] = new OpenApiString("ORD-2025-0002"),
-    //                                ["status"] = new OpenApiString("Queued"),
-    //                                ["eta"] = new OpenApiString("2025-09-23T12:00:00Z")
+    //                                ["orderId"] = "ORD-2025-0002",
+    //                                ["status"] = "Queued",
+    //                                ["eta"] = "2025-09-23T12:00:00Z"
     //                            }
     //                        };
     //                        break;
@@ -672,21 +663,21 @@ namespace Geonorge.Download.Controllers.Api
     //                        mediaType.Examples["ServerError"] = new OpenApiExample
     //                        {
     //                            Summary = "Generic server error",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["title"] = new OpenApiString("Order failed"),
-    //                                ["status"] = new OpenApiInteger(500),
-    //                                ["detail"] = new OpenApiString("Unexpected error while creating order.")
+    //                                ["title"] = "Order failed",
+    //                                ["status"] = 500,
+    //                                ["detail"] = "Unexpected error while creating order."
     //                            }
     //                        };
     //                        mediaType.Examples["Forbidden"] = new OpenApiExample
     //                        {
     //                            Summary = "Forbidden",
-    //                            Value = new OpenApiObject
+    //                            Value = new JsonObject
     //                            {
-    //                                ["title"] = new OpenApiString("Access denied"),
-    //                                ["status"] = new OpenApiInteger(403),
-    //                                ["detail"] = new OpenApiString("You do not have permission to create orders.")
+    //                                ["title"] = "Access denied",
+    //                                ["status"] = 403,
+    //                                ["detail"] = "You do not have permission to create orders."
     //                            }
     //                        };
     //                        break;
