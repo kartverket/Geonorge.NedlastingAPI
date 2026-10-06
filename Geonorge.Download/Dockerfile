@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
 #COPY ./Geonorge.Download/Certs/devcert.crt /usr/local/share/ca-certificates/devgeonorgeregister.crt
 #RUN apk --no-cache add ca-certificates openssl && update-ca-certificates
 RUN apk add --no-cache icu-libs icu-data-full tzdata
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 USER 150
 WORKDIR /app
