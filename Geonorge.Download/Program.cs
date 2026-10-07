@@ -66,8 +66,11 @@ if (!builder.Environment.IsDevelopment())
 {
     // --- Redis Data Protection ---
     string redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException("Redis connection string is not configured.");
-    Log.Logger.Information("Using Redis connection string: {RedisConnectionString}", redisConnectionString);
-    var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+    var redisOptions = ConfigurationOptions.Parse(redisConnectionString);
+    // Log only host:port, the connection string may contain a password.
+    Log.Logger.Information("Using Redis: {RedisEndpoints}",
+        string.Join(", ", redisOptions.EndPoints.Select(e => e is DnsEndPoint d ? $"{d.Host}:{d.Port}" : e.ToString())));
+    var redis = ConnectionMultiplexer.Connect(redisOptions);
     builder.Services.AddDataProtection()
         .PersistKeysToStackExchangeRedis(redis, "dp:keys")
         .SetApplicationName("Geonorge.Download")
@@ -543,14 +546,13 @@ app.UseHttpMetrics();
 // TODO: remove when working
 app.Use(async (ctx, next) =>
 {
-    var rip = ctx.Connection.RemoteIpAddress?.ToString() ?? "<null>";
+    // Client IP and X-Forwarded-For are not logged, they are personal data.
     var host = ctx.Request.Host.ToString();
     var scheme = ctx.Request.Scheme;
     var xfHost = ctx.Request.Headers["X-Forwarded-Host"].ToString();
     var xfProto = ctx.Request.Headers["X-Forwarded-Proto"].ToString();
-    var xff = ctx.Request.Headers["X-Forwarded-For"].ToString();
-    Log.Information("DBG rIP={RemoteIp} scheme={Scheme} host={Host} xfProto={XFProto} xfHost={XFHost} xff={XFF}",
-        rip, scheme, host, xfProto, xfHost, xff);
+    Log.Debug("DBG scheme={Scheme} host={Host} xfProto={XFProto} xfHost={XFHost}",
+        scheme, host, xfProto, xfHost);
 
     await next();
 });

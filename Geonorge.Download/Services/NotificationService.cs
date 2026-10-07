@@ -54,7 +54,7 @@ namespace Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            logger.LogInformation($"Sending ReadyForDownload email notification to: {order.email}, orderUuid: {order.Uuid}");
+            logger.LogInformation($"Sending ReadyForDownload email notification, orderUuid: {order.Uuid}");
 
             return message;
         }
@@ -114,7 +114,7 @@ namespace Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            logger.LogInformation($"Sending ReadyForDownload email notification to: {email}, fileId: {orderItem.Uuid}");
+            logger.LogInformation($"Sending ReadyForDownload email notification, orderUuid: {orderItem.Order.Uuid}, fileId: {orderItem.Uuid}");
 
             return message;
         }
@@ -163,7 +163,7 @@ namespace Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            logger.LogInformation($"Sending info clippable objects email notification to: {email}, referenceNumber: {order.referenceNumber}");
+            logger.LogInformation($"Sending info clippable objects email notification, orderUuid: {order.Uuid}, referenceNumber: {order.referenceNumber}");
 
             return message;
         }
@@ -220,7 +220,7 @@ namespace Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            logger.LogInformation($"Sending OrderStatusEmailMessage to: {email}, referenceNumber: {order.referenceNumber}");
+            logger.LogInformation($"Sending OrderStatusEmailMessage, orderUuid: {order.Uuid}, referenceNumber: {order.referenceNumber}");
 
             return message;
         }
@@ -256,7 +256,7 @@ namespace Geonorge.Download.Services
 
             message.Body = body.ToString();
 
-            logger.LogInformation($"Sending CreateOrderStatusNotDeliverableEmailMessage to: {email}, referenceNumber: {order.referenceNumber}");
+            logger.LogInformation($"Sending CreateOrderStatusNotDeliverableEmailMessage, orderUuid: {order.Uuid}, referenceNumber: {order.referenceNumber}");
 
             return message;
         }
