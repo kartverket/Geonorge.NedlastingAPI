@@ -1,0 +1,139 @@
+name: Build/Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOCKER_REGISTRY: ghcr.io
+  NAME: kartverket/geonorge-nedlastingapi
+  DEPLOY_PATH: ${{ github.ref_name == 'main' && 'env/atkv3-prod/datadeling-geonorge/geonorge-nedlasting-api-version' || 'env/atkv3-dev/datadeling-geonorge/geonorge-nedlasting-api-version' }}
+
+jobs:
+  build_image:
+    name: Build image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      actions: read
+      id-token: write
+
+    outputs:
+      short_tag: ${{ steps.short_tag.outputs.value }}
+      commit_message: ${{ steps.get_commit_message.outputs.commit_message }}
+      commit_author_name: ${{ steps.get_commit_author.outputs.name }}
+      commit_author_email: ${{ steps.get_commit_author.outputs.email }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          {
+            echo 'commit_message<<EOF'
+            git log -1 --pretty=%B
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Get commit author
+        id: get_commit_author
+        run: |
+          echo "name=$(git log -1 --pretty=%an)" >> "$GITHUB_OUTPUT"
+          echo "email=$(git log -1 --pretty=%ae)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=short
+
+      - name: Compute short tag
+        id: short_tag
+        run: echo "value=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build docker image and push
+        id: build_image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./
+          file: ./Geonorge.Download/Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+
+      - name: Summarize image digest
+        run: |
+          echo "Tags: ${{ steps.meta.outputs.tags }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: ${{ steps.build_image.outputs.digest }}" >> "$GITHUB_STEP_SUMMARY"
+
+  run-pharos:
+    name: Run Pharos
+    runs-on: ubuntu-latest
+    needs: [build_image]
+    permissions:
+      actions: read
+      packages: read
+      contents: read
+      security-events: write
+    steps:
+      - name: "Run Pharos"
+        uses: kartverket/pharos@v0.7.0
+        with:
+          image_url: ${{ env.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ needs.build_image.outputs.short_tag }}
+          trivy_vex: false
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build_image]
+    name: Deploy
+    permissions:
+      contents: read
+      id-token: write
+    if: always() && needs.build_image.result == 'success' && needs.run-pharos.result != 'cancelled' && (github.ref_name == 'dev' || needs.run-pharos.result == 'success')
+    steps:
+      - uses: octo-sts/action@f603d3be9d8dd9871a265776e625a27b00effe05
+        id: octo-sts
+        with:
+          scope: kartverket/datadeling-apps
+          identity: geonorge-nedlastingsapi
+
+      - name: Checkout apps repository
+        uses: actions/checkout@v7
+        with:
+          repository: kartverket/datadeling-apps
+          ref: main
+          token: ${{ steps.octo-sts.outputs.token }}
+
+      - name: Git setup for deploy
+        run: |
+          git config --global user.email "${{ needs.build_image.outputs.commit_author_email }}"
+          git config --global user.name "${{ needs.build_image.outputs.commit_author_name }}"
+
+      - name: Update deployment
+        env:
+          COMMIT_MESSAGE: ${{ needs.build_image.outputs.commit_message }}
+          IMAGE: "${{ env.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ needs.build_image.outputs.short_tag }}"
+        run: |
+          echo "\"${IMAGE}\"" > "${{ env.DEPLOY_PATH }}"
+          git add .
+          git commit -m "$COMMIT_MESSAGE"
+          git push
