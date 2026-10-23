@@ -37,7 +37,7 @@ RUN dotnet publish "./Geonorge.Download.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 
 USER root
-RUN apk add ca-certificates && \
+RUN apk --no-cache add ca-certificates && \
 	sed -i -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
 	/etc/ca-certificates.conf && update-ca-certificates
 
