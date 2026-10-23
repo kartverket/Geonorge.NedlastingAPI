@@ -35,6 +35,13 @@ RUN dotnet publish "./Geonorge.Download.csproj" -c $BUILD_CONFIGURATION -o /app/
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+
+USER root
+RUN apk --no-cache add ca-certificates && \
+	sed -i -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
+	/etc/ca-certificates.conf && update-ca-certificates
+
+USER 150
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Geonorge.Download.dll"]
