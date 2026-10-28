@@ -33,8 +33,6 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// <param name="webHostEnvironment"></param>
     [ApiController]
     [ApiVersion("3.0")]
-    [ApiExplorerSettings(GroupName = "latest")]
-    [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
     [AllowAnonymous]

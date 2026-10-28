@@ -315,7 +315,7 @@ builder.Services.AddOutputCache(options =>
 // --- OpenAPI ---
 builder.Services.AddApiVersioning(options =>
     {
-        options.DefaultApiVersion = new ApiVersion(3, 0);
+        options.DefaultApiVersion = new ApiVersion(4, 0);
         options.AssumeDefaultVersionWhenUnspecified = true;    
         options.ReportApiVersions = true;
     })
