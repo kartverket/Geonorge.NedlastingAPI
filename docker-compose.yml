@@ -20,6 +20,12 @@ services:
       - ./application_default_credentials.json:/app/gcloud/application_default_credentials.json:ro
     networks:
     - geonorge-network
+    develop:
+      watch:
+        - path: ./Geonorge.Download
+          action: rebuild
+        - path: ./Geonorge.NedlastingApi
+          action: rebuild
 
   geonorge.download.redis:
     image: redis:latest
