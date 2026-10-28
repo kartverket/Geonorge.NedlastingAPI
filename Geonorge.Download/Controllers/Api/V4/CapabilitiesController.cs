@@ -38,7 +38,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme}")]
     public class CapabilitiesController(
         ILogger<CapabilitiesController> logger, 
         IConfiguration config, 
@@ -116,7 +115,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         {
             try
             {
-                return Ok(capabilitiesService.GetAreas(metadataUuid, HttpContext.User));
+                return Ok(capabilitiesService.GetAreas(metadataUuid, HttpContext.User)); //SJEKK HER. Det surret med kommune og sånn skjer her
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -178,149 +177,6 @@ namespace Geonorge.Download.Controllers.Api.V4
             {
                 logger.LogError("Error returning canDownload for uuid: " + request.metadataUuid, ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        /// <summary>
-        /// If clipper file is selected, checks if file is valid
-        /// </summary>
-        /// <param name="metadataUuid">The metadata identifier</param>
-        /// <param name="file">The uploaded clipper file</param>
-        /// <returns></returns>
-        [HttpPost("validate-clipperfile/{metadataUuid}")]
-        [Consumes("multipart/form-data")]
-        [Produces("application/json", "application/xml")]
-        [ProducesResponseType(typeof(ClipperFileResponseType), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ValidateClipperFile([FromRoute] string metadataUuid, IFormFile? file)
-        {
-            if (file == null)
-            {
-                var httpRequest = HttpContext.Request;
-
-                if (!httpRequest.HasFormContentType || httpRequest.Form.Files.Count != 1)
-                {
-                    return BadRequest("Exactly one file is required");
-                }
-                file = httpRequest.Form.Files[0];
-            }
-            
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-
-            if (!CheckFileType(file.FileName))
-            {
-                return BadRequest("File type not supported.");
-            }
-
-            try
-            {
-                var id = Guid.NewGuid();
-                var extension = Path.GetExtension(file.FileName);
-
-                if (extension == ".json")
-                    extension = ".geojson";
-
-                var fileName = id + extension;
-
-                var clipperFile = await UploadToGcsAsync(file, storageClient, gcsSettings, HttpContext);
-
-                // Override in local dev
-                if (clipperFile.Contains("localhost"))
-                    clipperFile = "http://testnedlasting.mypage.download/test.zip";
-
-                var validatorUrl = config["ClipperFileValidator"];
-                var token = config["ClipperFileValidatorToken"];
-
-                var resultJson = downloadService.CallClipperFileChecker(
-                    $"{validatorUrl}?CLIPPER_FILE={clipperFile}&UUID={metadataUuid}&token={token}");
-
-                logger.LogInformation("Clipper file validation response for uuid: " + metadataUuid + " is: " + resultJson);
-
-                var clipperFileResponseType = new ClipperFileResponseType
-                {
-                    valid = resultJson.Value<bool>("valid"),
-                    message = resultJson.Value<string>("message"),
-                    url = clipperFile
-                };
-
-                if (!clipperFileResponseType.valid)
-                {
-                    logger.LogError("Clipper file validation failed for uuid: " + metadataUuid + " with message: " + clipperFileResponseType.message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, clipperFileResponseType.message);
-                }
-                else
-                {
-                    capabilitiesService.SaveClipperFile(id, clipperFileResponseType.url, clipperFileResponseType.valid, clipperFileResponseType.message);
-                    return Created(string.Empty, clipperFileResponseType);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error validating clipper file for UUID: {MetadataUuid}", metadataUuid);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        private async Task<string> UploadToGcsAsync(
-            IFormFile file,
-            StorageClient storage,
-            GcsSettings gcs,
-            HttpContext http)
-        {
-            var id = Guid.NewGuid().ToString();
-            var extension = Path.GetExtension(file.FileName);
-            var objectKey = id + extension;
-
-            var provider = new FileExtensionContentTypeProvider();
-            provider.Mappings[".sos"] = "text/vnd.sosi";
-            provider.Mappings[".gml"] = "application/gml+xml";
-            provider.Mappings[".gdb"] = "application/octet-stream";
-            provider.Mappings[".geojson"] = "application/geo+json";
-            provider.Mappings[".7z"] = "application/x-7z-compressed";
-            if (!provider.TryGetContentType(objectKey, out var contentType))
-                contentType = file.ContentType ?? "application/octet-stream";
-
-            await using var src = file.OpenReadStream();
-            await storage.UploadObjectAsync(
-                bucket: gcs.Bucket,
-                objectName: $"clipperfiles/{objectKey}",
-                contentType: contentType,
-                source: src);
-
-            return $"{http.Request.Scheme}://{http.Request.Host}/clipperfiles/{objectKey}";
-        }
-
-        private bool CheckFileType(string fileName)
-        {
-            string ext = System.IO.Path.GetExtension(fileName);
-            switch (ext.ToLower())
-            {
-                case ".sos":
-                    return true;
-                case ".zip":
-                    return true;
-                case ".7z":
-                    return true;
-                case ".tar":
-                    return true;
-                case ".gdb":
-                    return true;
-                case ".gml":
-                    return true;
-                case ".geojson":
-                    return true;
-                case ".json":
-                    return true;
-                case ".gpkg":
-                    return true;
-                case ".fgb":
-                    return true;
-                default:
-                    return false;
             }
         }
     }
