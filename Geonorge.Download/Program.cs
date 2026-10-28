@@ -359,12 +359,23 @@ builder.Services.AddSwaggerGen(options =>
         """
     });
 
+    options.SwaggerDoc("v4", new OpenApiInfo 
+    { 
+        Title = "Geonorge nedlastings-API", 
+        Version = "v4",
+        Description = $$"""
+        ### *Note:* v4 *is the stable and currently latest version of the API. To ensure not being subject to breaking changes, use /api/v4/<some-endpoint>. /api/<some-endpoint> (notice the lack of version) will always point to the latest version (currently v4, but may change). To see different definitions, use the drop down at the top right of this page*
+        ### A client will start by calling capabilities (api/v4/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
+        ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
+        """
+    });
+
     options.SwaggerDoc("latest", new OpenApiInfo
     {
         Title = "Geonorge nedlastings-API",
         Version = "latest",
         Description = $$"""
-        ### *Note: the* latest definition *points to the latest version of the API. Requests to an unversioned route (e.g. /api/<some-endpoint>) as documented in this page, will always point to the latest version of the API (currently v3) To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. The latest definition (unversioned route) may be subject to potential breaking changes (for instance, say v4 is added then using unversioned route will point to v4 instead). To see different definitions, use the drop down at the top right of this page*
+        ### *Note: the* latest definition *points to the latest version of the API. Requests to an unversioned route (e.g. /api/<some-endpoint>) as documented in this page, will always point to the latest version of the API (currently v4) To ensure not being subject to breaking changes, use /api/v4/<some-endpoint>. The latest definition (unversioned route) may be subject to potential breaking changes (for instance, say v4 is added then using unversioned route will point to v4 instead). To see different definitions, use the drop down at the top right of this page*
         ### A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
         ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
         """
@@ -377,7 +388,7 @@ builder.Services.AddSwaggerGen(options =>
 
         if (docName.Equals("latest"))
         {
-            if (apiDesc.RelativePath != null && apiDesc.RelativePath.StartsWith("api/v3"))
+            if (apiDesc.RelativePath != null && apiDesc.RelativePath.StartsWith("api/v4"))
             {
                 return false;
             }
@@ -393,7 +404,7 @@ builder.Services.AddSwaggerGen(options =>
             Console.WriteLine($"[SWAGGER DEBUG] Skipping {apiDesc.RelativePath} (no version metadata)");
             return false;
         }
-        else if (apiDesc.RelativePath != null && !apiDesc.RelativePath.StartsWith("api/v3"))
+        else if (apiDesc.RelativePath != null && !apiDesc.RelativePath.StartsWith("api/v"))
         {
             return false;
         }
@@ -615,6 +626,10 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint(
             $"/swagger/v3/swagger.json",
             $"Geonorge nedlastings-API 3.0");
+
+    options.SwaggerEndpoint(
+            $"/swagger/v4/swagger.json",
+            $"Geonorge nedlastings-API 4.0");
 
     //foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
     //{
