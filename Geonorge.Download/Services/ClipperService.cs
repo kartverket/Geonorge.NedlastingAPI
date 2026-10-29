@@ -165,7 +165,7 @@ namespace Geonorge.Download.Services
                 clipperUrlHttps = clipperUrl;
 
             var urlBuilder = new StringBuilder(clipperUrlHttps);
-            if (!string.IsNullOrEmpty(orderItem.ClipperFile))
+            if (!string.IsNullOrEmpty(orderItem.ClipperFile)) //CLIPPER SKAL DØ
             {
                 urlBuilder.Append("CLIPPER_FILE=").Append(System.Web.HttpUtility.UrlEncode(orderItem.ClipperFile));
             }
