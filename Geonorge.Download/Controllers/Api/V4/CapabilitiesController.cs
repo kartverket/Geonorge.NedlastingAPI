@@ -1,23 +1,11 @@
 ﻿using Asp.Versioning;
-using Geonorge.Download.Models;
-using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
 using Google.Cloud.Storage.V1;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.StaticFiles;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using System.Web;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -109,18 +97,12 @@ namespace Geonorge.Download.Controllers.Api.V4
         [HttpGet("codelists/area/{metadataUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<AreaType>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetAreas([FromRoute] string metadataUuid)
         {
             try
             {
-                return Ok(capabilitiesService.GetAreas(metadataUuid, HttpContext.User)); //SJEKK HER. Det surret med kommune og sånn skjer her
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                logger.LogError("UnauthorizedAccessException: " + metadataUuid, ex);
-                return Unauthorized();
+                return Ok(capabilitiesService.GetAllAreas(metadataUuid)); //SJEKK HER. Det surret med kommune og sånn skjer her
             }
             catch (Exception ex)
             {
