@@ -1,18 +1,12 @@
 ﻿using Asp.Versioning;
 using Geonorge.Download.Models;
-using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -26,7 +20,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme}")]
     //[HandleError]
     public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService) : ControllerBase
     {
@@ -42,11 +35,13 @@ namespace Geonorge.Download.Controllers.Api.V4
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> PostOrder([FromBody] OrderType order)
         {
             try
             {
-                var savedOrder = await orderService.CreateOrder(order, HttpContext.User);
+                var savedOrder = await orderService.CreateOrderOpenData(order);
                 orderService.AddOrderUsage(savedOrder.GetDownloadUsage());
                 return Ok(ConvertToReceipt(savedOrder, Request));
             }
@@ -54,7 +49,13 @@ namespace Geonorge.Download.Controllers.Api.V4
             {
                 logger.LogInformation(e.Message, e);
                 //return Unauthorized();
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                return StatusCode(StatusCodes.Status403Forbidden, "No restricted datasets allowed");
+            }
+
+            catch (InvalidGeometryException e)
+            {
+                logger.LogInformation(e.Message, e);
+                return StatusCode(StatusCodes.Status400BadRequest, $"Invalid geometry for dataset, {e.Message}");
             }
             catch (Exception ex)
             {

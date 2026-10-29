@@ -54,6 +54,11 @@ namespace Geonorge.Download.Controllers.Api.V3
                 //return Unauthorized();
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
+            catch (InvalidGeometryException e)
+            {
+                logger.LogInformation(e.Message, e);
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
             catch (Exception ex)
             {
                 logger.LogError("Error creating new order.", ex);
