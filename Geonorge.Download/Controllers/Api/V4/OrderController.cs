@@ -72,7 +72,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult GetOrder(string orderUuid)
         {
             // Redirect to web controller if html is requested:
@@ -88,8 +88,8 @@ namespace Geonorge.Download.Controllers.Api.V4
             if (order == null)
                 return NotFound();
 
-            if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(HttpContext.User))
-                return Unauthorized();
+            if (order.ContainsRestrictedDatasets())
+                return Forbid();
 
             return Ok(ConvertToReceipt(order, Request));
         }
@@ -110,7 +110,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
         {
@@ -120,8 +120,8 @@ namespace Geonorge.Download.Controllers.Api.V4
                 if (order == null)
                     return NotFound();
 
-                if (order.ContainsRestrictedDatasets() && !order.BelongsToUser(HttpContext.User))
-                    return Unauthorized();
+                if (order.ContainsRestrictedDatasets())
+                    return Forbid();
 
                 orderService.CheckPackageSize(order);
 
@@ -148,12 +148,19 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// <returns>
         /// Http status code 200.
         /// </returns>
+        ///         
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("order/uuidfile/{orderUuid}")]
         public IActionResult GetUuidFile(string orderUuid)
         {
             try
             {
                 Order order = orderService.Find(orderUuid);
+                if (order.ContainsRestrictedDatasets())
+                    return Forbid();
+
                 if (order == null)
                     return NotFound();
 
