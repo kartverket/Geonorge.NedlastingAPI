@@ -148,7 +148,10 @@ namespace Geonorge.Download.Services
 
         private bool ContainsRestrictedDatasets(List<OrderItem> orderItems)
         {
-            return orderItems.Any(item => item.AccessConstraint != null);
+            var metadataUuids = orderItems.Select(item => item.MetadataUuid).Distinct().ToList();
+            return downloadContext.Capabilities.Any(dataset =>
+                metadataUuids.Contains(dataset.MetadataUuid) &&
+                !string.IsNullOrWhiteSpace(dataset.AccessConstraint));
         }
 
         // ReSharper disable once UnusedParameter.Local
