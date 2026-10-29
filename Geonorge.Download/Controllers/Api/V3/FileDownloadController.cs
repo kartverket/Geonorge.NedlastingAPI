@@ -22,6 +22,8 @@ namespace Geonorge.Download.Controllers.Api.V3
 {
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiExplorerSettings(GroupName = "latest")]
+    [Route("api")]
     [Tags("Download")] // Groups together with DownloadControllers endpoints
     [Route("api/v{version:apiVersion}")]
     [AllowAnonymous]

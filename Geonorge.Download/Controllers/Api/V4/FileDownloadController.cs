@@ -9,8 +9,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [Tags("Download")] // Groups together with DownloadControllers endpoints
-    [ApiExplorerSettings(GroupName = "latest")]
-    [Route("api")]
+    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [AllowAnonymous]
     public class FileDownloadController(ILogger<FileDownloadController> logger, IConfiguration config, IFileService fileService, IDownloadService downloadService) : ControllerBase

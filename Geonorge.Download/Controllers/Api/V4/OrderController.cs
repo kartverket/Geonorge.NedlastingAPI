@@ -15,8 +15,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     /// </summary>
     [ApiController]
     [ApiVersion("4.0")]
-    [ApiExplorerSettings(GroupName = "latest")]
-    [Route("api")]
+    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
