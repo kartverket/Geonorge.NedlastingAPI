@@ -43,15 +43,28 @@ namespace Geonorge.Download.Controllers.Api.V4
         public async Task<IActionResult> GetBundleFile([FromRoute] string orderUuid)
         {
             if (!IsValidUuid(orderUuid))
+            {
                 return BadRequest("orderUuid is not a valid uuid.");
+            }
 
             var order = orderService.Find(orderUuid);
-            if (order == null)
+            if (order == null || string.IsNullOrEmpty(order.DownloadBundleUrl))
+            {
                 return NotFound();
+            }
+
+            // Download open data directly from it's location:
+            if (!order.ContainsRestrictedDatasets())
+            {
+                order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
+                return Redirect(order.DownloadBundleUrl);
+            }
+
 
             bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
 
-            if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
+            // If the user is not logged in, redirect to the authentication page with the download URL.
+            if (!userIsLoggedIn)
             {
                 var downloadUrl = new DownloadUrlBuilder(config)
                     .OrderId(Guid.Parse(orderUuid))
@@ -59,19 +72,11 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
             }
 
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(HttpContext.User))
-                return Forbid(); // "User not allowed to download order"
-
-            if (string.IsNullOrEmpty(order.DownloadBundleUrl))
-                return NotFound();
-
-            // Download open data directly from it's location:
-            if (!order.ContainsRestrictedDatasets())
+            // "User not allowed to download order"
+            if (!order.BelongsToUser(HttpContext.User))
             {
-                order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
-                return Redirect(order.DownloadBundleUrl); 
+                return Forbid();
             }
-
             // Stream restricted data directly to the client
             await downloadService.StreamRemoteFileToResponseAsync(HttpContext, order.DownloadBundleUrl);
 
@@ -126,7 +131,7 @@ namespace Geonorge.Download.Controllers.Api.V4
             if (item.AccessConstraint.IsOpen())
             {
                 item.DownloadUrl = item.DownloadUrl.Replace("http://", "https://");
-                return Redirect(item.DownloadUrl); 
+                return Redirect(item.DownloadUrl);
             }
 
             // Stream restricted data directly to the client
