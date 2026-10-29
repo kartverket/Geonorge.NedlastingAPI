@@ -1,22 +1,8 @@
 ﻿using Asp.Versioning;
 using Geonorge.Download.Models;
-using Geonorge.Download.Services;
-using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -27,7 +13,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme},{CookieAuthenticationDefaults.AuthenticationScheme}")]
     public class FileDownloadController(ILogger<FileDownloadController> logger, IConfiguration config, IFileService fileService, IDownloadService downloadService) : ControllerBase
     {
         /// <summary>
@@ -55,47 +40,18 @@ namespace Geonorge.Download.Controllers.Api.V4
             if (dataset == null)
                 return NotFound();
 
+            if(dataset.IsRestricted()) 
+                return Forbid();
+
             Models.File file = await fileService.GetFileAsync(fileUuid, datasetUuid);
             if (file == null)
-                return NotFound();
+                return NotFound();            
 
-
-            var user = HttpContext.User.Identity;
-            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
-            var isRestrictedDataset = dataset.IsRestricted();
-            if (isRestrictedDataset && !userIsLoggedIn)
-            {
-                logger.LogInformation($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user must be logged in.");
-
-
-                if (Request.Headers.Accept.Any(h => h.Contains("text/html"))) // be kind to browsers and redirect to login page
-                    return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(config["DownloadUrl"] + "api/download/file/" + datasetUuid + "/" + fileUuid));
-
-                return Forbid(BasicMachineAuthHandler.SchemeName); // TODO: Make smart scheme?
-            }
-
-            if (isRestrictedDataset && userIsLoggedIn)
-            {
-                var userHasAccess = fileService.HasAccess(file, HttpContext.User);
-                if (!userHasAccess)
-                {
-                    logger.LogInformation($"Access denied to [file={file.Filename}]. [dataset={dataset.Title}] is restricted and user does not have required access/role.");
-                    return Forbid(BasicMachineAuthHandler.SchemeName); // TODO: Make smart scheme?
-                }
-            }
-
-            logger.LogInformation($"Serving [file={file.Filename}] [dataset={dataset.Title}] [datasetUuid={dataset.MetadataUuid}] [isRestrictedDataset={isRestrictedDataset}]");
+            logger.LogInformation($"Serving [file={file.Filename}] [dataset={dataset.Title}] [datasetUuid={dataset.MetadataUuid}] [isRestrictedDataset={false}]");
 
             await downloadService.StreamRemoteFileToResponseAsync(HttpContext, file.Url);
 
             return new EmptyResult(); 
-        }
-
-        private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
-        {
-            var server = config["DownloadUrl"];
-            var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
-            return $"{server}account/login?ReturnUrl={encodedReturnUrl}";
         }
     }
 }
