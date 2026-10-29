@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Models;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
@@ -17,7 +16,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]

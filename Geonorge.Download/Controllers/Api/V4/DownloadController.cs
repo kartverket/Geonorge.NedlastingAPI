@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
-using Geonorge.Download.Controllers.Api;
 using Microsoft.AspNetCore.Authorization;
 using Geonorge.Download.Services.Interfaces;
 
@@ -14,7 +13,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]

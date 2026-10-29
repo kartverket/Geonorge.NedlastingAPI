@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Models;
 using Geonorge.Download.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,14 +10,12 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
     [Tags("Download")] // Groups together with DownloadControllers endpoints
-    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [AllowAnonymous]
     public class FileDownloadController(ILogger<FileDownloadController> logger, IConfiguration config, IFileService fileService, IDownloadService downloadService) : ControllerBase
     {
         /// <summary>
         /// Download a file directly based on dataset uuid and file uuid. This method is used by the atom feed and desktop download client.
-        /// Restricted files are secured with BAAT-authentication (SAML) and local machine accounts (Basic authentication)
         /// </summary>
         /// <param name="datasetUuid">metadata uuid of the dataset</param>
         /// <param name="fileUuid">the file uuid</param>

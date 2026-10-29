@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
 using Google.Cloud.Storage.V1;
@@ -12,7 +11,6 @@ namespace Geonorge.Download.Controllers.Api.V4
 {
     /// <summary>
     /// Provides endpoints for retrieving dataset capabilities, supported projections, available areas, and formats for the download service API.
-    /// Also includes endpoints for validating clipper files and checking if a selected polygon area is within download limits.
     /// All endpoints support both XML and JSON responses.
     /// </summary>
     /// <param name="logger"></param>
@@ -23,7 +21,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
     [AllowAnonymous]

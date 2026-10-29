@@ -110,7 +110,7 @@ builder.Services
         oidc.Authority = builder.Configuration["auth:oidc:Authority"];
         oidc.ClientId = builder.Configuration["auth:oidc:ClientId"];
         oidc.ClientSecret = builder.Configuration["auth:oidc:ClientSecret"];
-            
+
         // Core OIDC
         oidc.ResponseType = OpenIdConnectResponseType.Code;
         oidc.UsePkce = true;
@@ -316,7 +316,7 @@ builder.Services.AddOutputCache(options =>
 builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(3, 0);
-        options.AssumeDefaultVersionWhenUnspecified = true;    
+        options.AssumeDefaultVersionWhenUnspecified = true;
         options.ReportApiVersions = true;
     })
     .AddMvc()
@@ -348,9 +348,9 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Endpoints intended for internal operators, dataset providers, and admin tooling."
     });
 
-    options.SwaggerDoc("v3", new OpenApiInfo 
-    { 
-        Title = "Geonorge nedlastings-API", 
+    options.SwaggerDoc("v3", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API",
         Version = "v3",
         Description = $$"""
         ### *Note:* v3 *is the stable and currently latest version of the API. To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. /api/<some-endpoint> (notice the lack of version) will always point to the latest version (currently v3, but may change). To see different definitions, use the drop down at the top right of this page*
@@ -359,9 +359,9 @@ builder.Services.AddSwaggerGen(options =>
         """
     });
 
-    options.SwaggerDoc("v4", new OpenApiInfo 
-    { 
-        Title = "Geonorge nedlastings-API", 
+    options.SwaggerDoc("v4", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API",
         Version = "v4",
         Description = $$"""
         ### *Note:* v4 is available at /api/v4/<some-endpoint>. To ensure not being subject to breaking changes, use a versioned endpoint. /api/<some-endpoint> (notice the lack of version) currently points to v3. To see different definitions, use the drop down at the top right of this page*
@@ -404,7 +404,7 @@ builder.Services.AddSwaggerGen(options =>
             Console.WriteLine($"[SWAGGER DEBUG] Skipping {apiDesc.RelativePath} (no version metadata)");
             return false;
         }
-        else if (apiDesc.RelativePath != null && !apiDesc.RelativePath.StartsWith("api/v3"))
+        else if (apiDesc.RelativePath != null && !Regex.IsMatch(apiDesc.RelativePath, "^api/v\\d+"))
         {
             return false;
         }
@@ -588,7 +588,7 @@ app.UseRequestLocalization(options =>
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
 // protect internal API documentation
-app.UseWhen(ctx => (ctx.Request.Path.StartsWithSegments("/swagger/internal") || 
+app.UseWhen(ctx => (ctx.Request.Path.StartsWithSegments("/swagger/internal") ||
                     ctx.Request.Path.StartsWithSegments("/swagger-internal")), branch =>
 {
     branch.Use(async (context, next) =>
@@ -657,7 +657,7 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/clipperfiles/{**objectKey}", async 
+app.MapGet("/clipperfiles/{**objectKey}", async
     (
         string objectKey,
         HttpContext http,
@@ -688,7 +688,7 @@ app.MapGet("/clipperfiles/{**objectKey}", async
 app.MapGet("/help", async () =>
 {
     await Task.CompletedTask;
-    return Results.LocalRedirect("/swagger", permanent:true);
+    return Results.LocalRedirect("/swagger", permanent: true);
 });
 
 app.UseAntiforgery();
