@@ -207,7 +207,12 @@ namespace Geonorge.Download.Services
             List<AreaType> areas = new List<AreaType>();
             foreach (var area in areasQuery)
             {
-                areas.Add(new AreaType { code = area.DivisionKey, name = area.Division });
+                areas.Add(new AreaType
+                {
+                    type = area.Division,
+                    code = area.DivisionKey,
+                    name = registerFetcher.GetArea(area.Division, area.DivisionKey).name
+                });
             }
 
             return areas;
