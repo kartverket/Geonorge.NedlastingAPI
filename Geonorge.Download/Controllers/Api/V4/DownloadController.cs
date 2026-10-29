@@ -1,17 +1,8 @@
-﻿using System;
-using System.Configuration;
-using System.Net;
-using System.Web;
-using Geonorge.Download.Models;
-using Geonorge.Download.Services.Auth;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
-using System.Diagnostics.CodeAnalysis;
 using Geonorge.Download.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -26,7 +17,6 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{BasicMachineAuthHandler.SchemeName},{CookieAuthenticationDefaults.AuthenticationScheme}")]
     public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService) : ControllerBase
     {
 
@@ -53,35 +43,13 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return NotFound();
             }
 
-            // Download open data directly from it's location:
-            if (!order.ContainsRestrictedDatasets())
-            {
-                order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
-                return Redirect(order.DownloadBundleUrl);
-            }
-
-
-            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
-
-            // If the user is not logged in, redirect to the authentication page with the download URL.
-            if (!userIsLoggedIn)
-            {
-                var downloadUrl = new DownloadUrlBuilder(config)
-                    .OrderId(Guid.Parse(orderUuid))
-                    .AsBundle();
-                return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
-            }
-
-            // "User not allowed to download order"
-            if (!order.BelongsToUser(HttpContext.User))
+            if (order.ContainsRestrictedDatasets())
             {
                 return Forbid();
             }
-            // Stream restricted data directly to the client
-            await downloadService.StreamRemoteFileToResponseAsync(HttpContext, order.DownloadBundleUrl);
 
-            // The response body has already been streamed to the client.
-            return new EmptyResult();
+            order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
+            return Redirect(order.DownloadBundleUrl);
         }
 
         /// <summary>
@@ -108,66 +76,26 @@ namespace Geonorge.Download.Controllers.Api.V4
             if (order == null)
                 return NotFound();
 
-            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
-
-            if (order.ContainsRestrictedDatasets() && !userIsLoggedIn)
-            {
-                var downloadUrl = new DownloadUrlBuilder(config)
-                    .OrderId(Guid.Parse(orderUuid))
-                    .FileId(Guid.Parse(fileId))
-                    .Build();
-
-                return Redirect(UrlToAuthenticationPageWithRedirectToDownloadUrl(downloadUrl));
-            }
-
-            if (order.ContainsRestrictedDatasets() && userIsLoggedIn && !order.BelongsToUser(HttpContext.User))
-                return Forbid(); // "User not allowed to download order"
+            if(order.ContainsRestrictedDatasets())
+                return Forbid();
 
             var item = order.GetItemWithFileId(fileId);
-            if (item == null || !item.IsReadyForDownload())
+
+            if(item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
                 return NotFound();
 
-            // Download open data directly from it's location:
-            if (item.AccessConstraint.IsOpen())
-            {
-                item.DownloadUrl = item.DownloadUrl.Replace("http://", "https://");
-                return Redirect(item.DownloadUrl);
-            }
+            if(item.AccessConstraint.IsRestricted())
+                return Forbid();
 
-            // Stream restricted data directly to the client
-            await downloadService.StreamRemoteFileToResponseAsync(HttpContext, item.DownloadUrl);
-
-            // The response body has already been streamed to the client.
-            return new EmptyResult();
-        }
-
-        /// <summary>
-        /// Validate user
-        /// </summary>
-        [HttpGet("download/validate-user")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult ValidateUser()
-        {
-            bool userIsLoggedIn = (HttpContext.User.Identity != null) ? HttpContext.User.Identity.IsAuthenticated : false;
-            if (!userIsLoggedIn)
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized, "Feil brukernavn/passord");
-            }
-            return Ok();
+            var downloadUrl = item.DownloadUrl.Replace("http://", "https://");
+                return Redirect(downloadUrl);
+            
         }
 
         internal static bool IsValidUuid(string input)
         {
             Guid result;
             return Guid.TryParse(input, out result);
-        }
-
-        private string UrlToAuthenticationPageWithRedirectToDownloadUrl(string downloadUrl)
-        {
-            var server = config["DownloadUrl"];
-            var encodedReturnUrl = HttpUtility.UrlEncode(downloadUrl);
-            return $"{server}account/login?ReturnUrl={encodedReturnUrl}";
         }
     }
 }
