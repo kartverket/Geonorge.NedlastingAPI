@@ -157,11 +157,11 @@ namespace Geonorge.Download.Controllers.Api.V4
             try
             {
                 Order order = orderService.Find(orderUuid);
-                if (order.ContainsRestrictedDatasets())
-                    return Forbid();
-
                 if (order == null)
                     return NotFound();
+
+                if (order.ContainsRestrictedDatasets())
+                    return Forbid();
 
                 var fileIds = string.Join(",", order.CollectFileIdsForBundling());
                 return Content(fileIds, "text/plain");
