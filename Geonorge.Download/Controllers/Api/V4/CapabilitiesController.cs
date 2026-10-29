@@ -132,34 +132,5 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        /// <summary>
-        /// If polygon is selected, checks if coordinates is within the maximum allowable area that can be downloaded
-        /// </summary>
-        /// <param name="request">The request containing coordinates, coordinate system, and metadata UUID</param>
-        /// <returns></returns>
-        [HttpPost("can-download")]
-        [Consumes("application/json", "application/xml")]
-        [Produces("application/json", "application/xml")]
-        [ProducesResponseType(typeof(CanDownloadResponseType), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CanDownload([FromBody] CanDownloadRequestType request)
-        {
-            try
-            {
-                var canDownload = true;
-
-                if (bool.TryParse(config["FmeAreaCheckerEnabled"]!, out _))
-                    canDownload = downloadService.AreaIsWithinDownloadLimits(request.coordinates,
-                        request.coordinateSystem, request.metadataUuid);
-
-                return Ok(new CanDownloadResponseType { canDownload = canDownload });
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("Error returning canDownload for uuid: " + request.metadataUuid, ex);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
     }
 }
