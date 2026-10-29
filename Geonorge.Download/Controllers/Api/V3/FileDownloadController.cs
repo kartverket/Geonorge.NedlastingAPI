@@ -17,11 +17,13 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using Geonorge.Download.Controllers.Api;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Tags("Download")] // Groups together with DownloadControllers endpoints

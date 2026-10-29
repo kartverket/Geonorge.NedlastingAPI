@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Geonorge.Download.Controllers.Api;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -21,6 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// </summary>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]

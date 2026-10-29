@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
 using Google.Cloud.Storage.V1;
@@ -21,6 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     /// <param name="webHostEnvironment"></param>
     [ApiController]
     [ApiVersion("4.0")]
+    [ApiVersionHeader("4.0")]
     [ApiExplorerSettings(GroupName = "v4")]
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowAll")]
@@ -55,7 +57,6 @@ namespace Geonorge.Download.Controllers.Api.V4
                     return NotFound();
                 }
                 logger.LogInformation("Capabilities found for uuid: " + metadataUuid);
-                Response.Headers.Append("X-API-VERSION", "4.0");
                 return Ok(capabilities);
             }
             catch (Exception ex)
