@@ -7,8 +7,10 @@ import data.authz
 valid_claims := {
 	"active": true,
 	"aud": authz.expected_audience,
-	"client": "cluster:namespace:calling-app",
+	"client": allowed_client,
 }
+
+allowed_client := min(authz.allowed_clients)
 
 introspect_ok(body) := {"status_code": 200, "body": body}
 
