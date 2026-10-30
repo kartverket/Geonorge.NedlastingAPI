@@ -78,16 +78,15 @@ namespace Geonorge.Download.Services
                 SoftwareClientVersion = incomingOrder.softwareClientVersion
             };
 
-            var predefinedAreaOrderItems = GetOrderItemsForPredefinedAreas(incomingOrder, null);
-            var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
-
-            var predefinedContainsRestricted = ContainsRestrictedDatasets(predefinedAreaOrderItems);
-            var clippableContainsRestricted = ContainsRestrictedDatasets(clippableOrderItems);
-
-            if (predefinedContainsRestricted || clippableContainsRestricted)
+            var orderContainsRestrictedDatasets = OrderContainsRestrictedDatasets(incomingOrder);
+            if (orderContainsRestrictedDatasets)
             {
                 throw new AccessRestrictionException("Predefined area order contains restricted datasets.");
             }
+
+            var predefinedAreaOrderItems = GetOrderItemsForPredefinedAreas(incomingOrder, null);
+            var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
+
             CheckRestrictions(clippableOrderItems);
 
             order.AddOrderItems(predefinedAreaOrderItems);
@@ -145,13 +144,14 @@ namespace Geonorge.Download.Services
             return eiendoms;
         }
 
-
-        private bool ContainsRestrictedDatasets(List<OrderItem> orderItems)
+        private bool OrderContainsRestrictedDatasets(OrderType order)
         {
-            var metadataUuids = orderItems.Select(item => item.MetadataUuid).Distinct().ToList();
+            var metadataUuids = order.orderLines.Select(item => item.metadataUuid).Distinct().ToList();
             return downloadContext.Capabilities.Any(dataset =>
                 metadataUuids.Contains(dataset.MetadataUuid) &&
-                !string.IsNullOrWhiteSpace(dataset.AccessConstraint));
+                (!string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
+                !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole))
+            );
         }
 
         // ReSharper disable once UnusedParameter.Local
