@@ -110,7 +110,7 @@ builder.Services
         oidc.Authority = builder.Configuration["auth:oidc:Authority"];
         oidc.ClientId = builder.Configuration["auth:oidc:ClientId"];
         oidc.ClientSecret = builder.Configuration["auth:oidc:ClientSecret"];
-            
+
         // Core OIDC
         oidc.ResponseType = OpenIdConnectResponseType.Code;
         oidc.UsePkce = true;
@@ -316,7 +316,7 @@ builder.Services.AddOutputCache(options =>
 builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(3, 0);
-        options.AssumeDefaultVersionWhenUnspecified = true;    
+        options.AssumeDefaultVersionWhenUnspecified = true;
         options.ReportApiVersions = true;
     })
     .AddMvc()
@@ -348,13 +348,24 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Endpoints intended for internal operators, dataset providers, and admin tooling."
     });
 
-    options.SwaggerDoc("v3", new OpenApiInfo 
-    { 
-        Title = "Geonorge nedlastings-API", 
+    options.SwaggerDoc("v3", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API",
         Version = "v3",
         Description = $$"""
         ### *Note:* v3 *is the stable and currently latest version of the API. To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. /api/<some-endpoint> (notice the lack of version) will always point to the latest version (currently v3, but may change). To see different definitions, use the drop down at the top right of this page*
         ### A client will start by calling capabilities (api/v3/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
+        ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
+        """
+    });
+
+    options.SwaggerDoc("v4", new OpenApiInfo
+    {
+        Title = "Geonorge nedlastings-API",
+        Version = "v4",
+        Description = $$"""
+        ### *Note:* v4 is available at /api/v4/<some-endpoint>. To ensure not being subject to breaking changes, use a versioned endpoint. /api/<some-endpoint> (notice the lack of version) currently points to v3. To see different definitions, use the drop down at the top right of this page*
+        ### A client will start by calling capabilities (api/v4/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
         ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
         """
     });
@@ -364,7 +375,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Geonorge nedlastings-API",
         Version = "latest",
         Description = $$"""
-        ### *Note: the* latest definition *points to the latest version of the API. Requests to an unversioned route (e.g. /api/<some-endpoint>) as documented in this page, will always point to the latest version of the API (currently v3) To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. The latest definition (unversioned route) may be subject to potential breaking changes (for instance, say v4 is added then using unversioned route will point to v4 instead). To see different definitions, use the drop down at the top right of this page*
+        ### *Note: the* latest definition *currently points to v3. Requests to an unversioned route (e.g. /api/<some-endpoint>) as documented in this page, will always point to the latest version of the API. To ensure not being subject to breaking changes, use /api/v3/<some-endpoint>. The latest definition (unversioned route) may be subject to potential breaking changes. To see different definitions, use the drop down at the top right of this page*
         ### A client will start by calling capabilities (api/capabilities/{metadataUuid}) this is the root API call for a dataset. Capabilities will announce the rest of the resources with links (href) and relation (rel). 
         ### For more info implementing the API please also see [documentation]({{builder.Configuration["DownloadUrl"]!.TrimEnd('/')}}/help/documentation)
         """
@@ -393,7 +404,7 @@ builder.Services.AddSwaggerGen(options =>
             Console.WriteLine($"[SWAGGER DEBUG] Skipping {apiDesc.RelativePath} (no version metadata)");
             return false;
         }
-        else if (apiDesc.RelativePath != null && !apiDesc.RelativePath.StartsWith("api/v3"))
+        else if (apiDesc.RelativePath != null && !Regex.IsMatch(apiDesc.RelativePath, "^api/v\\d+"))
         {
             return false;
         }
@@ -577,7 +588,7 @@ app.UseRequestLocalization(options =>
 var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
 // protect internal API documentation
-app.UseWhen(ctx => (ctx.Request.Path.StartsWithSegments("/swagger/internal") || 
+app.UseWhen(ctx => (ctx.Request.Path.StartsWithSegments("/swagger/internal") ||
                     ctx.Request.Path.StartsWithSegments("/swagger-internal")), branch =>
 {
     branch.Use(async (context, next) =>
@@ -616,6 +627,10 @@ app.UseSwaggerUI(options =>
             $"/swagger/v3/swagger.json",
             $"Geonorge nedlastings-API 3.0");
 
+    options.SwaggerEndpoint(
+            $"/swagger/v4/swagger.json",
+            $"Geonorge nedlastings-API 4.0");
+
     //foreach (var description in provider.ApiVersionDescriptions.OrderByDescending(d => d.ApiVersion))
     //{
     //    options.SwaggerEndpoint(
@@ -642,7 +657,7 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/clipperfiles/{**objectKey}", async 
+app.MapGet("/clipperfiles/{**objectKey}", async
     (
         string objectKey,
         HttpContext http,
@@ -673,7 +688,7 @@ app.MapGet("/clipperfiles/{**objectKey}", async
 app.MapGet("/help", async () =>
 {
     await Task.CompletedTask;
-    return Results.LocalRedirect("/swagger", permanent:true);
+    return Results.LocalRedirect("/swagger", permanent: true);
 });
 
 app.UseAntiforgery();

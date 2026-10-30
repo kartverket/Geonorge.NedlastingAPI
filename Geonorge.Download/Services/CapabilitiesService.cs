@@ -198,6 +198,26 @@ namespace Geonorge.Download.Services
             return areas;
         }
 
+        public List<AreaType> GetAllAreas(string metadataUuid)
+        {
+            var areasQuery = (from p in dbContext.FileList
+                              where p.Dataset.MetadataUuid == metadataUuid
+                              select new { p.Division, p.DivisionKey }).Distinct().ToList();
+
+            List<AreaType> areas = new List<AreaType>();
+            foreach (var area in areasQuery)
+            {
+                areas.Add(new AreaType
+                {
+                    type = area.Division,
+                    code = area.DivisionKey,
+                    name = registerFetcher.GetArea(area.Division, area.DivisionKey).name
+                });
+            }
+
+            return areas;
+        }
+
         public List<FormatType> GetFormats(string metadataUuid)
         {
 

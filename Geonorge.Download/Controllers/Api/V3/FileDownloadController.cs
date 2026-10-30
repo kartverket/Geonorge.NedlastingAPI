@@ -17,14 +17,16 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using Geonorge.Download.Controllers.Api;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
     [ApiController]
     [ApiVersion("3.0")]
-    [Tags("Download")] // Groups together with DownloadControllers endpoints
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
+    [Tags("Download")] // Groups together with DownloadControllers endpoints
     [Route("api/v{version:apiVersion}")]
     [AllowAnonymous]
     [Authorize(AuthenticationSchemes = $"{BasicMachineAuthHandler.SchemeName},{JwtBearerDefaults.AuthenticationScheme},{CookieAuthenticationDefaults.AuthenticationScheme}")]

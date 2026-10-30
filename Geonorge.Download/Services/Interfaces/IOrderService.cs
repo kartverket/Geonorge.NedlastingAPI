@@ -9,6 +9,8 @@ namespace Geonorge.Download.Services.Interfaces
     {
         Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal);
 
+        Task<Order> CreateOrderOpenData(OrderType incomingOrder);
+
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
         Order Find(string orderUuid);

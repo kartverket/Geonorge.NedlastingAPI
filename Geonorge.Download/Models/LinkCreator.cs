@@ -177,8 +177,11 @@ namespace Geonorge.Download.Models
         private static string GetVersion(HttpRequest request)
         {
             var currentUrl = $"{request.Scheme}://{request.Host}{request.PathBase}{request.Path}{request.QueryString}";
-            if (currentUrl.Contains("api/v2/"))
-                return "v2/";
+
+            if (currentUrl.Contains("api/v4/"))
+                return "v4/";
+            if (currentUrl.Contains("api/v3/"))
+                return "v3/";
             else
                 return "";
         }
