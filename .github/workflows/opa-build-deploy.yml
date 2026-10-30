@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BUNDLE_NAME: ${{ github.repository }}/opa-bundle
+  BUNDLE_NAME: kartverket/geonorge-nedlastingapi/opa-bundle
 
 jobs:
   build:
