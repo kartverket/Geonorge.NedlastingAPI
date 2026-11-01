@@ -6,7 +6,7 @@ using Geonorge.NedlastingApi.V3;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
+using System.Net.Http.Headers;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -20,7 +20,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
     //[HandleError]
-    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService) : ControllerBase
+    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHttpClientFactory httpClientFactory) : ControllerBase
     {
         /// <summary>
         /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
@@ -64,6 +64,64 @@ namespace Geonorge.Download.Controllers.Api.V4
         }
 
         /// <summary>
+        /// Creates an order containing restricted datasets. Requires a valid TokenX access token.
+        /// </summary>
+        /// <param name="order">OrderType model</param>
+        /// <response code="401">Missing or invalid access token</response>
+        /// <response code="503">Authorization service unavailable</response>
+        [HttpPost("order-restricted")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+        public async Task<IActionResult> PostRestrictedOrder([FromBody] OrderType order)
+        {
+            if (!AuthenticationHeaderValue.TryParse(Request.Headers.Authorization.ToString(), out var auth)
+                || !string.Equals(auth.Scheme, "Bearer", StringComparison.OrdinalIgnoreCase)
+                || string.IsNullOrWhiteSpace(auth.Parameter))
+            {
+                return Unauthorized();
+            }
+
+            var opaBaseUrl = (config["OPA_URL"] ?? "http://localhost:3010").TrimEnd('/');
+            var client = httpClientFactory.CreateClient();
+            client.Timeout = TimeSpan.FromSeconds(10);
+
+            OpaDecision? decision;
+            try
+            {
+                using var response = await client.PostAsJsonAsync(
+                    $"{opaBaseUrl}/v1/data/download/valid_token",
+                    new { input = new { token = auth.Parameter } });
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    logger.LogError("OPA returned {StatusCode}", response.StatusCode);
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
+                decision = await response.Content.ReadFromJsonAsync<OpaDecision>();
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                logger.LogError(ex, "OPA request failed");
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            if (decision?.Result != true)
+                return Unauthorized();
+
+            // TODO: create the order
+            return Ok();
+        }
+
+        private sealed record OpaDecision(bool? Result);
+
+        /// <summary>
         /// Get info about files in order
         /// </summary>
         [HttpGet("order/{orderUuid}")]
@@ -75,7 +133,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         public IActionResult GetOrder(string orderUuid)
         {
             // Redirect to web controller if html is requested:
-            var acceptHeader = Request.Headers[HeaderNames.Accept].ToString();
+            var acceptHeader = Request.Headers.Accept.ToString();
 
             if (acceptHeader.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
             {

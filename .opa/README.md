@@ -4,7 +4,7 @@ This directory contains OPA (Open Policy Agent) policies for testing and develop
 
 ## Structure
 
-- `authz/authz.rego` - Main authorization policy
+- `download/download.rego` - Main download authorization policy
 - `.manifest` - OPA bundle manifest
 
 ## Building the Bundle
@@ -24,7 +24,7 @@ To test the policies locally:
 opa run --server .opa/
 
 # Test a request
-curl -X POST http://localhost:8181/v1/data/authz/allow \
+curl -X POST http://localhost:8181/v1/data/download/can_order \
   -H "Content-Type: application/json" \
   -d '{"input": {"token": "<access-token>"}}'
 ```
