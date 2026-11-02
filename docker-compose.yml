@@ -20,6 +20,12 @@ services:
       - ./application_default_credentials.json:/app/gcloud/application_default_credentials.json:ro
     networks:
     - geonorge-network
+    develop:
+      watch:
+        - path: ./Geonorge.Download
+          action: rebuild
+        - path: ./Geonorge.NedlastingApi
+          action: rebuild
 
   geonorge.download.redis:
     image: redis:latest
@@ -40,19 +46,19 @@ services:
     networks:
       - geonorge-network
 
-  geonorge.download.db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    ports:
-      - "1434:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=test#test123
-      - MSSQL_PID=Developer
-    volumes:
-      - ./volumes/backup:/backup:ro
-      - nedlasting_mssql:/var/opt/mssql
-    networks:
-      - geonorge-network
+  # geonorge.download.db:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   ports:
+  #     - "1434:1433"
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=test#test123
+  #     - MSSQL_PID=Developer
+  #   volumes:
+  #     - ./volumes/backup:/backup:ro
+  #     - nedlasting_mssql:/var/opt/mssql
+  #   networks:
+  #     - geonorge-network
 
   # proxy:
   #   image: nginx:latest

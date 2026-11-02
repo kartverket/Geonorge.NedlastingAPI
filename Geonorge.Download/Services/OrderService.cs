@@ -61,6 +61,47 @@ namespace Geonorge.Download.Services
             return order;
         }
 
+
+
+        /// <summary>
+        /// Creates an order for open data. Rejects any datasets that have access restrictions.
+        /// </summary>
+        /// <param name="incomingOrder">The incoming order data.</param>
+        /// <returns>The created order.</returns>
+        public async Task<Order> CreateOrderOpenData(OrderType incomingOrder)
+        {
+            var order = new Order
+            {
+                email = incomingOrder.email,
+                UsageGroup = incomingOrder.usageGroup,
+                SoftwareClient = incomingOrder.softwareClient,
+                SoftwareClientVersion = incomingOrder.softwareClientVersion
+            };
+
+            var orderContainsRestrictedDatasets = OrderContainsRestrictedDatasets(incomingOrder);
+            if (orderContainsRestrictedDatasets)
+            {
+                throw new AccessRestrictionException("Predefined area order contains restricted datasets.");
+            }
+
+            var predefinedAreaOrderItems = GetOrderItemsForPredefinedAreas(incomingOrder, null);
+            var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
+
+            CheckRestrictions(clippableOrderItems);
+
+            order.AddOrderItems(predefinedAreaOrderItems);
+            order.AddOrderItems(clippableOrderItems);
+
+            SaveOrder(order);
+
+            clipperService.SendClippingRequests(clippableOrderItems, order.email);
+
+            if(clippableOrderItems.Count > 0)
+                await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
+
+            return order;
+        }
+
         private void CheckRestrictions(List<OrderItem> clippableOrderItems)
         {
             if(clippableOrderItems.Count > 0) 
@@ -73,7 +114,7 @@ namespace Geonorge.Download.Services
                         if (capabilities.SupportsPolygonSelection.HasValue && capabilities.SupportsPolygonSelection.Value == false) 
                         {
                             logger.LogWarning($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
-                            throw new AccessRestrictionException($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
+                            throw new InvalidGeometryException($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
                         }
                     }
 
@@ -85,7 +126,7 @@ namespace Geonorge.Download.Services
 
                     if (!canDownload) {
                         logger.LogWarning($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
-                        throw new AccessRestrictionException($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
+                        throw new InvalidGeometryException($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
                     }
 
                 }
@@ -101,6 +142,16 @@ namespace Geonorge.Download.Services
             eiendoms = eiendomService.GetEiendoms(user);
 
             return eiendoms;
+        }
+
+        private bool OrderContainsRestrictedDatasets(OrderType order)
+        {
+            var metadataUuids = order.orderLines.Select(item => item.metadataUuid).Distinct().ToList();
+            return downloadContext.Capabilities.Any(dataset =>
+                metadataUuids.Contains(dataset.MetadataUuid) &&
+                (!string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
+                !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole))
+            );
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -163,7 +214,7 @@ namespace Geonorge.Download.Services
 
         }
 
-        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, ClaimsPrincipal principal)
+        private List<OrderItem> GetOrderItemsForPredefinedAreas(OrderType order, ClaimsPrincipal? principal)
         {
             var orderItems = new List<OrderItem>();
 
@@ -226,7 +277,7 @@ namespace Geonorge.Download.Services
                         query = query.Where(f => formatNames.Contains(f.Format));
                 }
 
-                // TODO: Sjekke mulige utfordringer med mange områder
+                // TODO: Sjekke mulige utfordringer med mange omrï¿½der
                 if (orderLine.areas != null && orderLine.areas.Any())
                 {
                     var grouped = orderLine.areas
@@ -518,7 +569,7 @@ namespace Geonorge.Download.Services
             bool allowed = result.Value<bool>("allowed");
 
             if(!allowed)
-                throw new FileSizeException("Filene er for store å pakke");
+                throw new FileSizeException("Filene er for store ï¿½ pakke");
         }
 
         private string CreatePackageCheckSizeUrl(Order order)
