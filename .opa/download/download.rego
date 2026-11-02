@@ -15,11 +15,17 @@ allowed_clients := {"atkv3-dev:geonorge-ny-kartkatalog-dev:kartkatalog-backend"}
 # Altinn main resource granted at Ansattporten login.
 altinn_main_resource := "urn:altinn:resource:kv-geonorge"
 
-# Sub resource checked against the Altinn PDP.
+# Main resource with sub resource attributes, checked against the Altinn PDP.
 pdp_resource := {
-	"resourceType": "urn:kv:geonorge",
-	"resourceId": "dataset",
+	"resourceId": "kv-geonorge",
 	"action": "download",
+	"resourceAttributes": [{"type": "urn:kv:geonorge", "id": "dataset"}],
+}
+
+# Lets the backend tell an invalid token (401) from a denied order (403) in one query.
+decision := {
+	"valid_token": valid_token,
+	"can_order": can_order,
 }
 
 default can_order := false

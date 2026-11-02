@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -64,10 +65,12 @@ namespace Geonorge.Download.Controllers.Api.V4
         }
 
         /// <summary>
-        /// Creates an order containing restricted datasets. Requires a valid TokenX access token.
+        /// Creates an order containing restricted datasets. Requires a valid TokenX access token
+        /// and Altinn access to download datasets on behalf of an organisation.
         /// </summary>
         /// <param name="order">OrderType model</param>
         /// <response code="401">Missing or invalid access token</response>
+        /// <response code="403">User is not permitted to order</response>
         /// <response code="503">Authorization service unavailable</response>
         [HttpPost("order-restricted")]
         [Consumes("application/json")]
@@ -95,7 +98,7 @@ namespace Geonorge.Download.Controllers.Api.V4
             try
             {
                 using var response = await client.PostAsJsonAsync(
-                    $"{opaBaseUrl}/v1/data/download/valid_token",
+                    $"{opaBaseUrl}/v1/data/download/decision",
                     new { input = new { token = auth.Parameter } });
 
                 if (!response.IsSuccessStatusCode)
@@ -112,14 +115,21 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
 
-            if (decision?.Result != true)
+            if (decision?.Result is not { ValidToken: true } result)
                 return Unauthorized();
+
+            if (!result.CanOrder)
+                return StatusCode(StatusCodes.Status403Forbidden);
 
             // TODO: create the order
             return Ok();
         }
 
-        private sealed record OpaDecision(bool? Result);
+        private sealed record OpaDecision(OrderDecision? Result);
+
+        private sealed record OrderDecision(
+            [property: JsonPropertyName("valid_token")] bool ValidToken,
+            [property: JsonPropertyName("can_order")] bool CanOrder);
 
         /// <summary>
         /// Get info about files in order

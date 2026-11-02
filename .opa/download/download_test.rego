@@ -42,12 +42,18 @@ mock_missing_client(_) := introspect_ok(object.remove(valid_claims, {"client_id"
 
 mock_server_error(_) := {"status_code": 500, "body": {}}
 
-# Introspection succeeds; PDP permits only org 314246756.
+# Introspection succeeds; PDP permits only the expected request for org 314246756.
 mock_full(req) := introspect_ok(valid_claims) if req.url == download.introspection_url
 
 mock_full(req) := {"status_code": 200, "body": {"permit": permitted}} if {
 	req.url == altinn.pdp_url
-	permitted := req.body.customerOrganizationNumber == "314246756"
+	permitted := req.body == {
+		"pid": "15819099887",
+		"resourceId": "kv-geonorge",
+		"customerOrganizationNumber": "314246756",
+		"action": "download",
+		"resourceAttributes": [{"type": "urn:kv:geonorge", "id": "dataset"}],
+	}
 }
 
 mock_pdp_deny(req) := introspect_ok(valid_claims) if req.url == download.introspection_url
@@ -109,4 +115,16 @@ test_deny_when_pdp_denies if {
 
 test_deny_when_token_invalid_even_if_pdp_permits if {
 	not download.can_order with input as {"token": "t"} with http.send as mock_invalid_token
+}
+
+test_decision_valid_and_permitted if {
+	download.decision == {"valid_token": true, "can_order": true} with input as {"token": "t"} with http.send as mock_full
+}
+
+test_decision_valid_but_denied if {
+	download.decision == {"valid_token": true, "can_order": false} with input as {"token": "t"} with http.send as mock_pdp_deny
+}
+
+test_decision_invalid_token if {
+	download.decision == {"valid_token": false, "can_order": false} with input as {"token": "t"} with http.send as mock_invalid_token
 }

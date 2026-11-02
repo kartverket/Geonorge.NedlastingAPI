@@ -22,10 +22,10 @@ claims := {"authorization_details": [
 
 pdp_request := {
 	"pid": "15819099887",
-	"resourceType": "urn:kv:geonorge",
-	"resourceId": "dataset",
+	"resourceId": "kv-geonorge",
 	"customerOrganizationNumber": "314246756",
 	"action": "download",
+	"resourceAttributes": [{"type": "urn:kv:geonorge", "id": "dataset"}],
 }
 
 mock_permit(req) := {"status_code": 200, "body": {"permit": true, "decision": "PERMIT"}} if {
@@ -36,7 +36,12 @@ mock_permit(req) := {"status_code": 200, "body": {"permit": true, "decision": "P
 
 mock_deny(_) := {"status_code": 200, "body": {"permit": false, "decision": "DENY"}}
 
-mock_permit_level_4(_) := {"status_code": 200, "body": {"permit": true, "minimumAuthenticationLevel": 4}}
+mock_permit_level_4(_) := {"status_code": 200, "body": {
+	"permit": true,
+	"decision": "PERMIT",
+	"status": "urn:oasis:names:tc:xacml:1.0:status:ok",
+	"minimumAuthenticationLevel": 4,
+}}
 
 mock_error(_) := {"status_code": 500, "body": {}}
 
