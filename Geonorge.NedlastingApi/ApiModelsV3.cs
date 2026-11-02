@@ -472,6 +472,7 @@ namespace Geonorge.NedlastingApi.V3 {
         
         private bool supportsPolygonSelectionField;
         
+        private int? maxAreaField;
         private bool supportsAreaSelectionField;
         
         private string mapSelectionLayerField;
@@ -495,7 +496,7 @@ namespace Geonorge.NedlastingApi.V3 {
                 this.supportsProjectionSelectionField = value;
             }
         }
-        
+
         /// <remarks/>
         public bool supportsFormatSelection {
             get {
@@ -513,6 +514,19 @@ namespace Geonorge.NedlastingApi.V3 {
             }
             set {
                 this.supportsPolygonSelectionField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public int? maxArea {
+            get {
+                return this.maxAreaField;
+            }
+            set {
+                if (value.Value > 0 && this.supportsPolygonSelectionField) {
+                    this.maxAreaField = value;
+                }
             }
         }
         

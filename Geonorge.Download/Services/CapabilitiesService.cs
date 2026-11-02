@@ -21,6 +21,7 @@ namespace Geonorge.Download.Services
                 supportsFormatSelection = dataset.SupportsFormatSelection.GetValueOrDefault(),
                 supportsPolygonSelection = dataset.SupportsPolygonSelection.GetValueOrDefault(),
                 supportsProjectionSelection = dataset.SupportsProjectionSelection.GetValueOrDefault(),
+                maxArea = dataset.MaxArea,
                 supportsDownloadBundling = IsBundlingEnabled(),
                 mapSelectionLayer = dataset.MapSelectionLayer,
                 accessConstraintRequiredRole = dataset.AccessConstraintRequiredRole,
