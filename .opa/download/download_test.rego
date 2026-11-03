@@ -128,3 +128,7 @@ test_decision_valid_but_denied if {
 test_decision_invalid_token if {
 	download.decision == {"valid_token": false, "can_order": false} with input as {"token": "t"} with http.send as mock_invalid_token
 }
+
+test_can_order_restricted_with_role if {
+	download.can_place_order with input as {"token": "t", "allowed_access": "norway digital restricted", "items": [{"access": "norway digital restricted"}]} with http.send as mock_full
+}

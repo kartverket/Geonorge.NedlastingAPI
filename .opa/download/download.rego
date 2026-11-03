@@ -71,3 +71,36 @@ claims := response.body if {
 	})
 	response.status_code == 200
 }
+
+default can_place_order := false
+
+can_place_order if {
+	valid_token
+	can_order
+	all_items_allowed
+}
+
+allowed_access := input.allowed_access if {
+	is_string(input.allowed_access)
+	input.allowed_access != ""
+}
+
+default all_items_allowed := false
+
+all_items_allowed if {
+	is_array(input.items)
+	every item in input.items {
+		access_allowed(item)
+	}
+}
+
+# Missing, null or empty access is allowed.
+access_allowed(item) if not "access" in object.keys(item)
+
+access_allowed(item) if item.access == null
+
+access_allowed(item) if item.access == ""
+
+access_allowed(item) if item.access == allowed_access
+
+
