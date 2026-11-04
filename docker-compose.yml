@@ -75,13 +75,36 @@ services:
                             "aud": "$${audience}", 
                             "client_id": "$${client_id}", 
                             "iss": "http://mock-oauth2-server:8080/default", 
-                            "idp": "https://test.idporten.no" 
+                            "idp": "https://test.idporten.no",
+                            "pid": "15819099887",
+                            "acr": "high",
+                            "authorization_details": [
+                              {
+                                "type": "ansattporten:altinn:service",
+                                "resource": "urn:altinn:resource:kv-geonorge",
+                                "authorized_parties": [
+                                  { "orgno": { "authority": "iso6523-actorid-upis", "ID": "0192:314246756" } }
+                                ]
+                              }
+                            ]
                           } 
                         } 
                       ] 
                     } 
                   ] 
                 }
+
+  # Stands in for altinn-pdp; permits only pid 15819099887 / org 314246756 for urn:kv:geonorge dataset download
+  altinn-pdp-mock:
+    image: wiremock/wiremock:latest
+    volumes:
+      - ./volumes/altinn-pdp:/home/wiremock:ro
+    ports:
+      - "8092:8080"
+    networks:
+      geonorge-network:
+        aliases:
+          - altinn-pdp.tilgangsstyring-altinn
 
   opa:
     image: openpolicyagent/opa:latest

@@ -252,6 +252,8 @@ builder.Services.AddHttpClient<IExternalRequestService, ExternalRequestService>(
     client.Timeout = TimeSpan.FromSeconds(timeout);
 });
 
+builder.Services.AddHttpClient<IOpaClient, OpaClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
+
 // --- Controllers and API versioning ---
 builder.Services.AddControllers(options =>
     {

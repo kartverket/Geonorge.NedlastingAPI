@@ -102,6 +102,25 @@ namespace Geonorge.Download.Services
             return order;
         }
 
+        public async Task<List<string>> GetRequiredRolesForOrder(OrderType order)
+        {
+            // Implement the logic to get required roles for the order
+
+            var metadataUuids = order.orderLines.Select(item => item.metadataUuid).Distinct().ToList();
+            return downloadContext.Capabilities
+                .Where(dataset =>
+                    dataset.MetadataUuid != null &&
+                    metadataUuids.Contains(dataset.MetadataUuid) &&
+                    (!string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
+                    !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole))
+                )
+                .Select(dataset => dataset.AccessConstraintRequiredRole)
+                .Where(role => role != null)
+                .Select(role => role!)
+                .Distinct()
+                .ToList();
+        }
+
         private void CheckRestrictions(List<OrderItem> clippableOrderItems)
         {
             if(clippableOrderItems.Count > 0) 

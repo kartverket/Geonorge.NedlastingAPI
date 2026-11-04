@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Geonorge.Download.Models;
+using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
@@ -21,7 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
     //[HandleError]
-    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHttpClientFactory httpClientFactory) : ControllerBase
+    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHttpClientFactory httpClientFactory, IOpaClient opaClient) : ControllerBase
     {
         /// <summary>
         /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
