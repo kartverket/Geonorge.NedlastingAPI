@@ -98,7 +98,7 @@ services:
   altinn-pdp-mock:
     image: wiremock/wiremock:latest
     volumes:
-      - ./volumes/altinn-pdp:/home/wiremock:ro
+      - ./mocks/altinn-pdp:/home/wiremock:ro
     ports:
       - "8092:8080"
     networks:
