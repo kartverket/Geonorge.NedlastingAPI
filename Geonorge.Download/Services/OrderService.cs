@@ -1,6 +1,7 @@
 using Geonorge.AuthLib.Common;
 using Geonorge.Download.Models;
 using Geonorge.Download.Models.Api.Internal;
+using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
@@ -102,26 +103,20 @@ namespace Geonorge.Download.Services
 
             return order;
         }
+    
 
-        public class IdRolePair
+
+        public async Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType order)
         {
-            public string id { get; set; }
-            public List<string> role { get; set; }
-        }
-        // HEnter ut for også for de som har rare roller
-        public async Task<List<IdRolePair>> GetRequiredRolesForOrder(OrderType order)
-        {
-            var requiredRoles = new List<IdRolePair>();
+
+            var requiredRoles = new Dictionary<string, List<string>>();
 
             downloadContext.Capabilities.Where(c => order.orderLines.Select(item => item.metadataUuid).Contains(c.MetadataUuid))
                 .ToList()
                 .ForEach(capability =>
                 {
-                    requiredRoles.Add(new IdRolePair
-                    {
-                        id = capability.MetadataUuid,
-                        role = capability.AccessConstraintRequiredRole.Split(",").ToList()
-                    });
+                    if(capability.MetadataUuid != null)
+                        requiredRoles.Add(capability.MetadataUuid, capability.AccessConstraintRequiredRole.Split(",").ToList());
                 });
             return requiredRoles;
         }

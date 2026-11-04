@@ -11,7 +11,7 @@ namespace Geonorge.Download.Services.Interfaces
 
         Task<Order> CreateOrderOpenData(OrderType incomingOrder);
 
-        Task<List<OrderService.IdRolePair>> GetRequiredRolesForOrder(OrderType incomingOrder);
+        Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType incomingOrder);
 
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 

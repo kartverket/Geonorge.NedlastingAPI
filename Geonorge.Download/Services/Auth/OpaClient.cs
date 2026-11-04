@@ -3,19 +3,24 @@ using System.Text.Json.Serialization;
 
 namespace Geonorge.Download.Services.Auth
 {
+    /// <param name="ValidToken">Token is active, issued for this API and from an allowed client (otherwise respond 401).</param>
+    /// <param name="CanOrder">The Altinn PDP permits the user to download for at least one organisation (otherwise respond 403).</param>
+    /// <param name="RoleSufficient">Every required entry has no role or lists the download role.</param>
+    public record OpaDecision(
+        [property: JsonPropertyName("valid_token")] bool ValidToken,
+        [property: JsonPropertyName("can_order")] bool CanOrder,
+        [property: JsonPropertyName("role_sufficient")] bool RoleSufficient)
+    {
+        public bool Allowed => ValidToken && CanOrder && RoleSufficient;
+    }
+
     public interface IOpaClient
     {
-        /// <summary>Token is active, issued for this API and from an allowed client.</summary>
+        /// <summary>Evaluates data.download.decision for the token and the roles required by the order.</summary>
+        Task<OpaDecision> GetDecisionAsync(string token, IReadOnlyDictionary<string, List<string>>? requiredRoles, CancellationToken cancellationToken = default);
+
+        /// <summary>Evaluates data.download.valid_token.</summary>
         Task<bool> IsValidTokenAsync(string token, CancellationToken cancellationToken = default);
-
-        /// <summary>Token is valid and the user is permitted to download via the Altinn PDP for at least one organisation.</summary>
-        Task<bool> CanOrderAsync(string token, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Token is valid, the user may order, and every item's access level is allowed.
-        /// Items with null or empty access are always allowed.
-        /// </summary>
-        Task<bool> CanPlaceOrderAsync(string token, string? allowedAccess, IEnumerable<string?> itemAccess, CancellationToken cancellationToken = default);
     }
 
     /// <summary>Thrown when OPA cannot be reached or does not answer successfully.</summary>
@@ -27,21 +32,14 @@ namespace Geonorge.Download.Services.Auth
 
         private readonly string _baseUrl = (config["OPA_URL"] ?? "http://localhost:3010").TrimEnd('/');
 
-        public Task<bool> IsValidTokenAsync(string token, CancellationToken cancellationToken = default) =>
-            QueryAsync("valid_token", new { token }, cancellationToken);
+        public async Task<OpaDecision> GetDecisionAsync(string token, IReadOnlyDictionary<string, List<string>>? requiredRoles, CancellationToken cancellationToken = default) =>
+            await QueryAsync<OpaDecision>("decision", new { token, requiredRoles = requiredRoles?.ToList() }, cancellationToken)
+            ?? throw new OpaUnavailableException("OPA returned no decision");
 
-        public Task<bool> CanOrderAsync(string token, CancellationToken cancellationToken = default) =>
-            QueryAsync("can_order", new { token }, cancellationToken);
+        public async Task<bool> IsValidTokenAsync(string token, CancellationToken cancellationToken = default) =>
+            await QueryAsync<bool?>("valid_token", new { token }, cancellationToken) == true;
 
-        public Task<bool> CanPlaceOrderAsync(string token, string? allowedAccess, IEnumerable<string?> itemAccess, CancellationToken cancellationToken = default) =>
-            QueryAsync("can_place_order", new
-            {
-                token,
-                allowed_access = allowedAccess,
-                items = itemAccess.Select(access => new { access }).ToArray()
-            }, cancellationToken);
-
-        private async Task<bool> QueryAsync(string rule, object input, CancellationToken cancellationToken)
+        private async Task<T?> QueryAsync<T>(string rule, object input, CancellationToken cancellationToken)
         {
             try
             {
@@ -54,8 +52,8 @@ namespace Geonorge.Download.Services.Auth
                     throw new OpaUnavailableException($"OPA returned {(int)response.StatusCode}");
                 }
 
-                var decision = await response.Content.ReadFromJsonAsync<OpaDecision>(cancellationToken);
-                return decision?.Result == true;
+                var result = await response.Content.ReadFromJsonAsync<OpaResult<T>>(cancellationToken);
+                return result is null ? default : result.Result;
             }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
@@ -64,6 +62,6 @@ namespace Geonorge.Download.Services.Auth
             }
         }
 
-        private sealed record OpaDecision([property: JsonPropertyName("result")] bool? Result);
+        private sealed record OpaResult<T>([property: JsonPropertyName("result")] T? Result);
     }
 }
