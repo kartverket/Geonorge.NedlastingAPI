@@ -18,8 +18,8 @@ namespace Geonorge.Download.Services
         IClipperService clipperService,
         IRegisterFetcher registerFetcher,
         IOrderBundleService orderBundleService,
-        INotificationService notificationService, 
-        IEiendomService eiendomService, 
+        INotificationService notificationService,
+        IEiendomService eiendomService,
         IDownloadService downloadService,
         DownloadContext downloadContext) : IOrderService
     {
@@ -38,15 +38,16 @@ namespace Geonorge.Download.Services
 
             List<Eiendom> eiendoms = null;
 
-            if (principal != null) { 
-                if(principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole))
+            if (principal != null)
+            {
+                if (principal.IsInRole(AuthConfig.DatasetAgriculturalPartyRole))
                     eiendoms = GetEiendomsForUser(principal);
             }
 
             order.AddOrderItems(GetOrderItemsForPredefinedAreas(incomingOrder, principal));
             List<OrderItem> clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, principal, eiendoms);
             order.AddOrderItems(clippableOrderItems);
-            
+
             CheckAccessRestrictions(order, principal);
 
             CheckRestrictions(clippableOrderItems);
@@ -55,7 +56,7 @@ namespace Geonorge.Download.Services
 
             clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
-            if(clippableOrderItems.Count > 0)
+            if (clippableOrderItems.Count > 0)
                 await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
 
             return order;
@@ -96,41 +97,47 @@ namespace Geonorge.Download.Services
 
             clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
-            if(clippableOrderItems.Count > 0)
+            if (clippableOrderItems.Count > 0)
                 await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
 
             return order;
         }
 
-        public async Task<List<string>> GetRequiredRolesForOrder(OrderType order)
+        public class IdRolePair
         {
-            // Implement the logic to get required roles for the order
-
-            var metadataUuids = order.orderLines.Select(item => item.metadataUuid).Distinct().ToList();
-            return downloadContext.Capabilities
-                .Where(dataset =>
-                    dataset.MetadataUuid != null &&
-                    metadataUuids.Contains(dataset.MetadataUuid) &&
-                    (!string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
-                    !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole))
-                )
-                .Select(dataset => dataset.AccessConstraintRequiredRole)
-                .Where(role => role != null)
-                .Select(role => role!)
-                .Distinct()
-                .ToList();
+            public string id { get; set; }
+            public List<string> role { get; set; }
         }
+        // HEnter ut for også for de som har rare roller
+        public async Task<List<IdRolePair>> GetRequiredRolesForOrder(OrderType order)
+        {
+            var requiredRoles = new List<IdRolePair>();
+
+            downloadContext.Capabilities.Where(c => order.orderLines.Select(item => item.metadataUuid).Contains(c.MetadataUuid))
+                .ToList()
+                .ForEach(capability =>
+                {
+                    requiredRoles.Add(new IdRolePair
+                    {
+                        id = capability.MetadataUuid,
+                        role = capability.AccessConstraintRequiredRole.Split(",").ToList()
+                    });
+                });
+            return requiredRoles;
+        }
+
+
 
         private void CheckRestrictions(List<OrderItem> clippableOrderItems)
         {
-            if(clippableOrderItems.Count > 0) 
+            if (clippableOrderItems.Count > 0)
             {
-                foreach(OrderItem item in clippableOrderItems.Where(c => !string.IsNullOrEmpty(c.Coordinates) && !string.IsNullOrWhiteSpace(c.Coordinates))) 
+                foreach (OrderItem item in clippableOrderItems.Where(c => !string.IsNullOrEmpty(c.Coordinates) && !string.IsNullOrWhiteSpace(c.Coordinates)))
                 {
                     var capabilities = downloadContext.Capabilities.Where(c => c.MetadataUuid == item.MetadataUuid).FirstOrDefault();
-                    if(capabilities != null) 
+                    if (capabilities != null)
                     {
-                        if (capabilities.SupportsPolygonSelection.HasValue && capabilities.SupportsPolygonSelection.Value == false) 
+                        if (capabilities.SupportsPolygonSelection.HasValue && capabilities.SupportsPolygonSelection.Value == false)
                         {
                             logger.LogWarning($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
                             throw new InvalidGeometryException($"Metadata with uuid: {item.MetadataUuid} does not support polygon selection");
@@ -143,7 +150,8 @@ namespace Geonorge.Download.Services
                         canDownload = downloadService.AreaIsWithinDownloadLimits(item.Coordinates,
                             item.CoordinateSystem, item.MetadataUuid);
 
-                    if (!canDownload) {
+                    if (!canDownload)
+                    {
                         logger.LogWarning($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
                         throw new InvalidGeometryException($"Metadata with uuid: {item.MetadataUuid} has coordinates greater than download limit");
                     }
@@ -151,7 +159,7 @@ namespace Geonorge.Download.Services
                 }
             }
 
-            
+
         }
 
         private List<Eiendom> GetEiendomsForUser(ClaimsPrincipal user)
@@ -187,16 +195,17 @@ namespace Geonorge.Download.Services
 
             if (hasAnyRestrictedDatasets && !principal.IsInRole(GeonorgeRoles.MetadataAdmin) && accessRestrictionsRequiredRole != null && accessRestrictionsRequiredRole.Any())
             {
-                foreach(var dataset in accessRestrictionsRequiredRole)
+                foreach (var dataset in accessRestrictionsRequiredRole)
                 {
                     bool access = false;
-                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles) {
-                        if(requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole 
+                    foreach (var requiredRole in dataset.AccessConstraint.RequiredRoles)
+                    {
+                        if (requiredRole == AuthConfig.DatasetOnlyOwnMunicipalityRole
                             && principal.IsInRole(AuthConfig.DatasetOnlyOwnMunicipalityRole))
                         {
-                            if(order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != principal.MunicipalityCode()).Any())
+                            if (order.orderItem.Where(i => i.MetadataUuid == dataset.MetadataUuid && i.Area != principal.MunicipalityCode()).Any())
                                 throw new AccessRestrictionException("Order contains restricted datasets, but user does not have required role for area for " + dataset.MetadataUuid);
- 
+
                         }
                         if (principal.IsInRole(requiredRole))
                             access = true;
@@ -217,10 +226,11 @@ namespace Geonorge.Download.Services
                     bool access = false;
                     FileAccessConstraint fileAccessConstraint = new FileAccessConstraint();
 
-                    if(dataset.FileAccessConstraints != null && dataset.FileAccessConstraints.Count == 0)
+                    if (dataset.FileAccessConstraints != null && dataset.FileAccessConstraints.Count == 0)
                         access = true;
 
-                    foreach (var file in dataset.FileAccessConstraints) { 
+                    foreach (var file in dataset.FileAccessConstraints)
+                    {
                         fileAccessConstraint = file;
                         foreach (var role in file.Roles)
                             if (principal.IsInRole(role))
@@ -319,8 +329,8 @@ namespace Geonorge.Download.Services
                         if (union != null)
                             // ntext
                             query = union;
-                            // varchar(max)
-                            //query = union.Distinct();
+                        // varchar(max)
+                        //query = union.Distinct();
                     }
                 }
 
@@ -380,7 +390,7 @@ namespace Geonorge.Download.Services
             else
                 logger.LogInformation($"{logMessage}, DownloadUrl: {orderItem.DownloadUrl} ");
 
-            if (orderItem.Order.IsReadyForBundleDownload()) 
+            if (orderItem.Order.IsReadyForBundleDownload())
                 orderBundleService.SendToBundling(orderItem.Order);
         }
 
@@ -410,33 +420,34 @@ namespace Geonorge.Download.Services
 
             List<DatasetAccessConstraint> accessConstraints = downloadContext.Capabilities
                 .Where(d => distinctMetadataUuids.Contains(d.MetadataUuid) && !string.IsNullOrWhiteSpace(d.AccessConstraint))
-                .Select(d => new DatasetAccessConstraint() {
+                .Select(d => new DatasetAccessConstraint()
+                {
                     MetadataUuid = d.MetadataUuid,
                     AccessConstraint = new AccessConstraint()
                     {
                         Constraint = d.AccessConstraint,
                         RequiredRole = d.AccessConstraintRequiredRole
                     }
-                    })
+                })
                 .ToList();
 
-            if(accessConstraints!= null && accessConstraints.Count > 0)
+            if (accessConstraints != null && accessConstraints.Count > 0)
                 accessConstraints = SetMultipleAccessConstraintRequiredRole(accessConstraints);
 
             List<string> distinctFileNames = order.orderItem.Select(o => o.FileName).Distinct().ToList();
             List<FileAccessConstraint> accessConstraintsFiles = null;
-            if(distinctFileNames != null && distinctFileNames.Count > 0)
-            accessConstraintsFiles = downloadContext.FileList.Where(f => distinctFileNames.Contains(f.Filename) && !string.IsNullOrWhiteSpace(f.AccessConstraintRequiredRole))
-                .Select(a => new FileAccessConstraint
-                { MetadataUuid = a.Dataset.MetadataUuid, File = a.Filename, Role = a.AccessConstraintRequiredRole})
-                .ToList();
+            if (distinctFileNames != null && distinctFileNames.Count > 0)
+                accessConstraintsFiles = downloadContext.FileList.Where(f => distinctFileNames.Contains(f.Filename) && !string.IsNullOrWhiteSpace(f.AccessConstraintRequiredRole))
+                    .Select(a => new FileAccessConstraint
+                    { MetadataUuid = a.Dataset.MetadataUuid, File = a.Filename, Role = a.AccessConstraintRequiredRole })
+                    .ToList();
 
-            if(accessConstraintsFiles != null && accessConstraints != null)
-            { 
+            if (accessConstraintsFiles != null && accessConstraints != null)
+            {
                 for (int a = 0; a < accessConstraints.Count; a++)
                 {
                     var accessConstraintFilesForUuid = accessConstraintsFiles.Where(f => f.MetadataUuid == accessConstraints[a].MetadataUuid).ToList();
-                    if(accessConstraintFilesForUuid != null)
+                    if (accessConstraintFilesForUuid != null)
                     {
                         accessConstraints[a].FileAccessConstraints = accessConstraintFilesForUuid;
                         for (int b = 0; b < accessConstraints[a].FileAccessConstraints.Count; b++)
@@ -452,7 +463,7 @@ namespace Geonorge.Download.Services
 
         private List<DatasetAccessConstraint> SetMultipleAccessConstraintRequiredRole(List<DatasetAccessConstraint> accessConstraints)
         {
-            for (int j = 0; j < accessConstraints.Count;j++)
+            for (int j = 0; j < accessConstraints.Count; j++)
             {
                 var accessConstraint = accessConstraints[j];
 
@@ -510,7 +521,7 @@ namespace Geonorge.Download.Services
         {
             var orders = downloadContext.OrderItems.Where(s => s.Status == OrderItemStatus.WaitingForProcessing && !(s.Order.email == null || s.Order.email.Trim() == string.Empty)).Select(o => o.Order).Distinct().ToList();
 
-            foreach(var order in orders) 
+            foreach (var order in orders)
             {
                 await notificationService.SendOrderStatusNotification(order);
             }
@@ -587,7 +598,7 @@ namespace Geonorge.Download.Services
 
             bool allowed = result.Value<bool>("allowed");
 
-            if(!allowed)
+            if (!allowed)
                 throw new FileSizeException("Filene er for store � pakke");
         }
 

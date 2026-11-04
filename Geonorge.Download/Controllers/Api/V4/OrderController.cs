@@ -91,6 +91,8 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return Unauthorized();
             }
 
+            var requiredRoles = await orderService.GetRequiredRolesForOrder(order);
+
             var opaBaseUrl = (config["OPA_URL"] ?? "http://localhost:3010").TrimEnd('/');
             var client = httpClientFactory.CreateClient();
             client.Timeout = TimeSpan.FromSeconds(10);
@@ -100,7 +102,14 @@ namespace Geonorge.Download.Controllers.Api.V4
             {
                 using var response = await client.PostAsJsonAsync(
                     $"{opaBaseUrl}/v1/data/download/decision",
-                    new { input = new { token = auth.Parameter } });
+                    new
+                    {
+                        input = new
+                        {
+                            token = auth.Parameter,
+                            requiredRoles
+                        }
+                    });
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -116,10 +125,18 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
 
+            logger.LogInformation("OPA decision: {@Decision}", decision);
+            logger.LogInformation("Role sufficient: {RoleSufficient}", decision?.Result?.RoleSufficient);
+            logger.LogInformation("Can order: {CanOrder}", decision?.Result?.CanOrder);
+            logger.LogInformation("Valid token: {ValidToken}", decision?.Result?.ValidToken);
+
             if (decision?.Result is not { ValidToken: true } result)
                 return Unauthorized();
 
             if (!result.CanOrder)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
+            if(!result.RoleSufficient)
                 return StatusCode(StatusCodes.Status403Forbidden);
 
             // TODO: create the order
@@ -130,7 +147,8 @@ namespace Geonorge.Download.Controllers.Api.V4
 
         private sealed record OrderDecision(
             [property: JsonPropertyName("valid_token")] bool ValidToken,
-            [property: JsonPropertyName("can_order")] bool CanOrder);
+            [property: JsonPropertyName("can_order")] bool CanOrder,
+            [property: JsonPropertyName("role_sufficient")] bool RoleSufficient );
 
         /// <summary>
         /// Get info about files in order

@@ -26,6 +26,7 @@ pdp_resource := {
 decision := {
 	"valid_token": valid_token,
 	"can_order": can_order,
+	"role_sufficient": role_sufficient
 }
 
 default can_order := false
@@ -72,7 +73,19 @@ claims := response.body if {
 	response.status_code == 200
 }
 
-default can_place_order := false
+default role_sufficient := false
+
+# Every required entry either has no `role` or lists "nd.filnedlasting".
+role_sufficient if {
+	input.requiredRoles != null
+	every _, required in input.requiredRoles {
+		role_allows_download(required)
+	}
+}
+
+role_allows_download(required) if object.get(required, "role", null) == null
+
+role_allows_download(required) if "nd.filnedlasting" in required.role
 
 
 
