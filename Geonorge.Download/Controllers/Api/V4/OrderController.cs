@@ -82,7 +82,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<IActionResult> PostRestrictedOrder([FromBody] OrderType order)
+        public async Task<IActionResult> PostRestrictedOrder([FromBody] OrderType incommingOrder)
         {
             if (!AuthenticationHeaderValue.TryParse(Request.Headers.Authorization.ToString(), out var auth)
                 || !string.Equals(auth.Scheme, "Bearer", StringComparison.OrdinalIgnoreCase)
@@ -90,28 +90,27 @@ namespace Geonorge.Download.Controllers.Api.V4
             {
                 return Unauthorized();
             }
-            var requiredRoles = await orderService.GetRequiredRolesForOrder(order);
-            var decision = await opaClient.GetDecisionAsync(auth.Parameter, requiredRoles);
-
-
-            logger.LogInformation("Opa decision: {@decision}", decision);
-            logger.LogInformation("Required roles for order: {@requiredRoles}", requiredRoles);
-
-            if (!decision.Allowed)
+            var token = auth.Parameter;
+            try
             {
-                if (!decision.ValidToken)
-                    return Unauthorized();
-                return StatusCode(StatusCodes.Status403Forbidden, "No restricted datasets allowed");
+                var order = await orderService.CreateOrderRestricted(incommingOrder, token);
+                return Ok(ConvertToReceipt(order, Request));
             }
-
-            if (!decision.CanOrder)
-                return StatusCode(StatusCodes.Status403Forbidden);
-
-            if (!decision.RoleSufficient)
-                return StatusCode(StatusCodes.Status403Forbidden);
-
-            return Ok();
-            // TODO: create the order
+            catch (AccessRestrictionException ex)
+            {
+                logger.LogInformation("Access restriction encountered while creating restricted order.", ex);
+                return Forbid();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger.LogInformation("Unauthorized access encountered while creating restricted order.", ex);
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error creating restricted order {ex}", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
         }
 

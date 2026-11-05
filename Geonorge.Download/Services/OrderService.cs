@@ -22,6 +22,7 @@ namespace Geonorge.Download.Services
         INotificationService notificationService,
         IEiendomService eiendomService,
         IDownloadService downloadService,
+        IOpaClient opaClient,
         DownloadContext downloadContext) : IOrderService
     {
         public async Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal)
@@ -103,25 +104,81 @@ namespace Geonorge.Download.Services
 
             return order;
         }
+
+        public async Task<Order> CreateOrderRestricted(OrderType incomingOrder, string token)
+        {
+            var requiredRoles = await GetRequiredRolesForOrder(incomingOrder);
+            var decision = await opaClient.GetDecisionAsync(token, requiredRoles);
+
+            if (!decision.Allowed)
+            {
+                if (!decision.ValidToken)
+                    throw new UnauthorizedAccessException("Invalid token");
+                throw new AccessRestrictionException("No restricted datasets allowed");
+            }
+
+            if (!decision.CanOrder)
+                throw new AccessRestrictionException("Cannot order restricted datasets");
+
+            if (!decision.RoleSufficient)
+                throw new AccessRestrictionException("Insufficient roles for restricted datasets");
+
+            // Proceed with creating the order for restricted datasets
+          var order = new Order
+            {
+                email = incomingOrder.email,
+                UsageGroup = incomingOrder.usageGroup,
+                SoftwareClient = incomingOrder.softwareClient,
+                SoftwareClientVersion = incomingOrder.softwareClientVersion
+            };
+
+            var predefinedAreaOrderItems = GetOrderItemsForPredefinedAreas(incomingOrder, null);
+            //var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
+
+            //CheckRestrictions(clippableOrderItems);
+
+            order.AddOrderItems(predefinedAreaOrderItems);
+            //order.AddOrderItems(clippableOrderItems);
+
+            SaveOrder(order);
+
+            //  clipperService.SendClippingRequests(clippableOrderItems, order.email);
+
+            // if (clippableOrderItems.Count > 0)
+            //     await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
+
+            return order;
+        }
     
 
 
-        public async Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType order)
+        public Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType order)
         {
-
             var requiredRoles = new Dictionary<string, List<string>>();
 
-            downloadContext.Capabilities.Where(c => order.orderLines.Select(item => item.metadataUuid).Contains(c.MetadataUuid))
-                .ToList()
-                .ForEach(capability =>
-                {
-                    if(capability.MetadataUuid != null)
-                        requiredRoles.Add(capability.MetadataUuid, capability.AccessConstraintRequiredRole.Split(",").ToList());
-                });
-            return requiredRoles;
+            // Materialized so EF gets a plain list parameter, and orderLines may be missing on bad input.
+            var metadataUuids = (order.orderLines ?? [])
+                .Select(line => line.metadataUuid)
+                .Where(uuid => !string.IsNullOrEmpty(uuid))
+                .Distinct()
+                .ToList();
+
+            var capabilities = downloadContext.Capabilities
+                .Where(c => metadataUuids.Contains(c.MetadataUuid))
+                .ToList();
+
+            foreach (var capability in capabilities)
+            {
+                if (capability.MetadataUuid == null)
+                    continue;
+
+                requiredRoles[capability.MetadataUuid] = string.IsNullOrWhiteSpace(capability.AccessConstraintRequiredRole)
+                    ? []
+                    : capability.AccessConstraintRequiredRole.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+
+            return Task.FromResult(requiredRoles);
         }
-
-
 
         private void CheckRestrictions(List<OrderItem> clippableOrderItems)
         {

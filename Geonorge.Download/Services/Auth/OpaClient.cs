@@ -33,7 +33,7 @@ namespace Geonorge.Download.Services.Auth
         private readonly string _baseUrl = (config["OPA_URL"] ?? "http://localhost:3010").TrimEnd('/');
 
         public async Task<OpaDecision> GetDecisionAsync(string token, IReadOnlyDictionary<string, List<string>>? requiredRoles, CancellationToken cancellationToken = default) =>
-            await QueryAsync<OpaDecision>("decision", new { token, requiredRoles = requiredRoles?.ToList() }, cancellationToken)
+            await QueryAsync<OpaDecision>("decision", new { token, requiredRoles = requiredRoles?.ToDictionary(kv => kv.Key, kv => new { role = kv.Value }) }, cancellationToken)
             ?? throw new OpaUnavailableException("OPA returned no decision");
 
         public async Task<bool> IsValidTokenAsync(string token, CancellationToken cancellationToken = default) =>
