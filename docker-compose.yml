@@ -7,10 +7,11 @@ volumes:
 
 services:
   geonorge.download:
-    image: ${DOCKER_REGISTRY-}geonorgedownload
     build:
       context: .
       dockerfile: Geonorge.Download/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     ports:
       - "8080:8080"
       - "8081:8081"

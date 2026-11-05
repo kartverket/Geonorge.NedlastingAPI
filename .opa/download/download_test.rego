@@ -133,12 +133,20 @@ test_role_sufficient_when_all_have_role_or_null if {
 	download.role_sufficient with input as {"requiredRoles": {"a": {"role": ["nd.filnedlasting"]}, "b": {"role": null}, "c": {}}}
 }
 
+test_role_sufficient_when_role_is_empty_list if {
+	download.role_sufficient with input as {"requiredRoles": {"a": {"role": []}, "b": {"role": ["nd.filnedlasting"]}}}
+}
+
 test_role_sufficient_with_array_of_requirements if {
 	download.role_sufficient with input as {"requiredRoles": [{"role": ["nd.filnedlasting", "other"]}]}
 }
 
 test_role_insufficient_when_one_lacks_role if {
 	not download.role_sufficient with input as {"requiredRoles": {"a": {"role": ["nd.filnedlasting"]}, "b": {"role": ["other"]}}}
+}
+
+test_role_insufficient_when_empty_list_and_other_lacks_role if {
+	not download.role_sufficient with input as {"requiredRoles": {"a": {"role": []}, "b": {"role": ["other"]}}}
 }
 
 test_role_insufficient_when_required_roles_missing if {

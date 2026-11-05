@@ -75,7 +75,7 @@ claims := response.body if {
 
 default role_sufficient := false
 
-# Every required entry either has no `role` or lists "nd.filnedlasting".
+# Every required entry either has no `role` (missing, null or empty) or lists "nd.filnedlasting".
 role_sufficient if {
 	input.requiredRoles != null
 	every _, required in input.requiredRoles {
@@ -84,6 +84,9 @@ role_sufficient if {
 }
 
 role_allows_download(required) if object.get(required, "role", null) == null
+
+# The backend sends an empty list for datasets without a required role.
+role_allows_download(required) if required.role == []
 
 role_allows_download(required) if "nd.filnedlasting" in required.role
 
