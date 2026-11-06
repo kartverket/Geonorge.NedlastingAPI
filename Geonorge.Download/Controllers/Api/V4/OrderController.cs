@@ -22,7 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
     //[HandleError]
-    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHttpClientFactory httpClientFactory, IOpaClient opaClient) : ControllerBase
+    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHMACService hmacService) : ControllerBase
     {
         /// <summary>
         /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
@@ -132,15 +132,6 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult GetOrder(string orderUuid)
         {
-            // Redirect to web controller if html is requested:
-            var acceptHeader = Request.Headers.Accept.ToString();
-
-            if (acceptHeader.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
-            {
-                var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                return Redirect($"{baseUrl}/order/details/{orderUuid}");
-            }
-
             var order = orderService.Find(orderUuid);
             if (order == null)
                 return NotFound();
@@ -152,60 +143,37 @@ namespace Geonorge.Download.Controllers.Api.V4
         }
 
         /// <summary>
-        /// Updates order with info to send to bundling
+        /// Get info about files in order
         /// </summary>
-        /// <param name="orderUuid">Uuid for order to update</param>
-        /// <param name="incomingOrder">
-        /// Currently only these fields are updated:
-        /// * email
-        /// * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
-        /// <returns>
-        /// Http status code 200 if updated ok.
-        /// </returns>
-        [HttpPut("order/{orderUuid}")]
-        [Consumes("application/json", "application/xml")]
+        [HttpGet("order-restricted/{orderUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
+        public IActionResult GetOrderRestricted(string orderUuid)
         {
-            try
-            {
-                Order order = orderService.Find(orderUuid);
-                if (order == null)
-                    return NotFound();
+            string? ztPid = Request.Headers["zt-pid"];
+            if (string.IsNullOrWhiteSpace(ztPid))
+                return Unauthorized();
 
-                if (order.ContainsRestrictedDatasets())
-                    return Forbid();
+            var order = orderService.Find(orderUuid);
+            if (order == null)
+                return StatusCode(StatusCodes.Status403Forbidden);
 
-                orderService.CheckPackageSize(order);
+            if (string.IsNullOrWhiteSpace(order.username) || !hmacService.Verify(order.username, ztPid))
+                return StatusCode(StatusCodes.Status403Forbidden);
 
-                orderService.UpdateOrder(order, incomingOrder);
-
-                return Ok(ConvertToReceipt(order, Request));
-            }
-            catch (FileSizeException ex)
-            {
-                logger.LogInformation(ex.Message, ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            catch (Exception e)
-            {
-                logger.LogError("Error while updating order.", e);
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+            return Ok(ConvertToReceipt(order, Request));
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
         /// <summary>
         /// Get fileIds for order
         /// </summary>
         /// <returns>
         /// Http status code 200.
         /// </returns>
-        ///         
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

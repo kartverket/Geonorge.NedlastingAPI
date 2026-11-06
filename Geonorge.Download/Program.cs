@@ -238,6 +238,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 //builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IMachineAccountService, MachineAccountService>();
+builder.Services.AddScoped<IHMACService, HMACService>();
 
 // --- Internal Services ---
 builder.Services.AddScoped<IUpdateMetadataService, UpdateMetadataService>();

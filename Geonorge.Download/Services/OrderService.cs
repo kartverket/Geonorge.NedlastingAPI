@@ -23,6 +23,7 @@ namespace Geonorge.Download.Services
         IEiendomService eiendomService,
         IDownloadService downloadService,
         IOpaClient opaClient,
+        IHMACService hmacService,
         DownloadContext downloadContext) : IOrderService
     {
         public async Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal)
@@ -126,6 +127,7 @@ namespace Geonorge.Download.Services
             // Proceed with creating the order for restricted datasets
           var order = new Order
             {
+                username = hmacService.Hash(decision.Pid!),
                 email = incomingOrder.email,
                 UsageGroup = incomingOrder.usageGroup,
                 SoftwareClient = incomingOrder.softwareClient,

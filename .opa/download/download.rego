@@ -26,7 +26,8 @@ pdp_resource := {
 decision := {
 	"valid_token": valid_token,
 	"can_order": can_order,
-	"role_sufficient": role_sufficient
+	"role_sufficient": role_sufficient,
+	"pid": pid
 }
 
 default can_order := false
@@ -40,6 +41,11 @@ permitted_org_numbers contains org if {
 	request := object.union(pdp_resource, {"pid": claims.pid, "customerOrganizationNumber": org})
 	altinn.pdp_permit(request, claims.acr)
 }
+
+# Subject of a valid token, null otherwise.
+default pid := null
+
+pid := claims.pid if valid_token
 
 default valid_token := false
 

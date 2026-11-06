@@ -23,38 +23,6 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// Get file to download for order
         /// </summary>
         /// <param name="orderUuid">The reference number returned from the order</param>
-        [HttpGet("download/order/{orderUuid}/bundle")]
-        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "application/octet-stream")]
-        [ProducesResponseType(StatusCodes.Status302Found)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json", "application/xml")]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden, "application/json", "application/xml")]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, "application/json", "application/xml")]
-        public async Task<IActionResult> GetBundleFile([FromRoute] string orderUuid)
-        {
-            if (!IsValidUuid(orderUuid))
-            {
-                return BadRequest("orderUuid is not a valid uuid.");
-            }
-
-            var order = orderService.Find(orderUuid);
-            if (order == null || string.IsNullOrEmpty(order.DownloadBundleUrl))
-            {
-                return NotFound();
-            }
-
-            if (order.ContainsRestrictedDatasets())
-            {
-                return Forbid();
-            }
-
-            order.DownloadBundleUrl = order.DownloadBundleUrl.Replace("http://", "https://");
-            return Redirect(order.DownloadBundleUrl);
-        }
-
-        /// <summary>
-        /// Get file to download for order
-        /// </summary>
-        /// <param name="orderUuid">The reference number returned from the order</param>
         /// <param name="fileId">The fileId to download from order</param>
         [HttpGet("download/order/{orderUuid}/{fileId}")]
         //[Produces("application/octet-stream")]

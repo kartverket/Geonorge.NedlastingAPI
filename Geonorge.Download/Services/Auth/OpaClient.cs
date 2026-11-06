@@ -6,12 +6,15 @@ namespace Geonorge.Download.Services.Auth
     /// <param name="ValidToken">Token is active, issued for this API and from an allowed client (otherwise respond 401).</param>
     /// <param name="CanOrder">The Altinn PDP permits the user to download for at least one organisation (otherwise respond 403).</param>
     /// <param name="RoleSufficient">Every required entry has no role or lists the download role.</param>
+    /// <param name="Pid">Subject of the token (null if token is invalid).</param>
     public record OpaDecision(
         [property: JsonPropertyName("valid_token")] bool ValidToken,
         [property: JsonPropertyName("can_order")] bool CanOrder,
-        [property: JsonPropertyName("role_sufficient")] bool RoleSufficient)
+        [property: JsonPropertyName("role_sufficient")] bool RoleSufficient,
+        [property: JsonPropertyName("pid")] string? Pid)
     {
-        public bool Allowed => ValidToken && CanOrder && RoleSufficient;
+        /// <summary>Indicates whether the token is valid and the user is permitted to order.</summary>
+        public bool Allowed => ValidToken && CanOrder && RoleSufficient && Pid != null;
     }
 
     public interface IOpaClient
