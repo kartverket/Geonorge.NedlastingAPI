@@ -125,7 +125,7 @@ namespace Geonorge.Download.Services
                 throw new AccessRestrictionException("Insufficient roles for restricted datasets");
 
             // Proceed with creating the order for restricted datasets
-          var order = new Order
+            var order = new Order
             {
                 username = hmacService.Hash(decision.Pid!),
                 email = incomingOrder.email,
@@ -135,23 +135,23 @@ namespace Geonorge.Download.Services
             };
 
             var predefinedAreaOrderItems = GetOrderItemsForPredefinedAreas(incomingOrder, null);
-            //var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
+            var clippableOrderItems = clipperService.GetClippableOrderItems(incomingOrder, null, null);
 
             //CheckRestrictions(clippableOrderItems);
 
             order.AddOrderItems(predefinedAreaOrderItems);
-            //order.AddOrderItems(clippableOrderItems);
+            order.AddOrderItems(clippableOrderItems);
 
             SaveOrder(order);
 
-            //  clipperService.SendClippingRequests(clippableOrderItems, order.email);
+            clipperService.SendClippingRequests(clippableOrderItems, order.email);
 
             // if (clippableOrderItems.Count > 0)
             //     await notificationService.SendOrderInfoNotification(order, clippableOrderItems);
 
             return order;
         }
-    
+
 
 
         public Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType order)
@@ -227,11 +227,13 @@ namespace Geonorge.Download.Services
 
         private bool OrderContainsRestrictedDatasets(OrderType order)
         {
+            if (order?.orderLines == null || !order.orderLines.Any())
+                return false;
             var metadataUuids = order.orderLines.Select(item => item.metadataUuid).Distinct().ToList();
-            return downloadContext.Capabilities.Any(dataset =>
-                metadataUuids.Contains(dataset.MetadataUuid) &&
-                (!string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
-                !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole))
+            var metadataRecordsInOrder = downloadContext.Capabilities.Where(c => c.MetadataUuid != null && metadataUuids.Contains(c.MetadataUuid)).ToList();
+            return metadataRecordsInOrder.Any(dataset =>
+                !string.IsNullOrWhiteSpace(dataset.AccessConstraint) ||
+                !string.IsNullOrWhiteSpace(dataset.AccessConstraintRequiredRole)
             );
         }
 
