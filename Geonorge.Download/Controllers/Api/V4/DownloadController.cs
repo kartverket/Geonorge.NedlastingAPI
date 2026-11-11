@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Geonorge.Download.Services.Interfaces;
+using Geonorge.Download.Services.Auth;
 
 namespace Geonorge.Download.Controllers.Api.V4
 {
@@ -16,7 +17,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]
-    public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService) : ControllerBase
+    public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService, IHMACService hmacService) : ControllerBase
     {
 
         /// <summary>
@@ -58,6 +59,53 @@ namespace Geonorge.Download.Controllers.Api.V4
                 return Redirect(downloadUrl);
             
         }
+
+                /// <summary>
+        /// Get file to download for order
+        /// </summary>
+        /// <param name="orderUuid">The reference number returned from the order</param>
+        /// <param name="fileId">The fileId to download from order</param>
+        [HttpGet("download/order-restricted/{orderUuid}/{fileId}")]
+        //[Produces("application/octet-stream")]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "application/octet-stream")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest, "application/json", "application/xml")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden, "application/json", "application/xml")]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound, "application/json", "application/xml")]
+        public async Task<IActionResult> GetRestrictedFile([FromRoute] string orderUuid, [FromRoute] string fileId)
+        {
+            string? ztPid = Request.Headers["zt-pid"];
+            if (string.IsNullOrWhiteSpace(ztPid))
+                return Unauthorized();
+
+            if (!IsValidUuid(orderUuid))
+                return BadRequest("orderUuid is not a valid uuid.");
+
+            if (!IsValidUuid(fileId))
+                return BadRequest("fileId is not a valid uuid.");
+
+            var order = orderService.Find(orderUuid);
+            if (order == null)
+                return NotFound();
+
+            var ownershipVerificationStatus = hmacService.Verify(order.username, ztPid);
+            if (order.ContainsRestrictedDatasets() && !ownershipVerificationStatus)
+                return Forbid();
+
+            var item = order.GetItemWithFileId(fileId);
+
+            if(item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
+                return NotFound();
+
+
+            //TODO: Do the OPA check here
+
+            var downloadUrl = item.DownloadUrl.Replace("http://", "https://");
+                return Redirect(downloadUrl);
+            
+        }
+
+
 
         internal static bool IsValidUuid(string input)
         {
