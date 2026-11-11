@@ -49,7 +49,6 @@ namespace Geonorge.Download.Controllers.Api.V4
             catch (AccessRestrictionException e)
             {
                 logger.LogInformation(e.Message, e);
-                //return Unauthorized();
                 return StatusCode(StatusCodes.Status403Forbidden, "No restricted datasets allowed");
             }
 
@@ -60,8 +59,8 @@ namespace Geonorge.Download.Controllers.Api.V4
             }
             catch (Exception ex)
             {
-                logger.LogError("Error creating new order.", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                logger.LogError("Error creating new order. {ex}", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
