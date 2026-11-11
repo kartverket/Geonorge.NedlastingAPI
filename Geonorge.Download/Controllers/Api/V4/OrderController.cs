@@ -213,7 +213,7 @@ namespace Geonorge.Download.Controllers.Api.V4
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
                 downloadBundleUrl = downloadBundleUrl,
-                _links = new LinkCreator().CreateOrderReceiptLinks(config, request, order.Uuid)
+                _links = new LinkCreator().CreateOrderReceiptLinks(config, request, order.Uuid, isRestricted: true)
             };
             return receipt;
         }
