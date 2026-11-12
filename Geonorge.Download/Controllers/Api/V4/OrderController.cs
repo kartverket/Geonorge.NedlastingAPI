@@ -137,6 +137,9 @@ namespace Geonorge.Download.Controllers.Api.V4
 
             if (order.ContainsRestrictedDatasets())
                 return Forbid();
+            
+            if(!string.IsNullOrWhiteSpace(order.username))
+                return Forbid();
 
             return Ok(ConvertToReceipt(order, Request));
         }
@@ -155,7 +158,7 @@ namespace Geonorge.Download.Controllers.Api.V4
             string? ztPid = Request.Headers["zt-pid"];
             if (string.IsNullOrWhiteSpace(ztPid))
                 return Unauthorized();
-                
+
             var order = orderService.Find(orderUuid);
             if (order == null)
                 return StatusCode(StatusCodes.Status404NotFound);
