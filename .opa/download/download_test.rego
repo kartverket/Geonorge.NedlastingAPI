@@ -118,15 +118,15 @@ test_deny_when_token_invalid_even_if_pdp_permits if {
 }
 
 test_decision_valid_and_permitted if {
-	download.decision == {"valid_token": true, "can_order": true, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_full
+	download.decision == {"valid_token": true, "can_order": true, "role_sufficient": false, "pid": valid_claims.pid} with input as {"token": "t"} with http.send as mock_full
 }
 
 test_decision_valid_but_denied if {
-	download.decision == {"valid_token": true, "can_order": false, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_pdp_deny
+	download.decision == {"valid_token": true, "can_order": false, "role_sufficient": false, "pid": valid_claims.pid} with input as {"token": "t"} with http.send as mock_pdp_deny
 }
 
 test_decision_invalid_token if {
-	download.decision == {"valid_token": false, "can_order": false, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_invalid_token
+	download.decision == {"valid_token": false, "can_order": false, "role_sufficient": false, "pid": null} with input as {"token": "t"} with http.send as mock_invalid_token
 }
 
 test_role_sufficient_when_all_have_role_or_null if {
