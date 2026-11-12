@@ -17,7 +17,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [Route("api/v{version:apiVersion}")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]
-    public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService, IHMACService hmacService) : ControllerBase
+    public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService, IHMACService hmacService, IOpaClient opaClient) : ControllerBase
     {
 
         /// <summary>
@@ -44,23 +44,23 @@ namespace Geonorge.Download.Controllers.Api.V4
             if (order == null)
                 return NotFound();
 
-            if(order.ContainsRestrictedDatasets())
+            if (order.ContainsRestrictedDatasets())
                 return Forbid();
 
             var item = order.GetItemWithFileId(fileId);
 
-            if(item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
+            if (item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
                 return NotFound();
 
-            if(item.AccessConstraint.IsRestricted())
+            if (item.AccessConstraint.IsRestricted())
                 return Forbid();
 
             var downloadUrl = item.DownloadUrl.Replace("http://", "https://");
-                return Redirect(downloadUrl);
-            
+            return Redirect(downloadUrl);
+
         }
 
-                /// <summary>
+        /// <summary>
         /// Get file to download for order
         /// </summary>
         /// <param name="orderUuid">The reference number returned from the order</param>
@@ -77,6 +77,12 @@ namespace Geonorge.Download.Controllers.Api.V4
             string? ztPid = Request.Headers["zt-pid"];
             if (string.IsNullOrWhiteSpace(ztPid))
                 return Unauthorized();
+            string? authHeader = Request.Headers["Authorization"];
+            if (string.IsNullOrWhiteSpace(authHeader))
+                return Unauthorized();
+
+            string token = authHeader.StartsWith("Bearer ") ? authHeader.Substring("Bearer ".Length) : authHeader;
+
 
             if (!IsValidUuid(orderUuid))
                 return BadRequest("orderUuid is not a valid uuid.");
@@ -94,17 +100,18 @@ namespace Geonorge.Download.Controllers.Api.V4
 
             var item = order.GetItemWithFileId(fileId);
 
-            if(item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
+            if (item == null || !item.IsReadyForDownload() || item.DownloadUrl == null)
                 return NotFound();
 
 
-            //TODO: Do the OPA check here
+            var requiredRoles = item.AccessConstraint.RequiredRoles;
+            var opaDecision = await opaClient.GetDecisionAsync(token, new Dictionary<string, List<string>> { { fileId, requiredRoles } });
+            if (!opaDecision.Allowed)
+                return Forbid();
 
             var downloadUrl = item.DownloadUrl.Replace("http://", "https://");
-                return Redirect(downloadUrl);
-            
+            return Redirect(downloadUrl);
         }
-
 
 
         internal static bool IsValidUuid(string input)
