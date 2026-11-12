@@ -55,21 +55,21 @@ namespace Geonorge.Download.Models
             return links;
         }
 
-        public LinkType[] CreateOrderReceiptLinks(IConfiguration config, HttpRequest request, Guid orderUuid)
+        public LinkType[] CreateOrderReceiptLinks(IConfiguration config, HttpRequest request, Guid orderUuid, bool isRestricted = false)
         {
             var apiBaseUrl = GetApiBaseUrl(config, request);
 
             var links = new List<LinkType>
             {
-                CreateOrderLink(apiBaseUrl, orderUuid, true),
-                CreateOrderBundleLink(apiBaseUrl, orderUuid)
+                CreateOrderLink(apiBaseUrl, orderUuid, true, isRestricted),
+                CreateOrderBundleLink(apiBaseUrl, orderUuid, isRestricted)
             };
             return links.ToArray();
         }
 
-        private LinkType CreateOrderBundleLink(string apiBaseUrl, Guid orderUuid)
+        private LinkType CreateOrderBundleLink(string apiBaseUrl, Guid orderUuid, bool isRestricted = false)
         {
-            LinkType link = CreateOrderLink(apiBaseUrl, orderUuid);
+            LinkType link = CreateOrderLink(apiBaseUrl, orderUuid, false, isRestricted);
             link.rel = RelOrderBundle;
             return link;
         }
@@ -83,9 +83,9 @@ namespace Geonorge.Download.Models
             };
         }
 
-        private static LinkType CreateOrderLink(string apiBaseUrl, Guid? orderUuid = null, bool isSelf=false)
+        private static LinkType CreateOrderLink(string apiBaseUrl, Guid? orderUuid = null, bool isSelf=false, bool isRestricted=false)
         {
-            string href = apiBaseUrl + "order";
+            string href = apiBaseUrl + "order" + (isRestricted ? "-restricted" : "");
 
             if (orderUuid.HasValue)
                 href = href + "/" + orderUuid.Value;

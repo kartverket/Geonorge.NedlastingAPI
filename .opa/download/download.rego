@@ -26,6 +26,8 @@ pdp_resource := {
 decision := {
 	"valid_token": valid_token,
 	"can_order": can_order,
+	"role_sufficient": role_sufficient,
+	"pid": pid
 }
 
 default can_order := false
@@ -39,6 +41,11 @@ permitted_org_numbers contains org if {
 	request := object.union(pdp_resource, {"pid": claims.pid, "customerOrganizationNumber": org})
 	altinn.pdp_permit(request, claims.acr)
 }
+
+# Subject of a valid token, null otherwise.
+default pid := null
+
+pid := claims.pid if valid_token
 
 default valid_token := false
 
@@ -71,3 +78,25 @@ claims := response.body if {
 	})
 	response.status_code == 200
 }
+
+default role_sufficient := false
+
+# Every required entry either has no `role` (missing, null or empty) or lists "nd.filnedlasting".
+role_sufficient if {
+	input.requiredRoles != null
+	every _, required in input.requiredRoles {
+		role_allows_download(required)
+	}
+}
+
+role_allows_download(required) if object.get(required, "role", null) == null
+
+# The backend sends an empty list for datasets without a required role.
+role_allows_download(required) if required.role == []
+
+role_allows_download(required) if "nd.filnedlasting" in required.role
+
+
+
+
+

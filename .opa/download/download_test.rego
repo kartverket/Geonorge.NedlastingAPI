@@ -118,13 +118,41 @@ test_deny_when_token_invalid_even_if_pdp_permits if {
 }
 
 test_decision_valid_and_permitted if {
-	download.decision == {"valid_token": true, "can_order": true} with input as {"token": "t"} with http.send as mock_full
+	download.decision == {"valid_token": true, "can_order": true, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_full
 }
 
 test_decision_valid_but_denied if {
-	download.decision == {"valid_token": true, "can_order": false} with input as {"token": "t"} with http.send as mock_pdp_deny
+	download.decision == {"valid_token": true, "can_order": false, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_pdp_deny
 }
 
 test_decision_invalid_token if {
-	download.decision == {"valid_token": false, "can_order": false} with input as {"token": "t"} with http.send as mock_invalid_token
+	download.decision == {"valid_token": false, "can_order": false, "role_sufficient": false} with input as {"token": "t"} with http.send as mock_invalid_token
+}
+
+test_role_sufficient_when_all_have_role_or_null if {
+	download.role_sufficient with input as {"requiredRoles": {"a": {"role": ["nd.filnedlasting"]}, "b": {"role": null}, "c": {}}}
+}
+
+test_role_sufficient_when_role_is_empty_list if {
+	download.role_sufficient with input as {"requiredRoles": {"a": {"role": []}, "b": {"role": ["nd.filnedlasting"]}}}
+}
+
+test_role_sufficient_with_array_of_requirements if {
+	download.role_sufficient with input as {"requiredRoles": [{"role": ["nd.filnedlasting", "other"]}]}
+}
+
+test_role_insufficient_when_one_lacks_role if {
+	not download.role_sufficient with input as {"requiredRoles": {"a": {"role": ["nd.filnedlasting"]}, "b": {"role": ["other"]}}}
+}
+
+test_role_insufficient_when_empty_list_and_other_lacks_role if {
+	not download.role_sufficient with input as {"requiredRoles": {"a": {"role": []}, "b": {"role": ["other"]}}}
+}
+
+test_role_insufficient_when_required_roles_missing if {
+	not download.role_sufficient with input as {}
+}
+
+test_role_insufficient_when_required_roles_null if {
+	not download.role_sufficient with input as {"requiredRoles": null}
 }

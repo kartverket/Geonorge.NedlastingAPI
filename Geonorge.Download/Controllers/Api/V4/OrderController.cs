@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Geonorge.Download.Models;
+using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Exceptions;
 using Geonorge.Download.Services.Interfaces;
 using Geonorge.NedlastingApi.V3;
@@ -21,7 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
     //[HandleError]
-    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHttpClientFactory httpClientFactory) : ControllerBase
+    public class OrderController(ILogger<OrderController> logger, IConfiguration config, IOrderService orderService, IHMACService hmacService) : ControllerBase
     {
         /// <summary>
         /// Creates new order for data to download with order reference and a list of files to download if they are prepopulated, otherwise
@@ -48,7 +49,6 @@ namespace Geonorge.Download.Controllers.Api.V4
             catch (AccessRestrictionException e)
             {
                 logger.LogInformation(e.Message, e);
-                //return Unauthorized();
                 return StatusCode(StatusCodes.Status403Forbidden, "No restricted datasets allowed");
             }
 
@@ -59,8 +59,8 @@ namespace Geonorge.Download.Controllers.Api.V4
             }
             catch (Exception ex)
             {
-                logger.LogError("Error creating new order.", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                logger.LogError("Error creating new order. {ex}", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<IActionResult> PostRestrictedOrder([FromBody] OrderType order)
+        public async Task<IActionResult> PostRestrictedOrder([FromBody] OrderType incommingOrder)
         {
             if (!AuthenticationHeaderValue.TryParse(Request.Headers.Authorization.ToString(), out var auth)
                 || !string.Equals(auth.Scheme, "Bearer", StringComparison.OrdinalIgnoreCase)
@@ -89,47 +89,36 @@ namespace Geonorge.Download.Controllers.Api.V4
             {
                 return Unauthorized();
             }
-
-            var opaBaseUrl = (config["OPA_URL"] ?? "http://localhost:3010").TrimEnd('/');
-            var client = httpClientFactory.CreateClient();
-            client.Timeout = TimeSpan.FromSeconds(10);
-
-            OpaDecision? decision;
+            var token = auth.Parameter;
             try
             {
-                using var response = await client.PostAsJsonAsync(
-                    $"{opaBaseUrl}/v1/data/download/decision",
-                    new { input = new { token = auth.Parameter } });
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    logger.LogError("OPA returned {StatusCode}", response.StatusCode);
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable);
-                }
-
-                decision = await response.Content.ReadFromJsonAsync<OpaDecision>();
+                var order = await orderService.CreateOrderRestricted(incommingOrder, token);
+                return Ok(ConvertToReceipt(order, Request));
             }
-            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            catch (AccessRestrictionException ex)
             {
-                logger.LogError(ex, "OPA request failed");
-                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+                logger.LogInformation("Access restriction encountered while creating restricted order.", ex);
+                return Forbid();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger.LogInformation("Unauthorized access encountered while creating restricted order.", ex);
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error creating restricted order {ex}", ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            if (decision?.Result is not { ValidToken: true } result)
-                return Unauthorized();
-
-            if (!result.CanOrder)
-                return StatusCode(StatusCodes.Status403Forbidden);
-
-            // TODO: create the order
-            return Ok();
         }
 
         private sealed record OpaDecision(OrderDecision? Result);
 
         private sealed record OrderDecision(
             [property: JsonPropertyName("valid_token")] bool ValidToken,
-            [property: JsonPropertyName("can_order")] bool CanOrder);
+            [property: JsonPropertyName("can_order")] bool CanOrder,
+            [property: JsonPropertyName("role_sufficient")] bool RoleSufficient);
 
         /// <summary>
         /// Get info about files in order
@@ -142,80 +131,51 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult GetOrder(string orderUuid)
         {
-            // Redirect to web controller if html is requested:
-            var acceptHeader = Request.Headers.Accept.ToString();
-
-            if (acceptHeader.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
-            {
-                var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                return Redirect($"{baseUrl}/order/details/{orderUuid}");
-            }
-
             var order = orderService.Find(orderUuid);
             if (order == null)
                 return NotFound();
 
             if (order.ContainsRestrictedDatasets())
                 return Forbid();
+            
+            if(!string.IsNullOrWhiteSpace(order.username))
+                return Forbid();
 
             return Ok(ConvertToReceipt(order, Request));
         }
 
         /// <summary>
-        /// Updates order with info to send to bundling
+        /// Get info about files in order
         /// </summary>
-        /// <param name="orderUuid">Uuid for order to update</param>
-        /// <param name="incomingOrder">
-        /// Currently only these fields are updated:
-        /// * email
-        /// * downloadAsBundle , sample: { "downloadAsBundle": true,"email": "user@email.no" }</param>
-        /// <returns>
-        /// Http status code 200 if updated ok.
-        /// </returns>
-        [HttpPut("order/{orderUuid}")]
-        [Consumes("application/json", "application/xml")]
+        [HttpGet("order-restricted/{orderUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateOrder(string orderUuid, [FromBody] OrderType incomingOrder)
+        public IActionResult GetOrderRestricted(string orderUuid)
         {
-            try
-            {
-                Order order = orderService.Find(orderUuid);
-                if (order == null)
-                    return NotFound();
+            string? ztPid = Request.Headers["zt-pid"];
+            if (string.IsNullOrWhiteSpace(ztPid))
+                return Unauthorized();
 
-                if (order.ContainsRestrictedDatasets())
-                    return Forbid();
+            var order = orderService.Find(orderUuid);
+            if (order == null)
+                return StatusCode(StatusCodes.Status404NotFound);
 
-                orderService.CheckPackageSize(order);
+            if (string.IsNullOrWhiteSpace(order.username) || !hmacService.Verify(order.username, ztPid))
+                return StatusCode(StatusCodes.Status403Forbidden);
 
-                orderService.UpdateOrder(order, incomingOrder);
-
-                return Ok(ConvertToReceipt(order, Request));
-            }
-            catch (FileSizeException ex)
-            {
-                logger.LogInformation(ex.Message, ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            catch (Exception e)
-            {
-                logger.LogError("Error while updating order.", e);
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+            return Ok(ConvertToReceipt(order, Request));
         }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
         /// <summary>
         /// Get fileIds for order
         /// </summary>
         /// <returns>
         /// Http status code 200.
         /// </returns>
-        ///         
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -255,7 +215,7 @@ namespace Geonorge.Download.Controllers.Api.V4
                 files = ConvertToFiles(order.orderItem, order.Uuid),
                 downloadAsBundle = order.DownloadAsBundle,
                 downloadBundleUrl = downloadBundleUrl,
-                _links = new LinkCreator().CreateOrderReceiptLinks(config, request, order.Uuid)
+                _links = new LinkCreator().CreateOrderReceiptLinks(config, request, order.Uuid, isRestricted: true)
             };
             return receipt;
         }

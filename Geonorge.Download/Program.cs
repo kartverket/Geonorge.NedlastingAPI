@@ -238,6 +238,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 //builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IMachineAccountService, MachineAccountService>();
+builder.Services.AddScoped<IHMACService, HMACService>();
 
 // --- Internal Services ---
 builder.Services.AddScoped<IUpdateMetadataService, UpdateMetadataService>();
@@ -251,6 +252,8 @@ builder.Services.AddHttpClient<IExternalRequestService, ExternalRequestService>(
         ? seconds : 60;
     client.Timeout = TimeSpan.FromSeconds(timeout);
 });
+
+builder.Services.AddHttpClient<IOpaClient, OpaClient>(client => client.Timeout = TimeSpan.FromSeconds(10));
 
 // --- Controllers and API versioning ---
 builder.Services.AddControllers(options =>
