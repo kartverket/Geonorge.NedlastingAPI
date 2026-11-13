@@ -1,0 +1,33 @@
+{
+  "mappings": [
+    {
+      "priority": 10,
+      "request": {
+        "method": "POST",
+        "url": "/authorize",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$[?(@.pid == '15819099887')]" },
+          { "matchesJsonPath": "$[?(@.resourceId == 'kv-geonorge')]" },
+          { "matchesJsonPath": "$[?(@.action == 'download')]" },
+          { "matchesJsonPath": "$[?(@.customerOrganizationNumber == '314246756')]" },
+          { "matchesJsonPath": { "expression": "$.resourceAttributes[0].type", "equalTo": "urn:kv:geonorge" } },
+          { "matchesJsonPath": { "expression": "$.resourceAttributes[0].id", "equalTo": "dataset" } }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "permit": true, "decision": "PERMIT", "minimumAuthenticationLevel": 3 }
+      }
+    },
+    {
+      "priority": 20,
+      "request": { "method": "POST", "url": "/authorize" },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "permit": false, "decision": "DENY" }
+      }
+    }
+  ]
+}

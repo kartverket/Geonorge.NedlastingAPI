@@ -21,6 +21,7 @@ namespace Geonorge.Download.Services
                 supportsFormatSelection = dataset.SupportsFormatSelection.GetValueOrDefault(),
                 supportsPolygonSelection = dataset.SupportsPolygonSelection.GetValueOrDefault(),
                 supportsProjectionSelection = dataset.SupportsProjectionSelection.GetValueOrDefault(),
+                maxArea = dataset.MaxArea,
                 supportsDownloadBundling = IsBundlingEnabled(),
                 mapSelectionLayer = dataset.MapSelectionLayer,
                 accessConstraintRequiredRole = dataset.AccessConstraintRequiredRole,
@@ -193,6 +194,26 @@ namespace Geonorge.Download.Services
             {
                 //Todo handle only clipping
                 areas = new List<AreaType> { new AreaType { code = "", name= "" } };
+            }
+
+            return areas;
+        }
+
+        public List<AreaType> GetAllAreas(string metadataUuid)
+        {
+            var areasQuery = (from p in dbContext.FileList
+                              where p.Dataset.MetadataUuid == metadataUuid
+                              select new { p.Division, p.DivisionKey }).Distinct().ToList();
+
+            List<AreaType> areas = new List<AreaType>();
+            foreach (var area in areasQuery)
+            {
+                areas.Add(new AreaType
+                {
+                    type = area.Division,
+                    code = area.DivisionKey,
+                    name = registerFetcher.GetArea(area.Division, area.DivisionKey).name
+                });
             }
 
             return areas;
