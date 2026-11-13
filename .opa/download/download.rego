@@ -27,7 +27,7 @@ decision := {
 	"valid_token": valid_token,
 	"can_order": can_order,
 	"role_sufficient": role_sufficient,
-	"pid": pid
+	"pid": pid,
 }
 
 default can_order := false
@@ -95,8 +95,3 @@ role_allows_download(required) if object.get(required, "role", null) == null
 role_allows_download(required) if required.role == []
 
 role_allows_download(required) if "nd.filnedlasting" in required.role
-
-
-
-
-
