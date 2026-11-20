@@ -21,7 +21,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [Route("api/v{version:apiVersion}")]
+    [Route("api/v{version:apiVersion}/datasets")]
     [EnableCors("AllowAll")]
     [AllowAnonymous]
     public class CapabilitiesController(
@@ -38,7 +38,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [OutputCache(PolicyName = "MetaTag")]
-        [HttpGet("capabilities/{metadataUuid}")]
+        [HttpGet("{metadataUuid}/capabilities")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(CapabilitiesType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,7 +69,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [OutputCache(PolicyName = "MetaTag")]
-        [HttpGet("codelists/projection/{metadataUuid}")]
+        [HttpGet("{metadataUuid}/codelists/projection")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<ProjectionType>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -91,7 +91,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [OutputCache(PolicyName = "MetaTag")]
-        [HttpGet("codelists/area/{metadataUuid}")]
+        [HttpGet("{metadataUuid}/codelists/area")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<AreaType>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -113,7 +113,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="metadataUuid">The metadata identifier</param>
         [OutputCache(PolicyName = "MetaTag")]
-        [HttpGet("codelists/format/{metadataUuid}")]
+        [HttpGet("{metadataUuid}/codelists/format")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(List<FormatType>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
