@@ -179,3 +179,6 @@ application_default_credentials.json
 
 # DB Volumes
 volumes/
+
+# VS Code stuff
+.vscode/

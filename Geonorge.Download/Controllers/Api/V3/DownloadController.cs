@@ -7,6 +7,7 @@ using Geonorge.Download.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using Asp.Versioning;
+using Geonorge.Download.Controllers.Api;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics.CodeAnalysis;
 using Geonorge.Download.Services.Interfaces;
@@ -21,6 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// </summary>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]

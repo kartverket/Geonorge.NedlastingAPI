@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Geonorge.Download.Controllers.Api;
 using Geonorge.Download.Models;
 using Geonorge.Download.Services.Auth;
 using Geonorge.Download.Services.Interfaces;
@@ -33,6 +34,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// <param name="webHostEnvironment"></param>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]

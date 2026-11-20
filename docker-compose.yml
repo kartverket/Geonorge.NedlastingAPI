@@ -7,19 +7,28 @@ volumes:
 
 services:
   geonorge.download:
-    image: ${DOCKER_REGISTRY-}geonorgedownload
     build:
       context: .
       dockerfile: Geonorge.Download/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
     ports:
       - "8080:8080"
       - "8081:8081"
     env_file:
       - .env
+    environment:
+      OPA_URL: "http://opa:3010"
     volumes:
       - ./application_default_credentials.json:/app/gcloud/application_default_credentials.json:ro
     networks:
     - geonorge-network
+    develop:
+      watch:
+        - path: ./Geonorge.Download
+          action: rebuild
+        - path: ./Geonorge.NedlastingApi
+          action: rebuild
 
   geonorge.download.redis:
     image: redis:latest
@@ -40,19 +49,104 @@ services:
     networks:
       - geonorge-network
 
-  geonorge.download.db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  mock-oauth2-server:
+    image: ghcr.io/navikt/mock-oauth2-server:latest
     ports:
-      - "1434:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=test#test123
-      - MSSQL_PID=Developer
-    volumes:
-      - ./volumes/backup:/backup:ro
-      - nedlasting_mssql:/var/opt/mssql
+      - "8091:8080"
     networks:
       - geonorge-network
+    environment:
+      SERVER_PORT: 8080
+      JSON_CONFIG: | # config som sikrer nokså like returnerte tokens som på SKIP
+        { 
+          "interactiveLogin": false,
+           "httpServer": "NettyWrapper",
+            "tokenCallbacks": 
+              [ 
+                { 
+                  "issuerId": "default", 
+                  "tokenExpiry": 3600, 
+                  "requestMappings": 
+                    [ 
+                      { 
+                        "requestParam": "grant_type", 
+                        "match": "urn:ietf:params:oauth:grant-type:token-exchange",
+                        "claims": 
+                          { 
+                            "aud": "$${audience}", 
+                            "client_id": "$${client_id}", 
+                            "iss": "http://mock-oauth2-server:8080/default", 
+                            "idp": "https://test.idporten.no",
+                            "pid": "15819099887",
+                            "acr": "high",
+                            "authorization_details": [
+                              {
+                                "type": "ansattporten:altinn:service",
+                                "resource": "urn:altinn:resource:kv-geonorge",
+                                "authorized_parties": [
+                                  { "orgno": { "authority": "iso6523-actorid-upis", "ID": "0192:314246756" } }
+                                ]
+                              }
+                            ]
+                          } 
+                        } 
+                      ] 
+                    } 
+                  ] 
+                }
+
+  # Stands in for altinn-pdp; permits only pid 15819099887 / org 314246756 for urn:kv:geonorge dataset download
+  altinn-pdp-mock:
+    image: wiremock/wiremock:latest
+    volumes:
+      - ./mocks/altinn-pdp:/home/wiremock:ro
+    ports:
+      - "8092:8080"
+    networks:
+      geonorge-network:
+        aliases:
+          - altinn-pdp.tilgangsstyring-altinn
+
+  opa:
+    image: openpolicyagent/opa:latest
+    command: ["run", "--server", "--addr", ":3010", "--ignore", "*_test.rego", "--bundle", "/policies"]
+    volumes:
+      - ./.opa:/policies:ro
+    ports:
+      - "3010:3010"
+      - "3000:3000" # texas
+    networks:
+      - geonorge-network
+
+  texas:
+    image: ghcr.io/nais/texas:latest
+    # Shares opa's network so the policy's localhost:3000 reaches texas, like a sidecar
+    network_mode: "service:opa"
+    depends_on:
+      - opa
+      - mock-oauth2-server
+    # mock-oauth2-server may not be ready on first start
+    restart: on-failure
+    environment:
+      BIND_ADDRESS: "0.0.0.0:3000"
+      TOKEN_X_ENABLED: true
+      TOKEN_X_CLIENT_ID: "atkv3-dev:datadeling-geonorge:geonorge-nedlasting-api"
+      TOKEN_X_WELL_KNOWN_URL: "http://mock-oauth2-server:8080/default/.well-known/openid-configuration"
+      TOKEN_X_PRIVATE_JWK: '{"p":"_LNnIjBshCrFuxtjUC2KKzg_NTVv26UZh5j12_9r5mYTxb8yW047jOYFEGvIdMkTRLGOBig6fLWzgd62lnLainzV35J6K6zr4jQfTldLondlkldMR6nQrp1KfnNUuRbKvzpNKkhl12-f1l91l0tCx3s4blztvWgdzN2xBfvWV68","kty":"RSA","q":"9MIWsbIA3WjiR_Ful5FM8NCgb6JdS2D6ySHVepoNI-iAPilcltF_J2orjfLqAxeztTskPi45wtF_-eV4GIYSzvMo-gFiXLMrvEa7WaWizMi_7Bu9tEk3m_f3IDLN9lwULYoebkDbiXx6GOiuj0VkuKz8ckYFNKLCMP9QRLFff-0","d":"J6UX848X8tNz-09PFvcFDUVqak32GXzoPjnuDjBsxNUvG7LxenLmM_i8tvYl0EW9Ztn4AiCqJUoHw5cX3jz_mSqGl7ciaDedpKm_AetcZwHiEuT1EpSKRPMmOMQSqcJqXrdbbWB8gdUrnTKZIlJCfj7yqgT16ypC43TnwjA0UwxhG5pHaYjKI3pPdoHg2BzA-iubHjVn15Sz7-pnjBmeGDbEFa7ADY-1yPHCmqqvPKTNhoCNW6RpG34Id9hXslPa3X-7pAhJrDBd0_NPlktSA2rUkifYiZURhHR5ijhe0v3uw6kYP8f_foVm_C8O1ExkxXh9Dg8KDZ89dbsSOtBc0Q","e":"AQAB","use":"sig","kid":"l7C_WJgbZ_6e59vPrFETAehX7Dsp7fIyvSV4XhotsGs","qi":"cQFN5q5WhYkzgd1RS0rGqvpX1AkmZMrLv2MW04gSfu0dDwpbsSAu8EUCQW9oA4pr6V7R9CBSu9kdN2iY5SR-hZvEad5nDKPV1F3TMQYv5KpRiS_0XhfV5PcolUJVO_4p3h8d-mo2hh1Sw2fairAKOzvnwJCQ6DFkiY7H1cqwA54","dp":"YTql9AGtvyy158gh7jeXcgmySEbHQzvDFulDr-IXIg8kjHGEbp0rTIs0Z50RA95aC5RFkRjpaBKBfvaySjDm5WIi6GLzntpp6B8l7H6qG1jVO_la4Df2kzjx8LVvY8fhOrKz_hDdHodUeKdCF3RdvWMr00ruLnJhBPJHqoW7cwE","alg":"RS256","dq":"IZA4AngRbEtEtG7kJn6zWVaSmZxfRMXwvgIYvy4-3Qy2AVA0tS3XTPVfMaD8_B2U9CY_CxPVseR-sysHc_12uNBZbycfcOzU84WTjXCMSZ7BysPnGMDtkkLHra-p1L29upz1HVNhh5H9QEswHM98R2LZX2ZAsn4bORLZ1AGqweU","n":"8ZqUp5Cs90XpNn8tJBdUUxdGH4bjqKjFj8lyB3x50RpTuECuwzX1NpVqyFENDiEtMja5fdmJl6SErjnhj6kbhcmfmFibANuG-0WlV5yMysdSbocd75C1JQbiPdpHdXrijmVFMfDnoZTQ-ErNsqqngTNkn5SXBcPenli6Cf9MTSchZuh_qFj_B7Fp3CWKehTiyBcLlNOIjYsXX8WQjZkWKGpQ23AWjZulngWRektLcRWuEKTWaRBtbAr3XAfSmcqTICrebaD3IMWKHDtvzHAt_pt4wnZ06clgeO2Wbc980usnpsF7g8k9p81RcbS4JEZmuuA9NCmOmbyADXwgA9_-Aw"}'
+
+  # geonorge.download.db:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   ports:
+  #     - "1434:1433"
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=test#test123
+  #     - MSSQL_PID=Developer
+  #   volumes:
+  #     - ./volumes/backup:/backup:ro
+  #     - nedlasting_mssql:/var/opt/mssql
+  #   networks:
+  #     - geonorge-network
 
   # proxy:
   #   image: nginx:latest

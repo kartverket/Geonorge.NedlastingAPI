@@ -9,6 +9,12 @@ namespace Geonorge.Download.Services.Interfaces
     {
         Task<Order> CreateOrder(OrderType incomingOrder, ClaimsPrincipal principal);
 
+        Task<Order> CreateOrderOpenData(OrderType incomingOrder);
+
+        Task<Order> CreateOrderRestricted(OrderType incomingOrder, string token);
+
+        Task<Dictionary<string, List<string>>> GetRequiredRolesForOrder(OrderType incomingOrder);
+
         void UpdateFileStatus(UpdateFileStatusInformation updateFileStatusInformation);
 
         Order Find(string orderUuid);

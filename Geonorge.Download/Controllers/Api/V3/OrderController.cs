@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Geonorge.Download.Controllers.Api;
 
 namespace Geonorge.Download.Controllers.Api.V3
 {
@@ -21,6 +22,7 @@ namespace Geonorge.Download.Controllers.Api.V3
     /// </summary>
     [ApiController]
     [ApiVersion("3.0")]
+    [ApiVersionHeader("3.0")]
     [ApiExplorerSettings(GroupName = "latest")]
     [Route("api")]
     [Route("api/v{version:apiVersion}")]
@@ -54,6 +56,11 @@ namespace Geonorge.Download.Controllers.Api.V3
             {
                 logger.LogInformation(e.Message, e);
                 //return Unauthorized();
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            catch (InvalidGeometryException e)
+            {
+                logger.LogInformation(e.Message, e);
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
             catch (Exception ex)
