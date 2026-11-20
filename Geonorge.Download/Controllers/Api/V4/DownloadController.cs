@@ -14,7 +14,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [Route("api/v{version:apiVersion}")]
+    [Route("api/v{version:apiVersion}/orders")]
     [EnableCors("AllowKartkatalog")]
     [AllowAnonymous]
     public class DownloadController(IConfiguration config, IDownloadService downloadService, IOrderService orderService, IHMACService hmacService, IOpaClient opaClient) : ControllerBase
@@ -25,7 +25,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="orderUuid">The reference number returned from the order</param>
         /// <param name="fileId">The fileId to download from order</param>
-        [HttpGet("download/order/{orderUuid}/{fileId}")]
+        [HttpGet("{orderUuid}/{fileId}")]
         //[Produces("application/octet-stream")]
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(StatusCodes.Status302Found)]
@@ -65,7 +65,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// </summary>
         /// <param name="orderUuid">The reference number returned from the order</param>
         /// <param name="fileId">The fileId to download from order</param>
-        [HttpGet("download/order-restricted/{orderUuid}/{fileId}")]
+        [HttpGet("restricted/{orderUuid}/{fileId}")]
         //[Produces("application/octet-stream")]
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(StatusCodes.Status302Found)]
