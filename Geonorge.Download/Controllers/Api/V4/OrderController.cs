@@ -18,7 +18,7 @@ namespace Geonorge.Download.Controllers.Api.V4
     [ApiController]
     [ApiVersion("4.0")]
     [ApiVersionHeader("4.0")]
-    [Route("api/v{version:apiVersion}")]
+    [Route("api/v{version:apiVersion}/orders")]
     [EnableCors("AllowKartkatalog_2")]
     [AllowAnonymous]
     //[HandleError]
@@ -31,7 +31,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// <param name="order">OrderType model</param>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal Server Error</response>
-        [HttpPost("order")]
+        [HttpPost("")]
         [Consumes("application/json", "application/xml")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
@@ -72,7 +72,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// <response code="401">Missing or invalid access token</response>
         /// <response code="403">User is not permitted to order</response>
         /// <response code="503">Authorization service unavailable</response>
-        [HttpPost("order-restricted")]
+        [HttpPost("restricted")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
@@ -123,7 +123,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// <summary>
         /// Get info about files in order
         /// </summary>
-        [HttpGet("order/{orderUuid}")]
+        [HttpGet("{orderUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status302Found)]
@@ -147,7 +147,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         /// <summary>
         /// Get info about files in order
         /// </summary>
-        [HttpGet("order-restricted/{orderUuid}")]
+        [HttpGet("restricted/{orderUuid}")]
         [Produces("application/json", "application/xml")]
         [ProducesResponseType(typeof(OrderReceiptType), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -179,7 +179,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("order/uuidfile/{orderUuid}")]
+        [HttpGet("{orderUuid}/fileids")]
         public IActionResult GetUuidFile(string orderUuid)
         {
             try

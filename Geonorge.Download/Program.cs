@@ -148,8 +148,17 @@ builder.Services
             {
                 await ClaimsHelper.AddClaims(ctx.Principal, ctx.HttpContext);
             },
+            OnMessageReceived = ctx =>
+            {
+                OidcNonceCookieCleanup.RemoveStaleCookies(ctx);
+                return Task.CompletedTask;
+            },
             OnRedirectToIdentityProvider = ctx =>
             {
+                // fetch/XHR cannot complete a login: return 401 and don't leave nonce/correlation cookies behind
+                if (OidcNonceCookieCleanup.SuppressChallengeForNonNavigation(ctx))
+                    return Task.CompletedTask;
+
                 var req = ctx.Request;
 
                 //var host = req.Host.Value; // change if proxy doesn't preserve original Host

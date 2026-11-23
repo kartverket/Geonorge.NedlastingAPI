@@ -13,7 +13,7 @@ services:
       args:
         BUILD_CONFIGURATION: Debug
     ports:
-      - "8080:8080"
+      - "8082:8080"
       - "8081:8081"
     env_file:
       - .env
@@ -68,6 +68,29 @@ services:
                   "tokenExpiry": 3600, 
                   "requestMappings": 
                     [ 
+                      { 
+                        "requestParam": "grant_type", 
+                        "match": "client_credentials",
+                        "claims": 
+                          { 
+                            "aud": "$${audience}", 
+                            "client_id": "$${client_id}", 
+                            "iss": "http://mock-oauth2-server:8080/default", 
+                            "idp": "https://test.idporten.no",
+                            "pid": "15819099887",
+                            "acr": "high",
+                            "authorization_details": [
+                              {
+                                "type": "ansattporten:altinn:service",
+                                "resource": "urn:altinn:resource:kv-geonorge",
+                                "authorized_parties": [
+                                  { "orgno": { "authority": "iso6523-actorid-upis", "ID": "0192:314246756" } }
+                                ]
+                              }
+                            ]
+                          } 
+                        } 
+                      ,
                       { 
                         "requestParam": "grant_type", 
                         "match": "urn:ietf:params:oauth:grant-type:token-exchange",
