@@ -205,7 +205,7 @@ namespace Geonorge.Download.Controllers.Api.V4
         {
             string downloadBundleUrl = null;
             if (order.DownloadBundleUrl != null)
-                downloadBundleUrl = new DownloadUrlBuilder(config).OrderId(order.Uuid).AsBundle();
+                downloadBundleUrl = new DownloadUrlBuilderV4(config).OrderId(order.Uuid).AsBundle();
 
             var receipt = new OrderReceiptType
             {
@@ -222,13 +222,14 @@ namespace Geonorge.Download.Controllers.Api.V4
 
         private FileType[] ConvertToFiles(List<OrderItem> orderItems, Guid orderUuid)
         {
+            var urlBuilder = new DownloadUrlBuilderV4(config).OrderId(orderUuid);
             var files = new List<FileType>();
             foreach (var item in orderItems)
                 files.Add(new FileType
                 {
                     name = item.FileName,
                     downloadUrl = item.IsReadyForDownload()
-                        ? new DownloadUrlBuilder(config).OrderId(orderUuid).FileId(item.Uuid).Build()
+                        ? urlBuilder.FileId(item.Uuid).Build()
                         : null,
                     fileId = item.Uuid.ToString(),
                     area = item.Area,
