@@ -1,6 +1,8 @@
 networks:
   geonorge-network:
     driver: bridge
+    external: true
+      
 
 volumes:
   nedlasting_mssql:
@@ -29,6 +31,8 @@ services:
           action: rebuild
         - path: ./Geonorge.NedlastingApi
           action: rebuild
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   geonorge.download.redis:
     image: redis:latest
@@ -117,7 +121,8 @@ services:
                     } 
                   ] 
                 }
-
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   # Stands in for altinn-pdp; permits only pid 15819099887 / org 314246756 for urn:kv:geonorge dataset download
   altinn-pdp-mock:
     image: wiremock/wiremock:latest
