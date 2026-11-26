@@ -9,6 +9,16 @@ application_default_credentials.json
 
 Both files are used by docker compose. ADC is used for connecting to Google Cloud Storage.
 
+More services are added to facilitate auth. They are required when trying to download files using kartkatalogen running with auth locally. 
+
+It also now requires a docker network running, otherwise it will be very mad. If not already created, create one using the following:
+
+```bash
+docker network create geonorge-network
+```
+
+This network is also used by katkatalogen for host resolution etc.
+
 ### Running and debugging
 Run the stack either from Visual Studio (set `docker-compose` as startup project and press F5) or with `docker compose up`, not both.
 Visual Studio uses its own compose project name, so running both gives two separate stacks with their own SQL Server containers and volumes, competing for the same ports.
